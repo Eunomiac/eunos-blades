@@ -45,7 +45,7 @@ declare global {
 
   namespace BladesRoll {
 
-    export interface Config extends Partial<BladesTargetLink.Config> {
+    interface UnlinkedConfig {
       rollType?: RollType,
       rollSubType?: RollSubType,
       rollUserID?: IDString,
@@ -80,6 +80,8 @@ declare global {
 
       userPermissions?: Record<IDString, RollPermissions>
     }
+
+    export type Config = UnlinkedConfig & BladesTargetLink.Config;
 
     export interface Schema extends Omit<Config, "rollClockKey"|"rollPrimaryData"|"rollOppData"|"rollParticipantData"> {
       rollPrompt?: string;
@@ -230,7 +232,7 @@ declare global {
       rollPrimaryType: PrimaryDocType,
       rollPrimaryImg: string,
 
-      rollModsData: RollModData[],
+      rollModsSchemaSet: RollModData[],
       rollFactors: Partial<Record<Factor,FactorData>>
 
       applyHarm?(amount: num, name: num)

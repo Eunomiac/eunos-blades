@@ -85,7 +85,7 @@ declare global {
     eunoblades: EunoBlades.Game
   }
   declare interface User {
-    _id: string,
+    id: IDString,
     flags: {
       ["eunos-blades"]?: Record<string,any>
     }

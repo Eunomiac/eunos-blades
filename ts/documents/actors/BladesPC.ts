@@ -429,9 +429,9 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   // #endregion
 
   // #region BladesRoll.PrimaryDoc Implementation
-  override get rollModsData(): BladesRollMod.Schema[] {
+  override get rollModsSchemaSet(): BladesRollMod.Schema[] {
 
-    const rollModsData = super.rollModsData;
+    const rollModsData = super.rollModsSchemaSet;
 
     // Add roll mods from harm
     [

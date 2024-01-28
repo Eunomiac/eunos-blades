@@ -220,11 +220,9 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   get rollPrimaryImg() { return this.img; }
 
-  get rollModsData(): BladesRollMod.Schema[] {
-    // Const rollModData = BladesRollMod.ParseDocRollMods(this);
+  get rollModsSchemaSet(): BladesRollMod.Schema[] {
     // Add roll mods from COHORT harm
-
-    return BladesRollMod.ParseDocRollMods(this);
+    return BladesRollMod.ParseDocModsToSchemaSet(this);
   }
 
   async applyHarm(amount: number, _name: string) {

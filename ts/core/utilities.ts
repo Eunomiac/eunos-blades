@@ -1889,6 +1889,7 @@ const isTargetKey = (ref: unknown): ref is TargetKey => {
   if (!isDotKey(ref)) { return false; }
   if (["name", "img", "id", "_id"].includes(ref)) { return true; }
   if (ref.startsWith("system")) { return true; }
+  if (ref.startsWith("flag")) { return true; }
   return false;
 };
 
@@ -1896,6 +1897,21 @@ const isTargetFlagKey = (ref: unknown): ref is TargetFlagKey => {
   if (!isDotKey(ref)) { return false; }
   if (isTargetKey(ref)) { return false; }
   return true;
+};
+
+const parseDocRefToUUID = (ref: unknown): UUIDString => {
+  if (isDocUUID(ref)) {
+    return ref;
+  } else if (isDocID(ref)) {
+    const doc = game.collections.find((collection) => collection.has(ref))?.get(ref);
+    if (doc && "uuid" in doc) {
+      return doc.uuid as UUIDString;
+    }
+    throw new Error(`[U.parseDocRefToUUID] Unable to find document with id '${ref}'`);
+  } else if (ref && typeof ref === "object" && "uuid" in ref && typeof ref.uuid === "string") {
+    return ref.uuid as UUIDString;
+  }
+  throw new Error(`[U.parseDocRefToUUID] Unrecognized reference: '${ref}'`);
 };
 
 const loc = (locRef: string, formatDict: Record<string, string> = {}) => {
@@ -2048,6 +2064,8 @@ export default {
 
   // ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
   isDocID, isDocUUID, isDotKey, isTargetKey, isTargetFlagKey,
+
+  parseDocRefToUUID,
 
   loc, getSetting, getTemplatePath, displayImageSelector
 

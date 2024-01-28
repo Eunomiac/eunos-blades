@@ -111,7 +111,7 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     return [RollModStatus.ForcedOn, RollModStatus.ForcedOff, RollModStatus.Hidden];
   }
 
-  private static getModData(mStrings: string[]): Partial<BladesRollMod.Schema> {
+  private static getSchemaFromStrings(mStrings: string[]): BladesRollMod.Schema {
 
     const nameString = U.pullElement(mStrings, (v) => typeof v === "string" && /^na/i.test(v));
     const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, ""));
@@ -132,66 +132,69 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
       key: `${nameVal}-${posNegVal}-${catVal}`,
       name: nameVal,
       section: catVal,
-      posNeg: posNegVal
+      posNeg: posNegVal,
+      base_status: RollModStatus.ToggledOff,
+      modType: RollModType.general,
+      tooltip: "",
+      value: 1,
+      ...Object.fromEntries(
+        mStrings.map(getModParameterKeyVal)
+      )
     };
+
+    function getModParameterKeyVal(mString: string) {
+      const [keyString, valString] = mString.split(/:/) as [string, string];
+      let val: string | string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
+      let key: KeyOf<BladesRollMod.Schema>;
+
+      if (/^stat/i.test(keyString)) {
+        key = "base_status";
+      } else if (/^val/i.test(keyString)) {
+        key = "value";
+      } else if (/^eff|^ekey/i.test(keyString)) {
+        key = "effectKeys";
+      } else if (/^side|^ss/i.test(keyString)) {
+        key = "sideString";
+      } else if (/^s.*ame/i.test(keyString)) {
+        key = "source_name";
+      } else if (/^tool|^tip/i.test(keyString)) {
+        key = "tooltip";
+      } else if (/^ty/i.test(keyString)) {
+        key = "modType";
+      } else if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {
+        key = "conditionalRollTypes";
+      } else if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {
+        key = "autoRollTypes";
+      } else if (/^p.{0,10}r?.{0,3}y/i.test(keyString)) {
+        key = "participantRollTypes";
+      } else if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {
+        key = "conditionalRollTraits";
+      } else if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {
+        key = "autoRollTraits";
+      } else if (/^p.{0,10}r?.{0,3}tr/i.test(keyString)) {
+        key = "participantRollTypes";
+      } else {
+        throw new Error(`Bad Roll Mod Key: ${keyString}`);
+      }
+
+      if (key === "base_status" && val === "Conditional") {
+        val = RollModStatus.Hidden;
+      }
+
+      let valProcessed;
+      if (["value"].includes(key)) {
+        valProcessed = U.pInt(val);
+      } else if (["effectKeys", "conditionalRollTypes", "autoRollTypes", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
+        valProcessed = [val].flat();
+      } else {
+        valProcessed = (val as string).replace(/%COLON%/g, ":");
+      }
+
+      return [key, valProcessed] as const;
+    }
   }
 
-  private static getModParameterKeyVal(mString: string): Partial<Record<
-    KeyOf<BladesRollMod.Schema>,
-    string | number | string[]
-  >> {
-
-    const [keyString, valString] = mString.split(/:/) as [string, string];
-    let val: string | string[] = /\|/.test(valString) ? valString.split(/\|/) : valString;
-    let key: KeyOf<BladesRollMod.Schema>;
-
-    if (/^stat/i.test(keyString)) {
-      key = "base_status";
-    } else if (/^val/i.test(keyString)) {
-      key = "value";
-    } else if (/^eff|^ekey/i.test(keyString)) {
-      key = "effectKeys";
-    } else if (/^side|^ss/i.test(keyString)) {
-      key = "sideString";
-    } else if (/^s.*ame/i.test(keyString)) {
-      key = "source_name";
-    } else if (/^tool|^tip/i.test(keyString)) {
-      key = "tooltip";
-    } else if (/^ty/i.test(keyString)) {
-      key = "modType";
-    } else if (/^c.{0,10}r?.{0,3}ty/i.test(keyString)) {
-      key = "conditionalRollTypes";
-    } else if (/^a.{0,3}r?.{0,3}y/i.test(keyString)) {
-      key = "autoRollTypes";
-    } else if (/^p.{0,10}r?.{0,3}y/i.test(keyString)) {
-      key = "participantRollTypes";
-    } else if (/^c.{0,10}r?.{0,3}tr/i.test(keyString)) {
-      key = "conditionalRollTraits";
-    } else if (/^a.{0,3}r?.{0,3}tr/i.test(keyString)) {
-      key = "autoRollTraits";
-    } else if (/^p.{0,10}r?.{0,3}tr/i.test(keyString)) {
-      key = "participantRollTypes";
-    } else {
-      throw new Error(`Bad Roll Mod Key: ${keyString}`);
-    }
-
-    if (key === "base_status" && val === "Conditional") {
-      val = RollModStatus.Hidden;
-    }
-
-    let valProcessed;
-    if (["value"].includes(key)) {
-      valProcessed = U.pInt(val);
-    } else if (["effectKeys", "conditionalRollTypes", "autoRollTypes", "conditionalRollTraits", "autoRollTraits"].includes(key)) {
-      valProcessed = [val].flat();
-    } else {
-      valProcessed = (val as string).replace(/%COLON%/g, ":");
-    }
-
-    return {[key]: valProcessed};
-  }
-
-  static ParseDocRollMods(doc: BladesDoc): Array<Partial<BladesRollMod.Schema>> {
+  static ParseDocModsToSchemaSet(doc: BladesDoc): BladesRollMod.Schema[] {
 
     if (doc instanceof BladesChat) {
       throw new Error("BladesRollMod.ParseDocRollMods cannot be called on a BladesChat document.");
@@ -201,24 +204,26 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     if (!roll_mods || roll_mods.length === 0) {return [];}
 
     return roll_mods
-      .filter((elem) => elem && typeof elem === "string")
+      .filter((elem) => Boolean(elem && typeof elem === "string"))
       .map((modString) => {
-        if (!modString) {return undefined;}
+        return this.getSchemaFromStrings((modString as string).split(/@/));
+      });
+  }
 
-        const mStrings = modString.split(/@/);
+  static ParseSchemaSetToDataSet(modSchemaSet: BladesRollMod.Schema[], rollInst: BladesRoll): BladesRollMod.Data[] {
+    const modLinkData = rollInst.linkData;
+    if ("targetKey" in modLinkData) {
+      modLinkData.targetKey = `${modLinkData.targetKey}.${rollInst.id}.rollModsData` as TargetKey;
+    } else {
+      modLinkData.targetFlagKey = `${modLinkData.targetFlagKey}.${rollInst.id}.rollModsData` as TargetFlagKey;
+    }
 
-        const rollModData = this.getModData(mStrings);
-
-        mStrings.forEach((mString) => {
-          Object.assign(
-            rollModData,
-            this.getModParameterKeyVal(mString)
-          );
-        });
-
-        return rollModData;
-      })
-      .filter((elem): elem is Partial<BladesRollMod.Schema> => Boolean(elem));
+    return modSchemaSet.map((modSchema) => {
+      return {
+        ...modSchema,
+        ...modLinkData
+      };
+    });
   }
 
   get status() {
@@ -712,7 +717,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryDocData {
       rollPrimaryName: this.rollPrimaryName,
       rollPrimaryType: this.rollPrimaryType,
       rollPrimaryImg: this.rollPrimaryImg,
-      rollModsData: this.rollModsData,
+      rollModsSchemaSet: this.rollModsSchemaSet,
       rollFactors: this.rollFactors
     };
   }
@@ -725,8 +730,8 @@ class BladesRollPrimary implements BladesRoll.PrimaryDocData {
 
   _rollModsData: BladesRollMod.Schema[];
 
-  get rollModsData(): BladesRollMod.Schema[] {
-    return this.rollPrimaryDoc?.rollModsData ?? this._rollModsData ?? [];
+  get rollModsSchemaSet(): BladesRollMod.Schema[] {
+    return this.rollPrimaryDoc?.rollModsSchemaSet ?? this._rollModsData ?? [];
   }
 
   rollFactors: Partial<Record<Factor, BladesRoll.FactorData>>;
@@ -816,7 +821,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryDocData {
       rollPrimaryName,
       rollPrimaryType,
       rollPrimaryImg,
-      rollModsData,
+      rollModsSchemaSet: rollModsData,
       rollFactors
     }: Partial<BladesRoll.PrimaryDocData> = {}) {
     // Identify ID, Doc, Name, SubName, Type & Image, to best of ability
@@ -829,7 +834,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryDocData {
     rollPrimaryName ??= rollInstance?.rollPrimary.rollPrimaryName;
     rollPrimaryType ??= rollInstance?.rollPrimary.rollPrimaryType;
     rollPrimaryImg ??= rollInstance?.rollPrimary.rollPrimaryImg;
-    rollModsData ??= rollInstance?.rollPrimary.rollModsData;
+    rollModsData ??= rollInstance?.rollPrimary.rollModsSchemaSet;
     rollFactors ??= rollInstance?.rollPrimary.rollFactors;
 
     if (BladesRollPrimary.IsDoc(this.rollPrimaryDoc)) {
@@ -1215,18 +1220,13 @@ class BladesRollParticipant implements BladesRoll.ParticipantDocData {
 
 class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
-  static _Debug: {
-    modWatch: RegExp | false
-  } = {
-      modWatch: false
-    };
-
   static Debug = {
+    modWatch: false as RegExp | false,
     watchRollMod(name: string | false) {
       if (typeof name === "string") {
-        BladesRoll._Debug.modWatch = new RegExp(name, "g");
+        BladesRoll.Debug.modWatch = new RegExp(name, "g");
       } else {
-        BladesRoll._Debug.modWatch = false;
+        BladesRoll.Debug.modWatch = false;
       }
     }
   };
@@ -1258,8 +1258,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   }
 
-  static override ParseConfig<Schema = BladesRoll.Schema>(
-    data: BladesTargetLink.Config & Partial<BladesRoll.Schema>
+  static override ParseConfigToData<Schema = BladesRoll.Schema>(
+    data: BladesTargetLink.PartialConfig & Partial<BladesRoll.Schema>
   ): BladesTargetLink.Data & Partial<Schema> {
     if (data.rollPrimaryData instanceof BladesRollPrimary) {
       data.rollPrimaryData = data.rollPrimaryData.data;
@@ -1295,7 +1295,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         });
       }
     }
-    return JSON.parse(JSON.stringify(BladesTargetLink.ParseConfig(data))) as BladesTargetLink.Data & Partial<Schema>;
+    return BladesTargetLink.ParseConfigToData(data) as BladesTargetLink.Data & Partial<Schema>;
   }
 
   static override ApplySchemaDefaults<Schema = BladesRoll.Schema>(
@@ -1417,7 +1417,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   //   });
   // }
 
-  private static get DefaultRollModSchemas(): BladesRollMod.Schema[] {
+  private static get DefaultRollModSchemaSet(): BladesRollMod.Schema[] {
     return [
       {
         key: "Push-positive-roll",
@@ -1506,15 +1506,26 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   static GetDefaultRollModsDataSet(rollLinkData: BladesTargetLink.Data): Record<IDString, BladesRollMod.Data> {
-    return Object.fromEntries(BladesRoll.DefaultRollModSchemas.map((modSchema) => {
+    return Object.fromEntries(BladesRoll.DefaultRollModSchemaSet.map((modSchema) => {
       const modID = randomID() as IDString;
-      return [modID, {
-        id: modID,
-        targetID: rollLinkData.targetID,
-        targetKey: rollLinkData.targetKey ? `${rollLinkData.targetKey}.${rollLinkData.id}.rollModsData` as TargetKey : undefined,
-        targetFlagKey: rollLinkData.targetFlagKey ? `${rollLinkData.targetFlagKey}.${rollLinkData.id}.rollModsData` as TargetFlagKey : undefined,
-        ...modSchema
-      }];
+      if ("targetKey" in rollLinkData) {
+        return [modID, {
+          id: modID,
+          targetID: rollLinkData.targetID,
+          targetKey: `${rollLinkData.targetKey}.${rollLinkData.id}.rollModsData` as TargetKey,
+          targetFlagKey: "targetFlagKey" in rollLinkData
+            ? `${rollLinkData.targetFlagKey}.${rollLinkData.id}.rollModsData` as TargetFlagKey
+            : undefined,
+          ...modSchema
+        }];
+      } else {
+        return [modID, {
+          id: modID,
+          targetID: rollLinkData.targetID,
+          targetFlagKey: `${rollLinkData.targetFlagKey}.${rollLinkData.id}.rollModsData` as TargetFlagKey,
+          ...modSchema
+        }];
+      }
     }));
   }
 
@@ -1784,29 +1795,36 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    */
   static async NewRoll(config: BladesRoll.Config) {
 
-    const {targetKey, targetFlagKey} = config;
+    // Prepare partial target link config
+    const partialLinkConfig: BladesTargetLink.PartialConfig = {
+      target: "target" in config ? config.target : undefined,
+      targetID: "targetID" in config ? config.targetID : undefined,
+      targetKey: "targetKey" in config ? config.targetKey : undefined,
+      targetFlagKey: "targetFlagKey" in config ? config.targetFlagKey : undefined
+    };
 
-    // Get User document.
-    const rollUser = game.users.get(config.rollUserID ?? game.user.id ?? "");
-
-    // If config is NOT a valid BladesTargetLink config object, link it to the user id
-    if (!BladesTargetLink.IsValidConfig(config)) {
-      if (!rollUser?.id) {
-        throw new Error("[BladesRoll.NewRoll()] You must provide a valid rollUserID or targetID (UUID) in the config object.");
+    // If neither target nor targetID are provided, set target to rollUser or currentUser
+    if (!partialLinkConfig.target && !partialLinkConfig.targetID) {
+      const rollUser = game.users.get(config.rollUserID ?? game.user.id);
+      if (!rollUser) {
+        throw new Error("[BladesRoll.NewRoll()] You must provide a valid rollUserID, target, or targetID in the config object.");
       }
-      eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll() [1]", {config, rollUser});
-
-      Object.assign(config, {
-        target: rollUser,
-        targetKey,
-        targetFlagKey: targetFlagKey ?? "rollCollab" as TargetFlagKey
-      });
+      partialLinkConfig.target = rollUser;
     }
+
+    // If neither targetKey nor targetFlagKey are provided, set targetFlagKey to 'rollCollab'.
+    if (!partialLinkConfig.targetKey && !partialLinkConfig.targetFlagKey) {
+      partialLinkConfig.targetFlagKey = "rollCollab" as TargetFlagKey;
+    }
+
+    // Build target link config
+    const linkConfig = BladesTargetLink.BuildLinkConfig(partialLinkConfig);
 
     // If no rollPrimaryData is provided, attempt to derive it from target or user
     if (!BladesRollPrimary.IsValidData(config.rollPrimaryData)) {
       let rollPrimary: BladesRoll.PrimaryDoc;
-      if (BladesRollPrimary.IsDoc(config.target)) {
+      const rollUser = game.users.get(config.rollUserID ?? game.user.id);
+      if ("target" in config && BladesRollPrimary.IsDoc(config.target)) {
         rollPrimary = config.target;
       } else if (BladesRollPrimary.IsDoc(rollUser?.character)) {
         rollPrimary = rollUser.character;
@@ -1819,7 +1837,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         rollPrimaryName: rollPrimary.rollPrimaryName,
         rollPrimaryType: rollPrimary.rollPrimaryType,
         rollPrimaryImg: rollPrimary.rollPrimaryImg,
-        rollModsData: rollPrimary.rollModsData,
+        rollModsSchemaSet: rollPrimary.rollModsSchemaSet,
         rollFactors: rollPrimary.rollFactors,
         applyHarm: rollPrimary.applyHarm,
         applyWorsePosition: rollPrimary.applyWorsePosition
@@ -2363,33 +2381,36 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   // Get rollConsequence() --> For resistance rolls.
-  get rollConsequence(): BladesRoll.ResistanceRollConsequenceData | undefined {
-    return this.data.resistanceData?.consequence;
+  get rollConsequence(): BladesConsequence | undefined {
+    return this.data.resistanceData?.consequence
+      ? new BladesConsequence(this.data.resistanceData?.consequence)
+      : undefined;
   }
 
   // #endregion
 
   // #region GETTERS: DERIVED DATA ~
   get finalPosition(): Position {
-    return Object.values(Position)[U.clampNum(
-      Object.values(Position)
-        .indexOf(this.initialPosition)
-      + this.getModsDelta(RollModSection.position)
-      + (this.posEffectTrade === "position" ? 1 : 0)
-      + (this.posEffectTrade === "effect" ? -1 : 0),
-      [0, 2]
-    )];
+    return Object.values(Position)[
+      U.clampNum(
+        Object.values(Position).indexOf(this.initialPosition)
+        + this.getModsDelta(RollModSection.position)
+        + (this.posEffectTrade === "position" ? 1 : 0)
+        + (this.posEffectTrade === "effect" ? -1 : 0),
+        [0, 2]
+      )
+    ];
   }
 
   get finalEffect(): Effect {
-    return Object.values(Effect)[U.clampNum(
-      Object.values(Effect)
-        .indexOf(this.initialEffect)
-      + this.getModsDelta(RollModSection.effect)
-      + (this.posEffectTrade === "effect" ? 1 : 0)
-      + (this.posEffectTrade === "position" ? -1 : 0),
-      [0, 4]
-    )];
+    return Object.values(Effect)[
+      U.clampNum(
+        Object.values(Effect).indexOf(this.initialEffect)
+        + this.getModsDelta(RollModSection.effect)
+        + (this.posEffectTrade === "effect" ? 1 : 0)
+        + (this.posEffectTrade === "position" ? -1 : 0),
+        [0, 4]
+      )];
   }
 
   get finalResult(): number {
@@ -2529,13 +2550,15 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // #region ROLL MODS: Getters & Update Method ~
 
-  initRollMods(modsData: BladesRollMod.Schema[]) {
+  initRollMods(modSchemaSet: BladesRollMod.Schema[]) {
     // Reset override values previously enabled by rollmods
     this.rollTraitValOverride = undefined;
     this.rollFactorPenaltiesNegated = {};
     this.tempGMBoosts = {};
 
-    this.rollMods = modsData.map((modData) => new BladesRollMod(modData, this));
+    const modDataSet = BladesRollMod.ParseSchemaSetToDataSet(modSchemaSet, this);
+
+    this.rollMods = modDataSet.map((modData) => new BladesRollMod(modData, this));
 
     // ESLINT DISABLE: Dev Code.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -2543,10 +2566,10 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     let initReportCount = 0;
     const watchMod = (label: string) => {
-      if (BladesRoll._Debug.modWatch === false) {return;}
+      if (BladesRoll.Debug.modWatch === false) {return;}
       const reportLabel = `(${initReportCount}) == ${label}`;
       const rollMod = this.rollMods
-        .find((mod) => BladesRoll._Debug.modWatch && BladesRoll._Debug.modWatch.exec(mod.name));
+        .find((mod) => BladesRoll.Debug.modWatch && BladesRoll.Debug.modWatch.exec(mod.name));
       if (rollMod) {
         initReport[`${reportLabel} : ${rollMod.status}`] = {
           inst: rollMod,
@@ -2863,12 +2886,12 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   set rollMods(val: BladesRollMod[]) {this._rollMods = val;}
 
-  canResistWithArmor(csqData: BladesRoll.ConsequenceData) {
+  canResistWithArmor(csq: BladesConsequence) {
     if (!this.rollPrimary.hasArmor) {return false;}
-    return csqData.attribute === AttributeTrait.prowess;
+    return csq.attribute === AttributeTrait.prowess;
   }
 
-  canResistWithSpecialArmor(_csqData: BladesRoll.ConsequenceData) {
+  canResistWithSpecialArmor(csq: BladesConsequence) {
     if (!BladesPC.IsType(this.rollPrimary.rollPrimaryDoc)) {
       return false;
     }
@@ -2879,36 +2902,30 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // #region CONSEQUENCES: Getting, Accepting, Resisting
 
-  private get _csqData(): BladesRoll.ConsequenceData[] {
-    const csqData = this.data.consequenceData?.
+  get consequences(): BladesConsequence[] {
+    const csqDataSet = this.data.consequenceData?.
       [this.finalPosition]?.
       [this.rollResult as RollResult.partial | RollResult.fail];
-    if (csqData) {
-      return Object.values(csqData);
+    if (csqDataSet) {
+      return Object.values(csqDataSet).map((csqData) => new BladesConsequence(csqData));
     }
     return [];
   }
 
-  getConsequenceByID(csqID: string): BladesRoll.ConsequenceData | false {
-    return this._csqData.find((cData) => cData.id === csqID) ?? false;
+  getConsequenceByID(csqID: string): BladesConsequence | false {
+    return this.consequences.find((csq) => csq.id === csqID) ?? false;
   }
 
-  get csqData(): Record<string, BladesRoll.ConsequenceData> {
-    return Object.fromEntries(
-      this._csqData.map((cData) => [cData.id, cData])
-    );
-  }
-
-  get acceptedConsequences(): BladesRoll.AcceptedConsequenceData[] {
+  get acceptedConsequences(): BladesConsequence[] {
     if ([RollPhase.AwaitingConsequences, RollPhase.Complete].includes(this.rollPhase)) {
-      return this._csqData.filter((cData) => cData.isAccepted === true) as BladesRoll.AcceptedConsequenceData[];
+      return this.consequences.filter((csq) => csq.isAccepted === true);
     }
     return [];
   }
 
-  get unacceptedConsequences(): BladesRoll.ConsequenceData[] {
+  get unacceptedConsequences(): BladesConsequence[] {
     if (this.rollPhase === RollPhase.AwaitingConsequences) {
-      return this._csqData.filter((cData) => cData.isAccepted !== true);
+      return this.consequences.filter((csq) => csq.isAccepted !== true);
     }
     return [];
   }
@@ -3012,7 +3029,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     return modsData;
   }
 
-  getDowntimeActionRollModsData(): BladesRollMod.Schema[] {
+  getDowntimeActionRollModsSchemaSet(): BladesRollMod.Schema[] {
     const modsData: BladesRollMod.Schema[] = [];
     modsData.push({
       key: "HelpFromFriend-positive-roll",
@@ -3085,15 +3102,15 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   /**
    * Gets the roll modifications data.
-   * @returns {BladesRollMod.Schema[]} The roll modifications data.
+   * @returns {BladesRollMod.Data[]} The roll modifications data.
    */
-  private getRollModsData(): BladesRollMod.Schema[] {
+  private getRollModsData(): BladesRollMod.Data[] {
     const defaultMods = [
-      ...BladesRoll.DefaultRollModSchemas,
-      ...this.rollPrimary.rollModsData
+      ...BladesRoll.DefaultRollModSchemaSet,
+      ...this.rollPrimary.rollModsSchemaSet
     ];
     if (this.rollDowntimeAction) {
-      defaultMods.push(...this.getDowntimeActionRollModsData());
+      defaultMods.push(...this.getDowntimeActionRollModsSchemaSet());
     }
     if (this.rollType === RollType.Action) {
       if (this.rollPrimary.isWorsePosition) {
@@ -3134,13 +3151,10 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         tooltip: "<h1>Reduced Effect</h1><p>A <strong class='red-bright'>Consequence</strong> has worsened your <strong>Effect</strong>.</p>"
       });
     }
-    if (this.rollOpposition?.rollOppModsData) {
-      return [
-        ...defaultMods,
-        ...this.rollOpposition.rollOppModsData
-      ];
-    }
-    return defaultMods;
+    return BladesRollMod.ParseSchemaSetToDataSet([
+      ...defaultMods,
+      ...this.rollOpposition?.rollOppModsData ?? []
+    ], this);
   }
 
   /**
@@ -3330,7 +3344,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     };
   }
 
-  private calculateGMBoostsData(data: BladesRoll.FlagData) {
+  private calculateGMBoostsData(data: BladesRoll.Data) {
     return {
       GMBoosts: {
         Dice: data.GMBoosts.Dice ?? 0,

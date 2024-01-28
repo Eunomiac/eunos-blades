@@ -232,6 +232,10 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Data> {
   constructor(
     data: Partial<BladesConsequence.Data>,
     parentCsq?: BladesConsequence
+  )
+  constructor(
+    data: BladesTargetLink.Data & Partial<BladesConsequence.Data> | Partial<BladesConsequence.Data>,
+    parentCsq?: BladesConsequence
   ) {
     const {id, targetID, targetKey, targetFlagKey} = {...parentCsq ?? {}, ...data} as BladesTargetLink.Data;
     super({id, targetID, targetKey, targetFlagKey});

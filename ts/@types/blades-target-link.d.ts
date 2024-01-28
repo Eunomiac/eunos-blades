@@ -17,19 +17,47 @@ declare global {
     export type StaticThisContext<Schema> = typeof BladesTargetLink
       & (new (data: Data & Schema) => BladesTargetLink & Subclass<Schema>);
 
-    export type Config = {
+    export type LinkData = {
+      targetID: UUIDString,
+      targetKey: TargetKey
+    } | {
+      targetID: UUIDString,
+      targetFlagKey: TargetFlagKey
+    };
+
+    export type Data = {id: IDString} & LinkData;
+
+    export type Config = ({
+      target: IDString|UUIDString|BladesDoc|BladesChat|User
+    } | {
+      targetID: IDString|UUIDString
+    }) & ({
+      targetKey: TargetKey
+    } | {
+      targetFlagKey: TargetFlagKey
+    });
+
+    export type PartialConfig = {
       target?: IDString|UUIDString|BladesDoc|BladesChat|User,
       targetID?: IDString|UUIDString,
       targetKey?: TargetKey,
       targetFlagKey?: TargetFlagKey
-    }
+    };
 
-    export type Data = {
+    export type PartialData = {
       id: IDString,
       targetID: UUIDString,
       targetKey?: TargetKey,
       targetFlagKey?: TargetFlagKey
     }
+
+
+    // export type Config = {
+    //   target?: IDString|UUIDString|BladesDoc|BladesChat|User,
+    //   targetID?: IDString|UUIDString,
+    //   targetKey?: TargetKey,
+    //   targetFlagKey?: TargetFlagKey
+    // }
 
     export type Instance = Data & {
       target: BladesDoc|BladesChat|User

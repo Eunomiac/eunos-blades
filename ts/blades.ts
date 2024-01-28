@@ -93,7 +93,7 @@ class GlobalGetter {
         rollPrimaryName: pc.name,
         rollPrimaryType: pc.type,
         rollPrimaryImg: pc.img,
-        rollModsData: pc.rollModsData,
+        rollModsData: pc.rollModsSchemaSet,
         rollFactors: pc.rollFactors,
         applyHarm: pc.applyHarm,
         applyWorsePosition: pc.applyWorsePosition
@@ -501,7 +501,7 @@ class GlobalGetter {
         rollPrimaryName: pc.name,
         rollPrimaryType: pc.type,
         rollPrimaryImg: pc.img,
-        rollModsData: pc.rollModsData,
+        rollModsData: pc.rollModsSchemaSet,
         rollFactors: pc.rollFactors,
         applyHarm: pc.applyHarm,
         applyWorsePosition: pc.applyWorsePosition

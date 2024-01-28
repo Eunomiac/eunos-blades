@@ -32,8 +32,11 @@ export type ClockKeyElems$ = {
 };
 
 function isElemPosData(obj: unknown): obj is ElemPosData {
-  if (!U.isList(obj)) { return false; }
-  return typeof obj.x === "number" && typeof obj.y === "number" && typeof obj.width === "number" && typeof obj.height === "number";
+  return U.isList(obj)
+    && typeof obj.x === "number"
+    && typeof obj.y === "number"
+    && typeof obj.width === "number"
+    && typeof obj.height === "number";
 }
 
 class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements BladesClockKey.Subclass {
@@ -368,16 +371,26 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     if (indexOverride !== undefined && indexOverride < 0) {throw new Error("Cannot add a clock with a negative index.");}
 
     // Remove target so it doesn't conflict with key's targetID
-    delete config.target;
+    // delete config.target;
+
+    const {target, targetID, targetKey, targetFlagKey, ...partialSchema} = config;
+
+    const linkData: BladesTargetLink.LinkData = this.targetKey
+      ? {
+        targetID: this.targetID,
+        targetKey: `${this.targetKey}.${this.id}.clocksData` as TargetKey
+      }
+      : {
+        targetID: this.targetID,
+        targetFlagKey: `${this.targetFlagKey}.${this.id}.clocksData` as TargetFlagKey
+      };
 
     // Derive clock's targetID and targetKey/targetFlagKey from key's values
-    config.targetID = this.targetID;
+    data.targetID = this.targetID;
     if (this.targetKey) {
-      config.targetKey = `${this.targetKey}.${this.id}.clocksData` as TargetKey;
-      delete config.targetFlagKey;
+      data.targetKey = `${this.targetKey}.${this.id}.clocksData` as TargetKey;
     } else if (this.targetFlagKey) {
-      config.targetFlagKey = `${this.targetFlagKey}.${this.id}.clocksData` as TargetFlagKey;
-      delete config.targetKey;
+      data.targetFlagKey = `${this.targetFlagKey}.${this.id}.clocksData` as TargetFlagKey;
     }
 
     // Assign 'parentKeyID' and 'index'
@@ -386,7 +399,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
 
     // Parse config to full data object
     return BladesClock.ApplySchemaDefaults(
-      BladesClock.ParseConfig(config as BladesClock.Config)
+      BladesClock.ParseConfigToData(config as BladesClock.Config)
     );
   }
 

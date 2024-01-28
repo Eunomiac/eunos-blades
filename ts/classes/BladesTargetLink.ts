@@ -6,19 +6,28 @@ import {BladesItem} from "../documents/BladesItemProxy";
 import BladesChat from "./BladesChat";
 import type {AnyDocumentData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs.d.ts";
 
+type PartitionSchemaDataReturnType<T> = T extends BladesTargetLink.PartialData
+  ? {linkData: BladesTargetLink.Data}
+  : {linkConfig: BladesTargetLink.Config};
+
 class BladesTargetLink<Schema> {
 
   // #region STATIC METHODS ~
+
+  static readonly ValidTargetClasses = [
+    BladesActor,
+    BladesItem,
+    BladesChat,
+    User
+  ] as const;
 
   static IsValidConfig(ref: unknown): ref is BladesTargetLink.Config {
     return U.isSimpleObj(ref)
     && (U.isDocID(ref.target)
         || U.isDocUUID(ref.target)
+        || U.isDocID(ref.targetID)
         || U.isDocUUID(ref.targetID)
-        || ref.target instanceof BladesActor
-        || ref.target instanceof BladesItem
-        || ref.target instanceof BladesChat
-        || ref.target instanceof User
+        || this.ValidTargetClasses.some((cls) => ref.target instanceof cls)
     )
     && (U.isTargetKey(ref.targetKey) || U.isTargetFlagKey(ref.targetFlagKey))
     && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey));
@@ -32,99 +41,138 @@ class BladesTargetLink<Schema> {
       && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey));
   }
 
+  static BuildLinkConfig(partialConfig: BladesTargetLink.PartialConfig): BladesTargetLink.Config {
+    const {target, targetID, targetKey, targetFlagKey} = partialConfig;
+    if (target) {
+      if (targetKey) {
+        return {target, targetKey};
+      } else if (targetFlagKey) {
+        return {target, targetFlagKey};
+      }
+      throw new Error("[BladesTargetLink.BuildConfig] Must provide a targetKey or targetFlagKey.");
+    } else if (targetID) {
+      if (targetKey) {
+        return {targetID, targetKey};
+      } else if (targetFlagKey) {
+        return {targetID, targetFlagKey};
+      }
+      throw new Error("[BladesTargetLink.BuildConfig] Must provide a targetKey or targetFlagKey.");
+    }
+    throw new Error("[BladesTargetLink.BuildConfig] Must provide a target or targetID.");
+  }
+
+  static BuildLinkData(partialData: BladesTargetLink.PartialData): BladesTargetLink.Data {
+    const {id, targetID, targetKey, targetFlagKey} = partialData;
+    if (targetKey) {
+      return {id, targetID, targetKey};
+    }
+    return {id, targetID, targetFlagKey} as BladesTargetLink.Data;
+  }
+
   /**
-   * Parses the configuration object to construct a data object for BladesTargetLink.
-   * It validates the config object, isolates BladesTargetLink.Config entries from unknown PartialSchema entries,
-   * determines the targetUUID from target/targetID, confirms the existence of 'targetKey' or 'targetFlagKey',
-   * applies schema defaults, and constructs the final data object to be returned.
+   * This private static method is used to transform a configuration object into a data object for BladesTargetLink.
+   * It checks if the provided configuration object is already valid data, and if so, returns it directly.
+   * Otherwise, it partitions the configuration object into link-specific configuration and additional schema data,
+   * constructs a full link configuration, and then creates a data object with a new random ID and the target UUID.
+   * The method ensures that either 'targetKey' or 'targetFlagKey' is present and throws an error if the configuration is invalid.
    *
-   * @template Schema - The data schema required by the subclass.
-   * @param {BladesTargetLink.Config & Partial<Schema>} config - The configuration object containing potential BladesTargetLink properties and any subclass-specific schema data.
-   * @returns {BladesTargetLink.Data & Schema} - The constructed data object with defaults applied and necessary properties for BladesTargetLink.
-   * @throws {Error} - Throws an error if the config object is not a simple object, if it lacks a target reference, if it lacks a valid 'targetKey' or 'targetFlagKey', or if both 'targetKey' and 'targetFlagKey' are provided.
+   * @template Schema - The additional schema data required by the subclass.
+   * @param {BladesTargetLink.PartialConfig | BladesTargetLink.Data & Partial<Schema>} config - The configuration object that may contain BladesTargetLink properties and any subclass-specific schema data.
+   * @returns {BladesTargetLink.Data & Partial<Schema>} - The fully constructed data object with necessary properties for BladesTargetLink.
+   * @throws {Error} - Throws an error if the configuration object is invalid, lacks a target reference, or if both 'targetKey' and 'targetFlagKey' are provided.
    */
-  static #ParseConfig<Schema>(
+  static #ParseConfigToData<Schema>(
     this: BladesTargetLink.StaticThisContext<Schema>,
-    config: (BladesTargetLink.Config | BladesTargetLink.Data) & Partial<Schema>
+    config: (BladesTargetLink.PartialConfig | BladesTargetLink.Data) & Partial<Schema>
   ): BladesTargetLink.Data & Partial<Schema> {
 
-    if (this.IsValidData(config)) { return this.ParseConfig(config); }
+    if (this.IsValidData(config)) { return this.ParseConfigToData(config); }
 
-    // === VALIDATE CONFIG ===
-    // - Confirm 'config' is proper primitive type
-    if (!U.isSimpleObj(config)) {
-      throw new Error(`[BladesTargetLink.ResolveConfigToData()] Config is Not a Simple Object: '${JSON.stringify(config)}'`);
-    }
+    const {linkConfig, partialSchema} = this.PartitionSchemaData(config);
 
-    // - Isolate BladesTargetLink.Config entries from unknown PartialSchema entries
-    const {target, targetID, targetKey, targetFlagKey, ...schemaData} = config;
-    const partialSchema = schemaData as Partial<Schema>;
+    const fullConfig = this.BuildLinkConfig(linkConfig);
 
-    // - Attempt to determine targetUUID from target/targetID
-    const targetRef = target ?? targetID;
-    // - ... Confirm target exists
-    if (!targetRef) {
-      throw new Error(`[BladesTargetLink.ResolveConfigToData()] Data Lacks ANY 'target' / 'targetID': '${JSON.stringify(config)}'`);
+    // === CONVERT CONFIG TO DATA OBJECT ===
+    // - Send through public ParseConfigToData method, so subclasses can include their own logic.
+    if ("targetKey" in fullConfig) {
+      return this.ParseConfigToData<Schema>({
+        ...partialSchema,
+        id: randomID() as IDString,
+        targetID: U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
+        targetKey: fullConfig.targetKey
+      });
     }
-    // - ... Convert to UUID
-    let targetUUID: UUIDString | undefined;
-    if (U.isDocUUID(targetRef)) {
-      targetUUID = targetRef;
-    } else if (U.isDocID(targetRef)) {
-      // If it's a an ID (not a UUID), attempt to get UUID synchronously by checking most common collections:
-      targetUUID = (game.actors.get(targetRef) ?? game.items.get(targetRef))?.uuid;
-    } else if (typeof targetRef.uuid === "string") {
-      // If it's a Document, extract UUID directly.
-      targetUUID = targetRef.uuid as UUIDString;
-    }
-    // - ... Confirm targetUUID
-    if (!U.isDocUUID(targetUUID)) {
-      throw new Error(`[BladesTargetLink.ResolveConfigToData()] Unable to find target from '${targetRef}`);
-    }
-
-    // - Confirm 'targetKey' or 'targetFlagKey' exists
-    if (!(U.isTargetKey(targetKey) || U.isTargetFlagKey(targetFlagKey))) {
-      throw new Error(`[BladesTargetLink.ResolveConfigToData()] Data Lacks valid 'targetKey' or 'targetFlagKey': '${JSON.stringify(config)}'`);
-    }
-    // - Confirm only one of 'targetKey' or 'targetFlagKey' provided, not both
-    if (U.isTargetKey(targetKey) && U.isTargetFlagKey(targetFlagKey)) {
-      throw new Error(`[BladesTargetLink.ResolveConfigToData()] Data has BOTH 'targetKey' and 'targetFlagKey': '${JSON.stringify(config)}'`);
-    }
-
-    // === RETURN CONSTRUCTED DATA OBJECT ===
-    // Pass it through public ParseConfigData static method,
-    // So subclasses can override it to incorporate their own logic.
-
-    return this.ParseConfig<Schema>({
+    return this.ParseConfigToData<Schema>({
       ...partialSchema,
       id: randomID() as IDString,
-      targetID: targetUUID,
-      targetKey,
-      targetFlagKey
+      targetID: U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
+      targetFlagKey: fullConfig.targetFlagKey
     });
   }
 
-  /** Subclasses can override this method to include their own parse logic */
-  static ParseConfig<Schema>(
-    data: (BladesTargetLink.Config | BladesTargetLink.Data) & Partial<Schema>
+  /**
+   * This static method parses the provided data into a format suitable for BladesTargetLink.
+   * Subclasses can override this method to include their own parse logic.
+   * If the provided data is already valid, it is returned as is.
+   * Otherwise, the data is passed to the private #ParseConfig method for further processing.
+   * Note: The 'id' property is defined at the return step, within #ParseConfig: Subclass
+   * functionality that depends on the id property should be placed after the super call to this method.
+   *
+   * @template Schema - The data schema required by the subclass.
+   * @param {(BladesTargetLink.PartialConfig | BladesTargetLink.Data) & Partial<Schema>} data - The data to be parsed.
+   * @returns {BladesTargetLink.Data & Partial<Schema>} - The parsed data, suitable for BladesTargetLink.
+   */
+  static ParseConfigToData<Schema>(
+    data: (BladesTargetLink.PartialConfig | BladesTargetLink.Data) & Partial<Schema>
   ): BladesTargetLink.Data & Partial<Schema> {
-    /* Subclasses can override with custom logic here;
-        if they don't, the default parsed config is returned */
     if (BladesTargetLink.IsValidData(data)) {
       return data;
     }
-    return this.#ParseConfig(data);
+    return this.#ParseConfigToData(data);
   }
 
   static PartitionSchemaData<Schema>(
-    data: BladesTargetLink.Data & Partial<Schema>
-  ): BladesTargetLink.Data & {partialSchema: Partial<Schema>} {
-    const {id, targetID, targetKey, targetFlagKey, ...schemaData} = data;
-    if (!id || !targetID || !(targetKey || targetFlagKey)) {
-      eLog.error("BladesTargetLink", "Bad Constructor Data", {data});
-      throw new Error("[new BladesTargetLink()] Bad Constructor Data (see log)");
+    dataOrConfig: BladesTargetLink.PartialData & Partial<Schema>
+  ): {linkData: BladesTargetLink.Data, partialSchema: Partial<Schema>};
+  static PartitionSchemaData<Schema>(
+    dataOrConfig: BladesTargetLink.PartialConfig & Partial<Schema>
+  ): {linkConfig: BladesTargetLink.Config, partialSchema: Partial<Schema>};
+  static PartitionSchemaData<Schema, T extends BladesTargetLink.PartialConfig | BladesTargetLink.PartialData>(
+    dataOrConfig: T & Partial<Schema>
+  ): {linkData: BladesTargetLink.Data, partialSchema: Partial<Schema>}
+    | {linkConfig: BladesTargetLink.Config, partialSchema: Partial<Schema>} {
+    const {
+      id, target, targetID, targetKey, targetFlagKey,
+      ...schemaData
+    } = dataOrConfig as T & Partial<Schema> & {id?: IDString, target?: BladesLinkDoc};
+    const partialSchema = schemaData as Partial<Schema>;
+
+    if (U.isDocID(id)) {
+      // A PartialData object was submitted.
+      if (!this.IsValidData({id, targetID, targetKey, targetFlagKey})) {
+        eLog.error("BladesTargetLink", "Bad Constructor DATA", {dataOrConfig});
+        throw new Error("[new BladesTargetLink()] Bad Constructor DATA (see log)");
+      }
+
+      let linkData: BladesTargetLink.Data;
+      if (targetKey) {
+        linkData = {id, targetID, targetKey} as BladesTargetLink.Data;
+      } else {
+        linkData = {id, targetID, targetFlagKey} as BladesTargetLink.Data;
+      }
+
+      return {
+        linkData,
+        partialSchema
+      };
     }
-    return {id, targetID, targetKey, targetFlagKey, partialSchema: schemaData as Partial<Schema>};
+    // A PartialConfig object was submitted.
+    const linkConfig = this.BuildLinkConfig({target, targetID, targetKey, targetFlagKey});
+
+    return {
+      linkConfig,
+      partialSchema
+    };
   }
 
   static #ApplySchemaDefaults<Schema>(
@@ -199,12 +247,18 @@ class BladesTargetLink<Schema> {
       : undefined;
   }
   get linkData(): BladesTargetLink.Data {
+    if (this.targetKey) {
+      return {
+        id: this.id,
+        targetID: this.targetID,
+        targetKey: this.targetKey
+      };
+    }
     return {
       id: this.id,
       targetID: this.targetID,
-      targetKey: this.targetKey,
       targetFlagKey: this.targetFlagKey
-    };
+    } as BladesTargetLink.Data;
   }
   get initialSchema(): Schema { return this._initialSchema; }
 
@@ -219,10 +273,7 @@ class BladesTargetLink<Schema> {
     }
     return {
       ...this.initialSchema,
-      id: this.id,
-      targetID: this.targetID,
-      targetKey: this.targetKey,
-      targetFlagKey: this.targetFlagKey
+      ...this.linkData
     };
   }
 
@@ -249,43 +300,35 @@ class BladesTargetLink<Schema> {
   // #endregion
 
   // #region CONSTRUCTOR ~
-  constructor(config: BladesTargetLink.Config & Partial<Schema>)
+  constructor(config: BladesTargetLink.PartialConfig & Partial<Schema>)
   constructor(data: BladesTargetLink.Data)
-  constructor(dataOrConfig: BladesTargetLink.Config & Partial<Schema> | BladesTargetLink.Data) {
+  constructor(dataOrConfig: BladesTargetLink.PartialConfig & Partial<Schema> | BladesTargetLink.Data) {
 
     let linkData: BladesTargetLink.Data;
     let schema: Schema;
 
     // First, we construct the link data from the config or data object.
     if (BladesTargetLink.IsValidData(dataOrConfig)) {
-
       // If a simple link data object was provided, acquire the schema from the source document
-      linkData = {
-        id: dataOrConfig.id,
-        targetID: dataOrConfig.targetID,
-        targetKey: dataOrConfig.targetKey,
-        targetFlagKey: dataOrConfig.targetFlagKey
-      };
-      const target = fromUuidSync(dataOrConfig.targetID);
+      ({linkData} = BladesTargetLink.PartitionSchemaData(dataOrConfig));
+      const target = fromUuidSync(linkData.targetID);
       if (!target) {
-        throw new Error(`[new BladesTargetLink()] Unable to resolve target from uuid '${dataOrConfig.targetID}'`);
+        throw new Error(`[new BladesTargetLink()] Unable to resolve target from uuid '${linkData.targetID}'`);
       }
-
-      if (dataOrConfig.targetKey) {
-        schema = getProperty(target, `${dataOrConfig.targetKey}.${dataOrConfig.id}`);
+      if ("targetKey" in linkData) {
+        schema = getProperty(target, `${linkData.targetKey}.${linkData.id}`);
       } else {
-        schema = target.getFlag(C.SYSTEM_ID, `${dataOrConfig.targetFlagKey}.${dataOrConfig.id}`) as Schema;
+        schema = target.getFlag(C.SYSTEM_ID, `${linkData.targetFlagKey}.${linkData.id}`) as Schema;
       }
     } else {
       // Otherwise, we have to parse the config into a data object, and extract any schema data
+
       // First we convert the config object to a BladesTargetLink.Data & Partial<Schema> object.
-      const partialData: BladesTargetLink.Data & Partial<Schema> = BladesTargetLink.#ParseConfig(dataOrConfig);
+      const parsedData = BladesTargetLink.#ParseConfigToData(dataOrConfig) as BladesTargetLink.PartialData;
 
-      // Next, we partition the data into the target link data and the schema data.
-      const {id, targetID, targetKey, targetFlagKey, partialSchema} = BladesTargetLink.PartitionSchemaData(partialData);
-
-      // Now we construct the data object
-      linkData = {id, targetID, targetKey, targetFlagKey};
+      // Next we separate the linkData and the schemaData from the parsedData object.
+      let partialSchema: Partial<Schema>;
+      ({linkData, partialSchema} = BladesTargetLink.PartitionSchemaData(parsedData));
 
       // And apply any schema defaults to the provided schema data.
       schema = BladesTargetLink.#ApplySchemaDefaults(partialSchema, linkData);
@@ -293,8 +336,11 @@ class BladesTargetLink<Schema> {
 
     this._id = linkData.id;
     this._targetID = linkData.targetID;
-    this._targetKey = linkData.targetKey;
-    this._targetFlagKey = linkData.targetFlagKey;
+    if ("targetKey" in linkData) {
+      this._targetKey = linkData.targetKey;
+    } else {
+      this._targetFlagKey = linkData.targetFlagKey;
+    }
 
     const target = fromUuidSync(this.targetID);
     if (!target) {
@@ -361,22 +407,19 @@ class BladesTargetLink<Schema> {
   async initTargetLink() {
     // Construct data object
     const data: BladesTargetLink.Data & Schema = {
-      id: this.id,
-      targetID: this.targetID,
-      targetKey: this.targetKey,
-      targetFlagKey: this.targetFlagKey,
+      ...this.linkData,
       ...this.initialSchema
     };
 
     // Initialize server-side data on target.
-    if (data.targetKey) {
-      await this.target.update({[`${data.targetKey}.${data.id}`]: data});
-    } else if (data.targetFlagKey) {
-      await (this.target as BladesItem).setFlag(C.SYSTEM_ID, `${data.targetFlagKey}.${data.id}`, data);
+    if (this.targetKey) {
+      await this.target.update({[`${this.targetKey}.${this.id}`]: data});
+    } else {
+      await (this.target as BladesItem).setFlag(C.SYSTEM_ID, `${this.targetFlagKey}.${this.id}`, data);
     }
   }
 
-  async updateTarget(prop: string, val: unknown, isSilent = false) {
+  async updateTarget(prop: string, val: unknown) {
     if (getProperty(this.data, prop) === val) { return; }
     if (this.targetFlagKeyPrefix) {
       await this.updateTargetFlag(prop, val);
@@ -385,15 +428,12 @@ class BladesTargetLink<Schema> {
     }
   }
 
-  async updateTargetData(val: Partial<Schema> | null, isSilent = false) {
+  async updateTargetData(val: Partial<Schema> | null) {
     if (val) {
       // Add BladesTargetLink.Data to provided schema
       val = {
         ...val,
-        id: this.id,
-        targetID: this.targetID,
-        targetKey: this.targetKey,
-        targetFlagKey: this.targetFlagKey
+        ...this.linkData
       };
     }
     if (this.targetFlagKeyPrefix) {
