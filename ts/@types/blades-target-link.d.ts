@@ -25,7 +25,11 @@ declare global {
       targetFlagKey: TargetFlagKey
     };
 
-    export type Data = {id: IDString} & LinkData;
+    export type Data = LinkData & {
+      id: IDString,
+      isScopingById: boolean,
+      template?: string
+    };
 
     export type Config = ({
       target: IDString|UUIDString|BladesDoc|BladesChat|User
@@ -35,29 +39,29 @@ declare global {
       targetKey: TargetKey
     } | {
       targetFlagKey: TargetFlagKey
-    });
+    }) & {
+      id?: IDString,
+      isScopingById?: boolean,
+      template?: string
+    };
 
     export type PartialConfig = {
       target?: IDString|UUIDString|BladesDoc|BladesChat|User,
       targetID?: IDString|UUIDString,
       targetKey?: TargetKey,
-      targetFlagKey?: TargetFlagKey
+      targetFlagKey?: TargetFlagKey,
+      isScopingById?: boolean,
+      template?: string
     };
 
     export type PartialData = {
       id: IDString,
       targetID: UUIDString,
       targetKey?: TargetKey,
-      targetFlagKey?: TargetFlagKey
+      targetFlagKey?: TargetFlagKey,
+      isScopingById: boolean,
+      template?: string
     }
-
-
-    // export type Config = {
-    //   target?: IDString|UUIDString|BladesDoc|BladesChat|User,
-    //   targetID?: IDString|UUIDString,
-    //   targetKey?: TargetKey,
-    //   targetFlagKey?: TargetFlagKey
-    // }
 
     export type Instance = Data & {
       target: BladesDoc|BladesChat|User
@@ -67,11 +71,11 @@ declare global {
 
       data: Data & Schema,
 
-      async delete()
+      async delete(collection: Collection | false, waitFor?: Promise<unknown>|gsapAnim)
 
-      async updateTarget(prop: string, val: unknown)
+      async updateTarget(prop: string, val: unknown, waitFor?: Promise<unknown>|gsapAnim)
 
-      async updateTargetData(val: Schema|null)
+      async updateTargetData(val: Partial<Schema>|null, waitFor?: Promise<unknown>|gsapAnim)
 
       elem?: HTMLElement
     }

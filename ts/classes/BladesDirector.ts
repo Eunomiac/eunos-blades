@@ -356,7 +356,7 @@ class BladesDirector {
       // Right-Click a Clock Key = Pull it
       container$.on("contextmenu", async () => {
         this.pullKey_SocketCall(key.id);
-        key.updateTarget("isVisible", false, ClockKeyUpdateAction.RenderNone);
+        key.updateTarget("isVisible", false);
       });
 
     } else {

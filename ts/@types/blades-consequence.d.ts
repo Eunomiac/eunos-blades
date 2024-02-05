@@ -2,9 +2,27 @@ import {AttributeTrait, ConsequenceType, Position, Effect, RollResult} from "../
 import {BladesPC} from "../documents/BladesActorProxy";
 import BladesTargetLink from "../classes/BladesTargetLink";
 /**
- * @file This file contains the type definitions for the BladesConsequence class and related entities.
- *
- * @description This module contains the type definitions for the BladesConsequence class and related entities.
+export enum ConsequenceType {
+  ReducedEffect
+  ComplicationMinor
+  ComplicationMajor
+  ComplicationSerious
+  LostOpportunity
+  WorsePosition
+  InsightHarm1
+  InsightHarm2
+  InsightHarm3
+  InsightHarm4
+  ProwessHarm1
+  ProwessHarm2
+  ProwessHarm3
+  ProwessHarm4
+  ResolveHarm1
+  ResolveHarm2
+  ResolveHarm3
+  ResolveHarm4
+  None = "None"
+}
  */
 
 declare global {
@@ -18,25 +36,35 @@ declare global {
     export type Schema = {
       name: string,
       type: ConsequenceType,
-      rollData?: BladesRoll.FlagData,
+      rollData?: BladesRoll.Data,
 
-      isAccepted: boolean,
+      isAccepted?: boolean,
         acceptanceMode?: DisplayType,
+      wasResisted?: boolean,
+        resistanceMode?: ResistanceType,
 
-      pcId: IDString, // ID of character who can resist this consequence
+      primaryID: UUIDString, // ID of PrimaryDoc who can resist this consequence
 
+      resistData?: Data,
+      parentCsqID?: IDString,
+
+
+      canResistWithRoll?: boolean,
+      resistWithRollNegates?: boolean,
       attribute?: AttributeTrait,
       attributeVal?: number,
 
-      resistTo?: Data,
-      armorTo?: Data,
-      specialTo?: Data,
-      footerMsg?: string
+      canResistWithArmor?: boolean,
+      resistWithArmorNegates?: boolean,
+
+      canResistWithSpecial?: boolean,
+      resistWithSpecialNegates?: boolean,
+      specialFooterMsg?: string
     }
 
     export type Config = BladesTargetLink.Config & Partial<Schema>;
 
-    export interface Data extends BladesTargetLink.Data, Schema {};
+    export type Data = BladesTargetLink.Data & Schema;
 
     export interface Context extends Data {
       typeDisplay: string,

@@ -111,7 +111,7 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     return [RollModStatus.ForcedOn, RollModStatus.ForcedOff, RollModStatus.Hidden];
   }
 
-  private static getSchemaFromStrings(mStrings: string[]): BladesRollMod.Schema {
+  protected static getSchemaFromStrings(mStrings: string[]): BladesRollMod.Schema {
 
     const nameString = U.pullElement(mStrings, (v) => typeof v === "string" && /^na/i.test(v));
     const nameVal = (typeof nameString === "string" && nameString.replace(/^.*:/, ""));
@@ -316,7 +316,7 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
    * @param {RollTrait[]} traits The traits to check.
    * @returns {boolean} - Returns true if any types or traits apply, false otherwise.
    */
-  private checkTypesOrTraits(types: BladesRoll.AnyRollType[], traits: BladesRoll.RollTrait[]): boolean {
+  protected checkTypesOrTraits(types: BladesRoll.AnyRollType[], traits: BladesRoll.RollTrait[]): boolean {
 
     const rollTypes = [this.rollInstance.rollType, this.rollInstance.rollSubType, this.rollInstance.rollDowntimeAction]
       .filter((rType): rType is BladesRoll.AnyRollType => Boolean(rType));
@@ -387,7 +387,7 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     for (const key of holdKeys) {
       const [thisKey, thisParam] = key.split(/-/) ?? [];
 
-      if (U.lCase(thisParam) in Position && this.rollInstance.finalPosition === U.lCase(thisParam)) {
+      if (U.lCase(thisParam) in Position && this.rollInstance.rollPositionFinal === U.lCase(thisParam)) {
         if (thisKey === "AutoRevealOn") {
           this.heldStatus = RollModStatus.ToggledOff;
           return false;
@@ -793,23 +793,27 @@ class BladesRollPrimary implements BladesRoll.PrimaryDocData {
     return true;
   }
 
-  async spendArmor() {
+  async spendArmor(count: number) {
     if (this.hasArmor) {
       if (BladesPC.IsType(this.rollPrimaryDoc)) {
-        if (this.rollPrimaryDoc.system.armor.checked.light) {
-          await this.rollPrimaryDoc.update({"system.armor.checked.heavy": true});
-        } else {
-          await this.rollPrimaryDoc.update({"system.armor.checked.light": true});
+        const updateData = {
+          "system.armor.checked.heavy": this.rollPrimaryDoc.system.armor.checked.heavy,
+          "system.armor.checked.light": this.rollPrimaryDoc.system.armor.checked.light
+        };
+        while (count > 0) {
+          if (updateData["system.armor.checked.light"]) {
+            if (updateData["system.armor.checked.heavy"]) {
+              throw new Error(`[BladesRollPrimary.spendArmor()] Cannot spend more armor (${count}) than PC has.`);
+            }
+            updateData["system.armor.checked.heavy"] = true;
+          } else {
+            updateData["system.armor.checked.light"] = true;
+          }
+          count--;
         }
       } else if (BladesItem.IsType(this.rollPrimaryDoc, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
-        await this.rollPrimaryDoc.update({"system.armor.value": this.rollPrimaryDoc.system.armor.value + 1});
+        await this.rollPrimaryDoc.update({"system.armor.value": this.rollPrimaryDoc.system.armor.value + count});
       }
-    }
-  }
-
-  async spendSpecialArmor() {
-    if (this.hasSpecialArmor) {
-      await (this.rollPrimaryDoc as BladesPC).update({"system.armor.checked.special": true});
     }
   }
 
@@ -829,7 +833,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryDocData {
 
     this.rollPrimaryID = rollPrimaryID
       ?? rollInstance?.rollPrimary.rollPrimaryID
-      ?? rollInstance?.rollPrimary.rollPrimaryDoc?.rollPrimaryID;
+      ?? rollInstance?.rollPrimaryDoc?.rollPrimaryID;
 
     rollPrimaryName ??= rollInstance?.rollPrimary.rollPrimaryName;
     rollPrimaryType ??= rollInstance?.rollPrimary.rollPrimaryType;
@@ -999,10 +1003,6 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
   }
   // #endregion
 
-  get flagParams() {
-    return [C.SYSTEM_ID, "rollCollab.rollOppData"] as const;
-  }
-
   get data(): BladesRoll.OppositionDocData {
     return {
       rollOppID: this.rollOppID,
@@ -1020,8 +1020,8 @@ class BladesRollOpposition implements BladesRoll.OppositionDocData {
 
   async updateRollFlags() {
     if (!this.rollInstance) {return;}
-    await this.rollInstance.document.setFlag(...this.flagParams, this.data);
-    socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.id);
+    await this.rollInstance.updateTarget("rollOppData", this.data);
+    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
   }
 
   refresh() {
@@ -1169,11 +1169,6 @@ class BladesRollParticipant implements BladesRoll.ParticipantDocData {
   }
   // #endregion
 
-
-  get flagParams() {
-    return [C.SYSTEM_ID, `rollCollab.rollParticipantData.${this.rollParticipantSection}.${this.rollParticipantSubSection}`] as const;
-  }
-
   get data(): BladesRoll.ParticipantDocData & BladesRoll.ParticipantSectionData {
     return {
       rollParticipantSection: this.rollParticipantSection,
@@ -1190,8 +1185,8 @@ class BladesRollParticipant implements BladesRoll.ParticipantDocData {
   }
 
   async updateRollFlags() {
-    await this.rollInstance.document.setFlag(...this.flagParams, this.data);
-    socketlib.system.executeForEveryone("renderRollCollab", this.rollInstance.id);
+    await this.rollInstance.updateTarget(`rollParticipantData.${this.rollParticipantSection}.${this.rollParticipantSubSection}`, this.data);
+    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
   }
 
   refresh() {
@@ -1417,7 +1412,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   //   });
   // }
 
-  private static get DefaultRollModSchemaSet(): BladesRollMod.Schema[] {
+  protected static get DefaultRollModSchemaSet(): BladesRollMod.Schema[] {
     return [
       {
         key: "Push-positive-roll",
@@ -1587,6 +1582,10 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     return imgPath;
   }
 
+  static get Active(): BladesRoll | undefined {
+    return U.getLast(game.eunoblades.Rolls.filter((roll) => roll.isActive));
+  }
+
   // #endregion
 
   // #region STATIC METHODS: New Roll Creation ~
@@ -1651,7 +1650,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       if (config.rollUserID === GMUserID) {
         userIDs[RollPermissions.Primary].push(...playerUserIDs);
       } else if (BladesPC.IsType(rollPrimaryDoc.parent)
-      && rollPrimaryDoc.parent.primaryUser?.id) {
+        && rollPrimaryDoc.parent.primaryUser?.id) {
         userIDs[RollPermissions.Primary].push(rollPrimaryDoc.parent.primaryUser.id as IDString);
       }
     } else if (
@@ -1827,7 +1826,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       if ("target" in config && BladesRollPrimary.IsDoc(config.target)) {
         rollPrimary = config.target;
       } else if (BladesRollPrimary.IsDoc(rollUser?.character)) {
-        rollPrimary = rollUser.character;
+        rollPrimary = rollUser.character as BladesRoll.PrimaryDoc;
       } else {
         throw new Error("[BladesRoll.NewRoll()] A valid source of PrimaryDocData must be provided to construct a roll.");
       }
@@ -1976,12 +1975,25 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     socketlib.system.executeForEveryone("constructRollCollab_SocketCall", linkData);
   }
 
-  static constructRollCollab_SocketResponse(
-    linkData: BladesTargetLink.Data
-  ) {
+  static constructRollCollab_SocketResponse(linkData: BladesTargetLink.Data) {
     const rollInst = new BladesRoll(linkData);
     eLog.checkLog3("rollCollab", "constructRollCollab_SocketResponse()", {params: {linkData}, rollInst});
     this.renderRollCollab_SocketResponse(rollInst.id);
+  }
+
+  _elem$?: JQuery<HTMLElement>;
+
+  get elem$(): JQuery<HTMLElement> {
+    if (this._elem$) { return this._elem$; }
+    this._elem$ = $(`#${this.id}`) ?? $(`<div id="${this.id}" class="blades-roll-collab window-content"></div>`).appendTo("body");
+    return this._elem$;
+  }
+
+  async renderRollCollab() {
+    this.prepareRollParticipantData();
+    const html = await renderTemplate("systems/eunoblades/templates/rolls/roll-collab.hbs", this.context);
+    this.elem$.html(html);
+    this.activateListeners();
   }
 
   renderRollCollab_SocketCall() {
@@ -1993,22 +2005,25 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     if (!rollInst) {
       throw new Error(`[BladesRoll.renderRollCollab_SocketResponse] No roll found with id ${id}.`);
     }
-    rollInst.prepareRollParticipantData();
-    rollInst.render();
+    rollInst.renderRollCollab();
   }
 
-  closeRollCollab_SocketCall() {
-    socketlib.system.executeForEveryone("closeRollCollab_SocketCall", this.id);
+  closeRollCollab_Animation(): gsap.core.Timeline {
+    return U.gsap.effects.blurRemove(this.elem$, {ignoreMargins: true});
+  }
+
+  async closeRollCollab_SocketCall(): Promise<void> {
+    if (!game.user.isGM) {return;}
+    socketlib.system.executeForOthers("closeRollCollab_SocketCall", this.id);
+    await U.waitFor(this.closeRollCollab_Animation());
   }
 
   static closeRollCollab_SocketResponse(id: IDString) {
-    const rollInst = game.eunoblades.Rolls.get(id);
-    if (!rollInst) {return;}
-    rollInst.close();
+    game.eunoblades.Rolls.get(id)?.closeRollCollab_Animation();
   }
   // #endregion
 
-  // #region Constructor ~
+  // #region *** CONSTRUCTOR *** ~
   rollPermission: RollPermissions;
 
   _rollPrimary: BladesRollPrimary;
@@ -2019,9 +2034,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   projectSelectOptions?: Array<BladesSelectOption<string, string>>;
 
-  constructor(config: BladesRoll.Config & Partial<BladesRoll.Schema>)
+  constructor(config: BladesRoll.Config)
   constructor(data: BladesTargetLink.Data & Partial<BladesRoll.Schema>)
-  constructor(dataOrConfig: (BladesRoll.Config | BladesTargetLink.Data) & Partial<BladesRoll.Schema>) {
+  constructor(dataOrConfig: BladesRoll.Config | BladesTargetLink.Data & Partial<BladesRoll.Schema>) {
     super(dataOrConfig);
     this.rollPermission = this.data.userPermissions[game.user.id as IDString];
     this._rollPrimary = new BladesRollPrimary(this, this.data.rollPrimaryData);
@@ -2052,7 +2067,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
   // #endregion
 
-
+  // #region Roll Participation & User Permissions
   async addRollParticipant(
     participantRef: BladesRollParticipant | BladesRoll.ParticipantDocData | string,
     rollSection: BladesRoll.RollParticipantSection,
@@ -2080,7 +2095,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     });
 
     await rollParticipant.updateRollFlags();
-    socketlib.system.executeForEveryone("renderRollCollab", this.id);
+    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
   async removeRollParticipant(
@@ -2096,6 +2111,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   ) {
     /* Force-render roll with new permissions */
   }
+  // #endregion
 
   // #region Basic User Flag Getters/Setters ~
   // get data(): BladesRoll.FlagData {
@@ -2110,8 +2126,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   get rollPrimaryDoc(): BladesRoll.PrimaryDoc | undefined {
-    if (BladesRollPrimary.IsDoc(this.rollPrimary.rollPrimaryDoc)) {
-      return this.rollPrimary.rollPrimaryDoc;
+    if (BladesRollPrimary.IsDoc(this.rollPrimaryDoc)) {
+      return this.rollPrimaryDoc;
     }
     if (BladesRollPrimary.IsDoc(this.rollPrimary)) {
       return this.rollPrimary;
@@ -2155,7 +2171,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    * it creates a new BladesRollParticipant instance for each participant in that section.
    * The created instances are stored in the rollParticipants object.
    */
-  private prepareRollParticipantData(): void {
+  protected prepareRollParticipantData(): void {
     const participantFlagData = this.data.rollParticipantData;
     if (!participantFlagData) {return;}
 
@@ -2234,10 +2250,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   get rollPhase(): RollPhase {
     return this.data.rollPhase ?? RollPhase.Collaboration;
-  }
-
-  async setRollPhase(rollPhase: RollPhase) {
-    await this.updateTarget("rollPhase", rollPhase);
   }
 
   get rollDowntimeAction(): DowntimeAction | undefined {return this.data.rollDowntimeAction;}
@@ -2345,14 +2357,14 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   // async setFlagVal(flagKey: string, flagVal: unknown, isRerendering = true) {
   //   await this.document.setFlag(C.SYSTEM_ID, `rollCollab.${flagKey}`.replace(/(rollCollab\.)+/g, "rollCollab."), flagVal);
   //   if (isRerendering) {
-  //     socketlib.system.executeForEveryone("renderRollCollab", this.id);
+  //     socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   //   }
   // }
 
   // async clearFlagVal(flagKey: string, isRerendering = true) {
   //   await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.${flagKey}`.replace(/(rollCollab\.)+/g, "rollCollab."));
   //   if (isRerendering) {
-  //     socketlib.system.executeForEveryone("renderRollCollab", this.id);
+  //     socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   //   }
   // }
 
@@ -2382,15 +2394,16 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // Get rollConsequence() --> For resistance rolls.
   get rollConsequence(): BladesConsequence | undefined {
-    return this.data.resistanceData?.consequence
-      ? new BladesConsequence(this.data.resistanceData?.consequence)
-      : undefined;
+    const {consequence} = this.data.resistanceData ?? {};
+    if (!consequence?.id) {return undefined;}
+    return game.eunoblades.Consequences.get(consequence.id)
+      ?? new BladesConsequence(consequence);
   }
 
   // #endregion
 
   // #region GETTERS: DERIVED DATA ~
-  get finalPosition(): Position {
+  get rollPositionFinal(): Position {
     return Object.values(Position)[
       U.clampNum(
         Object.values(Position).indexOf(this.initialPosition)
@@ -2402,7 +2415,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     ];
   }
 
-  get finalEffect(): Effect {
+  get rollEffectFinal(): Effect {
     return Object.values(Effect)[
       U.clampNum(
         Object.values(Effect).indexOf(this.initialEffect)
@@ -2413,10 +2426,36 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       )];
   }
 
-  get finalResult(): number {
+  get rollResultDelta(): number {
     return this.getModsDelta(RollModSection.result)
       + (this.data?.GMBoosts.Result ?? 0)
       + (this.tempGMBoosts.Result ?? 0);
+  }
+
+  get rollResultFinal(): RollResult | number | false {
+    if (this.rollResult === false) {return false;}
+    if (this.rollResultDelta === 0) {return this.rollResult;}
+
+    switch (this.rollType) {
+      case RollType.Action:
+      case RollType.Fortune: {
+        return Object.values(RollResult).toReversed()[
+          U.clampNum(
+            Object.values(RollResult).toReversed().indexOf(this.rollResult as RollResult)
+            + this.rollResultDelta,
+            [0, 3]
+          )];
+      }
+      case RollType.Resistance: { // Return stress cost of resisting
+        if (this.isCritical) {return -1;}
+        return U.clampNum(6 - this.highestDieVal - this.rollResultDelta, [-1, Infinity]);
+      }
+      case RollType.IndulgeVice: { // Return stress cleared from indulging
+        return U.clampNum(this.highestDieVal + this.rollResultDelta, [0, Infinity]);
+      }
+    }
+
+    return false as never;
   }
 
   get finalDicePool(): number {
@@ -2852,7 +2891,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    * @param {BladesRollMod} modB Second mod to compare.
    * @returns {number} - Comparison result.
    */
-  private compareMods(modA: BladesRollMod, modB: BladesRollMod): number {
+  protected compareMods(modA: BladesRollMod, modB: BladesRollMod): number {
     // Define the order of mod names for sorting
     const modOrder = ["Bargain", "Assist", "Setup"];
 
@@ -2892,10 +2931,10 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   canResistWithSpecialArmor(csq: BladesConsequence) {
-    if (!BladesPC.IsType(this.rollPrimary.rollPrimaryDoc)) {
+    if (!BladesPC.IsType(this.rollPrimaryDoc)) {
       return false;
     }
-    return this.rollPrimary.rollPrimaryDoc.armorStatus.special;
+    return this.rollPrimaryDoc.isSpecialArmorAvailable;
   }
 
   // #endregion
@@ -2904,7 +2943,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   get consequences(): BladesConsequence[] {
     const csqDataSet = this.data.consequenceData?.
-      [this.finalPosition]?.
+      [this.rollPositionFinal]?.
       [this.rollResult as RollResult.partial | RollResult.fail];
     if (csqDataSet) {
       return Object.values(csqDataSet).map((csqData) => new BladesConsequence(csqData));
@@ -2933,28 +2972,22 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // #endregion
 
-  // #region *** GETDATA *** ~
+  // #region *** ROLL COLLAB CONTEXT *** ~
 
 
   /**
    * Retrieve the data for rendering the base RollCollab sheet.
    * @returns {Promise<object>} The data which can be used to render the HTML of the sheet.
    */
-  override async getData() {
-    const context = super.getData();
+  get context() {
 
     this.initRollMods(this.getRollModsData());
     this.rollMods.forEach((rollMod) => rollMod.applyRollModEffectKeys());
 
-    const sheetData = this.getSheetData(
-      this.getIsGM(),
-      this.getRollCosts()
-    );
-
-    return {...context, ...sheetData};
+    return this.getTemplateContext();
   }
 
-  getFortuneRollModsData(): BladesRollMod.Schema[] {
+  getFortuneRollModsSchemaSet(): BladesRollMod.Schema[] {
     const modsData: BladesRollMod.Schema[] = [];
 
     if (this.rollSubType === RollSubType.Engagement) {
@@ -3104,11 +3137,14 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    * Gets the roll modifications data.
    * @returns {BladesRollMod.Data[]} The roll modifications data.
    */
-  private getRollModsData(): BladesRollMod.Data[] {
+  protected getRollModsData(): BladesRollMod.Data[] {
     const defaultMods = [
       ...BladesRoll.DefaultRollModSchemaSet,
       ...this.rollPrimary.rollModsSchemaSet
     ];
+    if (this.rollType === RollType.Fortune) {
+      defaultMods.push(...this.getFortuneRollModsSchemaSet());
+    }
     if (this.rollDowntimeAction) {
       defaultMods.push(...this.getDowntimeActionRollModsSchemaSet());
     }
@@ -3125,14 +3161,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
           effectKeys: [],
           tooltip: "<h1>Worse Position</h1><p>A <strong class='red-bright'>Consequence</strong> on a previous roll has worsened your <strong>Position</strong>.</p>"
         });
-      }
-      switch (this.rollDowntimeAction) {
-        case DowntimeAction.AcquireAsset: {
-          defaultMods.push();
-
-          break;
-        }
-        default: break;
       }
     }
     if (
@@ -3161,7 +3189,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    * Determines if the user is a game master.
    * @returns {boolean} Whether the user is a GM.
    */
-  private getIsGM(): boolean {
+  protected getIsGM(): boolean {
     return game.eunoblades.Tracker?.system.is_spoofing_player ? false : game.user.isGM;
   }
 
@@ -3169,39 +3197,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    * Gets the roll costs.
    * @returns {BladesRoll.CostData[]} The roll costs.
    */
-  private getRollCosts(): BladesRoll.CostData[] {
+  protected getRollCosts(): BladesRoll.CostData[] {
     return this.getActiveRollMods()
       .map((rollMod) => rollMod.costs)
       .flat()
       .filter((costData): costData is BladesRoll.CostData => costData !== undefined);
-  }
-
-  /**
-   * Filters the roll costs to retrieve stress costs.
-   * @param {BladesRoll.CostData[]} rollCosts The roll costs.
-   * @returns {BladesRoll.CostData[]} The stress costs.
-   */
-  private getStressCosts(rollCosts: BladesRoll.CostData[]): BladesRoll.CostData[] {
-    return rollCosts.filter((costData) => costData.costType === "Stress");
-  }
-
-  /**
-   * Calculates the total stress cost.
-   * @param {BladesRoll.CostData[]} stressCosts The stress costs.
-   * @returns {number} The total stress cost.
-   */
-  private getTotalStressCost(stressCosts: BladesRoll.CostData[]): number {
-    return U.sum(stressCosts.map((costData) => costData.costAmount));
-  }
-
-
-  /**
-   * Searches for any special armor roll costs.
-   * @param {BladesRoll.CostData[]} rollCosts The roll costs.
-   * @returns {BladesRoll.CostData[]} The stress costs.
-   */
-  private getSpecArmorCost(rollCosts: BladesRoll.CostData[]): BladesRoll.CostData | undefined {
-    return rollCosts.find((costData) => costData.costType === "SpecialArmor");
   }
 
   /**
@@ -3210,10 +3210,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    * @param {BladesRoll.CostData[]} rollCosts The roll costs.
    * @returns {BladesRoll.Context} The constructed sheet data.
    */
-  private getSheetData(
-    isGM: boolean,
-    rollCosts: BladesRoll.CostData[]
-  ): BladesRoll.Context {
+  protected getTemplateContext(): BladesRoll.Context {
     const {
       data: rData,
       rollPrimary,
@@ -3222,9 +3219,10 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       rollOppClockKey,
       rollClockKey,
       finalDicePool,
-      finalPosition,
-      finalEffect,
-      finalResult,
+      rollPositionFinal,
+      rollEffectFinal,
+      rollResultDelta,
+      rollResultFinal,
       rollMods,
       rollFactors
     } = this;
@@ -3234,8 +3232,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     const baseData = {
       ...this.data,
       cssClass: "roll-collab",
-      editable: this.options.editable,
-      isGM,
+      isGM: this.isGM,
       system: this.rollPrimaryDoc?.system,
 
       rollMods,
@@ -3260,36 +3257,72 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       hasInactiveConditionals: this.calculateHasInactiveConditionalsData(),
 
       rollFactors,
-      ...this.calculateOddsHTML(finalDicePool, finalResult),
-      costData: this.getCostsHTML(rollCosts)
+      ...this.calculateOddsHTML(finalDicePool, rollResultDelta)
     };
-
-    const rollPositionData = this.calculatePositionData(finalPosition);
-    const rollEffectData = this.calculateEffectData(isGM, finalEffect);
-    const rollResultData = this.calculateResultData(isGM, finalResult);
 
     const GMBoostsData = this.calculateGMBoostsData(rData);
 
     const positionEffectTradeData = this.calculatePositionEffectTradeData();
 
-    const userPermission = U.objFindKey(
-      baseData.userPermissions,
-      (v: string[]) => v.includes(game.user.id ?? "")
-    );
+    const stressCostDataSet = this.getRollCosts()
+      .filter((costData) => costData.costType === "Stress")
+      .map((costData) => [costData.label, costData.costAmount] as const);
+
+    const availableArmor: string[] = [];
+    if (this.rollPrimaryDoc instanceof BladesPC) {
+      availableArmor.push(...this.rollPrimaryDoc.availableArmor);
+    } else if (BladesItem.IsType(
+      this.rollPrimaryDoc,
+      BladesItemType.cohort_gang,
+      BladesItemType.cohort_expert
+    )) {
+      // Gang or Expert Cohort
+      for (let index = 0; index < this.rollPrimaryDoc.system.armor.value; index++) {
+        availableArmor.push("Armor");
+      }
+    }
+    const armorCostDataSet = this.getRollCosts()
+      .filter((costData) => costData.costType === "Armor")
+      .map((costData, index) => [costData.label, availableArmor[index]] as const)
+      .filter(([_label, armorType]) => armorType !== undefined);
+
+    const specialArmorCostDataSet = this.getRollCosts()
+      .filter((costData) => costData.costType === "SpecialArmor")
+      .map((costData) => costData.label);
+
+    const userPermission = baseData.userPermissions[game.user.id] ?? RollPermissions.Observer;
 
     // const downtimeData = this.processDowntimeActions();
 
     return {
       ...baseData,
-      ...(this.rollPrimary.rollPrimaryDoc ? {rollPrimary: this.rollPrimary.rollPrimaryDoc} : {}),
-      ...rollPositionData,
-      ...rollEffectData,
-      ...rollResultData,
+      ...(this.rollPrimaryDoc ? {rollPrimary: this.rollPrimaryDoc} : {}),
+      rollPositionFinal,
+      rollEffectFinal,
+      rollResultFinal,
+      rollPositions: Object.values(Position),
+      rollEffects: Object.values(Effect),
+      rollResultDelta,
+      isAffectingResult: rollResultDelta !== 0
+        || this.getVisibleRollMods(RollModSection.result).length > 0
+        || (this.isGM && this.getRollMods(RollModSection.result).length > 0),
+      isAffectingAfter: this.getVisibleRollMods(RollModSection.after).length > 0
+        || (this.isGM && this.getRollMods(RollModSection.after).length > 0),
       ...GMBoostsData,
       ...positionEffectTradeData,
       ...(rollOppClockKey ? {rollClockKey: rollOppClockKey} : {}),
       ...(rollClockKey ? {rollClockKey} : {}),
+      totalStressCost: stressCostDataSet.reduce((acc, [_label, amount]) => acc + amount, 0),
+      totalArmorCost: armorCostDataSet.length,
+      stressCosts: stressCostDataSet.length > 0
+        ? Object.fromEntries(stressCostDataSet)
+        : undefined,
+      armorCosts: armorCostDataSet.length > 0
+        ? Object.fromEntries(armorCostDataSet)
+        : undefined,
+      specArmorCost: specialArmorCostDataSet[0],
       userPermission,
+      editable: userPermission === RollPermissions.Primary || userPermission === RollPermissions.GM,
       gamePhase: game.eunoblades.Tracker.phase
     };
   }
@@ -3297,11 +3330,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   //   value: valueType,
   //   display: displayType
   // };
-  // private processDowntimeActions() {
+  // protected processDowntimeActions() {
   //   const downtimeData: Record<string,any>;
-  //   if (BladesActor.IsType(this.rollPrimary.rollPrimaryDoc, BladesActorType.pc)) {
+  //   if (BladesActor.IsType(this.rollPrimaryDoc, BladesActorType.pc)) {
   //     downtimeData.canDoDowntimeActions = true;
-  //     downtimeData.downtimeActionsRemaining = this.rollPrimary.rollPrimaryDoc.remainingDowntimeActions;
+  //     downtimeData.downtimeActionsRemaining = this.rollPrimaryDoc.remainingDowntimeActions;
   //     const availableDowntimeActions: DowntimeAction[] = [];
   //     if (this.rollType === RollType.Action) {
   //       availableDowntimeActions.push(...[
@@ -3319,32 +3352,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   //   downtimeActionOptions?: Array<BladesSelectOption<string, DowntimeAction>
   // }
 
-  private calculatePositionData(finalPosition: Position) {
-    return {
-      rollPositions: Object.values(Position),
-      rollPositionFinal: finalPosition
-    };
-  }
-
-  private calculateEffectData(isGM: boolean, finalEffect: Effect) {
-    return {
-      rollEffects: Object.values(Effect),
-      rollEffectFinal: finalEffect,
-      isAffectingAfter: this.getVisibleRollMods(RollModSection.after).length > 0
-        || (isGM && this.getRollMods(RollModSection.after).length > 0)
-    };
-  }
-
-  private calculateResultData(isGM: boolean, finalResult: number) {
-    return {
-      rollResultFinal: finalResult,
-      isAffectingResult: finalResult > 0
-        || this.getVisibleRollMods(RollModSection.result).length > 0
-        || (isGM && this.getRollMods(RollModSection.result).length > 0)
-    };
-  }
-
-  private calculateGMBoostsData(data: BladesRoll.Data) {
+  protected calculateGMBoostsData(data: BladesRoll.Data) {
     return {
       GMBoosts: {
         Dice: data.GMBoosts.Dice ?? 0,
@@ -3363,25 +3371,25 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     };
   }
 
-  private calculateOddsHTML(
+  protected calculateOddsHTML(
     diceTotal: number,
-    finalResult: number
+    rollResultDelta: number
   ): {oddsHTMLStart: string, oddsHTMLStop: string} {
     if (this.rollType === RollType.Resistance) {
       return this.calculateOddsHTML_Resistance(diceTotal);
     }
-    return this.calculateOddsHTML_Standard(diceTotal, finalResult);
+    return this.calculateOddsHTML_Standard(diceTotal, rollResultDelta);
   }
 
   /**
    * Calculate odds starting & ending HTML based on given dice total.
    * @param {number} diceTotal Total number of dice.
-   * @param {number} finalResult
+   * @param {number} rollResultDelta
    * @returns {{oddsHTMLStart: string, oddsHTMLStop: string}} Opening & Closing HTML for odds bar display
    */
-  private calculateOddsHTML_Standard(
+  protected calculateOddsHTML_Standard(
     diceTotal: number,
-    finalResult: number
+    rollResultDelta: number
   ): {oddsHTMLStart: string, oddsHTMLStop: string} {
     const oddsColors = {
       crit: "var(--blades-gold)",
@@ -3391,14 +3399,14 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     };
     const odds = {...C.DiceOddsStandard[diceTotal]};
 
-    if (finalResult < 0) {
-      for (let i = finalResult; i < 0; i++) {
+    if (rollResultDelta < 0) {
+      for (let i = rollResultDelta; i < 0; i++) {
         oddsColors.crit = oddsColors.success;
         oddsColors.success = oddsColors.partial;
         oddsColors.partial = oddsColors.fail;
       }
-    } else if (finalResult > 0) {
-      for (let i = 0; i < finalResult; i++) {
+    } else if (rollResultDelta > 0) {
+      for (let i = 0; i < rollResultDelta; i++) {
         oddsColors.fail = oddsColors.partial;
         oddsColors.partial = oddsColors.success;
         oddsColors.success = oddsColors.crit;
@@ -3426,7 +3434,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    * @param {number} diceTotal Total number of dice.
    * @returns {{oddsHTMLStart: string, oddsHTMLStop: string}} Opening & Closing HTML for odds bar display
    */
-  private calculateOddsHTML_Resistance(
+  protected calculateOddsHTML_Resistance(
     diceTotal: number
   ): {oddsHTMLStart: string, oddsHTMLStop: string} {
     // Const oddsColors = [
@@ -3485,16 +3493,16 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    * Calculate data for position and effect trade.
    * @returns {{canTradePosition: boolean, canTradeEffect: boolean}}
    */
-  private calculatePositionEffectTradeData(): {canTradePosition: boolean, canTradeEffect: boolean} {
+  protected calculatePositionEffectTradeData(): {canTradePosition: boolean, canTradeEffect: boolean} {
     const canTradePosition = this.posEffectTrade === "position" || (
       this.posEffectTrade === false
-      && this.finalPosition !== Position.desperate
-      && this.finalEffect !== Effect.extreme
+      && this.rollPositionFinal !== Position.desperate
+      && this.rollEffectFinal !== Effect.extreme
     );
     const canTradeEffect = this.posEffectTrade === "effect" || (
       this.posEffectTrade === false
-      && this.finalPosition !== Position.controlled
-      && this.finalEffect !== Effect.zero
+      && this.rollPositionFinal !== Position.controlled
+      && this.rollEffectFinal !== Effect.zero
     );
 
     return {canTradePosition, canTradeEffect};
@@ -3504,99 +3512,12 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    * Calculate data on whether there are any inactive conditionals.
    * @returns {Record<RollModSection, boolean>} - Data on inactive conditionals.
    */
-  private calculateHasInactiveConditionalsData(): Record<RollModSection, boolean> {
+  protected calculateHasInactiveConditionalsData(): Record<RollModSection, boolean> {
     const hasInactive = {} as Record<RollModSection, boolean>;
     for (const section of Object.values(RollModSection)) {
       hasInactive[section] = this.getRollMods(section).filter((mod) => mod.isInInactiveBlock).length > 0;
     }
     return hasInactive;
-  }
-
-  getCostsHTML(rollCosts: BladesRoll.CostData[]) {
-    switch (this.rollType) {
-      case RollType.Action: {
-        return this.parseActionRollCostsHTML(
-          this.getStressCosts(rollCosts),
-          this.getSpecArmorCost(rollCosts)
-        );
-      }
-      case RollType.Resistance: {
-        return this.parseResistanceRollCostsHTML(
-          this.getStressCosts(rollCosts),
-          this.getSpecArmorCost(rollCosts)
-        );
-      }
-      case RollType.Fortune: {
-        return this.parseFortuneRollCostsHTML();
-      }
-      case RollType.IndulgeVice: {
-        return this.parseIndulgeViceRollCostsHTML();
-      }
-      default: return false as never;
-    }
-  }
-
-
-  /**
-   * Calculate data for costs of Action Roll.
-   * @param {BladesRoll.CostData[]} stressCosts Array of stress costs.
-   * @param {BladesRoll.CostData} [specArmorCost] Specific armor cost.
-   * @returns {{footerLabel: string, tooltip: string} | undefined} - Costs data or undefined.
-   */
-  private parseActionRollCostsHTML(
-    stressCosts: BladesRoll.CostData[],
-    specArmorCost?: BladesRoll.CostData
-  ): {footerLabel: string, tooltip: string} | undefined {
-    if (specArmorCost || stressCosts.length > 0) {
-      const totalStressCost = this.getTotalStressCost(stressCosts);
-      return {
-        footerLabel: [
-          "( Roll Costs",
-          totalStressCost > 0 ? `<span class='red-bright'><strong>${totalStressCost} Stress</strong></span>` : null,
-          specArmorCost && totalStressCost ? "and" : null,
-          specArmorCost ? "your <span class='cyan-bright'><strong>Special Armor</strong></span>" : null,
-          ")"
-        ].filter((line) => Boolean(line)).join(" "),
-        tooltip: [
-          "<h1>Roll Costs</h1><ul>",
-          ...stressCosts.map((costData) => `<li><strong class='shadowed'>${costData.label}: <span class='red-bright'>${costData.costAmount}</span> Stress</strong></li>`),
-          specArmorCost ? `<li><strong class='shadowed'>${specArmorCost.label}: <strong class='cyan-bright'>Special Armor</strong></strong></li>` : null,
-          "</ul>"
-        ].filter((line) => Boolean(line)).join("")
-      };
-    }
-    return undefined;
-  }
-
-  private parseResistanceRollCostsHTML(
-    stressCosts: BladesRoll.CostData[],
-    specArmorCost?: BladesRoll.CostData
-  ): {footerLabel: string, tooltip: string} | undefined {
-    const footerLabelStrings: string[] = [
-      "( Resisting Costs"
-    ];
-    if (specArmorCost) {
-      footerLabelStrings.push("your <span class='cyan-bright'><strong>Special Armor</strong></span> )");
-    } else {
-      footerLabelStrings.push("<span class='red-bright'><strong>(6 - Best Die)</strong> Stress</span>,<br />or <span class='gold-bright'><strong>Clears 1 Stress</strong></span> on a <span class='gold-bright'>Critical Success</span> )");
-    }
-    return {
-      footerLabel: footerLabelStrings.join(" "),
-      tooltip: [
-        "<h1>Roll Costs</h1><ul>",
-        ...stressCosts.map((costData) => `<li><strong class='shadowed'>${costData.label}: <span class='red-bright'>${costData.costAmount}</span> Stress</strong></li>`),
-        specArmorCost ? `<li><strong class='shadowed'>${specArmorCost.label}: <strong class='cyan-bright'>Special Armor</strong></strong></li>` : null,
-        "</ul>"
-      ].filter((line) => Boolean(line)).join("")
-    };
-  }
-
-  private parseFortuneRollCostsHTML(): {footerLabel: string, tooltip: string} | undefined {
-    return {footerLabel: "Fortune Cost Label", tooltip: "Fortune Cost Tooltip"};
-  }
-
-  private parseIndulgeViceRollCostsHTML(): {footerLabel: string, tooltip: string} | undefined {
-    return {footerLabel: "Indulge Vice Cost Label", tooltip: "Indulge Vice Cost Tooltip"};
   }
   // #endregion
 
@@ -3692,97 +3613,63 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   get rollResult(): RollResult | number | false {
-
-    if ([RollPhase.Collaboration, RollPhase.AwaitingRoll].includes(this.rollPhase)) {
-      return false;
-    }
-
-    switch (this.rollType) {
-      case RollType.Action:
-      case RollType.Fortune: {
-        if (this.isCritical) {return RollResult.critical;}
-        if (this.isSuccess) {return RollResult.success;}
-        if (this.isPartial) {return RollResult.partial;}
-        return RollResult.fail;
-      }
-      case RollType.Resistance: { // Return stress cost of resisting
-        if (this.isCritical) {return -1;}
-        return 6 - this.highestDieVal;
-      }
-      case RollType.IndulgeVice: { // Return stress cleared from indulging
-        return this.highestDieVal;
-      }
-    }
-
-    return false as never;
+    /* Subclass overrides determine how roll result is communicated. */
+    throw new Error("[BladesRoll.rollResult] Unimplemented by Subclass.");
   }
   // #endregion
 
-  async resolveRoll() {
-    this.close();
+  get isResolved() {return this.roll.total !== undefined;}
+
+  async evaluateRoll() {
+    // If this command is called on an already-resolved roll, close the roll collab element and return.
+    if (this.isResolved) {
+      this.closeRollCollab_Animation();
+      return this.data;
+    }
+
+    this.closeRollCollab_SocketCall();
+
+    eLog.checkLog3("rollCollab", "[resolveRoll()] Before Evaluation", {roll: this, rollData: {...this.data}});
+
     await this.roll.evaluate({async: true});
-    this.updateTargetData({
+
+    return await this.updateTargetData({
       ...this.data,
-      finalPosition: this.finalPosition,
-      finalEffect: this.finalEffect,
+      rollPositionFinal: this.rollPositionFinal,
+      rollEffectFinal: this.rollEffectFinal,
       rollResult: this.rollResult,
       rollTraitVerb: this.rollTraitVerb,
       rollTraitPastVerb: this.rollTraitPastVerb,
-      finalDiceData: this.finalDiceData
+      finalDiceData: this.finalDiceData,
+      rollPhase: this.isApplyingConsequences
+        ? RollPhase.AwaitingConsequences
+        : RollPhase.Complete
     });
-    await this.setRollPhase(RollPhase.AwaitingConsequences);
-    switch (this.rollType) {
-      case RollType.Action: {
-        if (this.isApplyingConsequences) {
-          await this.setRollPhase(RollPhase.AwaitingConsequences);
-        } else {
-          await this.setRollPhase(RollPhase.Complete);
-        }
-        // Apply Stress & Special Armor Costs
-        eLog.checkLog2("bladesRoll", "Costs", this.getRollCosts());
-
-        if (BladesPC.IsType(this.rollPrimaryDoc)) {
-          const rollCostData = this.getRollCosts();
-          const stressCost = this.getTotalStressCost(this.getStressCosts(rollCostData));
-          if (stressCost !== 0) {
-            this.rollPrimaryDoc.adjustStress(stressCost);
-          }
-          if (this.getSpecArmorCost(rollCostData)) {
-            this.rollPrimaryDoc.spendSpecialArmor();
-          }
-
-        }
-        // const rollCosts = get.roll.getTotalStressCost(get.roll.getStressCosts(get.roll.getRollCosts()))
-        await this.outputRollToChat();
-        if (this.rollPrimary.rollPrimaryDoc) {
-          this.rollPrimary.rollPrimaryDoc.unsetFlag("eunos-blades", "isWorsePosition");
-        }
-        break;
-      }
-      case RollType.Resistance: {
-        await this.setRollPhase(RollPhase.Complete);
-        const {id: csqID} = this.rollConsequence ?? {};
-        const {chatID} = this.rollConsequence?.resistTo ?? {};
-        const chatMessage = game.messages.get(chatID ?? "");
-        if (chatMessage && csqID) {
-          const resistedCsq = BladesConsequence.GetFromChatMessage(chatMessage, csqID);
-          if (resistedCsq && this.rollConsequence?.resistTo) {
-            const rollHTML = await renderTemplate(this.resultChatTemplate, Object.assign(this, {icon: this.rollConsequence.resistTo.icon ?? ""}));
-            await resistedCsq.applyResistedConsequence("resist", rollHTML);
-          }
-        }
-        if (BladesPC.IsType(this.rollPrimaryDoc)) {
-          this.rollPrimaryDoc.adjustStress(this.resistanceStressCost);
-        }
-        // await this.outputRollToChat();
-        break;
-      }
-    }
-    if (this.isApplyingConsequences) {
-      await this.setRollPhase(RollPhase.AwaitingConsequences);
-    }
-    eLog.checkLog3("rollCollab", "[resolveRoll()] After Evaluation, Before Chat", {roll: this, dieVals: this.dieVals});
   }
+
+  async resolveRollResult() {
+    /* Subclass overrides determine how result affects roll participants */
+    throw new Error("[BladesRoll.resolveRollResult] Unimplemented by Subclass.");
+  }
+
+  async outputRollToChat() {
+    await BladesChat.create({
+      speaker: this.getSpeaker(BladesChat.getSpeaker()),
+      content: await renderTemplate(this.chatTemplate, this.data),
+      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+      flags: {
+        "eunos-blades": {rollData: this.data}
+      }
+    }) as BladesChat;
+  }
+
+  async resolveRoll() {
+    await this.evaluateRoll();
+    this.resolveRollResult();
+    await this.outputRollToChat();
+  }
+
+
   // #endregion
 
   // #region *** INTERFACING WITH BLADESCHAT ***
@@ -3808,86 +3695,42 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     return chatSpeaker;
   }
-
-  get resultChatTemplate(): string {
-    const templateParts: string[] = [
-      "systems/eunos-blades/templates/chat/roll-result/",
-      U.lCase(this.rollType)  // action
-      //                         fortune
-      //                         indulgevice
-      //                         resistance
-    ];
-
-    if (this.rollClockKey) {
-      templateParts.push("-clock"); // action-clock
-      //                               fortune-clock
-    }
-
-    if (this.rollDowntimeAction && [
-      DowntimeAction.AcquireAsset, // action-acquireasset
-      DowntimeAction.ReduceHeat, //   action-reduceheat
-      DowntimeAction.Recover //       action-clock-recover
-    ].includes(this.rollDowntimeAction)) {
-      templateParts.push(`-${U.lCase(this.rollDowntimeAction)}`);
-    } else if (this.rollSubType && [
-      RollSubType.GatherInfo, //      action-gatherinfo
-      //                              fortune-gatherinfo
-      RollSubType.Incarceration, //   fortune-incarceration
-      RollSubType.Engagement //       fortune-engagement
-    ].includes(this.rollSubType)) {
-      templateParts.push(`-${U.lCase(this.rollSubType)}`);
-    }
-
-    templateParts.push(".hbs");
-
-    return templateParts.join("");
-  }
-
-  _chatMessageID?: string;
-
-  _chatMessageTemp?: BladesChat;
-
-  get chatMessage(): BladesChat | undefined {
-    if (!this._chatMessageID) {return undefined;}
-    return this._chatMessageTemp;
-  }
-
-  set chatMessage(val: BladesChat | undefined) {
-    if (val && val.id) {
-      this._chatMessageID = val.id;
-      this._chatMessageTemp = val;
-    }
-  }
-
-  async outputRollToChat() {
-    const chatMessage = await BladesChat.ConstructRollOutput(this);
-    this.chatMessage = chatMessage;
-  }
   // #endregion
+
+
+  // #region *** ROLL COLLAB HTML ELEMENT ***
+
+  get collabTemplate(): string {
+    return `systems/eunos-blades/templates/roll/roll-collab${game.user.isGM ? "-gm" : ""}.hbs`;
+  }
+  get chatTemplate(): string {
+    /* Subclass overrides determine template against which data is parsed */
+    throw new Error("[BladesRoll.chatTemplate] Unimplemented by Subclass.");
+  }
 
   // #region LISTENER FUNCTIONS ~
 
 
-  async _handleConsequenceClick(event: ClickEvent) {
-    const clickTarget$ = $(event.currentTarget);
-    const csqParent$ = clickTarget$.closest(".comp.consequence-display-container");
-    const csqID = csqParent$.data("csq-id");
-    const chatElem$ = csqParent$.closest(".blades-roll");
-    const chatMessage$ = chatElem$.closest(".chat-message");
-    const chatID = chatMessage$.data("messageId") as IDString;
-    const chatMessage = game.messages.get(chatID);
-    if (!chatMessage) {return;}
-    const csqs = await BladesConsequence.GetFromChatMessage(chatMessage);
-    const thisCsq = csqs.find((csq) => csq.id === csqID);
-    if (!thisCsq) {return;}
-    switch (clickTarget$.data("action")) {
-      case "accept-consequence": return thisCsq.accept();
-      case "resist-consequence": return thisCsq.resistConsequence();
-      case "armor-consequence": return thisCsq.resistArmorConsequence();
-      case "special-consequence": return thisCsq.resistSpecialArmorConsequence();
-    }
-    return undefined as never;
-  }
+  // async _handleConsequenceClick(event: ClickEvent) {
+  //   const clickTarget$ = $(event.currentTarget);
+  //   const csqParent$ = clickTarget$.closest(".comp.consequence-display-container");
+  //   const csqID = csqParent$.data("csq-id");
+  //   const chatElem$ = csqParent$.closest(".blades-roll");
+  //   const chatMessage$ = chatElem$.closest(".chat-message");
+  //   const chatID = chatMessage$.data("messageId") as IDString;
+  //   const chatMessage = game.messages.get(chatID);
+  //   if (!chatMessage) {return;}
+  //   const csqs = await BladesConsequence.GetFromChatMessage(chatMessage);
+  //   const thisCsq = csqs.find((csq) => csq.id === csqID);
+  //   if (!thisCsq) {return;}
+  //   switch (clickTarget$.data("action")) {
+  //     case "accept-consequence": return thisCsq.resolveAccept();
+  //     case "resist-consequence": return thisCsq.resistConsequence();
+  //     case "armor-consequence": return thisCsq.resistArmorConsequence();
+  //     case "special-consequence": return thisCsq.resistSpecialArmorConsequence();
+  //   }
+  //   return undefined as never;
+  // }
 
   _toggleRollModClick(event: ClickEvent) {
     event.preventDefault();
@@ -3938,7 +3781,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     const target = elem$.data("target").replace(/flags\.eunos-blades\./, "");
     const value = elem$.data("value");
 
-    await this.document.setFlag(C.SYSTEM_ID, target, value).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.id));
+    await this.updateTarget(target, value);
+    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
   async _gmControlCycleTarget(event: ClickEvent) {
@@ -3971,10 +3815,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   async _gmControlResetTarget(event: ClickEvent) {
     event.preventDefault();
     if (!game.user.isGM) {return;}
-    const elem$ = $(event.currentTarget);
-    const target = elem$.data("target").replace(/flags\.eunos-blades\./, "");
-
-    await this.document.unsetFlag(C.SYSTEM_ID, target).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.id));
+    await this.updateTarget($(event.currentTarget).data("target"), undefined);
+    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
   /**
@@ -4014,14 +3856,14 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     eLog.checkLog3("toggleFactor", "_gmControlToggleFactor", {event, target, value});
 
-    const factorToggleData = this.document.getFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles") as Record<"source" | "opposition", Record<Factor, BladesRoll.FactorFlagData>>;
+    const factorToggleData = this.data.rollFactorToggles;
 
     const [thisSource, thisFactor, thisToggle] = target.split(/\./).slice(-3) as ["source" | "opposition", Factor, BladesRoll.FactorToggle];
 
     // If thisToggle is unrecognized, just toggle whatever value target points at
     if (!["isActive", "isPrimary", "isDominant", "highFavorsPC"].includes(thisToggle)) {
-      await this.document.setFlag(C.SYSTEM_ID, `rollCollab.${target}`, value)
-        .then(() => socketlib.system.executeForEveryone("renderRollCollab", this.id));
+      await this.updateTarget(target, value);
+      socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
     }
 
     // Otherwise, first toggle targeted factor to new value
@@ -4044,7 +3886,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
                 factorToggleData[thisSource][factor] = {
                   ...factorToggleData[thisSource][factor],
                   [thisToggle]: false
-                };
+                } as BladesRoll.FactorFlagData;
               }
             });
         }
@@ -4064,8 +3906,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       default: break;
     }
 
-    await this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollFactorToggles", factorToggleData)
-      .then(() => socketlib.system.executeForEveryone("renderRollCollab", this.id));
+    await this.updateTarget("rollFactorToggles", factorToggleData);
+    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
   async _onSelectChange(event: SelectChangeEvent) {
@@ -4081,13 +3923,13 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       );
     } else {
       await U.EventHandlers.onSelectChange(this, event);
-      socketlib.system.executeForEveryone("renderRollCollab", this.id);
+      socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
     }
   }
 
   async _onTextInputBlur(event: InputChangeEvent) {
     await U.EventHandlers.onTextInputBlur(this, event);
-    socketlib.system.executeForEveryone("renderRollCollab", this.id);
+    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
   async _onGMPopupClick(event: ClickEvent) {
@@ -4124,94 +3966,86 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // }
 
-  get resistanceStressCost(): number {
-    const dieVals = this.dieVals;
-    if (this.rollResult === RollResult.critical) {return -1;}
-    if (this.isRollingZero) {dieVals.shift();}
-    return 6 - (dieVals.shift() ?? 0);
-  }
-
   // #endregion
   // #region ACTIVATE LISTENERS ~
-  override activateListeners(html: JQuery<HTMLElement>) {
-    super.activateListeners(html);
-    ApplyTooltipAnimations(html);
-    ApplyConsequenceAnimations(html);
+  activateListeners() {
+    ApplyTooltipAnimations(this.elem$);
+    ApplyConsequenceAnimations(this.elem$);
 
     // If a rollClockKey exists, initialize its elements
     if (this.rollClockKey) {
-      html.find(".roll-clock").removeClass("hidden");
+      this.elem$.find(".roll-clock").removeClass("hidden");
     }
 
     // User-Toggleable Roll Mods
-    html.find(".roll-mod[data-action='toggle']").on({
+    this.elem$.find(".roll-mod[data-action='toggle']").on({
       click: this._toggleRollModClick.bind(this)
     });
 
-    html.find("[data-action='tradePosition']").on({
+    this.elem$.find("[data-action='tradePosition']").on({
       click: (event) => {
         const curVal = `${$(event.currentTarget).data("value")}`;
         if (curVal === "false") {
-          this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", "effect").then(() => socketlib.system.executeForEveryone("renderRollCollab", this.id));
+          this.updateTarget("rollPosEffectTrade", "effect")
+            .then(() => socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id));
         } else {
-          this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", false).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.id));
+          this.updateTarget("rollPosEffectTrade", false)
+            .then(() => socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id));
         }
       }
     });
-    html.find("[data-action='tradeEffect']").on({
+    this.elem$.find("[data-action='tradeEffect']").on({
       click: (event) => {
         const curVal = `${$(event.currentTarget).data("value")}`;
         if (curVal === "false") {
-          this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", "position").then(() => socketlib.system.executeForEveryone("renderRollCollab", this.id));
+          this.updateTarget("rollPosEffectTrade", "position")
+            .then(() => socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id));
         } else {
-          this.document.setFlag(C.SYSTEM_ID, "rollCollab.rollPosEffectTrade", false).then(() => socketlib.system.executeForEveryone("renderRollCollab", this.id));
+          this.updateTarget("rollPosEffectTrade", false)
+            .then(() => socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id));
         }
       }
     });
 
-    html.find("[data-action='roll']").on({
+    this.elem$.find("[data-action='roll']").on({
       click: () => this.resolveRoll()
     });
 
-    html
+    this.elem$
       .find("select[data-action='player-select']")
       .on({change: this._onSelectChange.bind(this)});
 
     if (!game.user.isGM) {return;}
 
-    // GM Controls
-    html.on({
-      focusin: () => {BladesRoll.Active = this;} // Set reference to top-most, focused roll.
-    });
     /**
      * Handles setting of rollMod status via GM pop-out controls
      */
-    html.find(".controls-toggle").on({
+    this.elem$.find(".controls-toggle").on({
       click: (event) => {
         event.preventDefault();
         $(event.currentTarget).parents(".controls-panel").toggleClass("active");
       }
     });
-    html.find("[data-action=\"gm-set\"]").on({
+    this.elem$.find("[data-action=\"gm-set\"]").on({
       click: this._gmControlSet.bind(this)
     });
     /**
      * Handles setting of baseline rollPosition via GM button line
      */
-    html.find("[data-action=\"gm-set-position\"]").on({
+    this.elem$.find("[data-action=\"gm-set-position\"]").on({
       click: this._gmControlSetPosition.bind(this)
     });
     /**
      * Handles setting of baseline rollEffect via GM button line
      */
-    html.find("[data-action=\"gm-set-effect\"]").on({
+    this.elem$.find("[data-action=\"gm-set-effect\"]").on({
       click: this._gmControlSetEffect.bind(this)
     });
     /**
      * Handles setting values via GM number line (e.g. roll factor boosts/modifications).
      * Handles resetting value associated with GM number line on a right-click.
      */
-    html.find("[data-action=\"gm-set-target\"]").on({
+    this.elem$.find("[data-action=\"gm-set-target\"]").on({
       click: this._gmControlSetTargetToValue.bind(this),
       contextmenu: this._gmControlResetTarget.bind(this)
     });
@@ -4219,76 +4053,206 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
      * Handles setting values via GM number line (e.g. roll factor boosts/modifications).
      * Handles resetting value associated with GM number line on a right-click.
      */
-    html.find("[data-action=\"gm-cycle-target\"]").on({
+    this.elem$.find("[data-action=\"gm-cycle-target\"]").on({
       click: this._gmControlCycleTarget.bind(this)
     });
     /**
      * Handles setting of Factor toggles: isActive, isPrimary, highFavorsPC, isDominant
      */
-    html.find("[data-action=\"gm-toggle-factor\"]").on({
+    this.elem$.find("[data-action=\"gm-toggle-factor\"]").on({
       click: this._gmControlToggleFactor.bind(this)
     });
 
-    html
+    this.elem$
       .find("select[data-action='gm-select']")
       .on({change: this._onSelectChange.bind(this)});
 
-    html
+    this.elem$
       .find("[data-action=\"gm-edit-consequences\"]")
       .on({click: () => BladesDialog.DisplayRollConsequenceDialog(this)});
 
-    html
+    this.elem$
       .find("[data-action=\"gm-text-popup\"]")
       .on({click: this._onGMPopupClick.bind(this)});
 
 
-    html
+    this.elem$
       .find("[data-action='gm-text-input']")
       .on({blur: this._onTextInputBlur.bind(this)});
 
   }
   // #endregion
 
+  // #endregion
+
   // #region OVERRIDES: _canDragDrop, _onDrop, _onSubmit, close, render ~
-  override _canDragDrop() {
-    return game.user.isGM;
-  }
+  // override _canDragDrop() {
+  //   return game.user.isGM;
+  // }
 
-  override _onDrop(event: DragEvent) {
-    const {uuid} = TextEditor.getDragEventData(event) as {uuid: UUIDString};
-    const dropDoc = fromUuidSync(uuid);
-    if (BladesRollOpposition.IsDoc(dropDoc)) {
-      this.rollOpposition = new BladesRollOpposition(this, {rollOppDoc: dropDoc});
-    } else if (dropDoc instanceof BladesProject && dropDoc.clockKey) {
-      // Project dropped on roll: Assign project's clock key to roll.
-      this.rollClockKey = dropDoc.clockKey;
-    }
-  }
+  // override _onDrop(event: DragEvent) {
+  //   const {uuid} = TextEditor.getDragEventData(event) as {uuid: UUIDString};
+  //   const dropDoc = fromUuidSync(uuid);
+  //   if (BladesRollOpposition.IsDoc(dropDoc)) {
+  //     this.rollOpposition = new BladesRollOpposition(this, {rollOppDoc: dropDoc});
+  //   } else if (dropDoc instanceof BladesProject && dropDoc.clockKey) {
+  //     // Project dropped on roll: Assign project's clock key to roll.
+  //     this.rollClockKey = dropDoc.clockKey;
+  //   }
+  // }
 
-  override async _onSubmit(event: Event, {updateData}: FormApplication.OnSubmitOptions = {}) {
-    const returnVal = await super._onSubmit(event, {updateData, preventClose: true});
-    await socketlib.system.executeForEveryone("renderRollCollab", this.id);
-    return returnVal;
-  }
-
-  override async close(options: FormApplication.CloseOptions & {id?: string} = {}) {
-
-    if (options.id) {return super.close({});}
-    // await this.document.setFlag(C.SYSTEM_ID, "rollCollab", null);
-    socketlib.system.executeForEveryone("closeRollCollab", this.id);
-    return undefined;
-  }
-
-  override render(force = false, options?: Application.RenderOptions<DocumentSheetOptions>) {
-    if (!this.document.getFlag(C.SYSTEM_ID, "rollCollab")) {return this;}
-    return super.render(force, options);
+  async submitChange(prop: string, val: unknown) {
+    await this.updateTarget(prop, val);
+    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
   // #endregion
 
 }
 
-interface BladesRoll {
-  get document(): User
+class BladesActionRoll extends BladesRoll {
+  /* Not much -- most action roll things will extend to other rolls, but split out things like Position, Effect, default Mods */
+  override get chatTemplate(): string {
+    const templateParts: string[] = [
+      "systems/eunos-blades/templates/chat/roll-result/action",
+      this.rollClockKey ? "-clock" : ""
+    ];
+
+    if (this.rollDowntimeAction && [
+      DowntimeAction.AcquireAsset, // action-acquireasset
+      DowntimeAction.ReduceHeat, //   action-reduceheat
+      DowntimeAction.Recover //       action-clock-recover
+    ].includes(this.rollDowntimeAction)) {
+      templateParts.push(`-${U.lCase(this.rollDowntimeAction)}`);
+    } else if (this.rollSubType && [
+      RollSubType.GatherInfo, //      action-gatherinfo
+    ].includes(this.rollSubType)) {
+      templateParts.push(`-${U.lCase(this.rollSubType)}`);
+    }
+
+    templateParts.push(".hbs");
+    return templateParts.join("");
+  }
+
+  override get rollResult(): RollResult|false {
+    if (!this.isResolved) { return false; }
+    if (this.isCritical) {return RollResult.critical;}
+    if (this.isSuccess) {return RollResult.success;}
+    if (this.isPartial) {return RollResult.partial;}
+    return RollResult.fail;
+  }
+
+  override async resolveRollResult() {
+    eLog.checkLog2("bladesRoll", "[BladesActionRoll] Costs", this.getRollCosts());
+
+    const armorCost = this.getRollCosts()
+      .filter((costData) => costData.costType === "Armor")
+      .length;
+
+    if (this.rollPrimaryDoc instanceof BladesPC) {
+      const stressCost = this.getRollCosts()
+        .filter((costData) => costData.costType === "Stress")
+        .reduce((acc, costData) => acc + costData.costAmount, 0);
+      if (stressCost !== 0) {
+        this.rollPrimaryDoc.adjustStress(stressCost);
+      }
+      const specArmorCost = this.getRollCosts()
+        .filter((costData) => costData.costType === "SpecialArmor")
+        .length;
+      if (specArmorCost !== 0) {
+        this.rollPrimaryDoc.spendSpecialArmor();
+      }
+    }
+
+    if (armorCost !== 0) {
+      this.rollPrimary.spendArmor(armorCost);
+    }
+
+    this.rollPrimaryDoc?.unsetFlag("eunos-blades", "isWorsePosition");
+  }
+
+
+}
+
+class BladesResistanceRoll extends BladesRoll {
+
+  static override async New(config: BladesRoll.Config) { }
+
+  override get collabTemplate() { return game.user.isGM ? "" : ""; }
+
+  override get chatTemplate(): string {
+    return "systems/eunos-blades/templates/chat/roll-result/resistance.hbs";
+  }
+
+  get stressCost(): number {
+    if (!this.isResolved) { return 0; }
+    const dieVals = [...this.finalDieVals];
+    if (this.isCritical) {return -1;}
+    return 6 - (dieVals.shift() ?? 0);
+  }
+
+  override get rollResult(): number|false {
+    if (!this.isResolved) { return false; }
+    return this.stressCost;
+  }
+
+  override async resolveRollResult() {
+    if (this.rollPrimaryDoc instanceof BladesPC && this.stressCost !== 0) {
+      this.rollPrimaryDoc.adjustStress(this.stressCost);
+    }
+  }
+}
+
+class BladesInlineResistanceRoll extends BladesResistanceRoll {
+
+  get chatTemplateInline() { return ""; }
+
+}
+
+class BladesFortuneRoll extends BladesRoll {
+
+  override get chatTemplate(): string {
+    return [
+      "systems/eunos-blades/templates/chat/roll-result/fortune",
+      this.rollClockKey ? "-clock" : "",
+      this.rollSubType === RollSubType.GatherInfo ? "-gatherinfo" : "",
+      ".hbs"
+    ].join("");
+  }
+}
+
+class BladesIndulgeViceRoll extends BladesRoll {
+
+  override get chatTemplate(): string {
+    return "systems/eunos-blades/templates/chat/roll-result/indulgevice.hbs";
+  }
+
+  override get rollResult(): number|false {
+    if (!this.isResolved) { return false; }
+    return this.highestDieVal;
+  }
+  override async resolveRollResult() {
+    if (BladesPC.IsType(this.rollPrimaryDoc)) {
+      this.rollPrimaryDoc.indulgeStress(this.highestDieVal);
+    }
+  }
+
+
+
+}
+
+class BladesEngagementRoll extends BladesFortuneRoll {
+
+  override get chatTemplate(): string {
+    return "systems/eunos-blades/templates/chat/roll-result/fortune-engagement.hbs";
+  }
+}
+
+class BladesIncarcerationRoll extends BladesFortuneRoll {
+
+  override get chatTemplate(): string {
+    return "systems/eunos-blades/templates/chat/roll-result/fortune-incarceration.hbs";
+  }
+
 }
 
 // #region EXPORTS ~

@@ -1,14 +1,6 @@
 {{eLog "CHAT ACTION ROLL RESULT CONTEXT" this}}
 
-<div class="blades-roll roll-type-{{case "lower" rollType}} roll-position-{{finalPosition}} roll-effect-{{finalEffect}} roll-result-{{rollResult}}"
-  data-roll-id="{{id}}"
-  data-user-id="{{rollUserID}}"
-  data-primary-id="{{rollPrimaryData.rollPrimaryID}}"
-  data-primary-type="{{rollPrimaryData.rollPrimaryType}}"
-  data-position="{{finalPosition}}"
-  data-effect="{{finalEffect}}"
-  data-result="{{rollResult}}"
-  data-roll-phase="{{rollPhase}}">
+<div class="blades-roll roll-type-{{case "lower" rollType}} roll-position-{{rollPositionFinal}} roll-effect-{{rollEffectFinal}} roll-result-{{rollResult}}">
 
   {{!-- Roll Primary Portrait --}}
   <div class="chat-message-speaker-portrait-wrapper">
@@ -19,8 +11,8 @@
   </div>
 
   {{!-- Floating Backgrounds --}}
-  <div class="chat-message-bg roll-position-{{finalPosition}}"></div>
-  <div class="chat-result-bg roll-position-{{finalPosition}} roll-result-{{rollResult}}"></div>
+  <div class="chat-message-bg roll-position-{{rollPositionFinal}}"></div>
+  <div class="chat-result-bg roll-position-{{rollPositionFinal}} roll-result-{{rollResult}}"></div>
 
   {{!-- Roll Trait  --}}
   <h1 class="chat-header roll-trait">
@@ -44,7 +36,7 @@
   </div>
 
   {{!-- Position / Result / Effect --}}
-  <div class="roll-outcome-container roll-result-{{rollResult}} roll-position-{{finalPosition}} roll-effect-{{finalEffect}} flex-horizontal full-width">
+  <div class="roll-outcome-container roll-result-{{rollResult}} roll-position-{{rollPositionFinal}} roll-effect-{{rollEffectFinal}} flex-horizontal full-width">
 
     {{!-- Backgrounds --}}
     <div class="roll-state-background-container">
@@ -56,7 +48,7 @@
 
     {{!-- Position --}}
     <div class="roll-state-container roll-state-container-left flex-vertical">
-      <h3 class="roll-state roll-state-position roll-state-position-{{finalPosition}}">{{case "title" finalPosition}}</h3>
+      <h3 class="roll-state roll-state-position roll-state-position-{{rollPositionFinal}}">{{case "title" rollPositionFinal}}</h3>
       <h4 class="roll-state-label">Position</h4>
     </div>
 
@@ -79,7 +71,7 @@
     {{#unless (test rollResult "==" "fail")}}
     <div class="roll-state-container roll-state-container-right flex-vertical">
       <h4 class="roll-state-label">Effect<strong>:</strong></h4>
-      <h3 class="roll-state roll-state-effect roll-state-effect-{{finalEffect}}">{{case "title" finalEffect}}</h3>
+      <h3 class="roll-state roll-state-effect roll-state-effect-{{rollEffectFinal}}">{{case "title" rollEffectFinal}}</h3>
     </div>
     {{/unless}}
 
@@ -88,7 +80,7 @@
   {{#if (test (test rollResult "==" "fail") "||" (test rollResult "==" "partial"))}}
   {{!-- Consequences --}}
   <div class="consequence-container flex-vertical full-width">
-  {{#with (lookup (lookup consequenceData finalPosition) rollResult) as |csqData|}}
+  {{#with (lookup (lookup consequenceData rollPositionFinal) rollResult) as |csqData|}}
   {{#each csqData as |cData cIndex|}}
     {{eLog "ConsequenceContainer" cIndex csqData cData}}
     {{#if cData.resistTo}}

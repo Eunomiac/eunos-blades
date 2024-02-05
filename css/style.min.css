@@ -18209,11 +18209,11 @@ template {
   place-self: stretch flex-end;
   z-index: 1;
 }
-:root body.vtt.game.system-eunos-blades #interface #chat .chat-message:not(.display-ok),
-:root body.vtt.game.system-eunos-blades #controls #chat .chat-message:not(.display-ok),
-:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message:not(.display-ok),
-:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message:not(.display-ok),
-:root body.vtt.game.system-eunos-blades #players #chat .chat-message:not(.display-ok) {
+:root body.vtt.game.system-eunos-blades #interface #chat .chat-message,
+:root body.vtt.game.system-eunos-blades #controls #chat .chat-message,
+:root body.vtt.game.system-eunos-blades #navigation #chat .chat-message,
+:root body.vtt.game.system-eunos-blades #hotbar #chat .chat-message,
+:root body.vtt.game.system-eunos-blades #players #chat .chat-message {
   visibility: hidden;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .chat-message[class*=-roll],

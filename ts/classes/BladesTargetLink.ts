@@ -4,11 +4,6 @@ import C from "../core/constants";
 import {BladesActor} from "../documents/BladesActorProxy";
 import {BladesItem} from "../documents/BladesItemProxy";
 import BladesChat from "./BladesChat";
-import type {AnyDocumentData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs.d.ts";
-
-type PartitionSchemaDataReturnType<T> = T extends BladesTargetLink.PartialData
-  ? {linkData: BladesTargetLink.Data}
-  : {linkConfig: BladesTargetLink.Config};
 
 class BladesTargetLink<Schema> {
 
@@ -38,23 +33,24 @@ class BladesTargetLink<Schema> {
       && U.isDocID(ref.id)
       && U.isDocUUID(ref.targetID)
       && (U.isTargetKey(ref.targetKey) || U.isTargetFlagKey(ref.targetFlagKey))
-      && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey));
+      && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey))
+      && (typeof ref.isScopingById === "boolean");
   }
 
   static BuildLinkConfig(partialConfig: BladesTargetLink.PartialConfig): BladesTargetLink.Config {
-    const {target, targetID, targetKey, targetFlagKey} = partialConfig;
+    const {target, targetID, targetKey, targetFlagKey, isScopingById} = partialConfig;
     if (target) {
       if (targetKey) {
-        return {target, targetKey};
+        return {target, targetKey, isScopingById};
       } else if (targetFlagKey) {
-        return {target, targetFlagKey};
+        return {target, targetFlagKey, isScopingById};
       }
       throw new Error("[BladesTargetLink.BuildConfig] Must provide a targetKey or targetFlagKey.");
     } else if (targetID) {
       if (targetKey) {
-        return {targetID, targetKey};
+        return {targetID, targetKey, isScopingById};
       } else if (targetFlagKey) {
-        return {targetID, targetFlagKey};
+        return {targetID, targetFlagKey, isScopingById};
       }
       throw new Error("[BladesTargetLink.BuildConfig] Must provide a targetKey or targetFlagKey.");
     }
@@ -62,11 +58,11 @@ class BladesTargetLink<Schema> {
   }
 
   static BuildLinkData(partialData: BladesTargetLink.PartialData): BladesTargetLink.Data {
-    const {id, targetID, targetKey, targetFlagKey} = partialData;
+    const {id, targetID, targetKey, targetFlagKey, isScopingById} = partialData;
     if (targetKey) {
-      return {id, targetID, targetKey};
+      return {id, targetID, targetKey, isScopingById: isScopingById ?? true};
     }
-    return {id, targetID, targetFlagKey} as BladesTargetLink.Data;
+    return {id, targetID, targetFlagKey, isScopingById: isScopingById ?? true} as BladesTargetLink.Data;
   }
 
   /**
@@ -96,15 +92,15 @@ class BladesTargetLink<Schema> {
     // - Send through public ParseConfigToData method, so subclasses can include their own logic.
     if ("targetKey" in fullConfig) {
       return this.ParseConfigToData<Schema>({
-        ...partialSchema,
         id: randomID() as IDString,
+        ...partialSchema,
         targetID: U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
         targetKey: fullConfig.targetKey
       });
     }
     return this.ParseConfigToData<Schema>({
-      ...partialSchema,
       id: randomID() as IDString,
+      ...partialSchema,
       targetID: U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
       targetFlagKey: fullConfig.targetFlagKey
     });
@@ -142,23 +138,26 @@ class BladesTargetLink<Schema> {
   ): {linkData: BladesTargetLink.Data, partialSchema: Partial<Schema>}
     | {linkConfig: BladesTargetLink.Config, partialSchema: Partial<Schema>} {
     const {
-      id, target, targetID, targetKey, targetFlagKey,
+      id, target, targetID, targetKey, targetFlagKey, isScopingById,
       ...schemaData
     } = dataOrConfig as T & Partial<Schema> & {id?: IDString, target?: BladesLinkDoc};
     const partialSchema = schemaData as Partial<Schema>;
 
     if (U.isDocID(id)) {
       // A PartialData object was submitted.
-      if (!this.IsValidData({id, targetID, targetKey, targetFlagKey})) {
+      if (!this.IsValidData({id, targetID, targetKey, targetFlagKey, isScopingById})) {
         eLog.error("BladesTargetLink", "Bad Constructor DATA", {dataOrConfig});
         throw new Error("[new BladesTargetLink()] Bad Constructor DATA (see log)");
       }
 
       let linkData: BladesTargetLink.Data;
       if (targetKey) {
-        linkData = {id, targetID, targetKey} as BladesTargetLink.Data;
+        linkData = {id, targetID: targetID as UUIDString, targetKey, isScopingById: isScopingById ?? true};
+      } else if (targetFlagKey) {
+        linkData = {id, targetID: targetID as UUIDString, targetFlagKey, isScopingById: isScopingById ?? true};
       } else {
-        linkData = {id, targetID, targetFlagKey} as BladesTargetLink.Data;
+        eLog.error("BladesTargetLink", "Bad Constructor DATA", {dataOrConfig});
+        throw new Error("[BladesTargetLink.PartitionSchemaData] Bad Constructor DATA (see log)");
       }
 
       return {
@@ -167,10 +166,12 @@ class BladesTargetLink<Schema> {
       };
     }
     // A PartialConfig object was submitted.
-    const linkConfig = this.BuildLinkConfig({target, targetID, targetKey, targetFlagKey});
+    const partialLinkConfig: BladesTargetLink.PartialConfig = {
+      target, targetID, targetKey, targetFlagKey, isScopingById: isScopingById ?? true
+    };
 
     return {
-      linkConfig,
+      linkConfig: this.BuildLinkConfig(partialLinkConfig),
       partialSchema
     };
   }
@@ -230,47 +231,73 @@ class BladesTargetLink<Schema> {
   private _targetID: UUIDString;
   private _targetKey?: TargetKey;
   private _targetFlagKey?: TargetFlagKey;
+  private _isScopingById = true;
   private _initialSchema: Schema;
 
-  get id() {return this._id;}
-  get targetID() {return this._targetID;}
+  get id() { return this._id; }
+  get targetID() { return this._targetID; }
   get targetKey(): TargetKey | undefined {return this._targetKey;}
+  get targetFlagKey(): TargetFlagKey | undefined {return this._targetFlagKey;}
+  get isScopingById(): boolean { return this._isScopingById; }
+  get initialSchema(): Schema { return this._initialSchema; }
+
   get targetKeyPrefix(): TargetKey | undefined {
-    return this._targetKey
-      ? `${this._targetKey}.${this.id}` as TargetKey
+    if (!this.targetKey) { return undefined; }
+    if (!this.isScopingById) { return this.targetKey; }
+    return this.targetKey
+      ? `${this.targetKey}.${this.id}` as TargetKey
       : undefined;
   }
-  get targetFlagKey(): TargetFlagKey | undefined {return this._targetFlagKey;}
+  get targetKeyNullPrefix(): TargetKey | undefined {
+    if (!this.targetKey) { return undefined; }
+    if (this.isScopingById) {
+      return `${this.targetKey}.-=${this.id}` as TargetKey;
+    }
+    if (/^.+\..+$/g.test(this.targetKey)) {
+      return this.targetKey.replace(/\.([^.]+)$/, ".-=$1") as TargetKey;
+    }
+    throw new Error(`[BladesTargetLink.targetKeyNullPrefix] Can't Nullify TargetKey '${this.targetKey}'`);
+  }
+
   get targetFlagKeyPrefix(): TargetFlagKey | undefined {
+    if (!this.targetFlagKey) { return undefined; }
+    if (!this.isScopingById) { return this.targetFlagKey; }
     return this.targetFlagKey
       ? `${this.targetFlagKey}.${this.id}` as TargetFlagKey
       : undefined;
   }
+
+  get isLinkInitialized(): boolean { return this.isInitPromiseResolved; }
+
+  get template(): string | undefined { return this.data.template; }
+
   get linkData(): BladesTargetLink.Data {
     if (this.targetKey) {
       return {
         id: this.id,
         targetID: this.targetID,
-        targetKey: this.targetKey
+        targetKey: this.targetKey,
+        isScopingById: this.isScopingById,
+        template: this.template
       };
     }
-    return {
-      id: this.id,
-      targetID: this.targetID,
-      targetFlagKey: this.targetFlagKey
-    } as BladesTargetLink.Data;
+    if (this.targetFlagKey) {
+      return {
+        id: this.id,
+        targetID: this.targetID,
+        targetFlagKey: this.targetFlagKey,
+        isScopingById: this.isScopingById,
+        template: this.template
+      };
+    }
+    throw new Error(`[BladesTargetLink.linkData] Missing targetKey and targetFlagKey for '${this.id}'`);
   }
-  get initialSchema(): Schema { return this._initialSchema; }
+
 
   private _target: BladesLinkDoc;
-  get target(): BladesLinkDoc {
-    return this._target;
-  }
+  get target(): BladesLinkDoc { return this._target; }
 
   protected get localData(): BladesTargetLink.Data & Schema {
-    if (this._target) {
-      return this.data;
-    }
     return {
       ...this.initialSchema,
       ...this.linkData
@@ -278,11 +305,10 @@ class BladesTargetLink<Schema> {
   }
 
   get data(): BladesTargetLink.Data & Schema {
-    type TargetData = BladesTargetLink.Data & Schema;
-    if (this._target) {
-      let data: TargetData | undefined;
+    if (this.isLinkInitialized) {
+      let data: BladesTargetLink.Data & Schema | undefined;
       if (this.targetFlagKeyPrefix) {
-        data = this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix) as TargetData | undefined;
+        data = this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix) as BladesTargetLink.Data & Schema | undefined;
       } else if (this.targetKeyPrefix) {
         data = getProperty(this.target, this.targetKeyPrefix);
       }
@@ -320,6 +346,8 @@ class BladesTargetLink<Schema> {
       } else {
         schema = target.getFlag(C.SYSTEM_ID, `${linkData.targetFlagKey}.${linkData.id}`) as Schema;
       }
+      // Set the isInitPromiseResolved flag to true
+      this.isInitPromiseResolved = true;
     } else {
       // Otherwise, we have to parse the config into a data object, and extract any schema data
 
@@ -356,7 +384,7 @@ class BladesTargetLink<Schema> {
   private getDotKeyToProp(prop: string|number|undefined, isNullifying = false): string {
     if (this.targetKeyPrefix) {
       if (prop === undefined) {
-        return isNullifying ? `${this.targetKey}.-=${this.id}` : this.targetKeyPrefix;
+        return isNullifying ? this.targetKeyNullPrefix as TargetKey : this.targetKeyPrefix;
       }
       return `${this.targetKeyPrefix}.${isNullifying ? "-=" : ""}${prop}`;
     }
@@ -393,42 +421,105 @@ class BladesTargetLink<Schema> {
     await this.target.update({[this.getDotKeyToProp(prop, val === null)]: val}, {render: false});
   }
 
+  initPromise?: Promise<void>;
+  isInitPromiseResolved = false;
   /**
    * Initializes a target link by updating the target's data with the provided data object.
    * If a targetKey is provided, the data is updated directly on the target.
    * If a targetFlagKey is provided, the data is set as a flag on the target.
    *
    * This method need only be run once, when the document is first created and its data must be written to server storage.
+   * External functions can synchronously check the status of initialization via the isInitPromiseResolved property, while
+   * asynchronous functions can await the initPromise property.
+   *
    * TargetLink documents whose data already exists in server storage can be constructed directly (i.e. new BladesTargetLink(data))
+   * without needing to call this method.
    *
    * @param {BladesTargetLink.Data & Schema} data - The combined data object containing both the target link data and the schema data.
    * @returns {Promise<void>} - A promise that resolves when the server update is complete.
    */
   async initTargetLink() {
+    this.isInitPromiseResolved = false;
+
     // Construct data object
     const data: BladesTargetLink.Data & Schema = {
       ...this.linkData,
       ...this.initialSchema
     };
 
-    // Initialize server-side data on target.
-    if (this.targetKey) {
-      await this.target.update({[`${this.targetKey}.${this.id}`]: data});
+    this.initPromise = new Promise((resolve, reject) => {
+      if (this.targetKeyPrefix) {
+        const updateData = mergeObject(
+          (getProperty(this.target, this.targetKeyPrefix) ?? {}) as Partial<BladesTargetLink.Data & Schema>,
+          data
+        );
+        this.target.update({[this.targetKeyPrefix]: updateData}, {render: false}).then(() => {
+          this.isInitPromiseResolved = true;
+          resolve();
+        }).catch(reject);
+      } else if (this.targetFlagKeyPrefix) {
+        const updateData = mergeObject(
+          this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix) as Partial<BladesTargetLink.Data & Schema>,
+          data
+        );
+        (this.target as BladesItem).setFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix, updateData).then(() => {
+          this.isInitPromiseResolved = true;
+          resolve();
+        }).catch(reject);
+      } else {
+        reject();
+      }
+    });
+  }
+
+  async #updateTargetViaMerge(updateData: Record<string, unknown>, waitFor?: Promise<unknown>|gsapAnim) {
+    await U.waitFor(waitFor);
+    if (this.targetKeyPrefix) {
+      // First, prepend targetKeyPrefix or targetFlagKeyPrefix (as appropriate) to each key of updateData
+      updateData = U.objMap(updateData, false, (key) => `${this.targetKeyPrefix || this.targetFlagKeyPrefix}.${key}`) as Record<string, unknown>;
+      return this.target.update(updateData, {render: false});
+    } else if (this.targetFlagKeyPrefix) {
+      // We must retrieve the existing flag data, flattenObject it, then merge it with updateData
+      const existingFlagData = this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix);
+      const flattenedFlagData = flattenObject(existingFlagData as BladesTargetLink.Data & Schema);
+      const mergedFlagData = mergeObject(flattenedFlagData, updateData);
+
+      return (this.target as BladesItem).setFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix, mergedFlagData);
     } else {
-      await (this.target as BladesItem).setFlag(C.SYSTEM_ID, `${this.targetFlagKey}.${this.id}`, data);
+      throw new Error(`[BladesTargetLink.#updateTargetViaMerge] Unable to update target data for BladesTargetLink id '${this.id}': Missing both 'targetKeyPrefix' and 'targetFlagKeyPrefix'`);
     }
   }
 
-  async updateTarget(prop: string, val: unknown) {
-    if (getProperty(this.data, prop) === val) { return; }
-    if (this.targetFlagKeyPrefix) {
-      await this.updateTargetFlag(prop, val);
-    } else if (this.targetKeyPrefix) {
-      await this.updateTargetKey(prop, val);
+  async #updateTargetPropVal(prop: string, val: unknown, waitFor?: Promise<unknown>|gsapAnim) {
+    await U.waitFor(waitFor);
+    if (this.targetKeyPrefix) {
+      return this.target.update({[`${this.targetKeyPrefix}.${prop}`]: val});
+    } else if (this.targetFlagKeyPrefix) {
+      return this.updateTargetFlag(prop, val);
     }
   }
 
-  async updateTargetData(val: Partial<Schema> | null) {
+  async updateTarget(updateData: Record<string, unknown>, waitFor?: Promise<unknown>|gsapAnim): Promise<unknown>
+  async updateTarget(prop: string, val: unknown, waitFor?: Promise<unknown>|gsapAnim): Promise<unknown>
+  async updateTarget(
+    propOrData: string | Record<string, unknown>,
+    valOrWaitFor?: unknown | Promise<unknown>|gsapAnim,
+    waitFor?: Promise<unknown>|gsapAnim
+  ): Promise<unknown> {
+
+    // If the provided data is an object, we assume it is a full data object and we update the target with it.
+    if (typeof propOrData === "string") {
+      if (getProperty(this.data, propOrData) === valOrWaitFor) { return; }
+      return this.#updateTargetPropVal(propOrData, valOrWaitFor, waitFor);
+    }
+    if (typeof propOrData === "object") {
+      return this.#updateTargetViaMerge(propOrData, valOrWaitFor as Promise<unknown>|gsapAnim|undefined);
+    } else {
+      throw new Error(`[BladesTargetLink.updateTarget()] Bad updateData for id '${this.id}': ${propOrData}`);
+    }
+  }
+
+  async updateTargetData(val: Partial<Schema> | null, waitFor?: Promise<unknown>|gsapAnim) {
     if (val) {
       // Add BladesTargetLink.Data to provided schema
       val = {
@@ -436,6 +527,7 @@ class BladesTargetLink<Schema> {
         ...this.linkData
       };
     }
+    await U.waitFor([this.initPromise, waitFor]);
     if (this.targetFlagKeyPrefix) {
       await this.updateTargetFlag(undefined, val);
     } else {
@@ -443,7 +535,11 @@ class BladesTargetLink<Schema> {
     }
   }
 
-  async delete() {
+  async delete(collection: Collection<unknown> | false, waitFor?: Promise<unknown>|gsapAnim) {
+    if (collection) {
+      collection.delete(this.id);
+    }
+    await U.waitFor([this.initPromise, waitFor]);
     await this.updateTargetData(null);
   }
   // #endregion

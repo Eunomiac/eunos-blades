@@ -21,6 +21,7 @@
 		"@tsconfig/node16": "^1.0.3",
 		"@types/jquery": "^3.5.27",
 		"@types/node": "^18.11.4",
+		"@types/prop-types": "^15.7.11",
 		"@typescript-eslint/eslint-plugin": "^5.62.0",
 		"@typescript-eslint/parser": "^5.62.0",
 		"@yaireo/tagify": "^4.17.8",
@@ -59,7 +60,7 @@
 		"stylelint-config-standard": "^29.0.0",
 		"stylelint-config-standard-scss": "^5.0.0",
 		"ts-node": "^10.9.1",
-		"typescript": "^4.8.4"
+		"typescript": "^5.3.3"
 	},
 	"dependencies": {
 		"@types/yaireo__tagify": "^4.17.0",

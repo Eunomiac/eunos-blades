@@ -221,8 +221,8 @@
           {{/each}}
         </div>
         {{/if}}
-        <div class="roll-sheet-float-block final-block result-final-block result-{{#if (test rollResultFinal "<" 0)}}negative{{/if}}{{~#if (test rollResultFinal "==" 0)}}neutral{{/if}}{{~#if (test rollResultFinal ">" 0)}}positive{{/if}}">
-          <span class="shadowed roll-readonly">{{signNum rollResultFinal}} Result Level</span>
+        <div class="roll-sheet-float-block final-block result-final-block result-{{#if (test rollResultDelta "<" 0)}}negative{{/if}}{{~#if (test rollResultDelta "==" 0)}}neutral{{/if}}{{~#if (test rollResultDelta ">" 0)}}positive{{/if}}">
+          <span class="shadowed roll-readonly">{{signNum rollResultDelta}} Result Level</span>
         </div>
       </div>
     </section>
@@ -345,10 +345,27 @@
       </div>
     </div>
   </div>
-  {{#if costData}}
+
+  {{#if (test totalStressCost "||" specArmorCost)}}
   <div class="roll-sheet-float-block roll-stress-block {{~#if isGMReady}} gm-ready{{/if}} tooltip-trigger">
-    <span class="shadowed roll-stress-cost">{{{costData.footerLabel}}}</span>
-    <span class="tooltip tooltip-roll-stress">{{{costData.tooltip}}}</span>
+    <span class="shadowed roll-stress-cost">
+      ( Roll Costs&nbsp;
+      {{#if totalStressCost}}<span class="red-bright"><strong>{{totalStressCost}} Stress</strong></span>{{/if}}
+      {{#if (test totalStressCost "&&" specArmorCost)}}&nbsp;and&nbsp;{{/if}}
+      {{#if specArmorCost}}your <span class="cyan-bright"><strong>Special Armor</strong></span>{{/if}}
+      )
+    </span>
+    <span class="tooltip tooltip-roll-stress">
+      <h1>Roll Costs</h1>
+      <ul>
+        {{#each stressCosts as |cost label|}}
+        <li><strong class="shadowed">{{label}}: <span class="red-bright">{{cost}}</span> Stress</strong></li>
+        {{/each}}
+        {{#if specArmorCost}}
+        <li><strong class="shadowed">{{specArmorCost}}: <strong class="cyan-bright">Special Armor</strong></strong></li>
+      </ul>
+    </span>
   </div>
   {{/if}}
+
 </section>

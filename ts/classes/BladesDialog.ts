@@ -235,16 +235,7 @@ class BladesDialog extends Dialog {
     if (!(this.parent instanceof BladesRoll)) { throw new Error("Cannot call 'constructConsequenceData' without a rollInst parent!"); }
 
     // Get existing consequence data, if any, on roll instance
-    const rollCsqData = this.parent.getFlagVal("consequenceData") as Record<
-    Position,
-    Record<
-      RollResult.partial|RollResult.fail,
-      Record<
-        string,
-        BladesRoll.ConsequenceData
-        >
-      >
-    > ?? {};
+    const rollCsqData = this.parent.data.consequenceData ?? {};
 
     // Extend consequence data by applying new blank consequence instances,
     //   so at least three csq entries are available for each position/result combination
@@ -254,9 +245,10 @@ class BladesDialog extends Dialog {
         [RollResult.fail]: {}
       };
       ([RollResult.partial, RollResult.fail] as const).forEach((rollResult: RollResult.partial|RollResult.fail) => {
+        rollCsqData[rollPos] ??= {};
         rollCsqData[rollPos][rollResult] ??= {};
         while (Object.values(rollCsqData[rollPos][rollResult as RollResult.partial|RollResult.fail]).length < 3) {
-          const blankCsqData: BladesRoll.ConsequenceData = {
+          const blankCsqData: BladesConsequence.Data = {
             id: randomID() as IDString,
             name: "",
             type: "",
@@ -354,13 +346,14 @@ class BladesDialog extends Dialog {
     if (this.parent instanceof BladesRoll) {
       const flagTarget = inputElem$.data("flagTarget");
       eLog.checkLog3("dialog", "updateInputText", {value, flagTarget});
-      this.parent.setFlagVal(flagTarget, value, true);
+      this.parent.updateTarget(flagTarget, value)
+        .then(() => (this.parent as BladesRoll).render());
     } else if (this.parent instanceof BladesItem || this.parent instanceof BladesActor) {
       this.parent.update({[inputElem$.data("target")]: inputElem$.val()});
     }
   }
 
-  updateConsequenceType(csqElem$: JQuery<HTMLElement>, cData: BladesRoll.ConsequenceData) {
+  updateConsequenceType(csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
     const type$ = csqElem$.find(".roll-consequence-type-select") as JQuery<HTMLSelectElement>;
     const typeVal = type$.val() as string|undefined;
     if (typeVal && typeVal in ConsequenceType) {
@@ -370,7 +363,7 @@ class BladesDialog extends Dialog {
     }
   }
 
-  updateConsequenceAttribute(csqElem$: JQuery<HTMLElement>, cData: BladesRoll.ConsequenceData) {
+  updateConsequenceAttribute(csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
     if (/Insight/.exec(cData.type)) { cData.attribute = AttributeTrait.insight; }
     else if (/Prowess/.exec(cData.type)) { cData.attribute = AttributeTrait.prowess; }
     else if (/Resolve/.exec(cData.type)) { cData.attribute = AttributeTrait.resolve; }
@@ -383,7 +376,7 @@ class BladesDialog extends Dialog {
     }
   }
 
-  updateConsequenceAttributeVal(cData: BladesRoll.ConsequenceData) {
+  updateConsequenceAttributeVal(cData: BladesConsequence.Data) {
     if (this.parent.rollPrimaryDoc instanceof BladesPC) {
       cData.attributeVal = this.parent.rollPrimaryDoc.attributes[cData.attribute as AttributeTrait];
     } else if (this.parent.rollPrimaryDoc?.parent instanceof BladesPC) {
@@ -393,13 +386,13 @@ class BladesDialog extends Dialog {
     }
   }
 
-  getSelectedResistOption(cData: BladesRoll.ConsequenceData): BladesConsequence|false {
+  getSelectedResistOption(cData: BladesConsequence.Data): BladesConsequence|false {
     return cData.resistTo
       ? new BladesConsequence(cData.resistTo)
       : false;
   }
 
-  updateConsequenceResist(csqElem$: JQuery<HTMLElement>, cData: BladesRoll.ConsequenceData) {
+  updateConsequenceResist(csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
 
     const resistOptions: Record<string, BladesRoll.ConsequenceResistOption> = cData.resistOptions ?? {};
 
@@ -445,7 +438,7 @@ class BladesDialog extends Dialog {
     cData.resistOptions = resistOptions;
   }
 
-  updateConsequenceArmorResist(_csqElem$: JQuery<HTMLElement>, cData: BladesRoll.ConsequenceData) {
+  updateConsequenceArmorResist(_csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
     // If consequence is already minimal, toggle armorNegates to true and set 'armorTo' to None-type
     const minimalCsqTypes = Object.entries(C.ResistedConsequenceTypes)
       .filter(([_, rCsqType]) => rCsqType === ConsequenceType.None)
@@ -459,7 +452,7 @@ class BladesDialog extends Dialog {
     }
   }
 
-  updateConsequenceSpecialArmorResist(_csqElem$: JQuery<HTMLElement>, cData: BladesRoll.ConsequenceData) {
+  updateConsequenceSpecialArmorResist(_csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
     // If consequence is already minimal, toggle specialArmorNegates to true and set 'specialTo' to None-type
     const minimalCsqTypes = Object.entries(C.ResistedConsequenceTypes)
       .filter(([_, rCsqType]) => rCsqType === ConsequenceType.None)
@@ -476,7 +469,7 @@ class BladesDialog extends Dialog {
 
   updateConsequenceData(
     html: JQuery<HTMLElement|HTMLInputElement>,
-    cData: BladesRoll.ConsequenceData
+    cData: BladesConsequence.Data
   ) {
     const csqElem$ = html.find(`.roll-consequence-row[data-csq-id='${cData.id}']`);
 
@@ -531,7 +524,7 @@ class BladesDialog extends Dialog {
       (Object.keys(csqData[rollPos]) as [RollResult.partial, RollResult.fail]).forEach((rollResult) => {
         positionCsqData[rollResult] = U.objMap(
           positionCsqData[rollResult],
-          (cData: BladesRoll.ConsequenceData) => this.updateConsequenceData(html, cData)
+          (cData: BladesConsequence.Data) => this.updateConsequenceData(html, cData)
         );
       });
       csqData[rollPos] = positionCsqData;
@@ -547,7 +540,7 @@ class BladesDialog extends Dialog {
   async writeToRollInstance(html: JQuery<HTMLElement>) {
     if (this.parent instanceof BladesRoll) {
       this.updateConsequenceDialog(html, false);
-      await this.parent.setFlagVal("consequenceData", {...this.csqData});
+      await this.parent.updateTarget("consequenceData", this.csqData);
     }
   }
 
@@ -598,7 +591,7 @@ class BladesDialog extends Dialog {
 
   async setFlagVal(target: string, value: unknown) {
     if (this.parent instanceof BladesRoll) {
-      return this.parent.setFlagVal(target, value, false);
+      await this.parent.updateTarget(target, value);
     }
   }
 

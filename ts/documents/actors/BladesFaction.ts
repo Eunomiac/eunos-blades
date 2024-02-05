@@ -67,7 +67,7 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
   }
 
   async deleteClock(clockKeyID: IDString) {
-    await game.eunoblades.ClockKeys.get(clockKeyID)?.delete();
+    await game.eunoblades.ClockKeys.get(clockKeyID)?.delete(game.eunoblades.ClockKeys);
   }
 }
 

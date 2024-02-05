@@ -159,10 +159,27 @@
     <button class="roll-button" data-action="roll" data-roll-id="{{id}}">ROLL</button>
     {{/if}}
   </div>
-  {{#if costData}}
+
+  {{#if (test stressCosts "||" specArmorCost)}}
   <div class="roll-sheet-float-block roll-stress-block {{~#if isGMReady}} gm-ready{{/if}} tooltip-trigger">
-    <span class="shadowed roll-stress-cost">{{{costData.footerLabel}}}</span>
-    <span class="tooltip tooltip-roll-stress">{{{costData.tooltip}}}</span>
+    <span class="shadowed roll-stress-cost">
+      ( Roll Costs&nbsp;
+      {{#if totalStressCost}}<span class="red-bright"><strong>{{totalStressCost}} Stress</strong></span>{{/if}}
+      {{#if (test stressCosts "&&" specArmorCost)}}&nbsp;and&nbsp;{{/if}}
+      {{#if specArmorCost}}your <span class="cyan-bright"><strong>Special Armor</strong></span>{{/if}}
+      )
+    </span>
+    <span class="tooltip tooltip-roll-stress">
+      <h1>Roll Costs</h1>
+      <ul>
+        {{#each stressCosts as |cost label|}}
+        <li><strong class="shadowed">{{label}}: <span class="red-bright">{{cost}}</span> Stress</strong></li>
+        {{/each}}
+        {{#if specArmorCost}}
+        <li><strong class="shadowed">{{specArmorCost}}: <strong class="cyan-bright">Special Armor</strong></strong></li>
+      </ul>
+    </span>
   </div>
   {{/if}}
+
 </section>

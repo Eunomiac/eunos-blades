@@ -19,8 +19,8 @@
   </div>
 
   {{!-- Floating Backgrounds --}}
-  <div class="chat-message-bg roll-position-{{finalPosition}}"></div>
-  <div class="chat-result-bg roll-position-{{finalPosition}} roll-result-{{rollResult}}"></div>
+  <div class="chat-message-bg roll-position-{{rollPositionFinal}}"></div>
+  <div class="chat-result-bg roll-position-{{rollPositionFinal}} roll-result-{{rollResult}}"></div>
 
   {{!-- Roll Trait  --}}
   <h1 class="chat-header roll-trait">
@@ -40,7 +40,7 @@
   <div class="dice-roll-strip">{{{dieValsHTML}}}</div>
 
   {{!-- Result --}}
-  <div class="roll-outcome-container roll-result-{{rollResult}} roll-position-{{finalPosition}} roll-effect-{{finalEffect}} flex-horizontal full-width">
+  <div class="roll-outcome-container roll-result-{{rollResult}} roll-position-{{rollPositionFinal}} roll-effect-{{rollEffectFinal}} flex-horizontal full-width">
 
     {{!-- Background --}}
     <div class="roll-state-background-container"></div>

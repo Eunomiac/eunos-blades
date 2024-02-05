@@ -89,7 +89,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
   }
 
   async deleteClockKey(keyID: string): Promise<void> {
-    await game.eunoblades.ClockKeys.get(keyID)?.delete();
+    await game.eunoblades.ClockKeys.get(keyID)?.delete(game.eunoblades.ClockKeys);
   }
 
   async addClockToKey(keyID: IDString, clockData?: Partial<BladesClock.Data>): Promise<void> {

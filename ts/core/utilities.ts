@@ -1060,10 +1060,23 @@ const zip = <T extends string | number | symbol, U>(keys: T[], values: U[]): Rec
  */
 function objMap<T extends Record<PropertyKey, unknown>|unknown[]>(
   obj: Index<unknown>,
+  valFunc: mapFunc<valFunc>
+): T extends Record<PropertyKey, unknown> ? Record<PropertyKey, unknown> : unknown[]
+function objMap<T extends Record<PropertyKey, unknown>|unknown[]>(
+  obj: Index<unknown>,
+  valFunc: false,
+  keyFunc: mapFunc<keyFunc>
+): T extends Record<PropertyKey, unknown> ? Record<PropertyKey, unknown> : unknown[]
+function objMap<T extends Record<PropertyKey, unknown>|unknown[]>(
+  obj: Index<unknown>,
+  keyFunc: mapFunc<keyFunc>,
+  valFunc: mapFunc<valFunc>
+): T extends Record<PropertyKey, unknown> ? Record<PropertyKey, unknown> : unknown[]
+function objMap<T extends Record<PropertyKey, unknown> | unknown[]>(
+  obj: T,
   keyFunc: mapFunc<keyFunc> | mapFunc<valFunc> | false,
-  valFunc?: mapFunc<valFunc>
+  valFunc?: mapFunc<valFunc> | mapFunc<keyFunc>
 ): T {
-  //
   let valFuncTyped: mapFunc<valFunc> | undefined = valFunc;
   let keyFuncTyped: mapFunc<keyFunc> | false = keyFunc;
 
@@ -1075,12 +1088,14 @@ function objMap<T extends Record<PropertyKey, unknown>|unknown[]>(
     keyFuncTyped = ((k: unknown) => k) as mapFunc<keyFunc>;
   }
 
-  if (isArray(obj)) {return obj.map(valFuncTyped) as T;}
+  if (Array.isArray(obj)) {
+    return obj.map(valFuncTyped) as T;
+  }
 
   return Object.fromEntries(Object.entries(obj).map(([key, val]) => {
     assertNonNullType(valFuncTyped, "function");
     return [(keyFuncTyped as mapFunc<keyFunc>)(key, val), valFuncTyped(val, key)];
-  }));
+  })) as T;
 }
 /**
  * This function returns the 'size' of any reference passed into it, following these rules:
@@ -1807,6 +1822,43 @@ const sleep = (duration: number): Promise<void> => new Promise(
     setTimeout(resolve, duration >= 100 ? duration : duration * 1000);
   }
 );
+
+/**
+ * Waits for a target or targets to resolve before resolving itself.
+ * This function can handle multiple types of input:
+ * - An array of Promises or GSAP animations: The function will wait for all to complete.
+ * - A single Promise or GSAP animation: The function will wait for it to complete.
+ * - Any other value: The function will resolve immediately.
+ *
+ * @overload
+ * @param {Array<Promise<any>|Timeline|Tween>} waitForTarget - An array of Promises or GSAP animations to wait for.
+ * @returns {Promise<void>} A promise that resolves when all the targets have resolved.
+ *
+ * @overload
+ * @param {Promise<any>|Timeline|Tween} waitForTarget - A single Promise or GSAP animation to wait for.
+ * @returns {Promise<void>} A promise that resolves when the target has resolved.
+ *
+ * @overload
+ * @param {any} waitForTarget - Any value. If not a Promise or GSAP animation, the function resolves immediately.
+ * @returns {Promise<void>} A promise that resolves immediately.
+ */
+function waitFor(waitForTarget: Array<Promise<unknown>|gsapAnim>): Promise<void>;
+function waitFor(waitForTarget: Promise<unknown>|gsapAnim|undefined): Promise<void>;
+function waitFor(waitForTarget: unknown): Promise<void>;
+function waitFor(waitForTarget: unknown): Promise<void> {
+  return new Promise<void>(
+    (resolve, reject) => {
+      if (waitForTarget instanceof Promise
+        || waitForTarget instanceof gsap.core.Animation) {
+        waitForTarget.then(() => resolve()).catch(reject);
+      } else if (Array.isArray(waitForTarget)) {
+        Promise.all(waitForTarget.map((target) => waitFor(target))).then(() => resolve()).catch(reject);
+      } else {
+        resolve();
+      }
+    }
+  );
+}
 // #endregion ▄▄▄▄▄ ASYNC ▄▄▄▄▄
 
 const EventHandlers = {
@@ -2057,7 +2109,7 @@ export default {
   TextPlugin, Flip, MotionPathPlugin,
 
   // ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
-  sleep,
+  sleep, waitFor,
 
   // EVENT HANDLERS
   EventHandlers,

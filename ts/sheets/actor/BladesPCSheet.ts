@@ -183,7 +183,7 @@ class BladesPCSheet extends BladesActorSheet {
       selLoadCount: this.actor.system.loadout.levels[
         U.lCase(this.actor.system.loadout.selected as Loadout)
       ],
-      options: C.Loadout.selections,
+      options: C.Loadout.selections as Array<BladesSelectOption<string, string>>,
       selected: this.actor.system.loadout.selected ?? ""
     };
 

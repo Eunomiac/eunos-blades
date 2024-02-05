@@ -473,7 +473,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       const nameLine = csqRoot(`.consequence-name.${config.type}-consequence`);
 
       const footerBg = csqRoot(`.consequence-footer-container .consequence-footer-bg.${config.type}-consequence`);
-      const footerMsg = csqRoot(`.consequence-footer-container .consequence-footer-message.${config.type}-consequence`);
+      const specialFooterMsg = csqRoot(`.consequence-footer-container .consequence-footer-message.${config.type}-consequence`);
 
       const tl = U.gsap.timeline({paused: true, defaults: {}});
 
@@ -526,8 +526,8 @@ export const gsapEffects: Record<string, gsapEffect> = {
       }
 
       // Slide out attribute from left
-      if (footerMsg.length > 0) {
-        tl.fromTo(footerMsg, {
+      if (specialFooterMsg.length > 0) {
+        tl.fromTo(specialFooterMsg, {
           scaleX: 0,
           opacity: 1
         }, {

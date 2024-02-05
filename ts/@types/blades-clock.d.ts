@@ -27,6 +27,8 @@ declare global {
 
     export type Config = BladesTargetLink.Config & Partial<Schema>;
 
+    export type PartialConfig = BladesTargetLink.PartialConfig & Partial<Config>;
+
     export type Data = BladesTargetLink.Data & Schema;
 
     export interface Subclass extends BladesTargetLink.Subclass<Schema>,
@@ -50,8 +52,7 @@ declare global {
       index: ClockIndex, // Location within clock key, starting at 0
     }
 
-    export type Config = BladesTargetLink.Config & Partial<Schema>
-      & Required<Pick<Schema, "parentKeyID">>;
+    export type Config = {parentKey: BladesClockKey} & Partial<Schema>;
 
     export type Data = BladesTargetLink.Data & Schema;
 

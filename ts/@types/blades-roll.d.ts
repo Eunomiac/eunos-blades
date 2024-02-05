@@ -1,4 +1,4 @@
-import {BladesActorType, BladesItemType, BladesPhase, RollType, RollSubType, RollModType, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollPhase, RollResult} from "../core/constants";
+import {BladesActorType, BladesItemType, BladesPhase, RollType, RollSubType, RollModType, RollPermissions, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollPhase, RollResult} from "../core/constants";
 import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
 import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../classes/BladesRoll";
@@ -107,16 +107,19 @@ declare global {
 
       userPermissions: Record<IDString, RollPermissions>,
 
-      template?: string,
-      finalPosition?: Position,
-      finalEffect?: Effect,
+      rollPositionFinal?: Position,
+      rollEffectFinal?: Effect,
       rollResult?: number|false|RollResult,
+      rollResultDelta: number,
+      rollResultFinal?: number|false|RollResult,
       rollTraitVerb?: string,
       rollTraitPastVerb?: string,
-      finalDiceData?: DieData[]
+      finalDiceData?: DieData[],
+
+      isInlineResistanceRoll?: boolean
     }
 
-    export interface Data extends BladesTargetLink.Data, Schema {}
+    export type Data = BladesTargetLink.Data & Schema;
 
     export interface Context extends Data {
       cssClass: string,
@@ -144,9 +147,10 @@ declare global {
       >,
       rollPositionFinal: Position,
       rollEffectFinal: Effect,
+      rollResultFinal: number|false|RollResult,
+      rollResultDelta: number,
       isAffectingResult: boolean,
       isAffectingAfter: boolean,
-      rollResultFinal: number,
 
       rollTraitValOverride?: number,
       rollFactorPenaltiesNegated: Partial<Record<Factor,boolean>>,
@@ -165,7 +169,12 @@ declare global {
 
       oddsHTMLStart: string,
       oddsHTMLStop: string,
-      costData?: Record<"footerLabel"|"tooltip",string>,
+
+      totalStressCost: number,
+      totalArmorCost: number,
+      stressCosts?: Record<string, number>,
+      armorCosts?: Record<string, string>,
+      specArmorCost?: string,
 
       userPermission: RollPermissions,
       gamePhase: BladesPhase,
@@ -237,8 +246,6 @@ declare global {
 
       applyHarm?(amount: num, name: num)
       applyWorsePosition?()
-      spendArmor?()
-      spendSpecialArmor?()
     }
 
 

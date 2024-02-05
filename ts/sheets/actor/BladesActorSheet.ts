@@ -450,7 +450,10 @@ class BladesActorSheet extends ActorSheet {
   async _onRollTraitClick(event: ClickEvent) {
     const traitName = $(event.currentTarget).data("rollTrait");
     const rollType = $(event.currentTarget).data("rollType");
-    const rollData: Partial<BladesRoll.Config> = {};
+    const rollData: BladesRoll.Config = {
+      target: this.actor,
+      targetFlagKey: "rollCollab" as TargetFlagKey
+    };
     if (U.lCase(traitName) in {...ActionTrait, ...AttributeTrait, ...Factor}) {
       rollData.rollTrait = U.lCase(traitName) as ActionTrait|AttributeTrait|Factor;
     } else if (U.isInt(traitName)) {
@@ -475,7 +478,7 @@ class BladesActorSheet extends ActorSheet {
       }
     }
 
-    await BladesRoll.NewRoll(rollData as BladesRoll.ConstructorConfig);
+    await BladesRoll.NewRoll(rollData);
   }
 
   // Returns TRUE if can proceed, FALSE if action should stop (i.e. panel revealed for another user click)
@@ -535,7 +538,9 @@ class BladesActorSheet extends ActorSheet {
       return;
     }
 
-    const config: Partial<BladesRoll.ConstructorConfig> = {
+    const config: BladesRoll.Config = {
+      target: this.actor,
+      targetFlagKey: "rollCollab" as TargetFlagKey,
       rollDowntimeAction: downtimeAction
     };
     // Set necessary fields on roll construction config object, depending on downtime action
@@ -585,18 +590,23 @@ class BladesActorSheet extends ActorSheet {
     });
 
     if ("rollType" in config) {
-      BladesRoll.NewRoll(config as BladesRoll.ConstructorConfig);
+      BladesRoll.NewRoll(config);
     }
   }
+
   async _onGatherInfoClick(event: ClickEvent) {
     const elem$ = $(event.currentTarget);
 
     if (elem$.data("isFortuneRoll")) {
       BladesRoll.NewRoll({
+        target: this.actor,
+        targetFlagKey: "rollCollab" as TargetFlagKey,
         rollType: RollType.Fortune
       });
     } else {
       BladesRoll.NewRoll({
+        target: this.actor,
+        targetFlagKey: "rollCollab" as TargetFlagKey,
         rollType: RollType.Action,
         rollTrait: ""
       });

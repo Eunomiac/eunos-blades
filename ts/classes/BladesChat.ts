@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // #region IMPORTS ~
 import {ApplyTooltipAnimations, ApplyConsequenceAnimations} from "../core/gsap";
-import C, {Position, Effect, RollResult} from "../core/constants";
+import C, {RollType, Position, Effect, RollResult} from "../core/constants";
+import U from "../core/utilities";
 
 import BladesRoll from "./BladesRoll";
 import BladesConsequence from "./BladesConsequence";
@@ -14,7 +15,8 @@ namespace BladesChat {
 
   export interface Flags {
     template: string,
-    rollData?: BladesRoll.Schema
+    rollData?: BladesRoll.Data,
+    resistRollData?: BladesRoll.Data
   }
 }
 
@@ -51,30 +53,43 @@ class BladesChat extends ChatMessage {
     ]);
   }
 
-  static async ConstructRollOutput(rollInst: BladesRoll): Promise<BladesChat> {
-    const template = rollInst.resultChatTemplate;
+  // static async ConstructRollOutput(rollInst: BladesRoll): Promise<BladesChat> {
 
-    const rollData = {
-      ...rollInst.data,
-      rollTraitVerb: rollInst.rollTraitVerb ?? "",
-      rollTraitPastVerb: rollInst.rollTraitPastVerb ?? rollInst.rollTraitVerb ?? ""
-    };
+  //   const rollData = {
+  //     ...rollInst.data,
+  //     rollTraitVerb: rollInst.rollTraitVerb ?? "",
+  //     rollTraitPastVerb: rollInst.rollTraitPastVerb ?? rollInst.rollTraitVerb ?? ""
+  //   };
 
-    return await BladesChat.create({
-      speaker: rollInst.getSpeaker(BladesChat.getSpeaker()),
-      content: await renderTemplate(template, rollData),
-      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flags: {
-        "eunos-blades": {
-          template,
-          rollData
-        }
-      }
-    }) as BladesChat;
+  //   return await BladesChat.create({
+  //     speaker: rollInst.getSpeaker(BladesChat.getSpeaker()),
+  //     content: await renderTemplate(rollInst.template, rollData),
+  //     type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+  //     flags: {
+  //       "eunos-blades": {
+  //         template: rollInst.template,
+  //         rollData
+  //       }
+  //     }
+  //   }) as BladesChat;
+  // }
+
+  static IsNewestRollResult(rollInst: BladesRoll): boolean {
+    const lastRollResultID = $("#chat-log .chat-message .blades-roll:not(.inline-roll)")
+      .last()
+      .attr("id") as IDString|undefined;
+    return typeof lastRollResultID === "string"
+      && lastRollResultID === rollInst.id;
   }
 
   get flagData() {
     return this.flags["eunos-blades"];
+  }
+
+  get rollData() { return this.flagData.rollData; }
+
+  async setFlagVal(scope: KeyOf<BladesChat.Flags>, key: string, val: unknown) {
+    return await this.setFlag(C.SYSTEM_ID, `${scope}.${key}`, val);
   }
 
   get allRollConsequences():
@@ -113,11 +128,14 @@ class BladesChat extends ChatMessage {
     Object.entries(consequenceData)
       .forEach(([position, positionData]) => {
         Object.entries(positionData)
-          .forEach(([rollResult, csqData]) => {
+          .forEach(([rollResult, csqDataSet]) => {
             returnData[position as Position][rollResult as RollResult] = Object.fromEntries(
-              Object.entries(csqData)
+              Object.entries(csqDataSet)
                 .filter(([id, cData]) => cData.id)
-                .map(([id, cData]) => [id, game.eunoblades.Consequences.get(cData.id)] as [IDString, BladesConsequence])
+                .map(([id, cData]) => [
+                  id,
+                  game.eunoblades.Consequences.get(cData.id) ?? new BladesConsequence(cData)
+                ])
             );
           });
       });
@@ -126,36 +144,73 @@ class BladesChat extends ChatMessage {
   }
 
   get rollConsequences(): BladesConsequence[] {
-    if (!this.flagData.rollData) { return []; }
-    const {finalPosition, rollResult, consequenceData} = this.flagData.rollData;
-    if (!finalPosition || !rollResult || !consequenceData) { return []; }
+    if (!this.parentRoll) { return []; }
+    const {rollPositionFinal, rollResult, consequenceData} = this.parentRoll.data;
+    if (!rollPositionFinal || !rollResult || !consequenceData) { return []; }
     if (typeof rollResult !== "string" || !([RollResult.partial, RollResult.fail] as RollResult[]).includes(rollResult)) { return []; }
+
     const activeConsequences = consequenceData
-      ?.[finalPosition]
+      ?.[rollPositionFinal]
       ?.[rollResult as RollResult.partial | RollResult.fail] ?? {};
     return Object.values(activeConsequences)
-      .map((cData) => game.eunoblades.Consequences.get(cData.id))
-      .filter(Boolean) as BladesConsequence[];
+      .map((cData) => game.eunoblades.Consequences.get(cData.id) ?? new BladesConsequence(cData));
   }
 
-  get elem(): HTMLElement|undefined { return $("#chat-log").find(`.chat-message[data-message-id="${this.id}"]`)[0]; }
+  get elem$(): JQuery<HTMLElement> {
+    return $("#chat-log")
+      .find(`.chat-message[data-message-id="${this.id}"]`);
+  }
+  get elem(): HTMLElement|undefined { return this.elem$[0]; }
 
   get isRollResult(): boolean { return "rollData" in this.flagData; }
 
+  get parentRoll(): BladesRoll|undefined {
+    if (!this.isRollResult) { return undefined; }
+    const {rollData} = this.flagData;
+    if (!rollData) { return undefined; }
+    return game.eunoblades.Rolls.get(rollData.id ?? "") ?? new BladesRoll({
+      ...rollData,
+      isScopingById: false
+    });
+  }
+
+  get roll$(): JQuery<HTMLElement>|undefined {
+    return this.parentRoll ? this.elem$.find(`#${this.parentRoll.id}`) : undefined;
+  }
+
   async regenerateFromFlags() {
     if (this.isRollResult) {
-      await this.update({content: await renderTemplate(this.flagData.template, this.flags)});
+      await this.update({content: await renderTemplate(this.flagData.template, this)});
     }
   }
 
   override async render(force: boolean) {
     await super.render(force);
-    if (!this.elem) { eLog.error("BladesChat", `No BladesChat.elem found for id ${this.id}.`); return; }
-    const elem$ = $(this.elem);
-    ApplyTooltipAnimations(elem$);
-    ApplyConsequenceAnimations(elem$);
-    BladesConsequence.ApplyChatListeners(elem$);
-    elem$.addClass("display-ok");
+    await this.activateListeners();
+  }
+
+  async activateListeners() {
+    if (!this.elem$) { eLog.error("BladesChat", `No BladesChat.elem found for id ${this.id}.`); return; }
+    ApplyTooltipAnimations(this.elem$);
+    ApplyConsequenceAnimations(this.elem$);
+    BladesConsequence.ApplyChatListeners(this.elem$);
+    if (this.parentRoll) {
+      this.elem$.addClass(`${this.parentRoll.rollType.toLowerCase()}-roll`);
+
+      if (this.parentRoll.rollType === RollType.Action && this.rollConsequences.some((csq) => !csq.isAccepted)) {
+        this.elem$.addClass("unresolved-action-roll");
+      } else {
+        this.elem$.removeClass("unresolved-action-roll");
+      }
+
+      if (BladesChat.IsNewestRollResult(this.parentRoll)) {
+        $("#chat-log .chat-message").removeClass("active-chat-roll");
+        this.elem$.addClass("active-chat-roll");
+      } else {
+        this.elem$.removeClass("active-chat-roll");
+      }
+    }
+    U.gsap.to(this.elem$, {autoAlpha: 1, duration: 0.15, ease: "none"});
   }
 }
 

@@ -62,7 +62,7 @@ class GlobalGetter {
 
   get actor() { return game.actors.getName("Alistair"); }
 
-  get rollFlags() { return this.roll?.flagData; }
+  get rollData() { return this.roll?.data; }
 
   get userFlags() { return this.user?.flags?.["eunos-blades"]; }
 
@@ -78,12 +78,14 @@ class GlobalGetter {
 
   get rollOpposition() { return this.roll?.rollOpposition; }
 
-  get sheetData() { return this.roll?.getData(); }
+  get sheetData() { return this.roll?.context; }
 
   newActionRoll() {
     const pc = game.actors.getName("Alistair") as BladesPC|undefined;
     if (!pc) {return; }
-    const conf = {
+    const conf: BladesRoll.Config = {
+      target: pc,
+      targetFlagKey: "rollCollab" as TargetFlagKey,
       rollType: RollType.Action,
       rollTrait: ActionTrait.finesse,
       rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id as IDString,
@@ -93,7 +95,7 @@ class GlobalGetter {
         rollPrimaryName: pc.name,
         rollPrimaryType: pc.type,
         rollPrimaryImg: pc.img,
-        rollModsData: pc.rollModsSchemaSet,
+        rollModsSchemaSet: pc.rollModsSchemaSet,
         rollFactors: pc.rollFactors,
         applyHarm: pc.applyHarm,
         applyWorsePosition: pc.applyWorsePosition
@@ -492,7 +494,11 @@ class GlobalGetter {
   newResistanceRoll() {
     const pc = game.actors.getName("Alistair") as BladesPC|undefined;
     if (!pc) { return; }
-    const conf = {
+    const rollID: IDString = randomID() as IDString;
+    const conf: BladesRoll.Config = {
+      id: rollID,
+      target: pc,
+      targetFlagKey: "rollCollab" as TargetFlagKey,
       rollType: RollType.Resistance,
       rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id as IDString,
       rollPrimaryData: {
@@ -501,7 +507,7 @@ class GlobalGetter {
         rollPrimaryName: pc.name,
         rollPrimaryType: pc.type,
         rollPrimaryImg: pc.img,
-        rollModsData: pc.rollModsSchemaSet,
+        rollModsSchemaSet: pc.rollModsSchemaSet,
         rollFactors: pc.rollFactors,
         applyHarm: pc.applyHarm,
         applyWorsePosition: pc.applyWorsePosition
@@ -509,19 +515,22 @@ class GlobalGetter {
       resistanceData: {
         consequence: {
           id: randomID() as IDString,
+          targetID: pc.uuid,
+          primaryID: pc.uuid,
+          targetFlagKey: `rollCollab.${rollID}.resistanceData.consequence` as TargetFlagKey,
+          isScopingById: false,
           name: "Shattered Knee",
-          icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm3],
           type: ConsequenceType.ProwessHarm3,
-          typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm3],
           attribute: AttributeTrait.prowess,
           attributeVal: 3,
-          resistTo: {
+          resistData: {
+            targetID: pc.uuid,
+            primaryID: pc.uuid,
+            targetFlagKey: `rollCollab.${rollID}.resistanceData.consequence.resistData` as TargetFlagKey,
             id: randomID() as IDString,
             name: "Twisted Knee",
-            icon: C.ConsequenceIcons[ConsequenceType.ProwessHarm2],
             type: ConsequenceType.ProwessHarm2,
-            typeDisplay: C.ConsequenceDisplay[ConsequenceType.ProwessHarm2],
-            isSelected: true
+            isScopingById: false
           }
         }
       }
