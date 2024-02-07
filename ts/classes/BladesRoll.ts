@@ -210,22 +210,6 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
       });
   }
 
-  static ParseSchemaSetToDataSet(modSchemaSet: BladesRollMod.Schema[], rollInst: BladesRoll): BladesRollMod.Data[] {
-    const modLinkData = rollInst.linkData;
-    if ("targetKey" in modLinkData) {
-      modLinkData.targetKey = `${modLinkData.targetKey}.${rollInst.id}.rollModsData` as TargetKey;
-    } else {
-      modLinkData.targetFlagKey = `${modLinkData.targetFlagKey}.${rollInst.id}.rollModsData` as TargetFlagKey;
-    }
-
-    return modSchemaSet.map((modSchema) => {
-      return {
-        ...modSchema,
-        ...modLinkData
-      };
-    });
-  }
-
   get status() {
     // USER STATUS of "ForcedOn", "ForcedOff", or "Hidden" trumps all other status values.
     if (this.userStatus && BladesRollMod.GMOnlyModStatuses.includes(this.userStatus)) {
@@ -686,6 +670,34 @@ class BladesRollPrimary implements BladesRoll.PrimaryDocData {
   static IsDoc(doc: unknown): doc is BladesRoll.PrimaryDoc {
     return BladesActor.IsType(doc, BladesActorType.pc, BladesActorType.crew)
       || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker);
+  }
+
+  static BuildData(config: BladesRoll.Config): BladesRoll.PrimaryDocData {
+    if (BladesRollPrimary.IsValidData(config.rollPrimaryData)) {
+      return config.rollPrimaryData;
+    }
+    let rollPrimary: BladesRoll.PrimaryDoc;
+    const rollUser = game.users.get(config.rollUserID ?? game.user.id);
+    if ("target" in config && BladesRollPrimary.IsDoc(config.target)) {
+      rollPrimary = config.target;
+    } else if (BladesRollPrimary.IsDoc(rollUser?.character)) {
+      rollPrimary = rollUser.character as BladesRoll.PrimaryDoc;
+    } else {
+      throw new Error("[BladesRollPrimary.BuildData()] A valid source of PrimaryDocData must be provided to construct a roll.");
+    }
+
+    return {
+      rollPrimaryID: rollPrimary.rollPrimaryID,
+      rollPrimaryName: rollPrimary.rollPrimaryName,
+      rollPrimaryType: rollPrimary.rollPrimaryType,
+      rollPrimaryImg: rollPrimary.rollPrimaryImg,
+      rollModsSchemaSet: rollPrimary.rollModsSchemaSet,
+      rollFactors: rollPrimary.rollFactors
+    };
+  }
+
+  static Build(config: BladesRoll.Config): BladesRollPrimary {
+    return new BladesRollPrimary(undefined, this.BuildData(config));
   }
   // #endregion
 
@@ -1229,19 +1241,18 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   // #region STATIC METHODS: INITIALIZATION & DEFAULTS ~
   static Initialize() {
     return loadTemplates([
-      "systems/eunos-blades/templates/roll/roll-collab.hbs",
-      "systems/eunos-blades/templates/roll/roll-collab-gm.hbs",
       "systems/eunos-blades/templates/roll/partials/roll-collab-gm-number-line.hbs",
       "systems/eunos-blades/templates/roll/partials/roll-collab-gm-select-doc.hbs",
       "systems/eunos-blades/templates/roll/partials/roll-collab-gm-factor-control.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-action.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-action-gm.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-resistance.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-resistance-gm.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-fortune.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-fortune-gm.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-indulgevice.hbs",
-      "systems/eunos-blades/templates/roll/partials/roll-collab-indulgevice-gm.hbs"
+
+      "systems/eunos-blades/templates/roll/roll-collab-action.hbs",
+      "systems/eunos-blades/templates/roll/roll-collab-action-gm.hbs",
+      "systems/eunos-blades/templates/roll/roll-collab-resistance.hbs",
+      "systems/eunos-blades/templates/roll/roll-collab-resistance-gm.hbs",
+      "systems/eunos-blades/templates/roll/roll-collab-fortune.hbs",
+      "systems/eunos-blades/templates/roll/roll-collab-fortune-gm.hbs",
+      "systems/eunos-blades/templates/roll/roll-collab-indulgevice.hbs",
+      "systems/eunos-blades/templates/roll/roll-collab-indulgevice-gm.hbs"
     ]);
   }
 
@@ -1254,7 +1265,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   static override ParseConfigToData<Schema = BladesRoll.Schema>(
-    data: BladesTargetLink.PartialConfig & Partial<BladesRoll.Schema>
+    data: BladesTargetLink.PartialConfig & Partial<BladesRoll.Schema>,
+    parentRoll: BladesRoll
   ): BladesTargetLink.Data & Partial<Schema> {
     if (data.rollPrimaryData instanceof BladesRollPrimary) {
       data.rollPrimaryData = data.rollPrimaryData.data;
@@ -1290,113 +1302,45 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         });
       }
     }
+    data.rollModsData = this.GetRollModsDataSet(parentRoll, Object.values(data.rollModsData ?? {}));
     return BladesTargetLink.ParseConfigToData(data) as BladesTargetLink.Data & Partial<Schema>;
   }
 
   static override ApplySchemaDefaults<Schema = BladesRoll.Schema>(
-    schemaData: Partial<BladesRoll.Schema>,
-    linkData: BladesTargetLink.Data
+    schemaData: Partial<BladesRoll.Schema>
   ) {
     // Ensure all properties of Schema are provided
-    const {rollPrimaryData, rollType} = schemaData;
-    if (!rollPrimaryData) {
-      throw new Error("Must include a rollPrimaryData when constructing a BladesRoll object.");
-    }
-    if (!rollType) {
+    if (!schemaData.rollType) {
       throw new Error("Must include a rollType when constructing a BladesRoll object.");
     }
 
-    return {
-      rollModsData: BladesRoll.GetDefaultRollModsDataSet(linkData),
-      rollPositionInitial: Position.risky,
-      rollEffectInitial: Effect.standard,
-      rollPosEffectTrade: false,
-      rollPhase: RollPhase.Collaboration,
-      GMBoosts: {
-        [Factor.tier]: 0,
-        [Factor.quality]: 0,
-        [Factor.scale]: 0,
-        [Factor.magnitude]: 0
-      },
-      GMOppBoosts: {
-        [Factor.tier]: 0,
-        [Factor.quality]: 0,
-        [Factor.scale]: 0,
-        [Factor.magnitude]: 0
-      },
-      GMOverrides: {},
-      rollFactorToggles: {
-        source: {
-          [Factor.tier]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
-            highFavorsPC: true
-          },
-          [Factor.quality]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
-            highFavorsPC: true
-          },
-          [Factor.scale]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
-            highFavorsPC: true
-          },
-          [Factor.magnitude]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
-            highFavorsPC: true
-          }
-        },
-        opposition: {
-          [Factor.tier]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
-            highFavorsPC: true
-          },
-          [Factor.quality]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
-            highFavorsPC: true
-          },
-          [Factor.scale]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
-            highFavorsPC: true
-          },
-          [Factor.magnitude]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
-            highFavorsPC: true
-          }
-        }
-      },
-      userPermissions: {},
-      ...schemaData,
-      rollType,
-      rollPrimaryData: rollPrimaryData instanceof BladesRollPrimary
-        ? rollPrimaryData.data
-        : rollPrimaryData,
-      rollOppData: schemaData.rollOppData instanceof BladesRollOpposition
-        ? schemaData.rollOppData.data
-        : schemaData.rollOppData
-    } as Schema;
+    schemaData.rollPhase ??= RollPhase.Collaboration;
+    schemaData.GMBoosts = {
+      [Factor.tier]: 0,
+      [Factor.quality]: 0,
+      [Factor.scale]: 0,
+      [Factor.magnitude]: 0,
+      ...schemaData.GMBoosts ?? {}
+    };
+    schemaData.GMOppBoosts = {
+      [Factor.tier]: 0,
+      [Factor.quality]: 0,
+      [Factor.scale]: 0,
+      [Factor.magnitude]: 0,
+      ...schemaData.GMOppBoosts ?? {}
+    };
+    schemaData.GMOverrides ??= {};
+    schemaData.userPermissions ??= {};
+
+    if (schemaData.rollPrimaryData instanceof BladesRollPrimary) {
+      schemaData.rollPrimaryData = schemaData.rollPrimaryData.data;
+    }
+
+    if (schemaData.rollOppData instanceof BladesRollOpposition) {
+      schemaData.rollOppData = schemaData.rollOppData.data;
+    }
+
+    return schemaData as Schema;
   }
 
   // static override get defaultOptions() {
@@ -1413,115 +1357,57 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   // }
 
   protected static get DefaultRollModSchemaSet(): BladesRollMod.Schema[] {
-    return [
-      {
-        key: "Push-positive-roll",
-        name: "PUSH",
-        section: RollModSection.roll,
-        base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: ["ForceOff-Bargain", "Cost-Stress2"],
-        tooltip: "<h1>Push for +1d</h1><p>For <strong class='red-bright'>2 Stress</strong>, add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also accept a <strong class='red-bright'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
-      },
-      {
-        key: "Bargain-positive-roll",
-        name: "Bargain",
-        section: RollModSection.roll,
-        base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1 class='red-bright'>Devil's Bargain</h1><p>The GM has offered you a <strong class='red-bright'>Devil's Bargain</strong>.</p><p><strong class='red-bright'>Accept the terms</strong> to add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also <strong>Push for +1d</strong> to increase your dice pool: It's one or the other.)</em></p>"
-      },
-      {
-        key: "Assist-positive-roll",
-        name: "Assist",
-        section: RollModSection.roll,
-        base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.teamwork,
-        value: 1,
-        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Assists</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> is <strong>Assisting</strong> your efforts, adding <strong class='gold-bright'>1 die</strong> to your pool.</p>"
-      },
-      {
-        key: "Setup-positive-position",
-        name: "Setup",
-        section: RollModSection.position,
-        base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.teamwork,
-        value: 1,
-        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Position</strong> by one level.</p>"
-      },
-      {
-        key: "Push-positive-effect",
-        name: "PUSH",
-        section: RollModSection.effect,
-        base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: ["Cost-Stress2"],
-        tooltip: "<h1>Push for Effect</h1><p>For <strong class='red-bright'>2 Stress</strong>, increase your <strong class='gold-bright'>Effect</strong> by one level.</p>"
-      },
-      {
-        key: "Setup-positive-effect",
-        name: "Setup",
-        section: RollModSection.effect,
-        base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.teamwork,
-        value: 1,
-        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
-      },
-      {
-        key: "Potency-positive-effect",
-        name: "Potency",
-        section: RollModSection.effect,
-        base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        tooltip: "<h1>Potency</h1><p>By circumstance or advantage, you have <strong>Potency</strong> in this action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
-      },
-      {
-        key: "Potency-negative-effect",
-        name: "Potency",
-        section: RollModSection.effect,
-        base_status: RollModStatus.Hidden,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        tooltip: "<h1 class='red-bright'>Potency</h1><p>By circumstance or advantage, <strong class='red-bright'>@OPPOSITION_NAME@</strong> has <strong>Potency</strong> against you, reducing your <strong class='red-bright'>Effect</strong> by one level."
-      }
-    ];
+    /* Subclass overrides determine default roll mods. */
+    return [];
   }
 
-  static GetDefaultRollModsDataSet(rollLinkData: BladesTargetLink.Data): Record<IDString, BladesRollMod.Data> {
-    return Object.fromEntries(BladesRoll.DefaultRollModSchemaSet.map((modSchema) => {
-      const modID = randomID() as IDString;
-      if ("targetKey" in rollLinkData) {
-        return [modID, {
-          id: modID,
-          targetID: rollLinkData.targetID,
-          targetKey: `${rollLinkData.targetKey}.${rollLinkData.id}.rollModsData` as TargetKey,
-          targetFlagKey: "targetFlagKey" in rollLinkData
-            ? `${rollLinkData.targetFlagKey}.${rollLinkData.id}.rollModsData` as TargetFlagKey
-            : undefined,
-          ...modSchema
-        }];
-      } else {
-        return [modID, {
-          id: modID,
-          targetID: rollLinkData.targetID,
-          targetFlagKey: `${rollLinkData.targetFlagKey}.${rollLinkData.id}.rollModsData` as TargetFlagKey,
-          ...modSchema
-        }];
-      }
-    }));
+  static GetRollModsDataSet(
+    rollInst: BladesRoll,
+    rollModsSchemaSet: BladesRollMod.Schema[]
+  ): Record<IDString, BladesRollMod.Data> {
+    const {linkData} = rollInst;
+    const modLinkConfig = {
+      targetID: linkData.targetID,
+      targetKey: "targetKey" in linkData
+        ? "rollModsData" as TargetKey
+        : undefined,
+      targetFlagKey: "targetFlagKey" in linkData
+        ? "rollModsData" as TargetFlagKey
+        : undefined,
+      isScopingById: true
+    } as BladesTargetLink.Config;
+
+    const compiledModSchemaSets = [...rollModsSchemaSet];
+
+    // Add roll mods on rollPrimary
+    if (rollInst.rollPrimary) {
+      compiledModSchemaSets.push(...rollInst.rollPrimary.rollModsSchemaSet
+        .filter((pSchema) => compiledModSchemaSets.every((mSchema) => mSchema.key !== pSchema.key))
+      );
+    }
+
+    // Add roll mods on rollOpposition
+    if (rollInst.rollOpposition?.rollOppModsData) {
+      compiledModSchemaSets.push(...rollInst.rollOpposition.rollOppModsData
+        .filter((oSchema) => compiledModSchemaSets.every((mSchema) => mSchema.key !== oSchema.key))
+      );
+    }
+
+    // Add default roll mods
+    compiledModSchemaSets.push(...this.DefaultRollModSchemaSet
+      .filter((dSchema) => compiledModSchemaSets.every((mSchema) => mSchema.key !== dSchema.key)));
+
+    return Object.fromEntries(compiledModSchemaSets
+      .map((modSchema) => {
+        const modData = BladesTargetLink.ParseConfigToData(
+          {
+            ...BladesRollMod.ApplySchemaDefaults(modSchema),
+            ...modLinkConfig
+          }
+        ) as BladesRollMod.Data;
+        return [modData.id, modData];
+      })
+    );
   }
 
   static GetDieClass(rollType: RollType, rollResult: number | false | RollResult, dieVal: number, dieIndex: number) {
@@ -1733,67 +1619,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     }
   }
 
-  static PrepareActionRollConfig(config: BladesRoll.Config) {
 
-    // Validate the rollTrait
-    if (!(config.rollTrait === "" || U.isInt(config.rollTrait) || U.lCase(config.rollTrait) in {...ActionTrait, ...Factor})) {
-      throw new Error(`[PrepareActionRoll()] Bad RollTrait for Action Roll: ${config.rollTrait}`);
-    }
-
-  }
-
-  static PrepareResistanceRollConfig(config: BladesRoll.Config) {
-
-    // Validate consequenceData
-    if (!config.resistanceData || !BladesConsequence.IsValidConsequenceData(config.resistanceData?.consequence)) {
-      eLog.error("rollCollab", "[PrepareResistanceRoll] Bad Roll Consequence Data.", config);
-      throw new Error("[PrepareResistanceRoll()] Bad Consequence Data for Resistance Roll");
-    }
-
-    // Set rollTrait
-    config.rollTrait = config.resistanceData.consequence.attribute;
-
-    eLog.checkLog3("bladesRoll", "BladesRoll.PrepareResistanceRoll() [1]", {config});
-
-  }
-
-  static PrepareFortuneRollConfig(config: BladesRoll.Config) {
-
-    // Validate the rollTrait
-    if (!(U.isInt(config.rollTrait) || U.lCase(config.rollTrait) in {...ActionTrait, ...AttributeTrait, ...Factor})) {
-      throw new Error(`[PrepareFortuneRoll()] Bad RollTrait for Fortune Roll: ${config.rollTrait}`);
-    }
-
-  }
-
-  static PrepareIndulgeViceRollConfig(config: BladesRoll.Config) {
-
-    // Validate rollPrimary
-    if (!config.rollPrimaryData || !BladesPC.IsType(config.rollPrimaryData.rollPrimaryDoc)) {
-      throw new Error("[BladesRoll.PrepareIndulgeViceRollConfig] RollPrimary must be a PC for Indulge Vice rolls.");
-    }
-
-    // Set rollTrait
-    const {attributes} = config.rollPrimaryData.rollPrimaryDoc;
-    const minAttrVal = Math.min(...Object.values(attributes));
-    config.rollTrait = U.sample(
-      Object.values(AttributeTrait).filter((attr) => attributes[attr] === minAttrVal)
-    )[0];
-
-    // Set other known config values
-    config.rollDowntimeAction = DowntimeAction.IndulgeVice;
-  }
-
-  /**
-   * This static method accepts a partial version of the config options required
-   * to build a BladesRoll instance, sets the requisite flags on the storage
-   * document, then sends out a socket call to the relevant users to construct
-   * and display the roll instance.
-   *
-   * @param {BladesRoll.Config} config The configuration object for the new roll.
-   */
-  static async NewRoll(config: BladesRoll.Config) {
-
+  static override BuildLinkConfig(config: BladesRoll.Config): BladesTargetLink.Config {
     // Prepare partial target link config
     const partialLinkConfig: BladesTargetLink.PartialConfig = {
       target: "target" in config ? config.target : undefined,
@@ -1817,142 +1644,24 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     }
 
     // Build target link config
-    const linkConfig = BladesTargetLink.BuildLinkConfig(partialLinkConfig);
+    return BladesTargetLink.BuildLinkConfig(partialLinkConfig);
+  }
 
-    // If no rollPrimaryData is provided, attempt to derive it from target or user
-    if (!BladesRollPrimary.IsValidData(config.rollPrimaryData)) {
-      let rollPrimary: BladesRoll.PrimaryDoc;
-      const rollUser = game.users.get(config.rollUserID ?? game.user.id);
-      if ("target" in config && BladesRollPrimary.IsDoc(config.target)) {
-        rollPrimary = config.target;
-      } else if (BladesRollPrimary.IsDoc(rollUser?.character)) {
-        rollPrimary = rollUser.character as BladesRoll.PrimaryDoc;
-      } else {
-        throw new Error("[BladesRoll.NewRoll()] A valid source of PrimaryDocData must be provided to construct a roll.");
-      }
+  /**
+   * This static method accepts a partial version of the config options required
+   * to build a BladesRoll instance, sets the requisite flags on the storage
+   * document, then sends out a socket call to the relevant users to construct
+   * and display the roll instance.
+   *
+   * @param {BladesRoll.Config} config The configuration object for the new roll.
+   */
+  static async New(config: BladesRoll.Config) {
 
-      config.rollPrimaryData = {
-        rollPrimaryID: rollPrimary.rollPrimaryID,
-        rollPrimaryName: rollPrimary.rollPrimaryName,
-        rollPrimaryType: rollPrimary.rollPrimaryType,
-        rollPrimaryImg: rollPrimary.rollPrimaryImg,
-        rollModsSchemaSet: rollPrimary.rollModsSchemaSet,
-        rollFactors: rollPrimary.rollFactors,
-        applyHarm: rollPrimary.applyHarm,
-        applyWorsePosition: rollPrimary.applyWorsePosition
-      };
-    }
-
-    // Acquire the roll primary document
-    const {rollPrimaryDoc} = new BladesRollPrimary(undefined, config.rollPrimaryData);
-
-    // Modify Config object depending on subtype where necessary.
-    switch (config.rollSubType) {
-      case RollSubType.Engagement:
-      case RollSubType.Incarceration: {
-        config.rollType = RollType.Fortune;
-        break;
-      }
-      default: break;
-    }
-
-    // Modify Config object depending on downtime action where necessary.
-    switch (config.rollDowntimeAction) { // Remember: Can be done outside of Downtime during Flashbacks!
-      case DowntimeAction.AcquireAsset: {
-        config.rollType = RollType.Action;
-        config.rollTrait = Factor.tier;
-        break;
-      }
-      case DowntimeAction.IndulgeVice: {
-        config.rollType = RollType.IndulgeVice;
-        if (!BladesPC.IsType(rollPrimaryDoc)) {
-          throw new Error("Only a PC character can roll to Indulge Vice.");
-        }
-        const minAttrVal = Math.min(...Object.values(rollPrimaryDoc.attributes));
-        config.rollTrait = U.sample(
-          Object.values(AttributeTrait).filter((attr) => rollPrimaryDoc.attributes[attr] === minAttrVal)
-        )[0];
-        break;
-      }
-      case DowntimeAction.LongTermProject: {
-        config.rollType = RollType.Action;
-        // Validate that rollOppData points to a project item
-        if (!BladesRollOpposition.IsValidData(config.rollOppData)) {
-          throw new Error("No rollOppData provided for LongTermProject roll.");
-        }
-        const rollOpp = new BladesRollOpposition(undefined, config.rollOppData);
-        if (![
-          BladesItemType.project,
-          BladesItemType.design
-        ].includes(rollOpp.rollOppType as BladesItemType)) {
-          throw new Error("rollOppType must be 'project' or 'design' for LongTermProject roll.");
-        }
-        break;
-      }
-      case DowntimeAction.Recover: {
-        config.rollType = RollType.Action;
-        // Validate that rollPrimary is an NPC or a PC with Physiker.
-        if (BladesPC.IsType(rollPrimaryDoc)) {
-          if (!rollPrimaryDoc.abilities.find((ability) => ability.name === "Physiker")) {
-            throw new Error("A PC rollPrimary on a Recovery roll must have the Physiker ability.");
-          }
-          config.rollTrait = ActionTrait.tinker;
-        } else if (rollPrimaryDoc?.rollPrimaryType === BladesActorType.npc) {
-          config.rollTrait = Factor.quality;
-        } else {
-          throw new Error("Only a PC with Physiker or an NPC can be rollPrimary on a Recover roll.");
-        }
-        break;
-      }
-      case DowntimeAction.ReduceHeat: {
-        config.rollType = RollType.Action;
-        // rollPrimary must be a cohort with a parent PC or Crew,
-        // and PC must be member of a crew
-        // and Crew must not have zero Heat.
-        let parentCrew: BladesCrew | undefined = undefined;
-        if (rollPrimaryDoc) {
-          const {parent} = rollPrimaryDoc;
-          if (BladesCrew.IsType(parent)) {
-            parentCrew = parent;
-          } else if (BladesPC.IsType(parent) && BladesCrew.IsType(parent.crew)) {
-            parentCrew = parent.crew;
-          }
-        }
-
-        if (!BladesCrew.IsType(parentCrew)) {
-          throw new Error(`Could not find crew for rollPrimary '${rollPrimaryDoc?.rollPrimaryName}'`);
-        }
-        if (parentCrew.system.heat.value === 0) {
-          throw new Error("Attempt to Reduce Heat for a Crew with no Heat.");
-        }
-        break;
-      }
-      case undefined: break;
-      default: throw new Error(`Unrecognized Roll Downtime Action: ${config.rollDowntimeAction}`);
-    }
+    // Build link config
+    const linkConfig = this.BuildLinkConfig(config);
 
     // Prepare roll user flag data
-    config.userPermissions = BladesRoll.GetUserPermissions(config);
-
-    switch (config.rollType) {
-      case RollType.Action: {
-        BladesRoll.PrepareActionRollConfig(config);
-        break;
-      }
-      case RollType.Resistance: {
-        BladesRoll.PrepareResistanceRollConfig(config);
-        break;
-      }
-      case RollType.Fortune: {
-        BladesRoll.PrepareFortuneRollConfig(config);
-        break;
-      }
-      case RollType.IndulgeVice: {
-        BladesRoll.PrepareIndulgeViceRollConfig(config);
-        break;
-      }
-      default: throw new Error(`Unrecognized Roll Type: ${String(config.rollType)}`);
-    }
+    config.userPermissions = this.GetUserPermissions(config);
 
     // Ensure rollType is defined
     if (!config.rollType) {
@@ -1963,10 +1672,12 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll()", {config});
 
     // Construct and initialize the BladesRoll/BladesTargetLink instance
-    const rollInst = await BladesRoll.Create(config as BladesTargetLink.Config & {rollType: RollType}) as BladesRoll;
+    const rollInst = await BladesRoll.Create({...config, ...linkConfig}) as BladesRoll;
 
     // Send out socket calls to all users to see the roll.
     rollInst.constructRollCollab_SocketCall(rollInst.linkData);
+
+    return rollInst;
   }
   // #endregion
 
@@ -2589,15 +2300,13 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // #region ROLL MODS: Getters & Update Method ~
 
-  initRollMods(modSchemaSet: BladesRollMod.Schema[]) {
+  initRollMods() {
     // Reset override values previously enabled by rollmods
     this.rollTraitValOverride = undefined;
     this.rollFactorPenaltiesNegated = {};
     this.tempGMBoosts = {};
 
-    const modDataSet = BladesRollMod.ParseSchemaSetToDataSet(modSchemaSet, this);
-
-    this.rollMods = modDataSet.map((modData) => new BladesRollMod(modData, this));
+    this.rollMods = Object.values(this.data.rollModsData).map((modData) => new BladesRollMod(modData, this));
 
     // ESLINT DISABLE: Dev Code.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -2981,7 +2690,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    */
   get context() {
 
-    this.initRollMods(this.getRollModsData());
+    this.initRollMods();
     this.rollMods.forEach((rollMod) => rollMod.applyRollModEffectKeys());
 
     return this.getTemplateContext();
@@ -3138,10 +2847,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
    * @returns {BladesRollMod.Data[]} The roll modifications data.
    */
   protected getRollModsData(): BladesRollMod.Data[] {
-    const defaultMods = [
-      ...BladesRoll.DefaultRollModSchemaSet,
-      ...this.rollPrimary.rollModsSchemaSet
-    ];
+    const defaultMods: BladesRollMod.Schema[] = [];
     if (this.rollType === RollType.Fortune) {
       defaultMods.push(...this.getFortuneRollModsSchemaSet());
     }
@@ -3179,10 +2885,12 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         tooltip: "<h1>Reduced Effect</h1><p>A <strong class='red-bright'>Consequence</strong> has worsened your <strong>Effect</strong>.</p>"
       });
     }
-    return BladesRollMod.ParseSchemaSetToDataSet([
-      ...defaultMods,
-      ...this.rollOpposition?.rollOppModsData ?? []
-    ], this);
+    return Object.values(BladesRoll.GetRollModsDataSet(
+      this,
+      [
+        ...defaultMods,
+        ...this.rollOpposition?.rollOppModsData ?? []
+      ]));
   }
 
   /**
@@ -3701,7 +3409,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   // #region *** ROLL COLLAB HTML ELEMENT ***
 
   get collabTemplate(): string {
-    return `systems/eunos-blades/templates/roll/roll-collab${game.user.isGM ? "-gm" : ""}.hbs`;
+    /* Subclass overrides determine template against which data is parsed */
+    throw new Error("[BladesRoll.collabTemplate] Unimplemented by Subclass.");
   }
   get chatTemplate(): string {
     /* Subclass overrides determine template against which data is parsed */
@@ -4111,6 +3820,276 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
 class BladesActionRoll extends BladesRoll {
   /* Not much -- most action roll things will extend to other rolls, but split out things like Position, Effect, default Mods */
+  static override ApplySchemaDefaults<Schema = BladesRoll.Schema>(
+    schemaData: Partial<BladesRoll.Schema>
+  ) {
+    schemaData.rollType = RollType.Action;
+    if (!schemaData.rollPrimaryData) {
+      throw new Error("Must include a rollPrimaryData when constructing a BladesActionRoll object.");
+    }
+    // Validate the rollTrait
+    if (!(schemaData.rollTrait === "" || U.isInt(schemaData.rollTrait) || U.lCase(schemaData.rollTrait) in {...ActionTrait, ...Factor})) {
+      throw new Error(`[BladesActionRoll.ApplySchemaDefaults()] Bad RollTrait for Action Roll: ${schemaData.rollTrait}`);
+    }
+
+    schemaData = super.ApplySchemaDefaults(schemaData);
+
+    const rollPrimary = BladesRollPrimary.Build(schemaData);
+
+    // Modify Config object depending on downtime action where necessary.
+    switch (schemaData.rollDowntimeAction) { // Remember: Can be done outside of Downtime during Flashbacks!
+      case DowntimeAction.AcquireAsset: {
+        schemaData.rollTrait = Factor.tier;
+        break;
+      }
+      case DowntimeAction.LongTermProject: {
+        // Validate that rollOppData points to a project item
+        if (!BladesRollOpposition.IsValidData(schemaData.rollOppData)) {
+          throw new Error("No rollOppData provided for LongTermProject roll.");
+        }
+        const rollOpp = new BladesRollOpposition(undefined, schemaData.rollOppData);
+        if (![
+          BladesItemType.project,
+          BladesItemType.design
+        ].includes(rollOpp.rollOppType as BladesItemType)) {
+          throw new Error("rollOppType must be 'project' or 'design' for LongTermProject roll.");
+        }
+        break;
+      }
+      case DowntimeAction.Recover: {
+        // Validate that rollPrimary is an NPC or a PC with Physiker.
+        if (BladesPC.IsType(rollPrimary.rollPrimaryDoc)) {
+          if (!rollPrimary.rollPrimaryDoc.abilities.find((ability) => ability.name === "Physiker")) {
+            throw new Error("A PC rollPrimary on a Recovery roll must have the Physiker ability.");
+          }
+          schemaData.rollTrait = ActionTrait.tinker;
+        } else if (rollPrimary.rollPrimaryDoc?.rollPrimaryType === BladesActorType.npc) {
+          schemaData.rollTrait = Factor.quality;
+        } else {
+          throw new Error("Only a PC with Physiker or an NPC can be rollPrimary on a Recover roll.");
+        }
+        break;
+      }
+      case DowntimeAction.ReduceHeat: {
+        // rollPrimary must be a cohort with a parent PC or Crew,
+        // and PC must be member of a crew
+        // and Crew must not have zero Heat.
+        let parentCrew: BladesCrew | undefined = undefined;
+        if (rollPrimary.rollPrimaryDoc) {
+          const {parent} = rollPrimary.rollPrimaryDoc;
+          if (BladesCrew.IsType(parent)) {
+            parentCrew = parent;
+          } else if (BladesPC.IsType(parent) && BladesCrew.IsType(parent.crew)) {
+            parentCrew = parent.crew;
+          }
+        }
+
+        if (!BladesCrew.IsType(parentCrew)) {
+          throw new Error(`Could not find crew for rollPrimary '${rollPrimary.rollPrimaryDoc?.rollPrimaryName}'`);
+        }
+        if (parentCrew.system.heat.value === 0) {
+          throw new Error("Attempt to Reduce Heat for a Crew with no Heat.");
+        }
+        break;
+      }
+      case undefined: break;
+      default: throw new Error(`Unrecognized Roll Downtime Action: ${schemaData.rollDowntimeAction}`);
+    }
+
+    return {
+      rollPositionInitial: Position.risky,
+      rollEffectInitial: Effect.standard,
+      rollPosEffectTrade: false,
+      GMBoosts: {
+        [Factor.tier]: 0,
+        [Factor.quality]: 0,
+        [Factor.scale]: 0,
+        [Factor.magnitude]: 0
+      },
+      GMOppBoosts: {
+        [Factor.tier]: 0,
+        [Factor.quality]: 0,
+        [Factor.scale]: 0,
+        [Factor.magnitude]: 0
+      },
+      GMOverrides: {},
+      rollFactorToggles: {
+        source: {
+          [Factor.tier]: {
+            display: "",
+            isActive: false,
+            isPrimary: false,
+            isDominant: false,
+            highFavorsPC: true
+          },
+          [Factor.quality]: {
+            display: "",
+            isActive: false,
+            isPrimary: false,
+            isDominant: false,
+            highFavorsPC: true
+          },
+          [Factor.scale]: {
+            display: "",
+            isActive: false,
+            isPrimary: false,
+            isDominant: false,
+            highFavorsPC: true
+          },
+          [Factor.magnitude]: {
+            display: "",
+            isActive: false,
+            isPrimary: false,
+            isDominant: false,
+            highFavorsPC: true
+          }
+        },
+        opposition: {
+          [Factor.tier]: {
+            display: "",
+            isActive: false,
+            isPrimary: false,
+            isDominant: false,
+            highFavorsPC: true
+          },
+          [Factor.quality]: {
+            display: "",
+            isActive: false,
+            isPrimary: false,
+            isDominant: false,
+            highFavorsPC: true
+          },
+          [Factor.scale]: {
+            display: "",
+            isActive: false,
+            isPrimary: false,
+            isDominant: false,
+            highFavorsPC: true
+          },
+          [Factor.magnitude]: {
+            display: "",
+            isActive: false,
+            isPrimary: false,
+            isDominant: false,
+            highFavorsPC: true
+          }
+        }
+      },
+      ...schemaData,
+      rollPrimaryData: rollPrimary.data,
+      rollOppData: schemaData.rollOppData instanceof BladesRollOpposition
+        ? schemaData.rollOppData.data
+        : schemaData.rollOppData
+    } as Schema;
+  }
+
+  static override get DefaultRollModSchemaSet(): BladesRollMod.Schema[] {
+    return [
+      {
+        key: "Push-positive-roll",
+        name: "PUSH",
+        section: RollModSection.roll,
+        base_status: RollModStatus.ToggledOff,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: ["ForceOff-Bargain", "Cost-Stress2"],
+        tooltip: "<h1>Push for +1d</h1><p>For <strong class='red-bright'>2 Stress</strong>, add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also accept a <strong class='red-bright'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
+      },
+      {
+        key: "Bargain-positive-roll",
+        name: "Bargain",
+        section: RollModSection.roll,
+        base_status: RollModStatus.Hidden,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: [],
+        tooltip: "<h1 class='red-bright'>Devil's Bargain</h1><p>The GM has offered you a <strong class='red-bright'>Devil's Bargain</strong>.</p><p><strong class='red-bright'>Accept the terms</strong> to add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also <strong>Push for +1d</strong> to increase your dice pool: It's one or the other.)</em></p>"
+      },
+      {
+        key: "Assist-positive-roll",
+        name: "Assist",
+        section: RollModSection.roll,
+        base_status: RollModStatus.Hidden,
+        posNeg: "positive",
+        modType: RollModType.teamwork,
+        value: 1,
+        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Assists</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> is <strong>Assisting</strong> your efforts, adding <strong class='gold-bright'>1 die</strong> to your pool.</p>"
+      },
+      {
+        key: "Setup-positive-position",
+        name: "Setup",
+        section: RollModSection.position,
+        base_status: RollModStatus.Hidden,
+        posNeg: "positive",
+        modType: RollModType.teamwork,
+        value: 1,
+        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Position</strong> by one level.</p>"
+      },
+      {
+        key: "Push-positive-effect",
+        name: "PUSH",
+        section: RollModSection.effect,
+        base_status: RollModStatus.ToggledOff,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: ["Cost-Stress2"],
+        tooltip: "<h1>Push for Effect</h1><p>For <strong class='red-bright'>2 Stress</strong>, increase your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+      },
+      {
+        key: "Setup-positive-effect",
+        name: "Setup",
+        section: RollModSection.effect,
+        base_status: RollModStatus.Hidden,
+        posNeg: "positive",
+        modType: RollModType.teamwork,
+        value: 1,
+        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+      },
+      {
+        key: "Potency-positive-effect",
+        name: "Potency",
+        section: RollModSection.effect,
+        base_status: RollModStatus.Hidden,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        tooltip: "<h1>Potency</h1><p>By circumstance or advantage, you have <strong>Potency</strong> in this action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+      },
+      {
+        key: "Potency-negative-effect",
+        name: "Potency",
+        section: RollModSection.effect,
+        base_status: RollModStatus.Hidden,
+        posNeg: "negative",
+        modType: RollModType.general,
+        value: 1,
+        tooltip: "<h1 class='red-bright'>Potency</h1><p>By circumstance or advantage, <strong class='red-bright'>@OPPOSITION_NAME@</strong> has <strong>Potency</strong> against you, reducing your <strong class='red-bright'>Effect</strong> by one level."
+      }
+    ];
+  }
+
+  static override async New(config: BladesRoll.Config): Promise<BladesActionRoll> {
+
+    // Build link config
+    const linkConfig = this.BuildLinkConfig(config);
+
+    const parsedConfig = {
+      ...config,
+      ...linkConfig
+    };
+
+    const rollInst = await this.Create(parsedConfig) as BladesActionRoll;
+
+    return rollInst;
+  }
+
+  override get collabTemplate(): string {
+    return `systems/eunos-blades/templates/roll/roll-collab-action${game.user.isGM ? "-gm" : ""}.hbs`;
+  }
+
   override get chatTemplate(): string {
     const templateParts: string[] = [
       "systems/eunos-blades/templates/chat/roll-result/action",
@@ -4124,7 +4103,7 @@ class BladesActionRoll extends BladesRoll {
     ].includes(this.rollDowntimeAction)) {
       templateParts.push(`-${U.lCase(this.rollDowntimeAction)}`);
     } else if (this.rollSubType && [
-      RollSubType.GatherInfo, //      action-gatherinfo
+      RollSubType.GatherInfo //      action-gatherinfo
     ].includes(this.rollSubType)) {
       templateParts.push(`-${U.lCase(this.rollSubType)}`);
     }
@@ -4175,9 +4154,40 @@ class BladesActionRoll extends BladesRoll {
 
 class BladesResistanceRoll extends BladesRoll {
 
-  static override async New(config: BladesRoll.Config) { }
+  static override ApplySchemaDefaults<Schema>(config: BladesRoll.Config) {
 
-  override get collabTemplate() { return game.user.isGM ? "" : ""; }
+    // Validate consequenceData
+    if (!config.resistanceData || !BladesConsequence.IsValidConsequenceData(config.resistanceData?.consequence)) {
+      eLog.error("rollCollab", "[PrepareResistanceRoll] Bad Roll Consequence Data.", config);
+      throw new Error("[PrepareResistanceRoll()] Bad Consequence Data for Resistance Roll");
+    }
+
+    // Set rollTrait
+    config.rollTrait = config.resistanceData.consequence.attribute;
+
+    eLog.checkLog3("bladesRoll", "BladesRoll.PrepareResistanceRoll() [1]", {config});
+
+    return config as Schema;
+  }
+
+  static override async New(config: BladesRoll.Config): Promise<BladesResistanceRoll> {
+
+    // Build link config
+    const linkConfig = this.BuildLinkConfig(config);
+
+    const parsedConfig = {
+      ...config,
+      ...linkConfig
+    };
+
+    const rollInst = await this.Create(parsedConfig) as BladesResistanceRoll;
+
+    return rollInst;
+  }
+
+  override get collabTemplate(): string {
+    return `systems/eunos-blades/templates/roll/roll-collab-resistance${game.user.isGM ? "-gm" : ""}.hbs`;
+  }
 
   override get chatTemplate(): string {
     return "systems/eunos-blades/templates/chat/roll-result/resistance.hbs";
@@ -4204,23 +4214,80 @@ class BladesResistanceRoll extends BladesRoll {
 
 class BladesInlineResistanceRoll extends BladesResistanceRoll {
 
-  get chatTemplateInline() { return ""; }
+  override get chatTemplate(): string {
+    return "systems/eunos-blades/templates/chat/components/inline-resistance.hbs";
+  }
 
 }
 
 class BladesFortuneRoll extends BladesRoll {
 
-  override get chatTemplate(): string {
-    return [
-      "systems/eunos-blades/templates/chat/roll-result/fortune",
-      this.rollClockKey ? "-clock" : "",
-      this.rollSubType === RollSubType.GatherInfo ? "-gatherinfo" : "",
-      ".hbs"
-    ].join("");
+  static override ApplySchemaDefaults<Schema>(config: BladesRoll.Config) {
+
+    // Validate the rollTrait
+    if (!(U.isInt(config.rollTrait) || U.lCase(config.rollTrait) in {...ActionTrait, ...AttributeTrait, ...Factor})) {
+      throw new Error(`[PrepareFortuneRoll()] Bad RollTrait for Fortune Roll: ${config.rollTrait}`);
+    }
+
+    return config as Schema;
+  }
+
+  static override async New(config: BladesRoll.Config): Promise<BladesFortuneRoll> {
+
+    // Build link config
+    const linkConfig = this.BuildLinkConfig(config);
+
+    const parsedConfig = {
+      ...config,
+      ...linkConfig
+    };
+
+    const rollInst = await this.Create(parsedConfig) as BladesFortuneRoll;
+
+    return rollInst;
   }
 }
 
 class BladesIndulgeViceRoll extends BladesRoll {
+
+  static override ApplySchemaDefaults<Schema>(config: BladesRoll.Config) {
+
+    // Validate rollPrimary
+    if (!config.rollPrimaryData || !BladesPC.IsType(config.rollPrimaryData.rollPrimaryDoc)) {
+      throw new Error("[BladesRoll.PrepareIndulgeViceRollConfig] RollPrimary must be a PC for Indulge Vice rolls.");
+    }
+
+    // Set rollTrait
+    const {attributes} = config.rollPrimaryData.rollPrimaryDoc;
+    const minAttrVal = Math.min(...Object.values(attributes));
+    config.rollTrait = U.sample(
+      Object.values(AttributeTrait).filter((attr) => attributes[attr] === minAttrVal)
+    )[0];
+
+    // Set other known config values
+    config.rollDowntimeAction = DowntimeAction.IndulgeVice;
+
+    return config as Schema;
+  }
+
+  static override async New(config: BladesRoll.Config): Promise<BladesIndulgeViceRoll> {
+
+    // Build link config
+    const linkConfig = this.BuildLinkConfig(config);
+
+    const parsedConfig = {
+      ...config,
+      ...linkConfig
+    };
+
+    const rollInst = await this.Create(parsedConfig) as BladesIndulgeViceRoll;
+
+    return rollInst;
+  }
+
+  override get collabTemplate(): string {
+    return `systems/eunos-blades/templates/roll/roll-collab-indulgevice${game.user.isGM ? "-gm" : ""}.hbs`;
+  }
 
   override get chatTemplate(): string {
     return "systems/eunos-blades/templates/chat/roll-result/indulgevice.hbs";
@@ -4235,7 +4302,6 @@ class BladesIndulgeViceRoll extends BladesRoll {
       this.rollPrimaryDoc.indulgeStress(this.highestDieVal);
     }
   }
-
 
 
 }
@@ -4256,6 +4322,22 @@ class BladesIncarcerationRoll extends BladesFortuneRoll {
 }
 
 // #region EXPORTS ~
-export {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant};
+export {
+  BladesRollMod,
+  BladesRollPrimary,
+  BladesRollOpposition,
+  BladesRollParticipant
+};
+
 export default BladesRoll;
+
+export {
+  BladesActionRoll,
+  BladesResistanceRoll,
+  BladesInlineResistanceRoll,
+  BladesFortuneRoll,
+  BladesIndulgeViceRoll,
+  BladesEngagementRoll,
+  BladesIncarcerationRoll
+};
 // #endregion

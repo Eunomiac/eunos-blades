@@ -27,8 +27,7 @@ declare global {
 
     export type Data = LinkData & {
       id: IDString,
-      isScopingById: boolean,
-      template?: string
+      isScopingById: boolean
     };
 
     export type Config = ({

@@ -49,6 +49,7 @@ class BladesChat extends ChatMessage {
       "systems/eunos-blades/templates/chat/roll-result/indulgevice.hbs",
       "systems/eunos-blades/templates/chat/roll-result/resistance.hbs",
 
+      "systems/eunos-blades/templates/chat/components/inline-resistance.hbs",
       "systems/eunos-blades/templates/chat/components/die.hbs"
     ]);
   }

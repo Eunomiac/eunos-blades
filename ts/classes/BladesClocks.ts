@@ -106,7 +106,8 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   }
 
   static override async Create<Schema = BladesClockKey.Schema>(
-    config: BladesClockKey.Config & Partial<Schema>,
+    config: BladesClockKey.PartialConfig & Partial<Schema>,
+    _parentLinkData: undefined,
     clocksInitialData: Array<Partial<BladesClock.Schema>> = []
   ) {
 

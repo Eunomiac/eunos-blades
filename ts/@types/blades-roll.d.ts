@@ -81,7 +81,7 @@ declare global {
       userPermissions?: Record<IDString, RollPermissions>
     }
 
-    export type Config = UnlinkedConfig & BladesTargetLink.Config;
+    export type Config = UnlinkedConfig & BladesTargetLink.PartialConfig;
 
     export interface Schema extends Omit<Config, "rollClockKey"|"rollPrimaryData"|"rollOppData"|"rollParticipantData"> {
       rollPrompt?: string;
