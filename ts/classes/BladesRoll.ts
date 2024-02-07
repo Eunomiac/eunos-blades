@@ -2794,7 +2794,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         modType: RollModType.general,
         value: 0,
         effectKeys: [],
-        tooltip: "<h1>Buying Result Level</h1><p>After your roll, you can <strong>increase the result level</strong> by one for each <strong class=\"gold-bright\">Coin</strong> you spend.</p>"
+        tooltip: "<h1>Buying Level</h1><p>After your roll, you can <strong>increase the result level</strong> by one for each <strong class=\"gold-bright\">Coin</strong> you spend.</p>"
       });
     }
     switch (this.rollDowntimeAction) {
