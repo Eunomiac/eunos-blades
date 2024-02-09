@@ -7,7 +7,7 @@ import BladesRoll from "../../classes/BladesRoll";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 class BladesProject extends BladesItem implements BladesItemSubClass.Project,
-  BladesRoll.OppositionDocData {
+  BladesRoll.OppositionData {
 
   // #region INITIALIZATION ~
   static async Initialize() {

@@ -4,8 +4,8 @@ import BladesNPCSheet from "../../sheets/actor/BladesNPCSheet";
 import BladesRoll from "../../classes/BladesRoll";
 
 class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
-                                               BladesRoll.OppositionDocData,
-                                               BladesRoll.ParticipantDocData {
+                                               BladesRoll.OppositionData,
+                                               BladesRoll.ParticipantData {
 
 
   // #region INITIALIZATION ~
@@ -62,7 +62,7 @@ class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
 
   get rollOppType() { return this.type; }
 
-  get rollOppModsData(): BladesRollMod.Schema[] { return []; }
+  get rollOppModsSchemaSet(): BladesRollMod.Schema[] { return []; }
   // #endregion
 
   // #region BladesRoll.ParticipantDoc Implementation
@@ -76,7 +76,7 @@ class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
 
   get rollParticipantType() { return this.type; }
 
-  get rollParticipantModsData(): BladesRollMod.Schema[] { return []; }
+  get rollParticipantModsSchemaSet(): BladesRollMod.Schema[] { return []; }
   // #endregion
 
   // #endregion

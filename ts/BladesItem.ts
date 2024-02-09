@@ -216,7 +216,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
     ].includes(this.type)) {
       throw new Error(`BladesItem of type '${this.type}' ("${this.name}") cannot be RollPrimary.`);
     }
-    return this.type as BladesRoll.PrimaryDocType; }
+    return this.type as BladesRoll.PrimaryType; }
 
   get rollPrimaryImg() { return this.img; }
 
@@ -286,9 +286,9 @@ class BladesItem extends Item implements BladesDocument<Item>,
     ].includes(this.type)) {
       throw new Error(`BladesItem of type '${this.type}' ("${this.name}") cannot be RollOpposition.`);
     }
-    return this.type as BladesRoll.OppositionDocType; }
+    return this.type as BladesRoll.OppositionType; }
 
-  get rollOppModsData(): BladesRollMod.Schema[] { return []; }
+  get rollOppModsSchemaSet(): BladesRollMod.Schema[] { return []; }
   // #endregion
 
   // #region BladesRoll.ParticipantDoc Implementation
@@ -308,9 +308,9 @@ class BladesItem extends Item implements BladesDocument<Item>,
     ].includes(this.type)) {
       throw new Error(`BladesItem of type '${this.type}' ("${this.name}") cannot be RollParticipant.`);
     }
-    return this.type as BladesRoll.ParticipantDocType; }
+    return this.type as BladesRoll.ParticipantType; }
 
-  get rollParticipantModsData(): BladesRollMod.Schema[] { return []; }
+  get rollParticipantModsSchemaSet(): BladesRollMod.Schema[] { return []; }
   // #endregion
 
   // #endregion

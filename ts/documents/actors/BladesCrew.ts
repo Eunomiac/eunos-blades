@@ -10,8 +10,8 @@ import {SelectionCategory} from "../../classes/BladesDialog";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
-  BladesRoll.PrimaryDocData,
-  BladesRoll.ParticipantDocData {
+  BladesRoll.PrimaryData,
+  BladesRoll.ParticipantData {
 
   // #region INITIALIZATION ~
   static async Initialize() {
@@ -162,7 +162,7 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
 
   get rollParticipantType() {return this.type;}
 
-  get rollParticipantModsData(): BladesRollMod.Schema[] {return [];}
+  get rollParticipantModsSchemaSet(): BladesRollMod.Schema[] {return [];}
 
   async applyHarm(_amount: number, _name: string) {
     console.error("Attempt to apply harm directly to a Crew document.");

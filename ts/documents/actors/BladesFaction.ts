@@ -4,7 +4,7 @@ import BladesFactionSheet from "../../sheets/actor/BladesFactionSheet";
 import BladesClockKey from "../../classes/BladesClocks";
 
 class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
-                                                   BladesRoll.OppositionDocData {
+                                                   BladesRoll.OppositionData {
 
 
   // #region INITIALIZATION ~
@@ -37,7 +37,7 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
 
   get rollOppType() { return this.type; }
 
-  get rollOppModsData(): BladesRollMod.Schema[] { return []; }
+  get rollOppModsSchemaSet(): BladesRollMod.Schema[] { return []; }
   // #endregion
 
   // #endregion

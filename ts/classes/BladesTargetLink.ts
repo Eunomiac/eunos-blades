@@ -243,14 +243,14 @@ class BladesTargetLink<Schema> {
    *
    * @throws {Error} - Throws an error if the initialization of the target link fails.
    */
-  static async Create<Schema>(
+  static async Create<C extends BladesTargetLink<Schema>, Schema>(
     this: new (
       config: BladesTargetLink.PartialConfig & Partial<Schema>,
       parentLinkData?: BladesTargetLink.PartialData
-    ) => BladesTargetLink<Schema>,
+    ) => C,
     config: BladesTargetLink.PartialConfig & Partial<Schema>,
     parentLinkData?: BladesTargetLink.PartialData
-  ) {
+  ): Promise<C> {
     const tLink = new this(config, parentLinkData);
     await tLink.initTargetLink();
     return tLink;

@@ -663,11 +663,10 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
       && typeof data.rollPrimaryImg === "string"
       && Array.isArray(data.rollModsData)
       && U.isList(data.rollFactors)
-      && (!data.rollPrimaryID || typeof data.rollPrimaryID === "string")
-      && (!data.rollPrimaryDoc || BladesRollPrimary.IsDoc(data.rollPrimaryDoc));
+      && (!data.rollPrimaryID || typeof data.rollPrimaryID === "string");
   }
 
-  static GetDoc(docRef: unknown): BladesRoll.PrimaryDoc|false {
+  static GetDoc(docRef: unknown): BladesRoll.PrimaryDoc {
     let doc: unknown = docRef;
     if (typeof docRef === "string") {
       doc = game.actors.get(docRef)
@@ -675,7 +674,10 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
         ?? game.actors.getName(docRef)
         ?? game.items.getName(docRef);
     }
-    return BladesRollPrimary.IsDoc(doc) && doc;
+    if (BladesRollPrimary.IsDoc(doc)) {
+      return doc;
+    }
+    throw new Error(`[BladesRollPrimary.GetDoc] Unable to resolve document reference. Provided reference: ${JSON.stringify(docRef)}`);
   }
 
   static IsDoc(doc: unknown): doc is BladesRoll.PrimaryDoc {
@@ -683,7 +685,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
       || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker);
   }
 
-  static BuildData(config: BladesRoll.Config): BladesRoll.PrimaryData {
+  static #buildData(config: BladesRoll.Config): BladesRoll.PrimaryData {
     if (BladesRollPrimary.IsValidData(config.rollPrimaryData)) {
       return config.rollPrimaryData;
     }
@@ -708,54 +710,24 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
   }
 
   static Build(config: BladesRoll.Config): BladesRollPrimary {
-    return new BladesRollPrimary(this.BuildData(config));
+    return new BladesRollPrimary(this.#buildData(config));
   }
   // #endregion
 
   rollInstance?: BladesRoll;
 
-  rollPrimaryID: IDString | undefined;
+  rollPrimaryID: IDString;
 
   _rollPrimaryDoc: BladesRoll.PrimaryDoc | undefined;
-
   get rollPrimaryDoc() {
-    if (!this._rollPrimaryDoc) {
-      let doc: unknown;
-      if (this.rollPrimaryID) {
-        doc = game.items.get(this.rollPrimaryID)
-          ?? game.actors.get(this.rollPrimaryID);
-      }
-      if (!doc && this.rollPrimaryName) {
-        doc = game.items.getName(this.rollPrimaryName)
-          ?? game.actors.getName(this.rollPrimaryName);
-      }
-      if (BladesRollPrimary.IsDoc(doc)) {
-        this._rollPrimaryDoc = doc;
-      }
-    }
-    return this._rollPrimaryDoc;
+    return (this._rollPrimaryDoc ??= BladesRollPrimary.GetDoc(this.rollPrimaryID));
   }
 
-  rollPrimaryName: string;
-
-  rollPrimaryType: BladesRoll.PrimaryType;
-
-  rollPrimaryImg: string;
-
-  rollPrimaryModsSchemaSet: BladesRollMod.Schema[];
-
-  rollFactors: Partial<Record<Factor, BladesRoll.FactorData>>;
-
-  get data(): BladesRoll.PrimaryData {
-    return {
-      rollPrimaryID: this.rollPrimaryID,
-      rollPrimaryName: this.rollPrimaryName,
-      rollPrimaryType: this.rollPrimaryType,
-      rollPrimaryImg: this.rollPrimaryImg,
-      rollPrimaryModsSchemaSet: this.rollPrimaryModsSchemaSet,
-      rollFactors: this.rollFactors
-    };
-  }
+  get rollPrimaryName(): string { return this.rollPrimaryDoc.rollPrimaryName; }
+  get rollPrimaryType(): BladesRoll.PrimaryType { return this.rollPrimaryDoc.rollPrimaryType; }
+  get rollPrimaryImg(): string { return this.rollPrimaryDoc.rollPrimaryImg; }
+  get rollPrimaryModsSchemaSet() { return this.rollPrimaryDoc.rollModsSchemaSet; }
+  get rollFactors() { return this.rollPrimaryDoc.rollFactors; }
 
   get isWorsePosition(): boolean {
     if (this.rollPrimaryDoc) {
@@ -855,7 +827,6 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
   )
   constructor(...args: unknown[]) {
 
-    let primaryData: BladesRoll.PrimaryData|false = false;
     let primaryDoc: BladesRoll.PrimaryDoc|false = false;
 
     if (args[0] instanceof BladesRoll) {
@@ -864,54 +835,22 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
     }
     if (BladesRollPrimary.IsDoc(args[0])) {
       primaryDoc = args[0];
-    } else if (BladesRollPrimary.IsValidData(args[0])) {
-      primaryData = args[0];
     } else if (U.isList(args[0])) {
       if ("rollPrimaryID" in args[0]) {
         primaryDoc = BladesRollPrimary.GetDoc(args[0].rollPrimaryID);
       } else if ("rollPrimaryName" in args[0]) {
         primaryDoc = BladesRollPrimary.GetDoc(args[0].rollPrimaryName);
       }
-    }
-    if (primaryDoc && !BladesRollPrimary.IsValidData(primaryData)) {
-      primaryData = {
-        rollPrimaryID: primaryDoc.rollPrimaryID,
-        rollPrimaryName: primaryDoc.rollPrimaryName,
-        rollPrimaryType: primaryDoc.rollPrimaryType,
-        rollPrimaryImg: primaryDoc.rollPrimaryImg,
-        rollPrimaryModsSchemaSet: primaryDoc.rollModsSchemaSet,
-        rollFactors: primaryDoc.rollFactors
-      };
-    }
-    if (!BladesRollPrimary.IsValidData(primaryData) && !BladesRollPrimary.IsDoc(primaryDoc) && this.rollInstance) {
-      primaryData = this.rollInstance.rollPrimary.data;
-    }
-    if (!BladesRollPrimary.IsValidData(primaryData)) {
-      throw new Error(`[BladesRoll.constructor] Failed to resolve primary data from provided arguments: ${JSON.stringify(args)}`);
+    } else if (this.rollInstance) {
+      primaryDoc = this.rollInstance.rollPrimary.rollPrimaryDoc ?? false;
     }
 
-    const {
-      rollPrimaryID,
-      rollPrimaryName,
-      rollPrimaryType,
-      rollPrimaryImg,
-      rollPrimaryModsSchemaSet,
-      rollFactors
-    } = primaryData;
+    if (!primaryDoc) {
+      throw new Error(`[BladesRollPrimary.constructor] Failed to resolve primary document or data from provided arguments: ${JSON.stringify(args)}`);
+    }
 
-    this.rollPrimaryID = rollPrimaryID;
-
-    if (!rollPrimaryName) {throw new Error("Must include a rollPrimaryName when constructing a BladesRollPrimary object.");}
-    if (!rollPrimaryImg) {throw new Error("Must include a rollPrimaryImg when constructing a BladesRollPrimary object.");}
-    if (!rollPrimaryType) {throw new Error("Must include a rollPrimaryType when constructing a BladesRollPrimary object.");}
-    if (!rollFactors) {throw new Error("Must include a rollFactors when constructing a BladesRollPrimary object.");}
-
-    this.rollPrimaryName = rollPrimaryName;
-    this.rollPrimaryType = rollPrimaryType;
-    this.rollPrimaryImg = rollPrimaryImg;
-    this.rollFactors = rollFactors;
-
-    this.rollPrimaryModsSchemaSet = rollPrimaryModsSchemaSet ?? [];
+    this.rollPrimaryID = primaryDoc.rollPrimaryID;
+    this._rollPrimaryDoc = primaryDoc;
   }
   // #endregion
 }
@@ -931,7 +870,7 @@ class BladesRollOpposition implements BladesRoll.OppositionData {
       && (!data.rollOppID || typeof data.rollOppID === "string");
   }
 
-  static GetDoc(docRef: unknown): BladesRoll.OppositionDoc | false {
+  static GetDoc(docRef: unknown): BladesRoll.OppositionDoc {
     let doc: unknown = docRef;
     if (typeof docRef === "string") {
       doc = game.actors.get(docRef)
@@ -942,7 +881,7 @@ class BladesRollOpposition implements BladesRoll.OppositionData {
     if (BladesRollOpposition.IsDoc(doc)) {
       return doc;
     }
-    return false;
+    throw new Error(`[BladesRollOpposition.GetDoc] Unable to resolve document reference. Provided reference: ${JSON.stringify(docRef)}`);
   }
 
   static IsDoc(doc: unknown): doc is BladesRoll.OppositionDoc {
@@ -958,107 +897,65 @@ class BladesRollOpposition implements BladesRoll.OppositionData {
 
   rollInstance: BladesRoll;
 
-  rollOppID?: IDString;
+  rollOppID: IDString;
 
-  rollOppDoc?: BladesRoll.OppositionDoc;
+  _rollOppDoc: BladesRoll.OppositionDoc | undefined;
+  get rollOppDoc() {
+    return (this._rollOppDoc ??= BladesRollOpposition.GetDoc(this.rollOppID));
+  }
 
-  rollOppName: string;
-
-  rollOppSubName?: string;
-
-  rollOppType: BladesRoll.OppositionType;
-
-  rollOppImg: string;
-
-  rollOppModsSchemaSet: BladesRollMod.Schema[];
-
-  rollFactors: Partial<Record<Factor, BladesRoll.FactorData>>;
+  get rollOppName(): string { return this.rollOppDoc.rollOppName; }
+  get rollOppSubName(): string | undefined { return this.rollOppDoc.rollOppSubName; }
+  get rollOppType(): BladesRoll.OppositionType { return this.rollOppDoc.rollOppType; }
+  get rollOppImg(): string { return this.rollOppDoc.rollOppImg; }
+  get rollOppModsSchemaSet() { return this.rollOppDoc.rollOppModsSchemaSet; }
+  get rollFactors() { return this.rollOppDoc.rollFactors; }
 
   // #region Constructor ~
-  constructor(rollInstance: BladesRoll,
-    {
-      rollOppID,
-      rollOppName,
-      rollOppSubName,
-      rollOppType,
-      rollOppImg,
-      rollOppModsSchemaSet,
-      rollFactors
-    }: Partial<BladesRoll.OppositionData> = {}) {
+  constructor(
+    rollInst: BladesRoll,
+    rollOppDoc: BladesRoll.OppositionDoc
+  )
+  constructor(
+    rollInst: BladesRoll,
+    rollOppData?: Partial<BladesRoll.OppositionData>
+  )
+  constructor(...args: unknown[]) {
 
-    this.rollInstance = rollInstance;
+    let oppDoc: BladesRoll.OppositionDoc|false = false;
 
-    // Attempt to fetch an associated BladesActor or BladesItem document
-    const doc = BladesRollOpposition.GetDoc(rollOppID ?? rollOppName);
-
-    if (doc) {
-      // Derive settings from valid Actor/Item document, unless explicitly set in constructor.
-      this.rollOppDoc = doc;
-      rollOppID = doc.rollOppID;
-      rollOppName ??= doc.rollOppName;
-      rollOppSubName ??= doc.rollOppSubName;
-      rollOppType ??= doc.rollOppType;
-      rollOppImg ??= doc.rollOppImg;
-      rollOppModsSchemaSet = [
-        ...rollOppModsSchemaSet ?? [],
-        ...doc.rollOppModsSchemaSet ?? []
-      ];
-      rollFactors = {
-        ...doc.rollFactors,
-        ...rollFactors ?? {}
-      };
+    if (args[0] instanceof BladesRoll) {
+      this.rollInstance = args[0];
+      args.shift();
+    } else {
+      throw new Error(`[BladesRollOpp.constructor] First argument is not an instance of BladesRoll. Received arguments: ${JSON.stringify(args)}`);
+    }
+    if (BladesRollOpposition.IsDoc(args[0])) {
+      oppDoc = args[0];
+    } else if (U.isList(args[0])) {
+      if ("rollOppID" in args[0]) {
+        oppDoc = BladesRollOpposition.GetDoc(args[0].rollOppID);
+      } else if ("rollOppName" in args[0]) {
+        oppDoc = BladesRollOpposition.GetDoc(args[0].rollOppName);
+      }
+    } else if (this.rollInstance) {
+      oppDoc = this.rollInstance.rollOpposition?.rollOppDoc ?? false;
     }
 
-    // Confirm required settings
-    if (!rollOppName) {throw new Error("Must include a rollOppName when constructing a BladesRollOpposition object.");}
-    if (!rollOppType) {throw new Error("Must include a rollOppType when constructing a BladesRollOpposition object.");}
-    if (!rollFactors) {throw new Error("Must include a rollFactors when constructing a BladesRollOpposition object.");}
+    if (!oppDoc) {
+      throw new Error(`[BladesRollOpp.constructor] Failed to resolve Opp document or data from provided arguments: ${JSON.stringify(args)}`);
+    }
 
-    // Initialize properties
-    this.rollOppID = rollOppID;
-    this.rollOppName = rollOppName;
-    this.rollOppSubName = rollOppSubName;
-    this.rollOppType = rollOppType;
-    this.rollOppImg = rollOppImg ?? "";
-    this.rollOppModsSchemaSet = rollOppModsSchemaSet ?? [];
-    this.rollFactors = rollFactors;
+    this.rollOppID = oppDoc.rollOppID;
+    this._rollOppDoc = oppDoc;
   }
   // #endregion
 
-  get data(): BladesRoll.OppositionData {
-    return {
-      rollOppID: this.rollOppID,
-      rollOppName: this.rollOppName,
-      rollOppSubName: this.rollOppSubName,
-      rollOppType: this.rollOppType,
-      rollOppImg: this.rollOppImg,
-      rollOppModsSchemaSet: this.rollOppModsSchemaSet,
-      rollFactors: this.rollFactors
-    };
-  }
-
   async updateRollFlags() {
     if (!this.rollInstance) {return;}
-    await this.rollInstance.updateTarget("rollOppData", this.data);
+    await this.rollInstance.updateTarget("rollOppData", this);
     socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
   }
-
-  refresh() {
-    if (!this.rollInstance) {return;}
-    const rollOppFlags = this.rollInstance.data.rollOppData;
-    if (rollOppFlags) {
-      this.rollOppID = rollOppFlags.rollOppID;
-      this.rollOppName = rollOppFlags.rollOppName;
-      this.rollOppSubName = rollOppFlags.rollOppSubName;
-      this.rollOppType = rollOppFlags.rollOppType;
-      this.rollOppImg = rollOppFlags.rollOppImg;
-
-      this.rollOppModsSchemaSet = rollOppFlags.rollOppModsSchemaSet ?? [];
-      this.rollFactors = rollOppFlags.rollFactors;
-    }
-    return this;
-  }
-
 }
 
 class BladesRollParticipant implements BladesRoll.ParticipantData {
@@ -1076,7 +973,7 @@ class BladesRollParticipant implements BladesRoll.ParticipantData {
       && (!data.rollParticipantDoc || BladesRollParticipant.IsDoc(data.rollParticipantDoc));
   }
 
-  static GetDoc(docRef: unknown): BladesRoll.ParticipantDoc | false {
+  static GetDoc(docRef: unknown): BladesRoll.ParticipantDoc {
     let doc: unknown = docRef;
     if (typeof docRef === "string") {
       doc = game.actors.get(docRef)
@@ -1087,7 +984,7 @@ class BladesRollParticipant implements BladesRoll.ParticipantData {
     if (BladesRollParticipant.IsDoc(doc)) {
       return doc;
     }
-    return false;
+    throw new Error(`[BladesRollParticipant.GetDoc] Unable to resolve document reference. Provided reference: ${JSON.stringify(docRef)}`);
   }
 
   static IsDoc(doc: unknown): doc is BladesRoll.ParticipantDoc {
@@ -1098,23 +995,33 @@ class BladesRollParticipant implements BladesRoll.ParticipantData {
 
   rollInstance: BladesRoll;
 
-  rollParticipantID?: IDString;
-
-  rollParticipantDoc?: BladesRoll.ParticipantDoc;
-
-  rollParticipantName: string;
-
-  rollParticipantType: BladesRoll.ParticipantType;
-
-  rollParticipantIcon: string;
+  rollParticipantID: IDString;
 
   rollParticipantSection: BladesRoll.ParticipantSection;
 
   rollParticipantSubSection: BladesRoll.ParticipantSubSection;
 
-  rollParticipantModsSchemaSet: BladesRollMod.Schema[]; // As applied to MAIN roll when this participant involved
+  _rollParticipantDoc: BladesRoll.ParticipantDoc | undefined;
+  get rollParticipantDoc() {
+    return (this._rollParticipantDoc ??= BladesRollParticipant.GetDoc(this.rollParticipantID));
+  }
 
-  rollFactors: Partial<Record<Factor, BladesRoll.FactorData>>;
+  get rollParticipantName(): string { return this.rollParticipantDoc.rollParticipantName; }
+  get rollParticipantType(): BladesRoll.ParticipantType { return this.rollParticipantDoc.rollParticipantType; }
+  get rollParticipantIcon(): string { return this.rollParticipantDoc.rollParticipantIcon; }
+  get rollParticipantModsSchemaSet() { return this.rollParticipantDoc.rollParticipantModsSchemaSet; }
+  get rollFactors() { return this.rollParticipantDoc.rollFactors; }
+
+  get data(): BladesRoll.ParticipantData {
+    return {
+      rollParticipantID: this.rollParticipantID,
+      rollParticipantName: this.rollParticipantName,
+      rollParticipantType: this.rollParticipantType,
+      rollParticipantIcon: this.rollParticipantIcon,
+      rollParticipantModsSchemaSet: this.rollParticipantModsSchemaSet,
+      rollFactors: this.rollFactors
+    };
+  }
 
   // #region Constructor ~
   constructor(
@@ -1127,86 +1034,56 @@ class BladesRollParticipant implements BladesRoll.ParticipantData {
     rollInstance: BladesRoll,
     section: BladesRoll.ParticipantSection,
     subSection: BladesRoll.ParticipantSubSection,
-    rollParticipantData: BladesRoll.ParticipantData
+    rollParticipantData?: BladesRoll.ParticipantData
   )
   constructor(
     rollInstance: BladesRoll,
     section: BladesRoll.ParticipantSection,
     subSection: BladesRoll.ParticipantSubSection,
-    rollParticipantDataOrDoc: BladesRoll.ParticipantDoc | BladesRoll.ParticipantData
+    rollParticipantDataOrDoc?: BladesRoll.ParticipantDoc | BladesRoll.ParticipantData
   ) {
 
     this.rollInstance = rollInstance;
-
-    if (!section) {throw new Error("Must include a rollParticipantSection when constructing a BladesRollParticipant object.");}
-    if (!subSection) {throw new Error("Must include a rollParticipantSubSection when constructing a BladesRollParticipant object.");}
     this.rollParticipantSection = section;
     this.rollParticipantSubSection = subSection;
 
-    // Attempt to fetch an associated BladesActor or BladesItem document
-    const doc = BladesRollParticipant.IsDoc(rollParticipantDataOrDoc)
-      ? rollParticipantDataOrDoc
-      : BladesRollParticipant.GetDoc(
-        rollParticipantDataOrDoc.rollParticipantID ?? rollParticipantDataOrDoc.rollParticipantName
-      );
+    let participantDoc: BladesRoll.ParticipantDoc|false = false;
 
-    if (doc) {
-      rollParticipantDataOrDoc = doc;
+    if (BladesRollParticipant.IsDoc(rollParticipantDataOrDoc)) {
+      participantDoc = rollParticipantDataOrDoc;
+    } else if (U.isList(rollParticipantDataOrDoc)) {
+      if ("rollParticipantID" in rollParticipantDataOrDoc) {
+        participantDoc = BladesRollParticipant.GetDoc(rollParticipantDataOrDoc.rollParticipantID);
+      } else if ("rollParticipantName" in rollParticipantDataOrDoc) {
+        participantDoc = BladesRollParticipant.GetDoc(rollParticipantDataOrDoc.rollParticipantName);
+      }
+    } else if (this.rollInstance
+      && this.rollInstance.rollParticipants
+      && section in this.rollInstance.rollParticipants
+      && this.rollInstance.rollParticipants[section]
+      && subSection in (this.rollInstance.rollParticipants[section] ?? {})
+    ) {
+      const participants = this.rollInstance.rollParticipants[section] as Record<
+        BladesRoll.ParticipantSubSection,
+        BladesRollParticipant
+      >;
+      participantDoc = participants[subSection].rollParticipantDoc ?? false;
     }
 
-    // Confirm required settings
-    if (!rollParticipantDataOrDoc.rollParticipantName) {throw new Error("Must include a rollParticipantName when constructing a BladesRollParticipant object.");}
-    if (!rollParticipantDataOrDoc.rollParticipantType) {throw new Error("Must include a rollParticipantType when constructing a BladesRollParticipant object.");}
-    if (!rollParticipantDataOrDoc.rollFactors) {throw new Error("Must include a rollFactors when constructing a BladesRollParticipant object.");}
+    if (!participantDoc) {
+      throw new Error(`[BladesRollParticipant.constructor] Failed to resolve Participant document or data from provided arguments: ${JSON.stringify({
+        rollInstance, section, subSection, rollParticipantDataOrDoc
+      })}`);
+    }
 
-    // Initialize properties
-    this.rollParticipantID = rollParticipantDataOrDoc.rollParticipantID;
-    this.rollParticipantName = rollParticipantDataOrDoc.rollParticipantName;
-    this.rollParticipantType = rollParticipantDataOrDoc.rollParticipantType;
-    this.rollParticipantIcon = rollParticipantDataOrDoc.rollParticipantIcon ?? "";
-    this.rollParticipantModsSchemaSet = rollParticipantDataOrDoc.rollParticipantModsSchemaSet ?? [];
-    this.rollFactors = rollParticipantDataOrDoc.rollFactors;
+    this.rollParticipantID = participantDoc.rollParticipantID;
+    this._rollParticipantDoc = participantDoc;
   }
   // #endregion
 
-  get data(): BladesRoll.ParticipantData {
-    return {
-      rollParticipantID: this.rollParticipantID,
-      rollParticipantName: this.rollParticipantName,
-      rollParticipantType: this.rollParticipantType,
-      rollParticipantIcon: this.rollParticipantIcon,
-
-      rollParticipantModsSchemaSet: this.rollParticipantModsSchemaSet,
-      rollFactors: this.rollFactors
-    };
-  }
-
   async updateRollFlags() {
-    await this.rollInstance.updateTarget(`rollParticipantData.${this.rollParticipantSection}.${this.rollParticipantSubSection}`, this.data);
+    await this.rollInstance.updateTarget(`rollParticipantData.${this.rollParticipantSection}.${this.rollParticipantSubSection}`, this);
     socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
-  }
-
-  refresh() {
-    const rollParticipantFlagData = this.rollInstance.data.rollParticipantData?.[this.rollParticipantSection];
-    if (rollParticipantFlagData) {
-      const rollParticipantFlags = rollParticipantFlagData[
-        this.rollParticipantSubSection as KeyOf<typeof rollParticipantFlagData>
-      ] as Omit<BladesRoll.ParticipantData, "rollParticipantDoc"> & BladesRoll.ParticipantSectionData
-        | undefined;
-      if (rollParticipantFlags) {
-        this.rollParticipantID = rollParticipantFlags.rollParticipantID;
-
-        this.rollParticipantName = rollParticipantFlags.rollParticipantName;
-        this.rollParticipantType = rollParticipantFlags.rollParticipantType;
-        this.rollParticipantIcon = rollParticipantFlags.rollParticipantIcon;
-        this.rollParticipantSection = rollParticipantFlags.rollParticipantSection;
-        this.rollParticipantSubSection = rollParticipantFlags.rollParticipantSubSection;
-
-        this.rollParticipantModsSchemaSet = rollParticipantFlags.rollParticipantModsSchemaSet;
-        this.rollFactors = rollParticipantFlags.rollFactors;
-      }
-    }
-    return this;
   }
 }
 
@@ -1835,7 +1712,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     if (!this._rollOpposition && BladesRollOpposition.IsValidData(this.data.rollOppData)) {
       this._rollOpposition = new BladesRollOpposition(this, this.data.rollOppData);
     }
-    return this._rollOpposition?.refresh();
+    return this._rollOpposition;
   }
 
   set rollOpposition(val: BladesRollOpposition | undefined) {

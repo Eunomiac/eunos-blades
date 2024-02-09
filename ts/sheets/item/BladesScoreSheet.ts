@@ -171,7 +171,7 @@ class BladesScoreSheet extends BladesItemSheet {
       });
 
     // Prune system data for blank/empty opposition entries
-    const validOppositions: Record<string, BladesRoll.OppositionDocData> = {};
+    const validOppositions: Record<string, BladesRoll.OppositionData> = {};
     for (const [id, data] of Object.entries(context.system.oppositions)) {
       if (!data.rollOppName && !data.rollOppSubName) { continue; }
       validOppositions[id] = data;

@@ -10,8 +10,8 @@ import {SelectionCategory} from "../../classes/BladesDialog";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
-                                              BladesRoll.PrimaryDocData,
-                                              BladesRoll.ParticipantDocData {
+                                              BladesRoll.PrimaryData,
+                                              BladesRoll.ParticipantData {
 
 
   // #region INITIALIZATION ~
@@ -442,7 +442,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   // #endregion
 
   // #region BladesRoll.PrimaryDoc Implementation
-  override get rollModsSchemaSet(): BladesRollMod.Schema[] {
+  override get rollPrimaryModsSchemaSet(): BladesRollMod.Schema[] {
 
     const rollModsData = super.rollModsSchemaSet;
 
@@ -566,7 +566,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   get rollParticipantType() { return this.type; }
 
-  get rollParticipantModsData(): BladesRollMod.Schema[] { return []; }
+  get rollParticipantModsSchemaSet(): BladesRollMod.Schema[] { return []; }
 
   // #endregion
 

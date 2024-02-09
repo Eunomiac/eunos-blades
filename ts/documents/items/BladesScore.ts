@@ -11,7 +11,7 @@ import type {DocumentModificationOptions} from "@league-of-foundry-developers/fo
 
 
 class BladesScore extends BladesItem implements BladesItemSubClass.Score,
-  BladesRoll.OppositionDocData {
+  BladesRoll.OppositionData {
 
   // #region INITIALIZATION ~
   static async Initialize() {
@@ -34,7 +34,7 @@ class BladesScore extends BladesItem implements BladesItemSubClass.Score,
       });
   }
 
-  // #region BladesRoll.OppositionDocData Implementation
+  // #region BladesRoll.OppositionData Implementation
   override get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
 
     const tierTotal = this.getFactorTotal(Factor.tier);

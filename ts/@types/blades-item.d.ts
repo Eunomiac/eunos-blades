@@ -183,7 +183,7 @@ declare global {
       locations: Record<string, string>,
       images: Record<number, string>,
       imageSelected: number,
-      oppositions: Record<string, BladesRoll.OppositionDocData>,
+      oppositions: Record<string, BladesRoll.OppositionData>,
       oppositionSelected: string,
       isActive: boolean,
       randomizers: Record<RandomCat, Record<string, Record<string, any>>>,

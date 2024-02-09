@@ -6,7 +6,7 @@ import BladesActor from "../../BladesActor";
 import BladesRoll from "../../classes/BladesRoll";
 
 class BladesLocation extends BladesItem implements BladesItemSubClass.Location,
-                                                    BladesRoll.OppositionDocData {
+                                                    BladesRoll.OppositionData {
 
 
   override get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {

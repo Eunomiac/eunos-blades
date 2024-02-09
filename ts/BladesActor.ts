@@ -852,7 +852,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     if (![BladesActorType.pc, BladesActorType.crew].includes(this.type)) {
       throw new Error(`BladesActor of type '${this.type}' ("${this.name}") cannot be RollPrimary.`);
     }
-    return this.type as BladesRoll.PrimaryDocType; }
+    return this.type as BladesRoll.PrimaryType; }
 
   get rollPrimaryImg() { return this.img; }
 
