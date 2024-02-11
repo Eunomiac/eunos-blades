@@ -1,8 +1,7 @@
-/* no-dupe-class-members */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import C, {BladesActorType, BladesItemType, AttributeTrait, ConsequenceType, RollResult, RollType, Position, Effect, RollPhase} from "../core/constants";
 import U from "../core/utilities";
-import BladesRoll, {BladesRollPrimary} from "./BladesRoll";
+import BladesRoll, {BladesRollPrimary, BladesInlineResistanceRoll} from "./BladesRoll";
 import BladesChat from "./BladesChat";
 import BladesTargetLink from "./BladesTargetLink";
 import {BladesPC} from "../documents/BladesActorProxy";
@@ -131,7 +130,6 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
     return this.data.resistanceMode;
   }
   get primaryID(): UUIDString { return this.data.primaryID; }
-  get resistData(): Record<IDString, BladesConsequence.Data> | undefined { return this.data.resistData; }
   get parentCsqID(): IDString | undefined { return this.data.parentCsqID; }
   get canResistWithRoll(): boolean { return this.data.canResistWithRoll ?? false; }
   get resistWithRollNegates(): boolean { return this.data.resistWithRollNegates ?? false; }
@@ -153,19 +151,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
   get position(): Position | undefined { return this.roll?.rollPositionFinal; }
   get effect(): Effect | undefined { return this.roll?.rollEffectFinal; }
   get result(): RollResult | undefined { return this.roll?.rollResultFinal as RollResult | undefined; }
-  get consequenceNone(): BladesConsequence {
-    // If a None-type consequence is defined within data.resistData, return it.
-    let noneCsq: BladesConsequence|undefined = this.resistConsequences.find((csq) => csq.type === ConsequenceType.None);
-    if (noneCsq) { return noneCsq; }
-    // Otherwise, return a new BladesConsequence with the default None schema, and initialize it.
-    noneCsq = new BladesConsequence(BladesConsequence.PartialNoneSchema, this);
-    noneCsq.initTargetLink();
-    return noneCsq;
-  }
-  get resistConsequences(): BladesConsequence[] {
-    if (!this.resistData) { return []; }
-    return Object.values(this.resistData)
-      .map((csqData) => game.eunoblades.Consequences.get(csqData.id) ?? new BladesConsequence(csqData, this));
+  _consequenceNone?: BladesConsequence;
+  get consequenceNone(): Promise<BladesConsequence>|BladesConsequence {
+    if (this._consequenceNone) { return this._consequenceNone; }
+    const {id, ...linkData} = this.linkData;
+    return BladesConsequence.Create({...linkData, ...BladesConsequence.PartialNoneSchema})
+      .then((csq) => this._consequenceNone = csq);
   }
   get parentConsequence(): BladesConsequence|undefined {
     if (!this.parentCsqID) { return undefined; }
@@ -181,17 +172,31 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
 
   get primary(): BladesRollPrimary {
     const primary = fromUuidSync(this.primaryID);
-    if (!primary) { throw new Error(`Could not find primary with UUID '${this.primaryID}'`); }
-    return new BladesRollPrimary(this.roll, primary as BladesRoll.PrimaryDoc);
+    if (!BladesRollPrimary.IsDoc(primary)) { throw new Error(`Could not find primary with UUID '${this.primaryID}'`); }
+    if (this.roll) {
+      return new BladesRollPrimary(this.roll, primary);
+    }
+    return new BladesRollPrimary(primary);
   }
-  get resistTo(): BladesConsequence|undefined {
+
+  _resistConsequence?: BladesConsequence;
+
+  get resistConsequence(): Promise<BladesConsequence>|BladesConsequence|undefined {
+    if (this._resistConsequence) { return this._resistConsequence; }
+    if (!this.data.resistSchema) { return undefined; }
+    return new BladesConsequence(
+      this.data.resistSchema as BladesConsequence.Schema,
+      this.data
+    );
+  }
+
+  get resistTo(): Promise<BladesConsequence>|BladesConsequence|undefined {
     if (this.isAccepted) { return undefined; }
     if (!this.canResistWithRoll) { return undefined; }
     if (this.resistWithRollNegates) { return this.consequenceNone; }
-    if (this.resistConsequences.length === 1) { return this.resistConsequences[0]; }
-    return this.resistConsequences.find((csq) => csq.type !== ConsequenceType.None);
+    return this.resistConsequence;
   }
-  get armorTo(): BladesConsequence|undefined {
+  get armorTo(): Promise<BladesConsequence>|BladesConsequence|undefined {
     if (this.isAccepted) { return undefined; }
     if (!this.canResistWithArmor) { return undefined; }
     if (!(
@@ -202,33 +207,31 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
     }
     if (!this.primary.hasArmor) { return undefined; }
     if (this.resistWithArmorNegates) { return this.consequenceNone; }
-    if (this.resistConsequences.length === 1) { return this.resistConsequences[0]; }
-    return this.resistConsequences.find((csq) => csq.type !== ConsequenceType.None);
+    return this.resistConsequence;
   }
-  get specialTo(): BladesConsequence|undefined {
+  get specialTo(): Promise<BladesConsequence>|BladesConsequence|undefined {
     if (this.isAccepted) { return undefined; }
     if (!this.canResistWithSpecial) { return undefined; }
     if (!(this.primary instanceof BladesPC)) { return undefined; }
     if (!this.primary.hasSpecialArmor) { return undefined; }
     if (this.resistWithSpecialNegates) { return this.consequenceNone; }
-    if (this.resistConsequences.length === 1) { return this.resistConsequences[0]; }
-    return this.resistConsequences.find((csq) => csq.type !== ConsequenceType.None);
+    return this.resistConsequence;
   }
 
   constructor(
     config: BladesConsequence.Config,
-    parentCsq?: BladesConsequence|BladesConsequence.Data
+    parentCsq?: BladesConsequence.Data
   )
   constructor(
     data: BladesConsequence.Data
   )
   constructor(
     schema: Partial<BladesConsequence.Schema>,
-    parentCsq: BladesConsequence|BladesConsequence.Data
+    parentCsq: BladesConsequence.Data
   )
   constructor(
     dataConfigOrSchema: BladesConsequence.Config|BladesConsequence.Data|Partial<BladesConsequence.Schema>,
-    parentCsq?: BladesConsequence|BladesConsequence.Data
+    parentCsq?: BladesConsequence.Data
   ) {
     // If a parentCsq is provided...
     if (parentCsq) {
@@ -252,7 +255,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
         this.initTargetLink();
       }
     } else {
-      super(dataConfigOrSchema);
+      super(dataConfigOrSchema as BladesConsequence.Config|BladesConsequence.Data);
     }
     game.eunoblades.Consequences.set(this.id, this);
   }
@@ -269,10 +272,10 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
         rollUserID: game.user.id,
         rollPrimaryData: this.primary.data,
         resistanceData: {
-          consequence: this.resistTo.data
+          consequence: (await this.resistTo).data
         }
       };
-      BladesRoll.NewRoll(resistConfig);
+      BladesInlineResistanceRoll.New(resistConfig);
       return;
     }
 
@@ -280,6 +283,8 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
   }
 
   async resolveResist(typeRef: BladesConsequence.ResistanceType, resistRoll?: BladesRoll) {
+
+    eLog.checkLog3("BladesConsequence", "[resolveResist(typeRef, resistRoll?)]", {typeRef, resistRoll});
 
     // If consequence is fully negated, transform to "None" consequence and accept it.
 

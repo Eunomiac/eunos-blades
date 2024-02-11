@@ -23,7 +23,7 @@ class BladesScore extends BladesItem {
             }
         });
     }
-    // #region BladesRoll.OppositionDocData Implementation
+    // #region BladesRoll.OppositionData Implementation
     get rollFactors() {
         const tierTotal = this.getFactorTotal(Factor.tier);
         return {

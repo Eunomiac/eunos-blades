@@ -27,8 +27,6 @@ declare global {
 
     export type Config = BladesTargetLink.Config & Partial<Schema>;
 
-    export type PartialConfig = BladesTargetLink.PartialConfig & Partial<Config>;
-
     export type Data = BladesTargetLink.Data & Schema;
 
     export interface Subclass extends BladesTargetLink.Subclass<Schema>,

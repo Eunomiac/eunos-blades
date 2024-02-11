@@ -151,6 +151,8 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
 
   // #region BladesRoll Implementation
 
+  get rollPrimaryModsSchemaSet(): BladesRollMod.Schema[] { return this.rollModsSchemaSet; }
+
   // #region BladesRoll.ParticipantDoc Implementation
   get rollParticipantID() {return this.id;}
 

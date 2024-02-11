@@ -183,10 +183,9 @@ class BladesItem extends Item {
         return this.type;
     }
     get rollPrimaryImg() { return this.img; }
-    get rollModsData() {
-        // Const rollModData = BladesRollMod.ParseDocRollMods(this);
+    get rollModsSchemaSet() {
         // Add roll mods from COHORT harm
-        return BladesRollMod.ParseDocRollMods(this);
+        return BladesRollMod.ParseDocModsToSchemaSet(this);
     }
     async applyHarm(amount, _name) {
         if (BladesItem.IsType(this, BladesItemType.cohort_expert, BladesItemType.cohort_gang)) {
@@ -241,7 +240,7 @@ class BladesItem extends Item {
         }
         return this.type;
     }
-    get rollOppModsData() { return []; }
+    get rollOppModsSchemaSet() { return []; }
     // #endregion
     // #region BladesRoll.ParticipantDoc Implementation
     get rollParticipantID() { return this.id; }
@@ -258,7 +257,7 @@ class BladesItem extends Item {
         }
         return this.type;
     }
-    get rollParticipantModsData() { return []; }
+    get rollParticipantModsSchemaSet() { return []; }
     // #endregion
     // #endregion
     // #region PREPARING DERIVED DATA

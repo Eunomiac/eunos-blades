@@ -124,13 +124,14 @@ class BladesCrew extends BladesActor {
     }
     // #endregion
     // #region BladesRoll Implementation
+    get rollPrimaryModsSchemaSet() { return this.rollModsSchemaSet; }
     // #region BladesRoll.ParticipantDoc Implementation
     get rollParticipantID() { return this.id; }
     get rollParticipantDoc() { return this; }
     get rollParticipantIcon() { return this.playbook?.img ?? this.img; }
     get rollParticipantName() { return this.name; }
     get rollParticipantType() { return this.type; }
-    get rollParticipantModsData() { return []; }
+    get rollParticipantModsSchemaSet() { return []; }
     async applyHarm(_amount, _name) {
         console.error("Attempt to apply harm directly to a Crew document.");
     }

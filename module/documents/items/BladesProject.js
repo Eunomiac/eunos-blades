@@ -26,7 +26,7 @@ class BladesProject extends BladesItem {
                 isVisible: true,
                 displayMode: ClockKeyDisplayMode.clocks
                 // oneKeyIndex: U.gsap.utils.random(0, 4, 1) as OneKeyImgIndex
-            }, [{
+            }, undefined, [{
                     name: "",
                     index: 0,
                     color: ClockColor.yellow,

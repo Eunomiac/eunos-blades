@@ -4,8 +4,8 @@ const registerSettings = function () {
     game.settings.register("eunos-blades", "debug", {
         name: "Debug Level",
         hint: "The verbosity of the debug messages to console.",
-        scope: "client",
-        config: true,
+        scope: "client", // This specifies a world-level setting
+        config: true, // This specifies that the setting appears in the configuration view
         type: Number,
         range: {
             min: 0,
@@ -25,8 +25,8 @@ const registerSettings = function () {
     game.settings.register("eunos-blades", "openAPIModelLevel", {
         name: "AI Base Quality",
         hint: "Lower values are cheaper to run, at the cost of quality.",
-        scope: "client",
-        config: true,
+        scope: "client", // This specifies a world-level setting
+        config: true, // This specifies that the setting appears in the configuration view
         type: Number,
         range: {
             min: 0,
@@ -37,24 +37,24 @@ const registerSettings = function () {
     game.settings.register("eunos-blades", "blacklist", {
         name: "Debug Blacklist",
         hint: "Comma-delimited list of categories of debug messages to silence.",
-        scope: "client",
-        config: true,
+        scope: "client", // This specifies a world-level setting
+        config: true, // This specifies that the setting appears in the configuration view
         type: String,
         default: "" // The default value for the setting
     });
     game.settings.register("eunos-blades", "openAPIKey", {
         name: "OpenAI API Key",
         hint: "Your personal OpenAI API Key (necessary to enable AI functionality)",
-        scope: "client",
-        config: true,
+        scope: "client", // This specifies a world-level setting
+        config: true, // This specifies that the setting appears in the configuration view
         type: String,
         default: "" // The default value for the setting
     });
     game.settings.register("eunos-blades", "whitelist", {
         name: "Debug Whitelist",
         hint: "Comma-delimited list of categories of debug messages to promote.",
-        scope: "client",
-        config: true,
+        scope: "client", // This specifies a world-level setting
+        config: true, // This specifies that the setting appears in the configuration view
         type: String,
         default: "" // The default value for the setting
     });
@@ -83,9 +83,9 @@ export function initTinyMCEStyles() {
             max_height: 500,
             min_height: 40,
             autoresize_overflow_padding: 0,
-            autoresize_bottom_margin: 0,
+            autoresize_bottom_margin: 0, // 25,
             menubar: false,
-            statusbar: false,
+            statusbar: false, // True,
             elementPath: true,
             branding: false,
             resize: false,

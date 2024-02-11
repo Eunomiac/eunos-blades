@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // #region IMPORTS ~
 import U from "../core/utilities";
@@ -1127,7 +1128,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   static override ParseConfigToData<Schema = BladesRoll.Schema>(
-    data: BladesTargetLink.PartialConfig & Partial<BladesRoll.Schema>,
+    data: BladesTargetLink.Config & Partial<BladesRoll.Schema>,
     parentRoll: BladesRoll
   ): BladesTargetLink.Data & Partial<Schema> {
     if (data.rollPrimaryData instanceof BladesRollPrimary) {
@@ -1484,7 +1485,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   static override BuildLinkConfig(config: BladesRoll.Config): BladesTargetLink.Config {
     // Prepare partial target link config
-    const partialLinkConfig: BladesTargetLink.PartialConfig = {
+    const partialLinkConfig: BladesTargetLink.Config = {
       target: "target" in config ? config.target : undefined,
       targetID: "targetID" in config ? config.targetID : undefined,
       targetKey: "targetKey" in config ? config.targetKey : undefined,

@@ -105,9 +105,9 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     } as Schema;
   }
 
-  static override async Create<Schema = BladesClockKey.Schema>(
-    config: BladesClockKey.PartialConfig & Partial<Schema>,
-    _parentLinkData: undefined,
+  static override async Create<Schema = BladesClockKey.Schema, C = BladesClockKey>(
+    config: BladesClockKey.Config & Partial<BladesClockKey.Schema>,
+    _parentLinkData?: undefined,
     clocksInitialData: Array<Partial<BladesClock.Schema>> = []
   ) {
 
@@ -162,7 +162,10 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
 
 
     // Create and initialize the target link
-    const clockKeyLink = await super.Create<BladesClockKey.Schema>(config);
+    const clockKeyLink = await super.Create<
+      BladesTargetLink<BladesClockKey.Schema>,
+      BladesClockKey.Schema
+    >(tempLink.data);
 
     // Instantiate the ClockKey
     const clockKey = new BladesClockKey(clockKeyLink.data);
@@ -170,7 +173,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     // Render the clock key
     clockKey.renderTargetAndKeeper();
 
-    return clockKey as BladesClockKey & BladesTargetLink<Schema>;
+    return clockKey as C;
   }
 
   static GetFromElement(elem: HTMLElement | JQuery<HTMLElement>): BladesClockKey | undefined {
@@ -413,7 +416,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     Object.values(data.clocksData).forEach((clockData) => new BladesClock(clockData));
   }
 
-  // parseClockConfig(config: BladesClock.PartialConfig, indexOverride?: ClockIndex): BladesClock.Data {
+  // parseClockConfig(config: BladesClock.Config, indexOverride?: ClockIndex): BladesClock.Data {
   //   if (this.size === 6) {throw new Error("Cannot add a clock to a clock key with 6 clocks.");}
   //   if (indexOverride !== undefined && indexOverride < 0) {throw new Error("Cannot add a clock with a negative index.");}
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // #region IMPORTS ~
 import U from "../core/utilities.js";
@@ -628,8 +629,7 @@ class BladesRollPrimary {
             && typeof data.rollPrimaryImg === "string"
             && Array.isArray(data.rollModsData)
             && U.isList(data.rollFactors)
-            && (!data.rollPrimaryID || typeof data.rollPrimaryID === "string")
-            && (!data.rollPrimaryDoc || BladesRollPrimary.IsDoc(data.rollPrimaryDoc));
+            && (!data.rollPrimaryID || typeof data.rollPrimaryID === "string");
     }
     static GetDoc(docRef) {
         let doc = docRef;
@@ -639,13 +639,16 @@ class BladesRollPrimary {
                 ?? game.actors.getName(docRef)
                 ?? game.items.getName(docRef);
         }
-        return BladesRollPrimary.IsDoc(doc) && doc;
+        if (BladesRollPrimary.IsDoc(doc)) {
+            return doc;
+        }
+        throw new Error(`[BladesRollPrimary.GetDoc] Unable to resolve document reference. Provided reference: ${JSON.stringify(docRef)}`);
     }
     static IsDoc(doc) {
         return BladesActor.IsType(doc, BladesActorType.pc, BladesActorType.crew)
             || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker);
     }
-    static BuildData(config) {
+    static #buildData(config) {
         if (BladesRollPrimary.IsValidData(config.rollPrimaryData)) {
             return config.rollPrimaryData;
         }
@@ -670,44 +673,20 @@ class BladesRollPrimary {
         };
     }
     static Build(config) {
-        return new BladesRollPrimary(this.BuildData(config));
+        return new BladesRollPrimary(this.#buildData(config));
     }
     // #endregion
     rollInstance;
     rollPrimaryID;
     _rollPrimaryDoc;
     get rollPrimaryDoc() {
-        if (!this._rollPrimaryDoc) {
-            let doc;
-            if (this.rollPrimaryID) {
-                doc = game.items.get(this.rollPrimaryID)
-                    ?? game.actors.get(this.rollPrimaryID);
-            }
-            if (!doc && this.rollPrimaryName) {
-                doc = game.items.getName(this.rollPrimaryName)
-                    ?? game.actors.getName(this.rollPrimaryName);
-            }
-            if (BladesRollPrimary.IsDoc(doc)) {
-                this._rollPrimaryDoc = doc;
-            }
-        }
-        return this._rollPrimaryDoc;
+        return (this._rollPrimaryDoc ??= BladesRollPrimary.GetDoc(this.rollPrimaryID));
     }
-    rollPrimaryName;
-    rollPrimaryType;
-    rollPrimaryImg;
-    rollPrimaryModsSchemaSet;
-    rollFactors;
-    get data() {
-        return {
-            rollPrimaryID: this.rollPrimaryID,
-            rollPrimaryName: this.rollPrimaryName,
-            rollPrimaryType: this.rollPrimaryType,
-            rollPrimaryImg: this.rollPrimaryImg,
-            rollPrimaryModsSchemaSet: this.rollPrimaryModsSchemaSet,
-            rollFactors: this.rollFactors
-        };
-    }
+    get rollPrimaryName() { return this.rollPrimaryDoc.rollPrimaryName; }
+    get rollPrimaryType() { return this.rollPrimaryDoc.rollPrimaryType; }
+    get rollPrimaryImg() { return this.rollPrimaryDoc.rollPrimaryImg; }
+    get rollPrimaryModsSchemaSet() { return this.rollPrimaryDoc.rollModsSchemaSet; }
+    get rollFactors() { return this.rollPrimaryDoc.rollFactors; }
     get isWorsePosition() {
         if (this.rollPrimaryDoc) {
             return this.rollPrimaryDoc.getFlag("eunos-blades", "isWorsePosition") === true;
@@ -790,7 +769,6 @@ class BladesRollPrimary {
         }
     }
     constructor(...args) {
-        let primaryData = false;
         let primaryDoc = false;
         if (args[0] instanceof BladesRoll) {
             this.rollInstance = args[0];
@@ -798,9 +776,6 @@ class BladesRollPrimary {
         }
         if (BladesRollPrimary.IsDoc(args[0])) {
             primaryDoc = args[0];
-        }
-        else if (BladesRollPrimary.IsValidData(args[0])) {
-            primaryData = args[0];
         }
         else if (U.isList(args[0])) {
             if ("rollPrimaryID" in args[0]) {
@@ -810,41 +785,14 @@ class BladesRollPrimary {
                 primaryDoc = BladesRollPrimary.GetDoc(args[0].rollPrimaryName);
             }
         }
-        if (primaryDoc && !BladesRollPrimary.IsValidData(primaryData)) {
-            primaryData = {
-                rollPrimaryID: primaryDoc.rollPrimaryID,
-                rollPrimaryName: primaryDoc.rollPrimaryName,
-                rollPrimaryType: primaryDoc.rollPrimaryType,
-                rollPrimaryImg: primaryDoc.rollPrimaryImg,
-                rollPrimaryModsSchemaSet: primaryDoc.rollModsSchemaSet,
-                rollFactors: primaryDoc.rollFactors
-            };
+        else if (this.rollInstance) {
+            primaryDoc = this.rollInstance.rollPrimary.rollPrimaryDoc ?? false;
         }
-        if (!BladesRollPrimary.IsValidData(primaryData) && !BladesRollPrimary.IsDoc(primaryDoc) && this.rollInstance) {
-            primaryData = this.rollInstance.rollPrimary.data;
+        if (!primaryDoc) {
+            throw new Error(`[BladesRollPrimary.constructor] Failed to resolve primary document or data from provided arguments: ${JSON.stringify(args)}`);
         }
-        if (!BladesRollPrimary.IsValidData(primaryData)) {
-            throw new Error(`[BladesRoll.constructor] Failed to resolve primary data from provided arguments: ${JSON.stringify(args)}`);
-        }
-        const { rollPrimaryID, rollPrimaryName, rollPrimaryType, rollPrimaryImg, rollPrimaryModsSchemaSet, rollFactors } = primaryData;
-        this.rollPrimaryID = rollPrimaryID;
-        if (!rollPrimaryName) {
-            throw new Error("Must include a rollPrimaryName when constructing a BladesRollPrimary object.");
-        }
-        if (!rollPrimaryImg) {
-            throw new Error("Must include a rollPrimaryImg when constructing a BladesRollPrimary object.");
-        }
-        if (!rollPrimaryType) {
-            throw new Error("Must include a rollPrimaryType when constructing a BladesRollPrimary object.");
-        }
-        if (!rollFactors) {
-            throw new Error("Must include a rollFactors when constructing a BladesRollPrimary object.");
-        }
-        this.rollPrimaryName = rollPrimaryName;
-        this.rollPrimaryType = rollPrimaryType;
-        this.rollPrimaryImg = rollPrimaryImg;
-        this.rollFactors = rollFactors;
-        this.rollPrimaryModsSchemaSet = rollPrimaryModsSchemaSet ?? [];
+        this.rollPrimaryID = primaryDoc.rollPrimaryID;
+        this._rollPrimaryDoc = primaryDoc;
     }
 }
 class BladesRollOpposition {
@@ -873,7 +821,7 @@ class BladesRollOpposition {
         if (BladesRollOpposition.IsDoc(doc)) {
             return doc;
         }
-        return false;
+        throw new Error(`[BladesRollOpposition.GetDoc] Unable to resolve document reference. Provided reference: ${JSON.stringify(docRef)}`);
     }
     static IsDoc(doc) {
         return BladesActor.IsType(doc, BladesActorType.npc, BladesActorType.faction) || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang);
@@ -881,88 +829,52 @@ class BladesRollOpposition {
     // #endregion
     rollInstance;
     rollOppID;
-    rollOppDoc;
-    rollOppName;
-    rollOppSubName;
-    rollOppType;
-    rollOppImg;
-    rollOppModsSchemaSet;
-    rollFactors;
-    // #region Constructor ~
-    constructor(rollInstance, { rollOppID, rollOppName, rollOppSubName, rollOppType, rollOppImg, rollOppModsSchemaSet, rollFactors } = {}) {
-        this.rollInstance = rollInstance;
-        // Attempt to fetch an associated BladesActor or BladesItem document
-        const doc = BladesRollOpposition.GetDoc(rollOppID ?? rollOppName);
-        if (doc) {
-            // Derive settings from valid Actor/Item document, unless explicitly set in constructor.
-            this.rollOppDoc = doc;
-            rollOppID = doc.rollOppID;
-            rollOppName ??= doc.rollOppName;
-            rollOppSubName ??= doc.rollOppSubName;
-            rollOppType ??= doc.rollOppType;
-            rollOppImg ??= doc.rollOppImg;
-            rollOppModsSchemaSet = [
-                ...rollOppModsSchemaSet ?? [],
-                ...doc.rollOppModsSchemaSet ?? []
-            ];
-            rollFactors = {
-                ...doc.rollFactors,
-                ...rollFactors ?? {}
-            };
+    _rollOppDoc;
+    get rollOppDoc() {
+        return (this._rollOppDoc ??= BladesRollOpposition.GetDoc(this.rollOppID));
+    }
+    get rollOppName() { return this.rollOppDoc.rollOppName; }
+    get rollOppSubName() { return this.rollOppDoc.rollOppSubName; }
+    get rollOppType() { return this.rollOppDoc.rollOppType; }
+    get rollOppImg() { return this.rollOppDoc.rollOppImg; }
+    get rollOppModsSchemaSet() { return this.rollOppDoc.rollOppModsSchemaSet; }
+    get rollFactors() { return this.rollOppDoc.rollFactors; }
+    constructor(...args) {
+        let oppDoc = false;
+        if (args[0] instanceof BladesRoll) {
+            this.rollInstance = args[0];
+            args.shift();
         }
-        // Confirm required settings
-        if (!rollOppName) {
-            throw new Error("Must include a rollOppName when constructing a BladesRollOpposition object.");
+        else {
+            throw new Error(`[BladesRollOpp.constructor] First argument is not an instance of BladesRoll. Received arguments: ${JSON.stringify(args)}`);
         }
-        if (!rollOppType) {
-            throw new Error("Must include a rollOppType when constructing a BladesRollOpposition object.");
+        if (BladesRollOpposition.IsDoc(args[0])) {
+            oppDoc = args[0];
         }
-        if (!rollFactors) {
-            throw new Error("Must include a rollFactors when constructing a BladesRollOpposition object.");
+        else if (U.isList(args[0])) {
+            if ("rollOppID" in args[0]) {
+                oppDoc = BladesRollOpposition.GetDoc(args[0].rollOppID);
+            }
+            else if ("rollOppName" in args[0]) {
+                oppDoc = BladesRollOpposition.GetDoc(args[0].rollOppName);
+            }
         }
-        // Initialize properties
-        this.rollOppID = rollOppID;
-        this.rollOppName = rollOppName;
-        this.rollOppSubName = rollOppSubName;
-        this.rollOppType = rollOppType;
-        this.rollOppImg = rollOppImg ?? "";
-        this.rollOppModsSchemaSet = rollOppModsSchemaSet ?? [];
-        this.rollFactors = rollFactors;
+        else if (this.rollInstance) {
+            oppDoc = this.rollInstance.rollOpposition?.rollOppDoc ?? false;
+        }
+        if (!oppDoc) {
+            throw new Error(`[BladesRollOpp.constructor] Failed to resolve Opp document or data from provided arguments: ${JSON.stringify(args)}`);
+        }
+        this.rollOppID = oppDoc.rollOppID;
+        this._rollOppDoc = oppDoc;
     }
     // #endregion
-    get data() {
-        return {
-            rollOppID: this.rollOppID,
-            rollOppName: this.rollOppName,
-            rollOppSubName: this.rollOppSubName,
-            rollOppType: this.rollOppType,
-            rollOppImg: this.rollOppImg,
-            rollOppModsSchemaSet: this.rollOppModsSchemaSet,
-            rollFactors: this.rollFactors
-        };
-    }
     async updateRollFlags() {
         if (!this.rollInstance) {
             return;
         }
-        await this.rollInstance.updateTarget("rollOppData", this.data);
+        await this.rollInstance.updateTarget("rollOppData", this);
         socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
-    }
-    refresh() {
-        if (!this.rollInstance) {
-            return;
-        }
-        const rollOppFlags = this.rollInstance.data.rollOppData;
-        if (rollOppFlags) {
-            this.rollOppID = rollOppFlags.rollOppID;
-            this.rollOppName = rollOppFlags.rollOppName;
-            this.rollOppSubName = rollOppFlags.rollOppSubName;
-            this.rollOppType = rollOppFlags.rollOppType;
-            this.rollOppImg = rollOppFlags.rollOppImg;
-            this.rollOppModsSchemaSet = rollOppFlags.rollOppModsSchemaSet ?? [];
-            this.rollFactors = rollOppFlags.rollFactors;
-        }
-        return this;
     }
 }
 class BladesRollParticipant {
@@ -991,7 +903,7 @@ class BladesRollParticipant {
         if (BladesRollParticipant.IsDoc(doc)) {
             return doc;
         }
-        return false;
+        throw new Error(`[BladesRollParticipant.GetDoc] Unable to resolve document reference. Provided reference: ${JSON.stringify(docRef)}`);
     }
     static IsDoc(doc) {
         return BladesActor.IsType(doc, BladesActorType.pc, BladesActorType.crew, BladesActorType.npc)
@@ -1000,50 +912,17 @@ class BladesRollParticipant {
     // #endregion
     rollInstance;
     rollParticipantID;
-    rollParticipantDoc;
-    rollParticipantName;
-    rollParticipantType;
-    rollParticipantIcon;
     rollParticipantSection;
     rollParticipantSubSection;
-    rollParticipantModsSchemaSet; // As applied to MAIN roll when this participant involved
-    rollFactors;
-    constructor(rollInstance, section, subSection, rollParticipantDataOrDoc) {
-        this.rollInstance = rollInstance;
-        if (!section) {
-            throw new Error("Must include a rollParticipantSection when constructing a BladesRollParticipant object.");
-        }
-        if (!subSection) {
-            throw new Error("Must include a rollParticipantSubSection when constructing a BladesRollParticipant object.");
-        }
-        this.rollParticipantSection = section;
-        this.rollParticipantSubSection = subSection;
-        // Attempt to fetch an associated BladesActor or BladesItem document
-        const doc = BladesRollParticipant.IsDoc(rollParticipantDataOrDoc)
-            ? rollParticipantDataOrDoc
-            : BladesRollParticipant.GetDoc(rollParticipantDataOrDoc.rollParticipantID ?? rollParticipantDataOrDoc.rollParticipantName);
-        if (doc) {
-            rollParticipantDataOrDoc = doc;
-        }
-        // Confirm required settings
-        if (!rollParticipantDataOrDoc.rollParticipantName) {
-            throw new Error("Must include a rollParticipantName when constructing a BladesRollParticipant object.");
-        }
-        if (!rollParticipantDataOrDoc.rollParticipantType) {
-            throw new Error("Must include a rollParticipantType when constructing a BladesRollParticipant object.");
-        }
-        if (!rollParticipantDataOrDoc.rollFactors) {
-            throw new Error("Must include a rollFactors when constructing a BladesRollParticipant object.");
-        }
-        // Initialize properties
-        this.rollParticipantID = rollParticipantDataOrDoc.rollParticipantID;
-        this.rollParticipantName = rollParticipantDataOrDoc.rollParticipantName;
-        this.rollParticipantType = rollParticipantDataOrDoc.rollParticipantType;
-        this.rollParticipantIcon = rollParticipantDataOrDoc.rollParticipantIcon ?? "";
-        this.rollParticipantModsSchemaSet = rollParticipantDataOrDoc.rollParticipantModsSchemaSet ?? [];
-        this.rollFactors = rollParticipantDataOrDoc.rollFactors;
+    _rollParticipantDoc;
+    get rollParticipantDoc() {
+        return (this._rollParticipantDoc ??= BladesRollParticipant.GetDoc(this.rollParticipantID));
     }
-    // #endregion
+    get rollParticipantName() { return this.rollParticipantDoc.rollParticipantName; }
+    get rollParticipantType() { return this.rollParticipantDoc.rollParticipantType; }
+    get rollParticipantIcon() { return this.rollParticipantDoc.rollParticipantIcon; }
+    get rollParticipantModsSchemaSet() { return this.rollParticipantDoc.rollParticipantModsSchemaSet; }
+    get rollFactors() { return this.rollParticipantDoc.rollFactors; }
     get data() {
         return {
             rollParticipantID: this.rollParticipantID,
@@ -1054,24 +933,42 @@ class BladesRollParticipant {
             rollFactors: this.rollFactors
         };
     }
-    async updateRollFlags() {
-        await this.rollInstance.updateTarget(`rollParticipantData.${this.rollParticipantSection}.${this.rollParticipantSubSection}`, this.data);
-        socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
-    }
-    refresh() {
-        const rollParticipantFlagData = this.rollInstance.data.rollParticipantData?.[this.rollParticipantSection];
-        if (rollParticipantFlagData && this.rollParticipantSubSection in rollParticipantFlagData) {
-            const rollParticipantFlags = rollParticipantFlagData[this.rollParticipantSubSection];
-            if (rollParticipantFlags) {
-                this.rollParticipantID = rollParticipantFlags.rollParticipantID;
-                this.rollParticipantName = rollParticipantFlags.rollParticipantName;
-                this.rollParticipantType = rollParticipantFlags.rollParticipantType;
-                this.rollParticipantIcon = rollParticipantFlags.rollParticipantIcon;
-                this.rollParticipantModsSchemaSet = rollParticipantFlags.rollParticipantModsSchemaSet ?? [];
-                this.rollFactors = rollParticipantFlags.rollFactors;
+    constructor(rollInstance, section, subSection, rollParticipantDataOrDoc) {
+        this.rollInstance = rollInstance;
+        this.rollParticipantSection = section;
+        this.rollParticipantSubSection = subSection;
+        let participantDoc = false;
+        if (BladesRollParticipant.IsDoc(rollParticipantDataOrDoc)) {
+            participantDoc = rollParticipantDataOrDoc;
+        }
+        else if (U.isList(rollParticipantDataOrDoc)) {
+            if ("rollParticipantID" in rollParticipantDataOrDoc) {
+                participantDoc = BladesRollParticipant.GetDoc(rollParticipantDataOrDoc.rollParticipantID);
+            }
+            else if ("rollParticipantName" in rollParticipantDataOrDoc) {
+                participantDoc = BladesRollParticipant.GetDoc(rollParticipantDataOrDoc.rollParticipantName);
             }
         }
-        return this;
+        else if (this.rollInstance
+            && this.rollInstance.rollParticipants
+            && section in this.rollInstance.rollParticipants
+            && this.rollInstance.rollParticipants[section]
+            && subSection in (this.rollInstance.rollParticipants[section] ?? {})) {
+            const participants = this.rollInstance.rollParticipants[section];
+            participantDoc = participants[subSection].rollParticipantDoc ?? false;
+        }
+        if (!participantDoc) {
+            throw new Error(`[BladesRollParticipant.constructor] Failed to resolve Participant document or data from provided arguments: ${JSON.stringify({
+                rollInstance, section, subSection, rollParticipantDataOrDoc
+            })}`);
+        }
+        this.rollParticipantID = participantDoc.rollParticipantID;
+        this._rollParticipantDoc = participantDoc;
+    }
+    // #endregion
+    async updateRollFlags() {
+        await this.rollInstance.updateTarget(`rollParticipantData.${this.rollParticipantSection}.${this.rollParticipantSubSection}`, this);
+        socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
     }
 }
 class BladesRoll extends BladesTargetLink {
@@ -1107,11 +1004,7 @@ class BladesRoll extends BladesTargetLink {
         socketlib.system.register("renderRollCollab_SocketCall", BladesRoll.renderRollCollab_SocketResponse.bind(BladesRoll));
         socketlib.system.register("closeRollCollab_SocketCall", BladesRoll.closeRollCollab_SocketResponse.bind(BladesRoll));
     }
-    static ParseConfigToData(data, parentRollData) {
-        const parentRollInst = game.eunoblades.Rolls.get(parentRollData.id);
-        if (!parentRollInst) {
-            throw new Error(`[BladesRoll.ParseConfigToData] No BladesRoll instance found with id ${parentRollData.id}.`);
-        }
+    static ParseConfigToData(data, parentRoll) {
         if (data.rollPrimaryData instanceof BladesRollPrimary) {
             data.rollPrimaryData = data.rollPrimaryData.data;
         }
@@ -1146,7 +1039,7 @@ class BladesRoll extends BladesTargetLink {
                 });
             }
         }
-        data.rollModsData = this.GetRollModsDataSet(parentRollInst, Object.values(data.rollModsData ?? {}));
+        data.rollModsData = this.GetRollModsDataSet(parentRoll, Object.values(data.rollModsData ?? {}));
         return BladesTargetLink.ParseConfigToData(data);
     }
     static ApplySchemaDefaults(schemaData) {
@@ -1316,7 +1209,7 @@ class BladesRoll extends BladesTargetLink {
         };
         // === TWO === DETERMINE PRIMARY USER(S)
         // Check RollPrimaryDoc to determine how to assign primary users
-        const { rollPrimaryDoc } = (new BladesRollPrimary(config.rollPrimaryData));
+        const { rollPrimaryDoc } = config.rollPrimaryData;
         if (BladesPC.IsType(rollPrimaryDoc)
             && U.pullElement(playerUserIDs, rollPrimaryDoc.primaryUser?.id)) {
             userIDs[RollPermissions.Primary].push(rollPrimaryDoc.primaryUser?.id);
@@ -1365,15 +1258,17 @@ class BladesRoll extends BladesTargetLink {
                     return pData;
                 }
                 if (BladesRollParticipant.IsValidData(pData)) {
-                    if (typeof pData.rollParticipantID === "string") {
+                    if (BladesRollParticipant.IsDoc(pData.rollParticipantDoc)) {
+                        return pData.rollParticipantDoc;
+                    }
+                    else if (typeof pData.rollParticipantID === "string") {
                         const pDoc = game.actors.get(pData.rollParticipantID) ?? game.items.get(pData.rollParticipantID);
                         if (BladesRollParticipant.IsDoc(pDoc)) {
                             return pDoc;
                         }
                     }
                 }
-                // Throw an error with sufficient debug data if pData does not match any expected types
-                throw new Error(`[getParticipantDocs] Invalid participant data encountered. Data: ${JSON.stringify(pData)}, Expected: "BladesRollParticipant or valid participant data", Function Context: "getParticipantDocs", Participant Data: ${JSON.stringify(participantData)}`);
+                return null;
             });
         }
         /**
@@ -1518,7 +1413,7 @@ class BladesRoll extends BladesTargetLink {
                     .includes(rollSection) && !U.isEmpty(rollParticipantList)) {
                     const sectionParticipants = {};
                     for (const [participantType, participantData] of Object.entries(rollParticipantList)) {
-                        sectionParticipants[participantType] = new BladesRollParticipant(this, rollSection, participantType, participantData);
+                        sectionParticipants[participantType] = new BladesRollParticipant(this, participantData);
                     }
                     this._rollParticipants[rollSection] = sectionParticipants;
                 }
@@ -1542,7 +1437,11 @@ class BladesRoll extends BladesTargetLink {
         if (!BladesRollParticipant.IsValidData(participantData)) {
             throw new Error("Bad data.");
         }
-        const rollParticipant = new BladesRollParticipant(this, rollSection, rollSubSection, participantData);
+        const rollParticipant = new BladesRollParticipant(this, {
+            rollParticipantSection: rollSection,
+            rollParticipantSubSection: rollSubSection,
+            rollParticipantID: participantData.rollParticipantID
+        });
         await rollParticipant.updateRollFlags();
         socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
     }
@@ -1576,7 +1475,7 @@ class BladesRoll extends BladesTargetLink {
         if (!this._rollOpposition && BladesRollOpposition.IsValidData(this.data.rollOppData)) {
             this._rollOpposition = new BladesRollOpposition(this, this.data.rollOppData);
         }
-        return this._rollOpposition?.refresh();
+        return this._rollOpposition;
     }
     set rollOpposition(val) {
         if (val === undefined) {
@@ -1587,9 +1486,12 @@ class BladesRoll extends BladesTargetLink {
             val.updateRollFlags();
         }
     }
+    get rollOppClockKey() {
+        return this.rollOpposition?.rollOppClockKey;
+    }
     get rollClockKey() {
-        return this.data.rollClockKey
-            ? game.eunoblades.ClockKeys.get(this.data.rollClockKey)
+        return this.data.rollClockKeyID
+            ? game.eunoblades.ClockKeys.get(this.data.rollClockKeyID)
             : undefined;
     }
     set rollClockKey(val) {
@@ -1618,7 +1520,11 @@ class BladesRoll extends BladesTargetLink {
                 Object.entries(sectionFlagData).forEach(([subSection, subSectionFlagData]) => {
                     if (subSectionFlagData) {
                         sectionParticipants[subSection] =
-                            new BladesRollParticipant(this, rollSection, subSection, subSectionFlagData);
+                            new BladesRollParticipant(this, {
+                                ...subSectionFlagData,
+                                rollParticipantSection: rollSection,
+                                rollParticipantSubSection: subSection
+                            });
                     }
                 });
                 rollParticipants[rollSection] = sectionParticipants;
@@ -2507,7 +2413,7 @@ class BladesRoll extends BladesTargetLink {
      * @returns {BladesRoll.Context} The constructed sheet data.
      */
     getTemplateContext() {
-        const { data: rData, rollPrimary, rollTraitData, rollTraitOptions, rollClockKey, finalDicePool, rollPositionFinal, rollEffectFinal, rollResultDelta, rollResultFinal, rollMods, rollFactors } = this;
+        const { data: rData, rollPrimary, rollTraitData, rollTraitOptions, rollOppClockKey, rollClockKey, finalDicePool, rollPositionFinal, rollEffectFinal, rollResultDelta, rollResultFinal, rollMods, rollFactors } = this;
         if (!rollPrimary) {
             throw new Error("A primary roll source is required for BladesRoll.");
         }
@@ -2561,7 +2467,7 @@ class BladesRoll extends BladesTargetLink {
         // const downtimeData = this.processDowntimeActions();
         return {
             ...baseData,
-            rollPrimary: this.rollPrimary,
+            ...(this.rollPrimaryDoc ? { rollPrimary: this.rollPrimaryDoc } : {}),
             rollPositionFinal,
             rollEffectFinal,
             rollResultFinal,
@@ -2575,7 +2481,8 @@ class BladesRoll extends BladesTargetLink {
                 || (this.isGM && this.getRollMods(RollModSection.after).length > 0),
             ...GMBoostsData,
             ...positionEffectTradeData,
-            rollClockKey: this.rollClockKey,
+            ...(rollOppClockKey ? { rollClockKey: rollOppClockKey } : {}),
+            ...(rollClockKey ? { rollClockKey } : {}),
             totalStressCost: stressCostDataSet.reduce((acc, [_label, amount]) => acc + amount, 0),
             totalArmorCost: armorCostDataSet.length,
             stressCosts: stressCostDataSet.length > 0
@@ -3304,23 +3211,24 @@ class BladesActionRoll extends BladesRoll {
         if (!(schemaData.rollTrait === "" || U.isInt(schemaData.rollTrait) || U.lCase(schemaData.rollTrait) in { ...ActionTrait, ...Factor })) {
             throw new Error(`[BladesActionRoll.ApplySchemaDefaults()] Bad RollTrait for Action Roll: ${schemaData.rollTrait}`);
         }
-        const fullSchema = super.ApplySchemaDefaults(schemaData);
-        const rollPrimary = BladesRollPrimary.Build(fullSchema);
+        schemaData = super.ApplySchemaDefaults(schemaData);
+        const rollPrimary = BladesRollPrimary.Build(schemaData);
         // Modify Config object depending on downtime action where necessary.
-        switch (fullSchema.rollDowntimeAction) { // Remember: Can be done outside of Downtime during Flashbacks!
+        switch (schemaData.rollDowntimeAction) { // Remember: Can be done outside of Downtime during Flashbacks!
             case DowntimeAction.AcquireAsset: {
-                fullSchema.rollTrait = Factor.tier;
+                schemaData.rollTrait = Factor.tier;
                 break;
             }
             case DowntimeAction.LongTermProject: {
                 // Validate that rollOppData points to a project item
-                if (!BladesRollOpposition.IsValidData(fullSchema.rollOppData)) {
+                if (!BladesRollOpposition.IsValidData(schemaData.rollOppData)) {
                     throw new Error("No rollOppData provided for LongTermProject roll.");
                 }
+                const rollOpp = new BladesRollOpposition(undefined, schemaData.rollOppData);
                 if (![
                     BladesItemType.project,
                     BladesItemType.design
-                ].includes(fullSchema.rollOppData.rollOppType)) {
+                ].includes(rollOpp.rollOppType)) {
                     throw new Error("rollOppType must be 'project' or 'design' for LongTermProject roll.");
                 }
                 break;
@@ -3331,10 +3239,10 @@ class BladesActionRoll extends BladesRoll {
                     if (!rollPrimary.rollPrimaryDoc.abilities.find((ability) => ability.name === "Physiker")) {
                         throw new Error("A PC rollPrimary on a Recovery roll must have the Physiker ability.");
                     }
-                    fullSchema.rollTrait = ActionTrait.tinker;
+                    schemaData.rollTrait = ActionTrait.tinker;
                 }
                 else if (rollPrimary.rollPrimaryDoc?.rollPrimaryType === BladesActorType.npc) {
-                    fullSchema.rollTrait = Factor.quality;
+                    schemaData.rollTrait = Factor.quality;
                 }
                 else {
                     throw new Error("Only a PC with Physiker or an NPC can be rollPrimary on a Recover roll.");
@@ -3364,7 +3272,7 @@ class BladesActionRoll extends BladesRoll {
                 break;
             }
             case undefined: break;
-            default: throw new Error(`Unrecognized Roll Downtime Action: ${fullSchema.rollDowntimeAction}`);
+            default: throw new Error(`Unrecognized Roll Downtime Action: ${schemaData.rollDowntimeAction}`);
         }
         return {
             rollPositionInitial: Position.risky,
@@ -3445,11 +3353,11 @@ class BladesActionRoll extends BladesRoll {
                     }
                 }
             },
-            ...fullSchema,
+            ...schemaData,
             rollPrimaryData: rollPrimary.data,
-            rollOppData: fullSchema.rollOppData instanceof BladesRollOpposition
-                ? fullSchema.rollOppData.data
-                : fullSchema.rollOppData
+            rollOppData: schemaData.rollOppData instanceof BladesRollOpposition
+                ? schemaData.rollOppData.data
+                : schemaData.rollOppData
         };
     }
     static get DefaultRollModSchemaSet() {
@@ -3689,12 +3597,11 @@ class BladesFortuneRoll extends BladesRoll {
 class BladesIndulgeViceRoll extends BladesRoll {
     static ApplySchemaDefaults(config) {
         // Validate rollPrimary
-        const rollPrimaryDoc = BladesRollPrimary.GetDoc(config.rollPrimaryData?.rollPrimaryID);
-        if (!rollPrimaryDoc || !BladesPC.IsType(rollPrimaryDoc)) {
+        if (!config.rollPrimaryData || !BladesPC.IsType(config.rollPrimaryData.rollPrimaryDoc)) {
             throw new Error("[BladesRoll.PrepareIndulgeViceRollConfig] RollPrimary must be a PC for Indulge Vice rolls.");
         }
         // Set rollTrait
-        const { attributes } = rollPrimaryDoc;
+        const { attributes } = config.rollPrimaryData.rollPrimaryDoc;
         const minAttrVal = Math.min(...Object.values(attributes));
         config.rollTrait = U.sample(Object.values(AttributeTrait).filter((attr) => attributes[attr] === minAttrVal))[0];
         // Set other known config values

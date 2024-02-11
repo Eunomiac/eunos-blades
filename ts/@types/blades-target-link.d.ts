@@ -40,27 +40,8 @@ declare global {
       targetFlagKey: TargetFlagKey
     }) & {
       id?: IDString,
-      isScopingById?: boolean,
-      template?: string
+      isScopingById?: boolean
     };
-
-    export type PartialConfig = {
-      target?: IDString|UUIDString|BladesDoc|BladesChat|User,
-      targetID?: IDString|UUIDString,
-      targetKey?: TargetKey,
-      targetFlagKey?: TargetFlagKey,
-      isScopingById?: boolean,
-      template?: string
-    };
-
-    export type PartialData = {
-      id: IDString,
-      targetID: UUIDString,
-      targetKey?: TargetKey,
-      targetFlagKey?: TargetFlagKey,
-      isScopingById: boolean,
-      template?: string
-    }
 
     export type Instance = Data & {
       target: BladesDoc|BladesChat|User

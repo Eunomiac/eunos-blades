@@ -44,7 +44,7 @@ class BladesNPC extends BladesActor {
     get rollOppName() { return this.name; }
     get rollOppSubName() { return this.system.subtitle || this.system.concept || " "; }
     get rollOppType() { return this.type; }
-    get rollOppModsData() { return []; }
+    get rollOppModsSchemaSet() { return []; }
     // #endregion
     // #region BladesRoll.ParticipantDoc Implementation
     get rollParticipantID() { return this.id; }
@@ -52,6 +52,6 @@ class BladesNPC extends BladesActor {
     get rollParticipantIcon() { return this.img; }
     get rollParticipantName() { return this.name; }
     get rollParticipantType() { return this.type; }
-    get rollParticipantModsData() { return []; }
+    get rollParticipantModsSchemaSet() { return []; }
 }
 export default BladesNPC;

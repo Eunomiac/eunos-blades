@@ -10,7 +10,7 @@ import {BladesItem, BladesProject} from "../../documents/BladesItemProxy";
 import BladesClockKey from "../../classes/BladesClocks";
 import BladesDialog, {SelectionCategory} from "../../classes/BladesDialog";
 import BladesActiveEffect from "../../documents/BladesActiveEffect";
-import BladesRoll, {BladesRollPrimary, BladesRollOpposition} from "../../classes/BladesRoll";
+import BladesRoll, {BladesRollPrimary, BladesRollOpposition, BladesActionRoll, BladesResistanceRoll, BladesFortuneRoll, BladesIndulgeViceRoll} from "../../classes/BladesRoll";
 // #endregion
 // #region TYPES: BladesCompData ~
 type BladesCompData = {
@@ -478,7 +478,7 @@ class BladesActorSheet extends ActorSheet {
       }
     }
 
-    await BladesRoll.NewRoll(rollData);
+    await BladesActionRoll.New(rollData);
   }
 
   // Returns TRUE if can proceed, FALSE if action should stop (i.e. panel revealed for another user click)
@@ -554,7 +554,7 @@ class BladesActorSheet extends ActorSheet {
       case DowntimeAction.Recover: {
         config.rollType = RollType.Action;
         if (BladesPC.IsType(this.actor) && this.actor.healingClock) {
-          config.rollClockKey = this.actor.healingClock;
+          config.rollClockKey = this.actor.healingClock.id;
         }
         // rollOpposition = user character's healing clock
         // rollPrimary = this.actor is NPC?
@@ -590,7 +590,11 @@ class BladesActorSheet extends ActorSheet {
     });
 
     if ("rollType" in config) {
-      BladesRoll.NewRoll(config);
+      if (downtimeAction === DowntimeAction.IndulgeVice) {
+        BladesIndulgeViceRoll.New(config);
+      } else {
+        BladesActionRoll.New(config);
+      }
     }
   }
 
@@ -598,13 +602,13 @@ class BladesActorSheet extends ActorSheet {
     const elem$ = $(event.currentTarget);
 
     if (elem$.data("isFortuneRoll")) {
-      BladesRoll.NewRoll({
+      BladesFortuneRoll.New({
         target: this.actor,
         targetFlagKey: "rollCollab" as TargetFlagKey,
         rollType: RollType.Fortune
       });
     } else {
-      BladesRoll.NewRoll({
+      BladesActionRoll.New({
         target: this.actor,
         targetFlagKey: "rollCollab" as TargetFlagKey,
         rollType: RollType.Action,

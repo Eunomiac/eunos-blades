@@ -64,7 +64,7 @@ class BladesClockKeeper extends BladesItem {
         return key;
     }
     async deleteClockKey(keyID) {
-        await game.eunoblades.ClockKeys.get(keyID)?.delete();
+        await game.eunoblades.ClockKeys.get(keyID)?.delete(game.eunoblades.ClockKeys);
     }
     async addClockToKey(keyID, clockData) {
         const key = await game.eunoblades.ClockKeys.get(keyID);

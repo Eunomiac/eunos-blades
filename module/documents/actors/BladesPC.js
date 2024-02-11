@@ -75,7 +75,7 @@ class BladesPC extends BladesActor {
             isVisible: true,
             isNameVisible: false,
             isSpotlit: false
-        }, [
+        }, undefined, [
             {
                 color: ClockColor.white,
                 value: 0,
@@ -133,37 +133,40 @@ class BladesPC extends BladesActor {
         }
         return actor;
     }
-    get armorStatus() {
-        const armorData = {};
-        if (this.system.armor.active.special) {
-            armorData.special = this.system.armor.checked.special;
+    get isLightArmorEquipped() { return this.system.armor.active.light; }
+    get isLightArmorEquippable() { return !this.isLightArmorEquipped && this.remainingLoad >= 2; }
+    get isLightArmorUsed() { return this.system.armor.checked.light; }
+    get isLightArmorAvailable() {
+        return (this.isLightArmorEquipped || this.isLightArmorEquippable)
+            && !this.isLightArmorUsed;
+    }
+    get isHeavyArmorEquipped() { return this.system.armor.active.heavy; }
+    get isHeavyArmorEquippable() {
+        if (this.isHeavyArmorEquipped) {
+            return false;
         }
-        if (this.system.armor.active.heavy) {
-            armorData.max = 2;
-            if (this.system.armor.checked.light) {
-                armorData.value = 0;
-            }
-            else if (this.system.armor.checked.heavy) {
-                armorData.value = 1;
-            }
-            else {
-                armorData.value = 2;
-            }
+        if (this.isLightArmorEquipped) {
+            return this.remainingLoad >= 3;
         }
-        else if (this.system.armor.active.light) {
-            armorData.max = 1;
-            if (this.system.armor.checked.light) {
-                armorData.value = 0;
-            }
-            else {
-                armorData.value = 1;
-            }
+        return this.remainingLoad >= 5;
+    }
+    get isHeavyArmorUsed() { return this.system.armor.checked.heavy; }
+    get isHeavyArmorAvailable() {
+        return (this.isHeavyArmorEquipped || this.isHeavyArmorEquippable)
+            && !this.isHeavyArmorUsed;
+    }
+    get availableArmor() {
+        const armor = [];
+        if (this.isLightArmorAvailable) {
+            armor.push("Light Armor");
         }
-        else {
-            armorData.max = 0;
-            armorData.value = 0;
+        if (this.isHeavyArmorAvailable) {
+            armor.push("Heavy Armor");
         }
-        return armorData;
+        return armor;
+    }
+    get isSpecialArmorAvailable() {
+        return this.system.armor.active.special && !this.system.armor.checked.special;
     }
     // #region BladesScoundrel Implementation ~
     isMember(crew) { return this.crew?.id === crew.id; }
@@ -408,8 +411,8 @@ class BladesPC extends BladesActor {
     }
     // #endregion
     // #region BladesRoll.PrimaryDoc Implementation
-    get rollModsData() {
-        const rollModsData = super.rollModsData;
+    get rollPrimaryModsSchemaSet() {
+        const rollModsData = this.rollModsSchemaSet;
         // Add roll mods from harm
         [
             [/1d/, RollModSection.roll],
@@ -420,7 +423,7 @@ class BladesPC extends BladesActor {
             const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
             if (harmString.length > 0) {
                 rollModsData.push({
-                    id: `Harm-negative-${effectCat}`,
+                    key: `Harm-negative-${effectCat}`,
                     name: harmString,
                     section: effectCat,
                     posNeg: "negative",
@@ -441,7 +444,7 @@ class BladesPC extends BladesActor {
             .find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
         if (harmCondition && harmCondition.trim() !== "") {
             rollModsData.push({
-                id: "Push-negative-roll",
+                key: "Push-negative-roll",
                 name: "PUSH",
                 sideString: harmCondition.trim(),
                 section: RollModSection.roll,
@@ -509,19 +512,58 @@ class BladesPC extends BladesActor {
     get rollParticipantIcon() { return this.playbook?.img ?? this.img; }
     get rollParticipantName() { return this.name ?? ""; }
     get rollParticipantType() { return this.type; }
-    get rollParticipantModsData() { return []; }
+    get rollParticipantModsSchemaSet() { return []; }
     // #endregion
     async adjustStress(deltaStress) {
         const newStress = Math.min(this.stressMax, Math.max(0, this.stress + deltaStress));
         if (newStress === this.stressMax) {
-            /* PUSH NOTICE: Player must select Trauma & is removed from Score. */
+            BladesDirector.getInstance().pushNotice_SocketCall("ALL", {
+                title: `${this.name} breaks under the stress!`,
+                body: `${this.name}: Select a Trauma Condition on your sheet. You are taken out of action and will no longer participate in this score. Narrate what happens.`,
+                type: BladesNoticeType.push,
+                cssClasses: "stress-alert"
+            });
+            await this.update({ "system.stress.value": 0 });
+            return;
         }
         await this.update({ "system.stress.value": newStress });
+    }
+    async indulgeStress(deltaStress) {
+        if (deltaStress > this.stress) {
+            BladesDirector.getInstance().pushNotice_SocketCall("ALL", {
+                title: `${this.name} Overindulges!`,
+                body: `${this.name}: Select an option from the list below, and narrate how overindulging your vice led to this result: <ul><li><strong>Attract Trouble:</strong> Roll for an <strong>Entanglement</strong>.</li><li><strong>Brag About Your Exploits:</strong> +2 Heat</li><li><strong>Go AWOL</strong> Vanish for a few weeks. <em>(You will play a different character until the next Downtime Phase, at which point you will return with all Harm healed.)</em></li><li><strong>Tapped:</strong> Your current Vice Purveyor cuts you off. <em>(Until you find a new source for your vice, you will be unable to Indulge Vice during Downtime.)</em></li></ul>`,
+                type: BladesNoticeType.push,
+                cssClasses: "stress-alert"
+            });
+        }
+        await this.update({ "system.stress.value": this.stress - deltaStress });
+    }
+    async spendArmor(amount) {
+        const updateData = {};
+        while (amount > 0) {
+            if (this.isLightArmorAvailable) {
+                if (!this.isLightArmorEquipped) {
+                    updateData["system.armor.active.light"] = true;
+                }
+                updateData["system.armor.checked.light"] = true;
+            }
+            else if (this.isHeavyArmorAvailable) {
+                if (!this.isHeavyArmorEquipped) {
+                    updateData["system.armor.active.heavy"] = true;
+                }
+                updateData["system.armor.checked.heavy"] = true;
+            }
+            else {
+                throw new Error("No armor available to spend");
+            }
+            amount--;
+        }
+        this.update(updateData);
     }
     async spendSpecialArmor() {
         if (this.system.armor.active.special && !this.system.armor.checked.special) {
             await this.update({ "system.armor.checked.special": true });
-            /* PUSH NOTICE: Spent Special Armor */
         }
     }
     get rollTraitPCTooltipActions() {

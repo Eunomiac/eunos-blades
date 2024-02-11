@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import C, { BladesItemType, BladesPhase, Factor } from "../../core/constants.js";
 import U from "../../core/utilities.js";
 import G, { ApplyTooltipAnimations } from "../../core/gsap.js";
 import BladesItem from "../../BladesItem.js";
 import BladesActiveEffect from "../../documents/BladesActiveEffect.js";
 // import {ApplyClockListeners} from "../../classes/BladesClocks.js";
+/* eslint-enable @typescript-eslint/no-unused-vars */
 import Tags from "../../core/tags.js";
 class BladesItemSheet extends ItemSheet {
     static get defaultOptions() {

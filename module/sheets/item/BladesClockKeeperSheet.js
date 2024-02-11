@@ -2,7 +2,7 @@
 import U from "../../core/utilities.js";
 import BladesItemSheet from "./BladesItemSheet.js";
 // import U from "../../core/utilities.js";
-import { ClockColor, ClockDisplayContext, ClockKeyUpdateAction } from "../../core/constants.js";
+import { ClockColor, ClockDisplayContext } from "../../core/constants.js";
 import { BladesPC, BladesFaction } from "../../documents/BladesActorProxy.js";
 class BladesClockKeeperSheet extends BladesItemSheet {
     // static Get() { return game.eunoblades.ClockKeeper as BladesClockKeeper; }
@@ -148,7 +148,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
                     event.preventDefault();
                     const clockKey = getClockKeyFromEvent(event);
                     const isNameVisible = !clockKey.isNameVisible;
-                    clockKey.updateTarget("isNameVisible", isNameVisible, ClockKeyUpdateAction.RenderNone);
+                    clockKey.updateTarget("isNameVisible", isNameVisible);
                     // If clockKey is on display (in scene & visible), sent out animation socket calls
                     if (clockKey.isInScene() && clockKey.isVisible) {
                         if (isNameVisible) {
@@ -176,7 +176,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
                     event.preventDefault();
                     const clockKey = getClockKeyFromEvent(event);
                     const isSpotlit = !clockKey.isSpotlit;
-                    clockKey.updateTarget("isSpotlit", isSpotlit, ClockKeyUpdateAction.RenderNone);
+                    clockKey.updateTarget("isSpotlit", isSpotlit);
                     // If clockKey is on display (in scene & visible), sent out animation socket calls
                     if (clockKey.isInScene() && clockKey.isVisible) {
                         if (isSpotlit) {
@@ -206,7 +206,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
                     event.preventDefault();
                     U.gsap.effects.keyControlPanelFlip(control$, { angle: 180 });
                     const clockKey = getClockKeyFromEvent(event);
-                    clockKey.updateTarget("isVisible", false, ClockKeyUpdateAction.RenderNone);
+                    clockKey.updateTarget("isVisible", false);
                     game.eunoblades.Director.pullKey_SocketCall(clockKey.id);
                 }
             });
@@ -222,7 +222,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
                     event.preventDefault();
                     U.gsap.effects.keyControlPanelFlip(control$, { angle: 0 });
                     const clockKey = getClockKeyFromEvent(event);
-                    clockKey.updateTarget("isVisible", true, ClockKeyUpdateAction.RenderNone);
+                    clockKey.updateTarget("isVisible", true);
                     game.eunoblades.Director.renderClockKey_SocketCall(clockKey.id);
                 }
             });
@@ -237,7 +237,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         clockKeyControls$.find("[data-action=\"delete-clock-key\"]").on({
             click: async (event) => {
                 event.preventDefault();
-                await getClockKeyFromEvent(event).delete();
+                await getClockKeyFromEvent(event).delete(game.eunoblades.ClockKeys);
             }
         });
         clockKeyControls$.find("[data-action=\"add-key-to-scene\"]").on({
@@ -264,7 +264,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
                 const input$ = $(event.currentTarget);
                 const inputVal = input$.val();
                 if (typeof inputVal === "string") {
-                    getClockKeyFromEvent(event).updateTarget(input$.data("targetProp"), inputVal, ClockKeyUpdateAction.RenderNone);
+                    getClockKeyFromEvent(event).updateTarget(input$.data("targetProp"), inputVal);
                     clockKeyControls$.find("input.clock-key-input").val(inputVal);
                 }
             }
@@ -283,7 +283,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
                     event.preventDefault();
                     const [clockKey, clock] = getClockFromEvent(event);
                     const isVisible = !clock.isVisible;
-                    clock.updateTarget("isVisible", isVisible, ClockKeyUpdateAction.RenderNone);
+                    clock.updateTarget("isVisible", isVisible);
                     // If clock key is on display (in scene & visible), sent out animation socket calls
                     if (clockKey.isInScene() && clockKey.isVisible) {
                         if (isVisible) {
@@ -311,7 +311,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
                     event.preventDefault();
                     const [clockKey, clock] = getClockFromEvent(event);
                     const isActive = !clock.isActive;
-                    clock.updateTarget("isActive", isActive, ClockKeyUpdateAction.RenderNone);
+                    clock.updateTarget("isActive", isActive);
                     // If clock AND clock key is on display (in scene & visible), sent out animation socket calls
                     if (clock.parentKey.isInScene() && clock.parentKey.isVisible && clock.isVisible) {
                         if (isActive) {
@@ -339,7 +339,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
                     event.preventDefault();
                     const clock = getClockFromEvent(event)[1];
                     const isNameVisible = !clock.isNameVisible;
-                    clock.updateTarget("isNameVisible", isNameVisible, ClockKeyUpdateAction.RenderNone);
+                    clock.updateTarget("isNameVisible", isNameVisible);
                     // If clock is on display (in scene & visible), sent out animation socket calls
                     if (clock.parentKey.isInScene() && clock.parentKey.isVisible && clock.isVisible) {
                         if (isNameVisible) {
@@ -367,7 +367,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
                     event.preventDefault();
                     const [clockKey, clock] = getClockFromEvent(event);
                     const isHighlighted = !clock.isHighlighted;
-                    clock.updateTarget("isHighlighted", isHighlighted, ClockKeyUpdateAction.RenderNone);
+                    clock.updateTarget("isHighlighted", isHighlighted);
                     // If clock is on display (in scene & visible), sent out animation socket calls
                     if (clock.parentKey.isInScene() && clock.parentKey.isVisible && clock.isVisible) {
                         if (isHighlighted) {
@@ -426,7 +426,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
                     ? U.pInt(select$.val())
                     : select$.val();
                 const prop = select$.data("targetProp");
-                getClockFromEvent(event)[1].updateTarget(prop, value, ClockKeyUpdateAction.RenderNone);
+                getClockFromEvent(event)[1].updateTarget(prop, value);
                 if (prop === "color" && typeof value === "string" && value in ClockColor) {
                     this.setSelectColor(select$, value);
                 }
@@ -442,7 +442,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
                     const input$ = $(event.currentTarget);
                     const inputVal = input$.val();
                     if (typeof inputVal === "string") {
-                        getClockFromEvent(event)[1].updateTarget(input$.data("targetProp"), inputVal, ClockKeyUpdateAction.RenderNone);
+                        getClockFromEvent(event)[1].updateTarget(input$.data("targetProp"), inputVal);
                         control$.find("input.clock-input").val(inputVal);
                     }
                 }

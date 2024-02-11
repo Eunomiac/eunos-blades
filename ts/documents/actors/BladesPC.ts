@@ -93,7 +93,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       isVisible: true,
       isNameVisible: false,
       isSpotlit: false
-    }, [
+    }, undefined, [
       {
         color: ClockColor.white,
         value: 0,
@@ -442,9 +442,9 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   // #endregion
 
   // #region BladesRoll.PrimaryDoc Implementation
-  override get rollPrimaryModsSchemaSet(): BladesRollMod.Schema[] {
+  get rollPrimaryModsSchemaSet(): BladesRollMod.Schema[] {
 
-    const rollModsData = super.rollModsSchemaSet;
+    const rollModsData = this.rollModsSchemaSet;
 
     // Add roll mods from harm
     [

@@ -48,6 +48,11 @@ const STYLES = {
         "margin-left": "-100px",
         padding: "0 100px"
     },
+    warn: {
+        color: C.Colors.dBLACK,
+        background: C.Colors.dGOLD,
+        "font-weight": 500
+    },
     error: {
         color: C.Colors.bRED,
         background: C.Colors.ddRED,
@@ -173,6 +178,7 @@ const logger = {
     checkLog3: (...content) => eLogger("checkLog", ...content, 3),
     checkLog4: (...content) => eLogger("checkLog", ...content, 4),
     checkLog5: (...content) => eLogger("checkLog", ...content, 5),
+    warn: (...content) => eLogger("warn", ...content),
     error: (...content) => eLogger("error", ...content),
     hbsLog: (...content) => eLogger("handlebars", ...content)
 };

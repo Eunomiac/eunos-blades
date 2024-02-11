@@ -48,11 +48,11 @@ declare global {
     export type Schema = {
       rollType: RollType,
       rollSubType?: RollSubType,
+      rollPrompt?: string;
       rollUserID?: IDString,
       rollTrait?: RollTrait,
       rollDowntimeAction?: DowntimeAction,
       rollClockKey?: IDString,
-      rollClockKeyID?: IDString,
 
       rollPrimaryData?: PrimaryData;
       rollOppData?: OppositionData;
@@ -78,55 +78,7 @@ declare global {
         consequence: BladesConsequence.Data
       },
 
-      userPermissions?: Record<IDString, RollPermissions>
-    }
-
-    interface UnlinkedConfig {
-      rollType?: RollType,
-      rollSubType?: RollSubType,
-      rollUserID?: IDString,
-      rollTrait?: RollTrait,
-      rollDowntimeAction?: DowntimeAction,
-      rollClockKey?: IDString|BladesClockKey,
-      rollClockKeyID?: IDString,
-
-      rollPrimaryData?: PrimaryData;
-      rollOppData?: OppositionData;
-      rollParticipantData?: RollParticipantDataSet,
-
-      participantRollTo?: string,
-      resistanceRollTo?: {
-        id: string,
-        userID: string,
-        consequenceID: string
-      },
-      consequenceData?: Partial<Record<
-        Position,
-        Partial<Record<
-          RollResult.partial|RollResult.fail,
-          Record<
-            IDString,
-            BladesConsequence.Data
-          >
-        >>
-      >>,
-      resistanceData?: {
-        consequence: BladesConsequence.Data
-      },
-
-      userPermissions?: Record<IDString, RollPermissions>
-    }
-
-    export type Config = UnlinkedConfig & BladesTargetLink.PartialConfig;
-
-    export interface Schema extends Omit<Config, "rollClockKey"|"rollPrimaryData"|"rollOppData"|"rollParticipantData"> {
-      rollPrompt?: string;
-
-      rollPrimaryData: Omit<PrimaryData, "rollPrimaryDoc">,
-      rollOppData?: Omit<OppositionData, "rollOppDoc">,
-      rollParticipantData?: RollParticipantDataSet,
-
-      rollModsData: Record<IDString,BladesRollMod.Data>;
+      rollModsData: Record<IDString,BladesRollMod.Data>,
 
       rollPositionInitial: Position;
       rollEffectInitial: Effect;
@@ -152,8 +104,12 @@ declare global {
       rollTraitPastVerb?: string,
       finalDiceData?: DieData[],
 
-      isInlineResistanceRoll?: boolean
+      isInlineResistanceRoll?: boolean,
+
+      userPermissions?: Record<IDString, RollPermissions>
     }
+
+    export type Config = BladesTargetLink.Config & Partial<Schema>;
 
     export type Data = BladesTargetLink.Data & Schema;
 
@@ -164,13 +120,13 @@ declare global {
       system?: BladesActorSystem|BladesItemSystem,
 
       rollMods: BladesRollMod[],
-      rollPrimary: PrimaryData,
+      rollPrimary: BladesRollPrimary,
       rollTraitData: NamedValueMax & {gmTooltip?: string, pcTooltip?: string},
       rollTraitOptions: Array<{name: string, value: RollTrait}>,
 
       diceTotal: number,
 
-      rollOpposition?: OppositionData,
+      rollOpposition?: BladesRollOpposition,
       rollParticipants?: RollParticipantDocs,
 
       rollClockKey?: BladesClockKey,

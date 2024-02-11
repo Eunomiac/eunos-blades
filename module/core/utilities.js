@@ -1040,15 +1040,7 @@ const zip = (keys, values) => {
     });
     return result;
 };
-/**
- *  An object-equivalent Array.map() function, which accepts mapping functions to transform both keys and values.
- *  If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
- * @param {Index<unknown>} obj
- * @param {mapFunc<keyFunc|valFunc>|false} keyFunc
- * @param {mapFunc<valFunc>} [valFunc]
- */
 function objMap(obj, keyFunc, valFunc) {
-    //
     let valFuncTyped = valFunc;
     let keyFuncTyped = keyFunc;
     if (!valFuncTyped) {
@@ -1058,7 +1050,7 @@ function objMap(obj, keyFunc, valFunc) {
     if (!keyFuncTyped) {
         keyFuncTyped = ((k) => k);
     }
-    if (isArray(obj)) {
+    if (Array.isArray(obj)) {
         return obj.map(valFuncTyped);
     }
     return Object.fromEntries(Object.entries(obj).map(([key, val]) => {
@@ -1710,6 +1702,20 @@ const reverseRepeatingTimeline = (tl) => {
 const sleep = (duration) => new Promise((resolve) => {
     setTimeout(resolve, duration >= 100 ? duration : duration * 1000);
 });
+function waitFor(waitForTarget) {
+    return new Promise((resolve, reject) => {
+        if (waitForTarget instanceof Promise
+            || waitForTarget instanceof gsap.core.Animation) {
+            waitForTarget.then(() => resolve()).catch(reject);
+        }
+        else if (Array.isArray(waitForTarget)) {
+            Promise.all(waitForTarget.map((target) => waitFor(target))).then(() => resolve()).catch(reject);
+        }
+        else {
+            resolve();
+        }
+    });
+}
 // #endregion ▄▄▄▄▄ ASYNC ▄▄▄▄▄
 const EventHandlers = {
     onTextInputBlur: async (inst, event) => {
@@ -1805,6 +1811,9 @@ const isTargetKey = (ref) => {
     if (ref.startsWith("system")) {
         return true;
     }
+    if (ref.startsWith("flag")) {
+        return true;
+    }
     return false;
 };
 const isTargetFlagKey = (ref) => {
@@ -1815,6 +1824,22 @@ const isTargetFlagKey = (ref) => {
         return false;
     }
     return true;
+};
+const parseDocRefToUUID = (ref) => {
+    if (isDocUUID(ref)) {
+        return ref;
+    }
+    else if (isDocID(ref)) {
+        const doc = game.collections.find((collection) => collection.has(ref))?.get(ref);
+        if (doc && "uuid" in doc) {
+            return doc.uuid;
+        }
+        throw new Error(`[U.parseDocRefToUUID] Unable to find document with id '${ref}'`);
+    }
+    else if (ref && typeof ref === "object" && "uuid" in ref && typeof ref.uuid === "string") {
+        return ref.uuid;
+    }
+    throw new Error(`[U.parseDocRefToUUID] Unrecognized reference: '${ref}'`);
 };
 const loc = (locRef, formatDict = {}) => {
     if (/[a-z]/.test(locRef)) { // Reference contains lower-case characters: add system ID namespacing to dot notation
@@ -1927,14 +1952,15 @@ export default {
     // ████████ PERFORMANCE: Performance Testing & Metrics ████████
     testFuncPerformance,
     // ░░░░░░░ GreenSock ░░░░░░░
-    gsap, get, set, getGSAngleDelta, getNearestLabel, reverseRepeatingTimeline,
+    gsap, get, set, getGSAngleDelta, getNearestLabel, reverseRepeatingTimeline, /* to, from, fromTo, */
     TextPlugin, Flip, MotionPathPlugin,
     // ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
-    sleep,
+    sleep, waitFor,
     // EVENT HANDLERS
     EventHandlers,
     // ░░░░░░░ SYSTEM: System-Specific Functions (Requires Configuration of System ID in constants.js) ░░░░░░░
     isDocID, isDocUUID, isDotKey, isTargetKey, isTargetFlagKey,
+    parseDocRefToUUID,
     loc, getSetting, getTemplatePath, displayImageSelector
 };
 // #endregion ▄▄▄▄▄ EXPORTS ▄▄▄▄▄

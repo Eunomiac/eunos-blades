@@ -45,7 +45,7 @@ declare global {
 
       primaryID: UUIDString, // ID of PrimaryDoc who can resist this consequence
 
-      resistData?: Data,
+      resistSchema?: Schema,
       parentCsqID?: IDString,
 
 

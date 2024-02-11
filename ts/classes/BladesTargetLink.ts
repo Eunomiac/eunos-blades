@@ -39,16 +39,18 @@ class BladesTargetLink<Schema> {
 
   static #ParseChildLinkData<Schema>(
     childData: BladesTargetLink.Data & Partial<Schema>,
-    parentLinkData?: BladesTargetLink.PartialData
+    parentLinkData?: BladesTargetLink.Data
   ): BladesTargetLink.Data & Partial<Schema> {
     if (!parentLinkData) { return childData; }
-    const keyPrefixParts: string[] = [parentLinkData.targetKey ?? parentLinkData.targetFlagKey as string];
+    const keyPrefixParts: string[] = "targetKey" in parentLinkData
+      ? [parentLinkData.targetKey]
+      : [parentLinkData.targetFlagKey];
     if (parentLinkData.isScopingById) {
       keyPrefixParts.push(parentLinkData.id);
     }
     const keyPrefix = keyPrefixParts.join(".");
 
-    if ("targetKey" in childData && parentLinkData.targetKey) {
+    if ("targetKey" in childData && "targetKey" in parentLinkData) {
       if (childData.targetKey.startsWith(`${keyPrefix}.`)) {
         // Remove the keyPrefix and the following dot from childData.targetKey
         childData.targetKey = childData.targetKey.slice(keyPrefix.length + 1) as TargetKey;
@@ -58,7 +60,7 @@ class BladesTargetLink<Schema> {
         parentLinkData.isScopingById ? parentLinkData.id : undefined,
         childData.targetKey
       ].filter(Boolean).join(".") as TargetKey;
-    } else if ("targetFlagKey" in childData && parentLinkData.targetFlagKey) {
+    } else if ("targetFlagKey" in childData && "targetFlagKey" in parentLinkData) {
       if (childData.targetFlagKey.startsWith(`${keyPrefix}.`)) {
         // Remove the keyPrefix and the following dot from childData.targetFlagKey
         childData.targetFlagKey = childData.targetFlagKey.slice(keyPrefix.length + 1) as TargetFlagKey;
@@ -75,22 +77,38 @@ class BladesTargetLink<Schema> {
   }
 
   static BuildLinkConfig(
-    partialConfig: BladesTargetLink.PartialConfig
+    partialConfig: BladesTargetLink.Config
   ): BladesTargetLink.Config {
-    const {target, targetID, targetKey, targetFlagKey, isScopingById} = partialConfig;
+    // const {target, targetID, targetKey, targetFlagKey, isScopingById} = partialConfig;
 
-    if (target) {
-      if (targetKey) {
-        return {target, targetKey, isScopingById};
-      } else if (targetFlagKey) {
-        return {target, targetFlagKey, isScopingById};
+    if ("target" in partialConfig) {
+      if ("targetKey" in partialConfig) {
+        return {
+          target: partialConfig.target,
+          targetKey: partialConfig.targetKey,
+          isScopingById: partialConfig.isScopingById
+        };
+      } else if ("targetFlagKey" in partialConfig) {
+        return {
+          target: partialConfig.target,
+          targetFlagKey: partialConfig.targetFlagKey,
+          isScopingById: partialConfig.isScopingById
+        };
       }
       throw new Error("[BladesTargetLink.BuildConfig] Must provide a targetKey or targetFlagKey.");
-    } else if (targetID) {
-      if (targetKey) {
-        return {targetID, targetKey, isScopingById};
-      } else if (targetFlagKey) {
-        return {targetID, targetFlagKey, isScopingById};
+    } else if ("targetID" in partialConfig) {
+      if ("targetKey" in partialConfig) {
+        return {
+          targetID: partialConfig.targetID,
+          targetKey: partialConfig.targetKey,
+          isScopingById: partialConfig.isScopingById
+        };
+      } else if ("targetFlagKey" in partialConfig) {
+        return {
+          targetID: partialConfig.targetID,
+          targetFlagKey: partialConfig.targetFlagKey,
+          isScopingById: partialConfig.isScopingById
+        };
       }
       throw new Error("[BladesTargetLink.BuildConfig] Must provide a targetKey or targetFlagKey.");
     }
@@ -105,14 +123,14 @@ class BladesTargetLink<Schema> {
    * The method ensures that either 'targetKey' or 'targetFlagKey' is present and throws an error if the configuration is invalid.
    *
    * @template Schema - The additional schema data required by the subclass.
-   * @param {BladesTargetLink.PartialConfig | BladesTargetLink.Data & Partial<Schema>} config - The configuration object that may contain BladesTargetLink properties and any subclass-specific schema data.
+   * @param {BladesTargetLink.Config | BladesTargetLink.Data & Partial<Schema>} config - The configuration object that may contain BladesTargetLink properties and any subclass-specific schema data.
    * @returns {BladesTargetLink.Data & Partial<Schema>} - The fully constructed data object with necessary properties for BladesTargetLink.
    * @throws {Error} - Throws an error if the configuration object is invalid, lacks a target reference, or if both 'targetKey' and 'targetFlagKey' are provided.
    */
   static #ParseConfigToData<Schema>(
     this: BladesTargetLink.StaticThisContext<Schema>,
-    config: (BladesTargetLink.PartialConfig | BladesTargetLink.Data) & Partial<Schema>,
-    parentLinkData?: BladesTargetLink.PartialData
+    config: (BladesTargetLink.Config | BladesTargetLink.Data) & Partial<Schema>,
+    parentLinkData?: BladesTargetLink.Data
   ): BladesTargetLink.Data & Partial<Schema> {
 
     if (this.IsValidData(config)) { return this.ParseConfigToData(config, parentLinkData); }
@@ -147,35 +165,41 @@ class BladesTargetLink<Schema> {
    * functionality that depends on the id property should be placed after the super call to this method.
    *
    * @template Schema - The data schema required by the subclass.
-   * @param {(BladesTargetLink.PartialConfig | BladesTargetLink.Data) & Partial<Schema>} data - The data to be parsed.
+   * @param {(BladesTargetLink.Config | BladesTargetLink.Data) & Partial<Schema>} data - The data to be parsed.
    * @returns {BladesTargetLink.Data & Partial<Schema>} - The parsed data, suitable for BladesTargetLink.
    */
   static ParseConfigToData<Schema>(
-    data: (BladesTargetLink.PartialConfig | BladesTargetLink.Data) & Partial<Schema>,
-    parentLinkData?: BladesTargetLink.PartialData
+    data: (BladesTargetLink.Config | BladesTargetLink.Data) & Partial<Schema>,
+    parentLinkData?: BladesTargetLink.Data
   ): BladesTargetLink.Data & Partial<Schema> {
     if (this.IsValidData(data)) { return this.#ParseChildLinkData(data, parentLinkData); }
     return this.#ParseConfigToData(data);
   }
 
   static PartitionSchemaData<Schema>(
-    dataOrConfig: BladesTargetLink.PartialData & Partial<Schema>
+    dataOrConfig: BladesTargetLink.Data & Partial<Schema>
   ): {linkData: BladesTargetLink.Data, partialSchema: Partial<Schema>};
   static PartitionSchemaData<Schema>(
-    dataOrConfig: BladesTargetLink.PartialConfig & Partial<Schema>
+    dataOrConfig: BladesTargetLink.Config & Partial<Schema>
   ): {linkConfig: BladesTargetLink.Config, partialSchema: Partial<Schema>};
-  static PartitionSchemaData<Schema, T extends BladesTargetLink.PartialConfig | BladesTargetLink.PartialData>(
+  static PartitionSchemaData<Schema, T extends BladesTargetLink.Config | BladesTargetLink.Data>(
     dataOrConfig: T & Partial<Schema>
   ): {linkData: BladesTargetLink.Data, partialSchema: Partial<Schema>}
     | {linkConfig: BladesTargetLink.Config, partialSchema: Partial<Schema>} {
     const {
       id, target, targetID, targetKey, targetFlagKey, isScopingById,
       ...schemaData
-    } = dataOrConfig as T & Partial<Schema> & {id?: IDString, target?: BladesLinkDoc};
+    } = dataOrConfig as T & Partial<Schema> & {
+      id?: IDString,
+      target?: BladesLinkDoc,
+      targetID?: IDString,
+      targetKey?: TargetKey,
+      targetFlagKey?: TargetFlagKey
+    };
     const partialSchema = schemaData as Partial<Schema>;
 
     if (U.isDocID(id)) {
-      // A PartialData object was submitted.
+      // A Data object was submitted.
       if (!this.IsValidData({id, targetID, targetKey, targetFlagKey, isScopingById})) {
         eLog.error("BladesTargetLink", "Bad Constructor DATA", {dataOrConfig});
         throw new Error("[new BladesTargetLink()] Bad Constructor DATA (see log)");
@@ -196,13 +220,17 @@ class BladesTargetLink<Schema> {
         partialSchema
       };
     }
-    // A PartialConfig object was submitted.
-    const partialLinkConfig: BladesTargetLink.PartialConfig = {
-      target, targetID, targetKey, targetFlagKey, isScopingById: isScopingById ?? true
-    };
-
+    // A Config object was submitted.
     return {
-      linkConfig: this.BuildLinkConfig(partialLinkConfig),
+      linkConfig: this.BuildLinkConfig({
+        ...{isScopingById: isScopingById ?? true},
+        ...("targetID" in dataOrConfig
+          ? {targetID: dataOrConfig.targetID}
+          : {target: dataOrConfig.target}),
+        ...("targetKey" in dataOrConfig
+          ? {targetKey: dataOrConfig.targetKey}
+          : {targetFlagKey: dataOrConfig.targetFlagKey})
+      }),
       partialSchema
     };
   }
@@ -245,11 +273,11 @@ class BladesTargetLink<Schema> {
    */
   static async Create<C extends BladesTargetLink<Schema>, Schema>(
     this: new (
-      config: BladesTargetLink.PartialConfig & Partial<Schema>,
-      parentLinkData?: BladesTargetLink.PartialData
+      config: BladesTargetLink.Config & Partial<Schema>,
+      parentLinkData?: BladesTargetLink.Data & Schema
     ) => C,
-    config: BladesTargetLink.PartialConfig & Partial<Schema>,
-    parentLinkData?: BladesTargetLink.PartialData
+    config: BladesTargetLink.Config & Partial<Schema>,
+    parentLinkData?: BladesTargetLink.Data & Schema
   ): Promise<C> {
     const tLink = new this(config, parentLinkData);
     await tLink.initTargetLink();
@@ -355,11 +383,18 @@ class BladesTargetLink<Schema> {
   // #endregion
 
   // #region CONSTRUCTOR ~
-  constructor(config: BladesTargetLink.PartialConfig & Partial<Schema>, parentLinkData?: BladesTargetLink.PartialData)
-  constructor(data: BladesTargetLink.Data, parentLinkData?: BladesTargetLink.PartialData)
   constructor(
-    dataOrConfig: BladesTargetLink.PartialConfig & Partial<Schema> | BladesTargetLink.Data,
-    parentLinkData?: BladesTargetLink.PartialData
+    config: BladesTargetLink.Config & Partial<Schema>,
+    parentLinkData?: BladesTargetLink.Data & Partial<Schema>
+  )
+  constructor(
+    data: BladesTargetLink.Data,
+    parentLinkData?: BladesTargetLink.Data & Partial<Schema>
+  )
+  constructor(
+    dataOrConfig: BladesTargetLink.Config & Partial<Schema>
+      | BladesTargetLink.Data,
+    parentLinkData?: BladesTargetLink.Data & Partial<Schema>
   ) {
 
     let linkData: BladesTargetLink.Data;
@@ -387,11 +422,11 @@ class BladesTargetLink<Schema> {
       const parsedData = BladesTargetLink.#ParseConfigToData(
         dataOrConfig,
         parentLinkData
-      ) as BladesTargetLink.PartialData;
+      ) as BladesTargetLink.Data & Partial<Schema>;
 
       // Next we separate the linkData and the schemaData from the parsedData object.
       let partialSchema: Partial<Schema>;
-      ({linkData, partialSchema} = BladesTargetLink.PartitionSchemaData(parsedData));
+      ({linkData, partialSchema} = BladesTargetLink.PartitionSchemaData<Schema>(parsedData));
 
       // And apply any schema defaults to the provided schema data.
       schema = BladesTargetLink.#ApplySchemaDefaults(partialSchema);

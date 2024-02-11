@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities.js";
-import { ClockKey_SVGDATA, BladesPhase, ClockKeyUpdateAction, ClockKeyDisplayMode } from "../core/constants.js";
+import { ClockKey_SVGDATA, BladesPhase, ClockKeyDisplayMode } from "../core/constants.js";
 import BladesClockKey, { BladesClock } from "./BladesClocks.js";
 class BladesDirector {
     // #region INITIALIZATION ~
@@ -274,7 +274,7 @@ class BladesDirector {
             // Right-Click a Clock Key = Pull it
             container$.on("contextmenu", async () => {
                 this.pullKey_SocketCall(key.id);
-                key.updateTarget("isVisible", false, ClockKeyUpdateAction.RenderNone);
+                key.updateTarget("isVisible", false);
             });
         }
         else {

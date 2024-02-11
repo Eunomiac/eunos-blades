@@ -22,7 +22,7 @@ class BladesFaction extends BladesActor {
     get rollOppName() { return this.name ?? ""; }
     get rollOppSubName() { return this.system.subtitle || this.system.concept || " "; }
     get rollOppType() { return this.type; }
-    get rollOppModsData() { return []; }
+    get rollOppModsSchemaSet() { return []; }
     // #endregion
     // #endregion
     // _clocks: Collection<BladesClock> = new Collection();
@@ -43,7 +43,7 @@ class BladesFaction extends BladesActor {
         });
     }
     async deleteClock(clockKeyID) {
-        await game.eunoblades.ClockKeys.get(clockKeyID)?.delete();
+        await game.eunoblades.ClockKeys.get(clockKeyID)?.delete(game.eunoblades.ClockKeys);
     }
 }
 export default BladesFaction;

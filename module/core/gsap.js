@@ -414,7 +414,7 @@ export const gsapEffects = {
             const typeLine = csqRoot(`.consequence-type-container .consequence-type.${config.type}-consequence`);
             const nameLine = csqRoot(`.consequence-name.${config.type}-consequence`);
             const footerBg = csqRoot(`.consequence-footer-container .consequence-footer-bg.${config.type}-consequence`);
-            const footerMsg = csqRoot(`.consequence-footer-container .consequence-footer-message.${config.type}-consequence`);
+            const specialFooterMsg = csqRoot(`.consequence-footer-container .consequence-footer-message.${config.type}-consequence`);
             const tl = U.gsap.timeline({ paused: true, defaults: {} });
             // Fade in icon circle
             if (iconCircle.length > 0) {
@@ -461,8 +461,8 @@ export const gsapEffects = {
                 }, 0);
             }
             // Slide out attribute from left
-            if (footerMsg.length > 0) {
-                tl.fromTo(footerMsg, {
+            if (specialFooterMsg.length > 0) {
+                tl.fromTo(specialFooterMsg, {
                     scaleX: 0,
                     opacity: 1
                 }, {

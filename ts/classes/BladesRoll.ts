@@ -683,7 +683,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
       || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker);
   }
 
-  static BuildData(config: BladesRoll.Config): BladesRoll.PrimaryData {
+  static BuildData(config: BladesRoll.Config|BladesRoll.Schema): BladesRoll.PrimaryData {
     if (BladesRollPrimary.IsValidData(config.rollPrimaryData)) {
       return config.rollPrimaryData;
     }
@@ -707,7 +707,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
     };
   }
 
-  static Build(config: BladesRoll.Config): BladesRollPrimary {
+  static Build(config: BladesRoll.Config|BladesRoll.Schema): BladesRollPrimary {
     return new BladesRollPrimary(this.BuildData(config));
   }
   // #endregion
@@ -1188,21 +1188,18 @@ class BladesRollParticipant implements BladesRoll.ParticipantData {
 
   refresh() {
     const rollParticipantFlagData = this.rollInstance.data.rollParticipantData?.[this.rollParticipantSection];
-    if (rollParticipantFlagData) {
+    if (rollParticipantFlagData && this.rollParticipantSubSection in rollParticipantFlagData) {
       const rollParticipantFlags = rollParticipantFlagData[
         this.rollParticipantSubSection as KeyOf<typeof rollParticipantFlagData>
-      ] as Omit<BladesRoll.ParticipantData, "rollParticipantDoc"> & BladesRoll.ParticipantSectionData
-        | undefined;
+      ] as BladesRoll.ParticipantData | undefined;
       if (rollParticipantFlags) {
         this.rollParticipantID = rollParticipantFlags.rollParticipantID;
 
         this.rollParticipantName = rollParticipantFlags.rollParticipantName;
         this.rollParticipantType = rollParticipantFlags.rollParticipantType;
         this.rollParticipantIcon = rollParticipantFlags.rollParticipantIcon;
-        this.rollParticipantSection = rollParticipantFlags.rollParticipantSection;
-        this.rollParticipantSubSection = rollParticipantFlags.rollParticipantSubSection;
 
-        this.rollParticipantModsSchemaSet = rollParticipantFlags.rollParticipantModsSchemaSet;
+        this.rollParticipantModsSchemaSet = rollParticipantFlags.rollParticipantModsSchemaSet ?? [];
         this.rollFactors = rollParticipantFlags.rollFactors;
       }
     }
@@ -1250,9 +1247,13 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   static override ParseConfigToData<Schema = BladesRoll.Schema>(
-    data: BladesTargetLink.PartialConfig & Partial<BladesRoll.Schema>,
-    parentRoll: BladesRoll
+    data: BladesTargetLink.Config & Partial<BladesRoll.Schema>,
+    parentRollData: BladesRoll.Data
   ): BladesTargetLink.Data & Partial<Schema> {
+    const parentRollInst = game.eunoblades.Rolls.get(parentRollData.id) as BladesRoll|undefined;
+    if (!parentRollInst) {
+      throw new Error(`[BladesRoll.ParseConfigToData] No BladesRoll instance found with id ${parentRollData.id}.`);
+    }
     if (data.rollPrimaryData instanceof BladesRollPrimary) {
       data.rollPrimaryData = data.rollPrimaryData.data;
     }
@@ -1264,7 +1265,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         Object.keys(data.rollParticipantData[RollModSection.roll]).forEach((key) => {
           const thisParticipant = data.rollParticipantData?.[RollModSection.roll]?.[key as Exclude<BladesRoll.ParticipantSubSection, "Setup">];
           if (thisParticipant instanceof BladesRollParticipant) {
-            ((data.rollParticipantData as NonNullable<BladesRoll.Config["rollParticipantData"]>)[RollModSection.roll] as Record<string, BladesRoll.ParticipantData & BladesRoll.ParticipantSectionData>)[key as Exclude<BladesRoll.ParticipantSubSection, "Setup">] = thisParticipant.data;
+            ((data.rollParticipantData as NonNullable<BladesRoll.Config["rollParticipantData"]>)[RollModSection.roll] as Record<string, BladesRoll.ParticipantData>)[key as Exclude<BladesRoll.ParticipantSubSection, "Setup">] = thisParticipant.data;
           }
         });
       }
@@ -1287,7 +1288,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         });
       }
     }
-    data.rollModsData = this.GetRollModsDataSet(parentRoll, Object.values(data.rollModsData ?? {}));
+    data.rollModsData = this.GetRollModsDataSet(parentRollInst, Object.values(data.rollModsData ?? {}));
     return BladesTargetLink.ParseConfigToData(data) as BladesTargetLink.Data & Partial<Schema>;
   }
 
@@ -1504,7 +1505,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     // === TWO === DETERMINE PRIMARY USER(S)
 
     // Check RollPrimaryDoc to determine how to assign primary users
-    const {rollPrimaryDoc} = config.rollPrimaryData;
+    const {rollPrimaryDoc} = (new BladesRollPrimary(config.rollPrimaryData));
     if (
       BladesPC.IsType(rollPrimaryDoc)
       && U.pullElement(playerUserIDs, rollPrimaryDoc.primaryUser?.id)
@@ -1563,16 +1564,15 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
             return pData;
           }
           if (BladesRollParticipant.IsValidData(pData)) {
-            if (BladesRollParticipant.IsDoc(pData.rollParticipantDoc)) {
-              return pData.rollParticipantDoc;
-            } else if (typeof pData.rollParticipantID === "string") {
+            if (typeof pData.rollParticipantID === "string") {
               const pDoc = game.actors.get(pData.rollParticipantID) ?? game.items.get(pData.rollParticipantID);
               if (BladesRollParticipant.IsDoc(pDoc)) {
                 return pDoc;
               }
             }
           }
-          return null as never;
+          // Throw an error with sufficient debug data if pData does not match any expected types
+          throw new Error(`[getParticipantDocs] Invalid participant data encountered. Data: ${JSON.stringify(pData)}, Expected: "BladesRollParticipant or valid participant data", Function Context: "getParticipantDocs", Participant Data: ${JSON.stringify(participantData)}`);
         });
     }
 
@@ -1607,7 +1607,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   static override BuildLinkConfig(config: BladesRoll.Config): BladesTargetLink.Config {
     // Prepare partial target link config
-    const partialLinkConfig: BladesTargetLink.PartialConfig = {
+    const partialLinkConfig = {
       target: "target" in config ? config.target : undefined,
       targetID: "targetID" in config ? config.targetID : undefined,
       targetKey: "targetKey" in config ? config.targetKey : undefined,
@@ -1629,7 +1629,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     }
 
     // Build target link config
-    return BladesTargetLink.BuildLinkConfig(partialLinkConfig);
+    return BladesTargetLink.BuildLinkConfig(partialLinkConfig as BladesTargetLink.Config);
   }
 
   /**
@@ -1657,7 +1657,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll()", {config});
 
     // Construct and initialize the BladesRoll/BladesTargetLink instance
-    const rollInst = await BladesRoll.Create({...config, ...linkConfig});
+    const rollInst = await BladesRoll.Create<BladesRoll, BladesRoll.Schema>({...config, ...linkConfig});
 
     // Send out socket calls to all users to see the roll.
     rollInst.constructRollCollab_SocketCall(rollInst.linkData);
@@ -1752,7 +1752,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
           for (const [participantType, participantData] of Object.entries(rollParticipantList)) {
             sectionParticipants[participantType] = new BladesRollParticipant(
               this,
-              participantData as BladesRoll.ParticipantConstructorData
+              rollSection as BladesRoll.ParticipantSection,
+              participantType as BladesRoll.ParticipantSubSection,
+              participantData as BladesRoll.ParticipantData
             );
           }
           this._rollParticipants[rollSection as BladesRoll.ParticipantSection] = sectionParticipants;
@@ -1784,11 +1786,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     if (!BladesRollParticipant.IsValidData(participantData)) {
       throw new Error("Bad data.");
     }
-    const rollParticipant = new BladesRollParticipant(this, {
-      rollParticipantSection: rollSection,
-      rollParticipantSubSection: rollSubSection,
-      rollParticipantID: participantData.rollParticipantID
-    });
+    const rollParticipant = new BladesRollParticipant(this, rollSection, rollSubSection, participantData);
 
     await rollParticipant.updateRollFlags();
     socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
@@ -1847,13 +1845,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     }
   }
 
-  get rollOppClockKey(): BladesClockKey | undefined {
-    return this.rollOpposition?.rollOppClockKey;
-  }
-
   get rollClockKey(): BladesClockKey | undefined {
-    return this.data.rollClockKeyID
-      ? game.eunoblades.ClockKeys.get(this.data.rollClockKeyID)
+    return this.data.rollClockKey
+      ? game.eunoblades.ClockKeys.get(this.data.rollClockKey)
       : undefined;
   }
 
@@ -1886,15 +1880,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         >> = {};
         (Object.entries(sectionFlagData) as Array<[
           BladesRoll.ParticipantSubSection,
-          BladesRoll.RollParticipantData
+          BladesRoll.ParticipantData
         ]>).forEach(([subSection, subSectionFlagData]) => {
           if (subSectionFlagData) {
             sectionParticipants[subSection] =
-              new BladesRollParticipant(this, {
-                ...subSectionFlagData,
-                rollParticipantSection: rollSection,
-                rollParticipantSubSection: subSection
-              });
+              new BladesRollParticipant(this, rollSection, subSection, subSectionFlagData);
           }
         });
         rollParticipants[rollSection] = sectionParticipants;
@@ -2909,7 +2899,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       rollPrimary,
       rollTraitData,
       rollTraitOptions,
-      rollOppClockKey,
       rollClockKey,
       finalDicePool,
       rollPositionFinal,
@@ -2989,7 +2978,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     return {
       ...baseData,
-      ...(this.rollPrimaryDoc ? {rollPrimary: this.rollPrimaryDoc} : {}),
+      rollPrimary: this.rollPrimary,
       rollPositionFinal,
       rollEffectFinal,
       rollResultFinal,
@@ -3003,8 +2992,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         || (this.isGM && this.getRollMods(RollModSection.after).length > 0),
       ...GMBoostsData,
       ...positionEffectTradeData,
-      ...(rollOppClockKey ? {rollClockKey: rollOppClockKey} : {}),
-      ...(rollClockKey ? {rollClockKey} : {}),
+      rollClockKey: this.rollClockKey,
       totalStressCost: stressCostDataSet.reduce((acc, [_label, amount]) => acc + amount, 0),
       totalArmorCost: armorCostDataSet.length,
       stressCosts: stressCostDataSet.length > 0
@@ -3817,26 +3805,25 @@ class BladesActionRoll extends BladesRoll {
       throw new Error(`[BladesActionRoll.ApplySchemaDefaults()] Bad RollTrait for Action Roll: ${schemaData.rollTrait}`);
     }
 
-    schemaData = super.ApplySchemaDefaults(schemaData);
+    const fullSchema = super.ApplySchemaDefaults(schemaData);
 
-    const rollPrimary = BladesRollPrimary.Build(schemaData);
+    const rollPrimary = BladesRollPrimary.Build(fullSchema);
 
     // Modify Config object depending on downtime action where necessary.
-    switch (schemaData.rollDowntimeAction) { // Remember: Can be done outside of Downtime during Flashbacks!
+    switch (fullSchema.rollDowntimeAction) { // Remember: Can be done outside of Downtime during Flashbacks!
       case DowntimeAction.AcquireAsset: {
-        schemaData.rollTrait = Factor.tier;
+        fullSchema.rollTrait = Factor.tier;
         break;
       }
       case DowntimeAction.LongTermProject: {
         // Validate that rollOppData points to a project item
-        if (!BladesRollOpposition.IsValidData(schemaData.rollOppData)) {
+        if (!BladesRollOpposition.IsValidData(fullSchema.rollOppData)) {
           throw new Error("No rollOppData provided for LongTermProject roll.");
         }
-        const rollOpp = new BladesRollOpposition(undefined, schemaData.rollOppData);
         if (![
           BladesItemType.project,
           BladesItemType.design
-        ].includes(rollOpp.rollOppType as BladesItemType)) {
+        ].includes(fullSchema.rollOppData.rollOppType as BladesItemType)) {
           throw new Error("rollOppType must be 'project' or 'design' for LongTermProject roll.");
         }
         break;
@@ -3847,9 +3834,9 @@ class BladesActionRoll extends BladesRoll {
           if (!rollPrimary.rollPrimaryDoc.abilities.find((ability) => ability.name === "Physiker")) {
             throw new Error("A PC rollPrimary on a Recovery roll must have the Physiker ability.");
           }
-          schemaData.rollTrait = ActionTrait.tinker;
+          fullSchema.rollTrait = ActionTrait.tinker;
         } else if (rollPrimary.rollPrimaryDoc?.rollPrimaryType === BladesActorType.npc) {
-          schemaData.rollTrait = Factor.quality;
+          fullSchema.rollTrait = Factor.quality;
         } else {
           throw new Error("Only a PC with Physiker or an NPC can be rollPrimary on a Recover roll.");
         }
@@ -3878,7 +3865,7 @@ class BladesActionRoll extends BladesRoll {
         break;
       }
       case undefined: break;
-      default: throw new Error(`Unrecognized Roll Downtime Action: ${schemaData.rollDowntimeAction}`);
+      default: throw new Error(`Unrecognized Roll Downtime Action: ${fullSchema.rollDowntimeAction}`);
     }
 
     return {
@@ -3960,11 +3947,11 @@ class BladesActionRoll extends BladesRoll {
           }
         }
       },
-      ...schemaData,
+      ...fullSchema as Partial<BladesRoll.Schema>,
       rollPrimaryData: rollPrimary.data,
-      rollOppData: schemaData.rollOppData instanceof BladesRollOpposition
-        ? schemaData.rollOppData.data
-        : schemaData.rollOppData
+      rollOppData: fullSchema.rollOppData instanceof BladesRollOpposition
+        ? fullSchema.rollOppData.data
+        : fullSchema.rollOppData
     } as Schema;
   }
 
@@ -4066,7 +4053,7 @@ class BladesActionRoll extends BladesRoll {
       ...linkConfig
     };
 
-    const rollInst = await this.Create(parsedConfig) as BladesActionRoll;
+    const rollInst = await this.Create<BladesActionRoll, BladesRoll.Schema>(parsedConfig);
 
     return rollInst;
   }
@@ -4165,7 +4152,7 @@ class BladesResistanceRoll extends BladesRoll {
       ...linkConfig
     };
 
-    const rollInst = await this.Create(parsedConfig) as BladesResistanceRoll;
+    const rollInst = await this.Create<BladesResistanceRoll, BladesRoll.Schema>(parsedConfig);
 
     return rollInst;
   }
@@ -4227,7 +4214,7 @@ class BladesFortuneRoll extends BladesRoll {
       ...linkConfig
     };
 
-    const rollInst = await this.Create(parsedConfig) as BladesFortuneRoll;
+    const rollInst = await this.Create<BladesFortuneRoll, BladesRoll.Schema>(parsedConfig);
 
     return rollInst;
   }
@@ -4238,12 +4225,13 @@ class BladesIndulgeViceRoll extends BladesRoll {
   static override ApplySchemaDefaults<Schema>(config: BladesRoll.Config) {
 
     // Validate rollPrimary
-    if (!config.rollPrimaryData || !BladesPC.IsType(config.rollPrimaryData.rollPrimaryDoc)) {
+    const rollPrimaryDoc = BladesRollPrimary.GetDoc(config.rollPrimaryData?.rollPrimaryID);
+    if (!rollPrimaryDoc || !BladesPC.IsType(rollPrimaryDoc)) {
       throw new Error("[BladesRoll.PrepareIndulgeViceRollConfig] RollPrimary must be a PC for Indulge Vice rolls.");
     }
 
     // Set rollTrait
-    const {attributes} = config.rollPrimaryData.rollPrimaryDoc;
+    const {attributes} = rollPrimaryDoc;
     const minAttrVal = Math.min(...Object.values(attributes));
     config.rollTrait = U.sample(
       Object.values(AttributeTrait).filter((attr) => attributes[attr] === minAttrVal)
@@ -4265,7 +4253,7 @@ class BladesIndulgeViceRoll extends BladesRoll {
       ...linkConfig
     };
 
-    const rollInst = await this.Create(parsedConfig) as BladesIndulgeViceRoll;
+    const rollInst = await this.Create<BladesIndulgeViceRoll, BladesRoll.Schema>(parsedConfig);
 
     return rollInst;
   }

@@ -8,7 +8,7 @@ import { BladesActor, BladesPC, BladesCrew } from "../../documents/BladesActorPr
 import { BladesItem, BladesProject } from "../../documents/BladesItemProxy.js";
 import BladesDialog from "../../classes/BladesDialog.js";
 import BladesActiveEffect from "../../documents/BladesActiveEffect.js";
-import BladesRoll, { BladesRollPrimary, BladesRollOpposition } from "../../classes/BladesRoll.js";
+import { BladesRollPrimary, BladesRollOpposition, BladesActionRoll, BladesFortuneRoll, BladesIndulgeViceRoll } from "../../classes/BladesRoll.js";
 // #endregion
 class BladesActorSheet extends ActorSheet {
     /**
@@ -385,7 +385,10 @@ class BladesActorSheet extends ActorSheet {
     async _onRollTraitClick(event) {
         const traitName = $(event.currentTarget).data("rollTrait");
         const rollType = $(event.currentTarget).data("rollType");
-        const rollData = {};
+        const rollData = {
+            target: this.actor,
+            targetFlagKey: "rollCollab"
+        };
         if (U.lCase(traitName) in { ...ActionTrait, ...AttributeTrait, ...Factor }) {
             rollData.rollTrait = U.lCase(traitName);
         }
@@ -411,7 +414,7 @@ class BladesActorSheet extends ActorSheet {
                 rollData.rollOppData = this.actor;
             }
         }
-        await BladesRoll.NewRoll(rollData);
+        await BladesActionRoll.New(rollData);
     }
     // Returns TRUE if can proceed, FALSE if action should stop (i.e. panel revealed for another user click)
     async _validateOrRevealSubData(downtimeAction, actionSubData) {
@@ -471,6 +474,8 @@ class BladesActorSheet extends ActorSheet {
             return;
         }
         const config = {
+            target: this.actor,
+            targetFlagKey: "rollCollab",
             rollDowntimeAction: downtimeAction
         };
         // Set necessary fields on roll construction config object, depending on downtime action
@@ -484,7 +489,7 @@ class BladesActorSheet extends ActorSheet {
             case DowntimeAction.Recover: {
                 config.rollType = RollType.Action;
                 if (BladesPC.IsType(this.actor) && this.actor.healingClock) {
-                    config.rollClockKey = this.actor.healingClock;
+                    config.rollClockKey = this.actor.healingClock.id;
                 }
                 // rollOpposition = user character's healing clock
                 // rollPrimary = this.actor is NPC?
@@ -516,18 +521,27 @@ class BladesActorSheet extends ActorSheet {
             "system.downtime_actions.value": (this.actor.system.downtime_actions?.value ?? 0) + 1
         });
         if ("rollType" in config) {
-            BladesRoll.NewRoll(config);
+            if (downtimeAction === DowntimeAction.IndulgeVice) {
+                BladesIndulgeViceRoll.New(config);
+            }
+            else {
+                BladesActionRoll.New(config);
+            }
         }
     }
     async _onGatherInfoClick(event) {
         const elem$ = $(event.currentTarget);
         if (elem$.data("isFortuneRoll")) {
-            BladesRoll.NewRoll({
+            BladesFortuneRoll.New({
+                target: this.actor,
+                targetFlagKey: "rollCollab",
                 rollType: RollType.Fortune
             });
         }
         else {
-            BladesRoll.NewRoll({
+            BladesActionRoll.New({
+                target: this.actor,
+                targetFlagKey: "rollCollab",
                 rollType: RollType.Action,
                 rollTrait: ""
             });
