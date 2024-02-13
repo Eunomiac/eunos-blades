@@ -668,7 +668,7 @@ class BladesRollPrimary {
             rollPrimaryName: rollPrimary.rollPrimaryName,
             rollPrimaryType: rollPrimary.rollPrimaryType,
             rollPrimaryImg: rollPrimary.rollPrimaryImg,
-            rollPrimaryModsSchemaSet: rollPrimary.rollModsSchemaSet,
+            rollPrimaryModsSchemaSet: rollPrimary.rollPrimaryModsSchemaSet,
             rollFactors: rollPrimary.rollFactors
         };
     }
@@ -685,7 +685,7 @@ class BladesRollPrimary {
     get rollPrimaryName() { return this.rollPrimaryDoc.rollPrimaryName; }
     get rollPrimaryType() { return this.rollPrimaryDoc.rollPrimaryType; }
     get rollPrimaryImg() { return this.rollPrimaryDoc.rollPrimaryImg; }
-    get rollPrimaryModsSchemaSet() { return this.rollPrimaryDoc.rollModsSchemaSet; }
+    get rollPrimaryModsSchemaSet() { return this.rollPrimaryDoc.rollPrimaryModsSchemaSet; }
     get rollFactors() { return this.rollPrimaryDoc.rollFactors; }
     get isWorsePosition() {
         if (this.rollPrimaryDoc) {

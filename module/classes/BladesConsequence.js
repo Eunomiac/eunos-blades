@@ -161,9 +161,9 @@ class BladesConsequence extends BladesTargetLink {
         if (this._consequenceNone) {
             return this._consequenceNone;
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id, ...linkData } = this.linkData;
-        return BladesConsequence.Create({ ...linkData, ...BladesConsequence.PartialNoneSchema })
-            .then((csq) => this._consequenceNone = csq);
+        return BladesConsequence.Create({ ...linkData, ...BladesConsequence.PartialNoneSchema }).then((csq) => this._consequenceNone = csq);
     }
     get parentConsequence() {
         if (!this.parentCsqID) {

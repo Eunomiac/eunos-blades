@@ -16,6 +16,12 @@ class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
   }
   // #endregion
 
+  static override IsType<T extends BladesActorType = BladesActorType.npc>(
+    doc: unknown
+  ): doc is BladesNPC & BladesActorOfType<T> {
+    return super.IsType(doc, BladesActorType.npc);
+  }
+
   // #region BladesRoll Implementation
 
   override get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {

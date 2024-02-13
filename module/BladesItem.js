@@ -183,7 +183,7 @@ class BladesItem extends Item {
         return this.type;
     }
     get rollPrimaryImg() { return this.img; }
-    get rollModsSchemaSet() {
+    get rollPrimaryModsSchemaSet() {
         // Add roll mods from COHORT harm
         return BladesRollMod.ParseDocModsToSchemaSet(this);
     }

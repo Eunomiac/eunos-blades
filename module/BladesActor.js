@@ -745,7 +745,7 @@ class BladesActor extends Actor {
     get isSubActor() { return this.parentActor !== undefined; }
     // #endregion
     // #region BladesRoll Implementation ~
-    get rollModsSchemaSet() {
+    get rollPrimaryModsSchemaSet() {
         return BladesRollMod.ParseDocModsToSchemaSet(this);
     }
     get rollFactors() {

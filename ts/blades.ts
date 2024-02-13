@@ -1,6 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import C, {ActionTrait, ClockColor, ClockKeyDisplayMode, AttributeTrait, RollType, ConsequenceType, Position, RollResult} from "./core/constants";
+import C, {
+  ActionTrait,
+  ClockColor,
+  ClockKeyDisplayMode,
+  AttributeTrait,
+  RollType,
+  ConsequenceType,
+  Position,
+  RollResult
+} from "./core/constants";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initDOMStyles} from "./core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers";
 import BladesChat from "./classes/BladesChat";
@@ -34,7 +43,19 @@ import BladesPCSheet from "./sheets/actor/BladesPCSheet";
 import BladesCrewSheet from "./sheets/actor/BladesCrewSheet";
 import BladesNPCSheet from "./sheets/actor/BladesNPCSheet";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet";
-import BladesRoll, {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant, BladesActionRoll, BladesEngagementRoll, BladesFortuneRoll, BladesIncarcerationRoll, BladesIndulgeViceRoll, BladesInlineResistanceRoll, BladesResistanceRoll} from "./classes/BladesRoll";
+import BladesRoll, {
+  BladesRollMod,
+  BladesRollPrimary,
+  BladesRollOpposition,
+  BladesRollParticipant,
+  BladesActionRoll,
+  BladesEngagementRoll,
+  BladesFortuneRoll,
+  BladesIncarcerationRoll,
+  BladesIndulgeViceRoll,
+  BladesInlineResistanceRoll,
+  BladesResistanceRoll
+} from "./classes/BladesRoll";
 
 import BladesDialog from "./classes/BladesDialog";
 import BladesAI, {AGENTS, AIAssistant} from "./core/ai";
@@ -42,9 +63,10 @@ import BladesActiveEffect from "./documents/BladesActiveEffect";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet";
 
-CONFIG.debug.logging = true;
 /* DEVCODE*/
-Object.assign(globalThis, {eLog: logger});
+import BladesDebug from "./core/debug";
+CONFIG.debug.logging = true;
+Object.assign(globalThis, {eLog: logger, BladesDebug});
 Handlebars.registerHelper("eLog", logger.hbsLog);
 /* !DEVCODE*/
 
@@ -92,43 +114,43 @@ class GlobalGetter {
     BladesActionRoll.New(conf);
   }
 
-  async newResistanceRoll() {
-    const pc = game.actors.getName("Alistair") as BladesPC|undefined;
-    if (!pc?.id) { return; }
-    const csq = await BladesConsequence.Create({
-      target: pc,
-      targetFlagKey: "rollConsequence" as TargetFlagKey,
-      name: "Shattered Knee",
-      isScopingById: true,
-      type: ConsequenceType.ProwessHarm3,
-      primaryID: pc.uuid,
-      attribute: AttributeTrait.prowess,
-      attributeVal: 3,
-      resistSchema: {
-        name: "Banged Knee",
-        type: ConsequenceType.ProwessHarm2,
-        primaryID: pc.uuid,
-        canResistWithSpecial: true,
-        resistWithSpecialNegates: true,
-        specialFooterMsg: "Ability: Spend to Fully Negate."
-      },
-      canResistWithRoll: true,
-      canResistWithSpecial: true,
-      resistWithSpecialNegates: true,
-      specialFooterMsg: "Ability: Spend to Fully Negate."
-    });
-    const conf: BladesRoll.Config = {
-      target: pc,
-      targetFlagKey: "rollCollab" as TargetFlagKey,
-      rollType: RollType.Resistance,
-      rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id as IDString,
-      rollPrimaryData: pc,
-      resistanceData: {
-        consequence: csq.data
-      }
-    };
-    BladesResistanceRoll.New(conf);
-  }
+  // async newResistanceRoll() {
+  //   const pc = game.actors.getName("Alistair") as BladesPC|undefined;
+  //   if (!pc?.id) { return; }
+  //   const csq = await BladesConsequence.Create({
+  //     target: pc,
+  //     targetFlagKey: "rollConsequence" as TargetFlagKey,
+  //     name: "Shattered Knee",
+  //     isScopingById: true,
+  //     type: ConsequenceType.ProwessHarm3,
+  //     primaryID: pc.uuid,
+  //     attribute: AttributeTrait.prowess,
+  //     attributeVal: 3,
+  //     resistSchema: {
+  //       name: "Banged Knee",
+  //       type: ConsequenceType.ProwessHarm2,
+  //       primaryID: pc.uuid,
+  //       canResistWithSpecial: true,
+  //       resistWithSpecialNegates: true,
+  //       specialFooterMsg: "Ability: Spend to Fully Negate."
+  //     },
+  //     canResistWithRoll: true,
+  //     canResistWithSpecial: true,
+  //     resistWithSpecialNegates: true,
+  //     specialFooterMsg: "Ability: Spend to Fully Negate."
+  //   });
+  //   const conf: BladesRoll.Config = {
+  //     target: pc,
+  //     targetFlagKey: "rollCollab" as TargetFlagKey,
+  //     rollType: RollType.Resistance,
+  //     rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id as IDString,
+  //     rollPrimaryData: pc,
+  //     resistanceData: {
+  //       consequence: csq.data
+  //     }
+  //   };
+  //   BladesResistanceRoll.New(conf);
+  // }
 }
 
 
@@ -161,6 +183,13 @@ class GlobalGetter {
     BladesRollPrimary,
     BladesRollOpposition,
     BladesRollParticipant,
+    BladesActionRoll,
+    BladesEngagementRoll,
+    BladesFortuneRoll,
+    BladesIncarcerationRoll,
+    BladesIndulgeViceRoll,
+    BladesInlineResistanceRoll,
+    BladesResistanceRoll,
     BladesChat,
     BladesConsequence,
     G,

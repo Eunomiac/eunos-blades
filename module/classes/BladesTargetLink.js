@@ -6,12 +6,14 @@ import { BladesItem } from "../documents/BladesItemProxy.js";
 import BladesChat from "./BladesChat.js";
 class BladesTargetLink {
     // #region STATIC METHODS ~
-    static ValidTargetClasses = [
-        BladesActor,
-        BladesItem,
-        BladesChat,
-        User
-    ];
+    static get ValidTargetClasses() {
+        return [
+            BladesActor,
+            BladesItem,
+            BladesChat,
+            User
+        ];
+    }
     static IsValidConfig(ref) {
         return U.isSimpleObj(ref)
             && (U.isDocID(ref.target)
@@ -27,8 +29,8 @@ class BladesTargetLink {
             && U.isDocID(ref.id)
             && U.isDocUUID(ref.targetID)
             && (U.isTargetKey(ref.targetKey) || U.isTargetFlagKey(ref.targetFlagKey))
-            && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey))
-            && (typeof ref.isScopingById === "boolean");
+            && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey));
+        // && (typeof ref.isScopingById === "boolean");
     }
     static #ParseChildLinkData(childData, parentLinkData) {
         if (!parentLinkData) {
@@ -132,14 +134,14 @@ class BladesTargetLink {
                 ...partialSchema,
                 targetID: U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
                 targetKey: fullConfig.targetKey
-            });
+            }, parentLinkData);
         }
         return this.ParseConfigToData({
             id: randomID(),
             ...partialSchema,
             targetID: U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
             targetFlagKey: fullConfig.targetFlagKey
-        });
+        }, parentLinkData);
     }
     /**
      * This static method parses the provided data into a format suitable for BladesTargetLink.
@@ -157,7 +159,7 @@ class BladesTargetLink {
         if (this.IsValidData(data)) {
             return this.#ParseChildLinkData(data, parentLinkData);
         }
-        return this.#ParseConfigToData(data);
+        return this.#ParseConfigToData(data, parentLinkData);
     }
     static PartitionSchemaData(dataOrConfig) {
         const { id, target, targetID, targetKey, targetFlagKey, isScopingById, ...schemaData } = dataOrConfig;
@@ -198,7 +200,7 @@ class BladesTargetLink {
             partialSchema
         };
     }
-    static #ApplySchemaDefaults(schemaData) {
+    static _ApplySchemaDefaults(schemaData) {
         return this.ApplySchemaDefaults(schemaData);
     }
     /**
@@ -330,10 +332,11 @@ class BladesTargetLink {
     constructor(dataOrConfig, parentLinkData) {
         let linkData;
         let schema;
+        const subclassConstructor = this.constructor;
         // First, we construct the link data from the config or data object.
-        if (BladesTargetLink.IsValidData(dataOrConfig)) {
+        if (subclassConstructor.IsValidData(dataOrConfig)) {
             // If a simple link data object was provided, acquire the schema from the source document
-            ({ linkData } = BladesTargetLink.PartitionSchemaData(dataOrConfig));
+            ({ linkData } = subclassConstructor.PartitionSchemaData(dataOrConfig));
             const target = fromUuidSync(linkData.targetID);
             if (!target) {
                 throw new Error(`[new BladesTargetLink()] Unable to resolve target from uuid '${linkData.targetID}'`);
@@ -353,9 +356,9 @@ class BladesTargetLink {
             const parsedData = BladesTargetLink.#ParseConfigToData(dataOrConfig, parentLinkData);
             // Next we separate the linkData and the schemaData from the parsedData object.
             let partialSchema;
-            ({ linkData, partialSchema } = BladesTargetLink.PartitionSchemaData(parsedData));
+            ({ linkData, partialSchema } = subclassConstructor.PartitionSchemaData(parsedData));
             // And apply any schema defaults to the provided schema data.
-            schema = BladesTargetLink.#ApplySchemaDefaults(partialSchema);
+            schema = subclassConstructor._ApplySchemaDefaults(partialSchema);
         }
         this._id = linkData.id;
         this._targetID = linkData.targetID;
@@ -451,7 +454,7 @@ class BladesTargetLink {
                 }).catch(reject);
             }
             else if (this.targetFlagKeyPrefix) {
-                const updateData = mergeObject(this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix), data);
+                const updateData = mergeObject((this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix) ?? {}), data);
                 this.target.setFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix, updateData).then(() => {
                     this.isInitPromiseResolved = true;
                     resolve();
@@ -461,6 +464,7 @@ class BladesTargetLink {
                 reject();
             }
         });
+        return this.initPromise;
     }
     async #updateTargetViaMerge(updateData, waitFor) {
         await U.waitFor(waitFor);
@@ -471,7 +475,7 @@ class BladesTargetLink {
         }
         else if (this.targetFlagKeyPrefix) {
             // We must retrieve the existing flag data, flattenObject it, then merge it with updateData
-            const existingFlagData = this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix);
+            const existingFlagData = this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix) ?? {};
             const flattenedFlagData = flattenObject(existingFlagData);
             const mergedFlagData = mergeObject(flattenedFlagData, updateData);
             return this.target.setFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix, mergedFlagData);

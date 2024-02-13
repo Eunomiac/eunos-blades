@@ -807,7 +807,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
   // #endregion
 
   // #region BladesRoll Implementation ~
-  get rollModsSchemaSet(): BladesRollMod.Schema[] {
+  get rollPrimaryModsSchemaSet(): BladesRollMod.Schema[] {
     return BladesRollMod.ParseDocModsToSchemaSet(this);
   }
 

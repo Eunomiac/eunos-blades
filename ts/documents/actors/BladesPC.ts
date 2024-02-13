@@ -35,7 +35,13 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   // #endregion
 
   // #region Static Overrides: Create, get All ~
-  static override IsType<T extends BladesActorType = BladesActorType.pc>(doc: unknown): doc is BladesActorOfType<T> {
+  // static override IsType<T extends BladesActorType = BladesActorType.pc>(doc: unknown): doc is BladesActorOfType<T> {
+  //   return super.IsType(doc, BladesActorType.pc);
+  // }
+
+  static override IsType<T extends BladesActorType = BladesActorType.pc>(
+    doc: unknown
+  ): doc is BladesPC & BladesActorOfType<T> {
     return super.IsType(doc, BladesActorType.pc);
   }
 
@@ -442,9 +448,9 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   // #endregion
 
   // #region BladesRoll.PrimaryDoc Implementation
-  get rollPrimaryModsSchemaSet(): BladesRollMod.Schema[] {
+  override get rollPrimaryModsSchemaSet(): BladesRollMod.Schema[] {
 
-    const rollModsData = this.rollModsSchemaSet;
+    const rollModsSchemaSet = super.rollPrimaryModsSchemaSet;
 
     // Add roll mods from harm
     [
@@ -455,7 +461,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
         .find((harmData) => effectPat.test(harmData.effect)) ?? {};
       const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
       if (harmString.length > 0) {
-        rollModsData.push({
+        rollModsSchemaSet.push({
           key: `Harm-negative-${effectCat}`,
           name: harmString,
           section: effectCat,
@@ -476,7 +482,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     const {one: harmCondition} = Object.values(this.system.harm)
       .find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
     if (harmCondition && harmCondition.trim() !== "") {
-      rollModsData.push({
+      rollModsSchemaSet.push({
         key: "Push-negative-roll",
         name: "PUSH",
         sideString: harmCondition.trim(),
@@ -494,7 +500,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       });
     }
 
-    return rollModsData;
+    return rollModsSchemaSet;
   }
 
 

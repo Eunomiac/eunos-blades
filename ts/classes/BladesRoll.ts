@@ -656,12 +656,12 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
 
   // #region Static Methods ~
   static IsValidData(data: unknown): data is BladesRoll.PrimaryData {
-    if (BladesRollPrimary.IsDoc(data)) {return true;}
+    if (BladesRollPrimary.IsDoc(data)) {return false;}
     return U.isList(data)
       && typeof data.rollPrimaryName === "string"
       && typeof data.rollPrimaryType === "string"
       && typeof data.rollPrimaryImg === "string"
-      && Array.isArray(data.rollModsData)
+      && Array.isArray(data.rollPrimaryModsSchemaSet)
       && U.isList(data.rollFactors)
       && (!data.rollPrimaryID || typeof data.rollPrimaryID === "string")
       && (!data.rollPrimaryDoc || BladesRollPrimary.IsDoc(data.rollPrimaryDoc));
@@ -683,6 +683,17 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
       || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang, BladesItemType.gm_tracker);
   }
 
+  static GetDataFromDoc(doc: BladesRoll.PrimaryDoc): BladesRoll.PrimaryData {
+    return {
+      rollPrimaryID: doc.id,
+      rollPrimaryName: doc.name,
+      rollPrimaryType: doc.type as BladesRoll.PrimaryType,
+      rollPrimaryImg: doc.img,
+      rollPrimaryModsSchemaSet: doc.rollPrimaryModsSchemaSet,
+      rollFactors: doc.rollFactors
+    };
+  }
+
   static BuildData(config: BladesRoll.Config|BladesRoll.Schema): BladesRoll.PrimaryData {
     if (BladesRollPrimary.IsValidData(config.rollPrimaryData)) {
       return config.rollPrimaryData;
@@ -702,7 +713,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
       rollPrimaryName: rollPrimary.rollPrimaryName,
       rollPrimaryType: rollPrimary.rollPrimaryType,
       rollPrimaryImg: rollPrimary.rollPrimaryImg,
-      rollPrimaryModsSchemaSet: rollPrimary.rollModsSchemaSet,
+      rollPrimaryModsSchemaSet: rollPrimary.rollPrimaryModsSchemaSet,
       rollFactors: rollPrimary.rollFactors
     };
   }
@@ -879,7 +890,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
         rollPrimaryName: primaryDoc.rollPrimaryName,
         rollPrimaryType: primaryDoc.rollPrimaryType,
         rollPrimaryImg: primaryDoc.rollPrimaryImg,
-        rollPrimaryModsSchemaSet: primaryDoc.rollModsSchemaSet,
+        rollPrimaryModsSchemaSet: primaryDoc.rollPrimaryModsSchemaSet,
         rollFactors: primaryDoc.rollFactors
       };
     }
@@ -1288,8 +1299,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         });
       }
     }
-    data.rollModsData = this.GetRollModsDataSet(parentRollInst, Object.values(data.rollModsData ?? {}));
-    return BladesTargetLink.ParseConfigToData(data) as BladesTargetLink.Data & Partial<Schema>;
+    return super.ParseConfigToData(data) as BladesTargetLink.Data & Partial<Schema>;
   }
 
   static override ApplySchemaDefaults<Schema = BladesRoll.Schema>(
@@ -1342,58 +1352,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   //   });
   // }
 
-  protected static get DefaultRollModSchemaSet(): BladesRollMod.Schema[] {
+  static get DefaultRollModSchemaSet(): BladesRollMod.Schema[] {
     /* Subclass overrides determine default roll mods. */
     return [];
-  }
-
-  static GetRollModsDataSet(
-    rollInst: BladesRoll,
-    rollModsSchemaSet: BladesRollMod.Schema[]
-  ): Record<IDString, BladesRollMod.Data> {
-    const {linkData} = rollInst;
-    const modLinkConfig = {
-      targetID: linkData.targetID,
-      targetKey: "targetKey" in linkData
-        ? "rollModsData" as TargetKey
-        : undefined,
-      targetFlagKey: "targetFlagKey" in linkData
-        ? "rollModsData" as TargetFlagKey
-        : undefined,
-      isScopingById: true
-    } as BladesTargetLink.Config;
-
-    const compiledModSchemaSets = [...rollModsSchemaSet];
-
-    // Add roll mods on rollPrimary
-    if (rollInst.rollPrimary) {
-      compiledModSchemaSets.push(...rollInst.rollPrimary.rollPrimaryModsSchemaSet
-        .filter((pSchema) => compiledModSchemaSets.every((mSchema) => mSchema.key !== pSchema.key))
-      );
-    }
-
-    // Add roll mods on rollOpposition
-    if (rollInst.rollOpposition?.rollOppModsSchemaSet) {
-      compiledModSchemaSets.push(...rollInst.rollOpposition.rollOppModsSchemaSet
-        .filter((oSchema) => compiledModSchemaSets.every((mSchema) => mSchema.key !== oSchema.key))
-      );
-    }
-
-    // Add default roll mods
-    compiledModSchemaSets.push(...this.DefaultRollModSchemaSet
-      .filter((dSchema) => compiledModSchemaSets.every((mSchema) => mSchema.key !== dSchema.key)));
-
-    return Object.fromEntries(compiledModSchemaSets
-      .map((modSchema) => {
-        const modData = BladesTargetLink.ParseConfigToData(
-          {
-            ...BladesRollMod.ApplySchemaDefaults(modSchema),
-            ...modLinkConfig
-          }
-        ) as BladesRollMod.Data;
-        return [modData.id, modData];
-      })
-    );
   }
 
   static GetDieClass(rollType: RollType, rollResult: number | false | RollResult, dieVal: number, dieIndex: number) {
@@ -1607,20 +1568,35 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   static override BuildLinkConfig(config: BladesRoll.Config): BladesTargetLink.Config {
     // Prepare partial target link config
-    const partialLinkConfig = {
-      target: "target" in config ? config.target : undefined,
-      targetID: "targetID" in config ? config.targetID : undefined,
-      targetKey: "targetKey" in config ? config.targetKey : undefined,
-      targetFlagKey: "targetFlagKey" in config ? config.targetFlagKey : undefined
-    };
+    const partialLinkConfig: Record<string, string|BladesActor|BladesItem|User|BladesChat> = {};
 
-    // If neither target nor targetID are provided, set target to rollUser or currentUser
-    if (!partialLinkConfig.target && !partialLinkConfig.targetID) {
-      const rollUser = game.users.get(config.rollUserID ?? game.user.id);
-      if (!rollUser) {
-        throw new Error("[BladesRoll.NewRoll()] You must provide a valid rollUserID, target, or targetID in the config object.");
+
+    if ("targetKey" in config && config.targetKey) {
+      partialLinkConfig.targetKey = config.targetKey;
+    } else if ("targetFlagKey" in config && config.targetFlagKey) {
+      partialLinkConfig.targetFlagKey = config.targetFlagKey;
+    }
+
+    if ("target" in config) {
+      if (U.isDocUUID(config.target)) {
+        partialLinkConfig.targetID = config.target;
+      } else if (U.isDocID(config.target)) {
+        const confTarget = game.actors.get(config.target)
+          ?? game.items.get(config.target)
+          ?? game.messages.get(config.target)
+          ?? game.users.get(config.target);
+        if (confTarget) {
+          partialLinkConfig.targetID = confTarget.uuid;
+        } else {
+          throw new Error(`[BladesRoll.BuildLinkConfig] No target found with id ${config.target}.`);
+        }
+      } else {
+        partialLinkConfig.targetID = config.target.uuid;
       }
-      partialLinkConfig.target = rollUser;
+    } else if ("targetID" in config) {
+      partialLinkConfig.targetID = config.targetID;
+    } else {
+      throw new Error("[BladesRoll.BuildLinkConfig] You must provide a valid target or targetID in the config object.");
     }
 
     // If neither targetKey nor targetFlagKey are provided, set targetFlagKey to 'rollCollab'.
@@ -1629,18 +1605,55 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     }
 
     // Build target link config
-    return BladesTargetLink.BuildLinkConfig(partialLinkConfig as BladesTargetLink.Config);
+    if (BladesTargetLink.IsValidConfig(partialLinkConfig)) {
+      return BladesTargetLink.BuildLinkConfig(partialLinkConfig);
+    }
+    throw new Error("[BladesRoll.BuildLinkConfig] Invalid link config.");
   }
 
   /**
-   * This static method accepts a partial version of the config options required
-   * to build a BladesRoll instance, sets the requisite flags on the storage
-   * document, then sends out a socket call to the relevant users to construct
-   * and display the roll instance.
+   * Asynchronously creates a new instance of `BladesRoll` or its subclasses.
    *
-   * @param {BladesRoll.Config} config The configuration object for the new roll.
+   * This generic static method is designed to facilitate the creation of roll instances with
+   * configurations specific to the type of roll being created. It ensures that the correct type
+   * of roll instance is returned based on the class it's called on, allowing for a flexible and
+   * type-safe creation process that can be extended to subclasses of `BladesRoll`.
+   *
+   * @template C The class on which `New` is called. This class must extend `BladesRoll` and
+   * must be constructible with a configuration object that is either a `BladesRoll.Config` or
+   * a combination of `BladesTargetLink.Data` and a partial `BladesRoll.Schema`. This ensures
+   * that any subclass of `BladesRoll` can use this method to create instances of itself while
+   * applying any class-specific configurations or behaviors.
+   *
+   * @param {BladesRoll.Config} config The configuration object for creating a new roll instance.
+   * This configuration includes all necessary data to initialize the roll, such as user permissions,
+   * roll type, and any modifications or additional data required for the roll's operation.
+   *
+   * @returns {Promise<InstanceType<C>>} A promise that resolves to an instance of the class
+   * from which `New` was called. This allows for the dynamic creation of roll instances based
+   * on the subclass calling the method, ensuring that the returned instance is of the correct type.
+   *
+   * @example
+   * // Assuming `MyCustomRoll` is a subclass of `BladesRoll`
+   * MyCustomRoll.New(myConfig).then(instance => {
+   *   // `instance` is of type `MyCustomRoll`
+   * });
+   *
+   * @remarks
+   * - The method performs several key operations as part of the roll instance creation process:
+   *   1. Builds link configuration based on the provided config.
+   *   2. Prepares roll user flag data to determine permissions for different users.
+   *   3. Validates that a roll type is defined in the config, throwing an error if not.
+   *   4. Logs the roll data for debugging or auditing purposes.
+   *   5. Constructs and initializes the roll instance, including setting up roll modifications
+   *      and sending out socket calls to inform all users about the roll.
+   * - This method is central to the dynamic and flexible creation of roll instances within the
+   *   system, allowing for easy extension and customization in subclasses of `BladesRoll`.
    */
-  static async New(config: BladesRoll.Config) {
+  static async New<
+    C extends typeof BladesRoll
+      &(new (dataOrConfig: BladesRoll.Config | BladesTargetLink.Data & Partial<BladesRoll.Schema>) => BladesRoll)
+  >(this: C, config: BladesRoll.Config) {
 
     // Build link config
     const linkConfig = this.BuildLinkConfig(config);
@@ -1657,22 +1670,157 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     eLog.checkLog3("bladesRoll", "BladesRoll.NewRoll()", {config});
 
     // Construct and initialize the BladesRoll/BladesTargetLink instance
-    const rollInst = await BladesRoll.Create<BladesRoll, BladesRoll.Schema>({...config, ...linkConfig});
-
+    const rollInst = await this.Create<C, BladesRoll.Schema>({...config, ...linkConfig});
+    if (!rollInst.isInitPromiseResolved) {
+      eLog.checkLog3("bladesRoll", "BladesRoll Init Promise NOT Resolved After Awaiting Create");
+      await U.waitFor(rollInst.initPromise);
+    } else {
+      eLog.checkLog3("bladesRoll", "BladesRoll Init Promise Resolved After Awaiting Create");
+    }
     // Send out socket calls to all users to see the roll.
     rollInst.constructRollCollab_SocketCall(rollInst.linkData);
 
     return rollInst;
   }
+
+  override async initTargetLink() {
+    this.initialSchema.rollModsData = this.rollModsDataSet;
+    super.initTargetLink();
+  }
+
+  get rollModsSchemaSets(): BladesRollMod.Schema[] {
+    const compiledModSchemaSets: BladesRollMod.Schema[] = [];
+
+    // Add roll mods on rollPrimary
+    if (this.rollPrimary) {
+      compiledModSchemaSets.push(...this.rollPrimary.rollPrimaryModsSchemaSet
+        .filter((pSchema) => compiledModSchemaSets.every((mSchema) => mSchema.key !== pSchema.key))
+      );
+    }
+
+    // Add roll mods on rollOpposition
+    if (this.rollOpposition?.rollOppModsSchemaSet) {
+      compiledModSchemaSets.push(...this.rollOpposition.rollOppModsSchemaSet
+        .filter((oSchema) => compiledModSchemaSets.every((mSchema) => mSchema.key !== oSchema.key))
+      );
+    }
+
+    // Add default roll mods
+    compiledModSchemaSets.push(...(this.constructor as typeof BladesRoll).DefaultRollModSchemaSet
+      .filter((dSchema) => compiledModSchemaSets.every((mSchema) => mSchema.key !== dSchema.key)));
+
+    // If this is a downtime action roll, add default downtime action roll mods
+    if (this.rollDowntimeAction) {
+      compiledModSchemaSets.push({
+        key: "HelpFromFriend-positive-roll",
+        name: "Help From a Friend",
+        section: RollModSection.position,
+        base_status: RollModStatus.ToggledOff,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: [],
+        tooltip: "<h1>Help From a Friend</h1><p>Add <strong>+1d</strong> if you enlist the help of a friend or contact.</p>"
+      });
+      if (this.rollDowntimeAction !== DowntimeAction.IndulgeVice) {
+        compiledModSchemaSets.push({
+          key: "CanBuyResultLevel-positive-after",
+          name: "Buying Result Level",
+          section: RollModSection.after,
+          base_status: RollModStatus.ForcedOn,
+          posNeg: "positive",
+          modType: RollModType.general,
+          value: 0,
+          effectKeys: [],
+          tooltip: "<h1>Buying Result Level</h1><p>After your roll, you can <strong>increase the result level</strong> by one for each <strong class=\"gold-bright\">Coin</strong> you spend.</p>"
+        });
+      }
+      if (this.rollDowntimeAction === DowntimeAction.AcquireAsset) {
+        compiledModSchemaSets.push(
+          {
+            key: "RepeatPurchase-positive-roll",
+            name: "Repeat Purchase",
+            section: RollModSection.roll,
+            base_status: RollModStatus.ToggledOff,
+            posNeg: "positive",
+            modType: RollModType.general,
+            value: 1,
+            effectKeys: [],
+            tooltip: "<h1>Repeat Purchase Bonus</h1><p>Add <strong>+1d</strong> if you have previously acquired this asset or service with a <strong>Acquire Asset</strong> Downtime activity.</p>"
+          },
+          {
+            key: "RestrictedItem-negative-after",
+            name: "Restricted",
+            section: RollModSection.after,
+            base_status: RollModStatus.Hidden,
+            posNeg: "negative",
+            modType: RollModType.general,
+            value: 0,
+            effectKeys: ["Cost-Heat2"],
+            tooltip: "<h1>Restricted</h1><p>Whether contraband goods or dangerous materials, this <strong>Acquire Asset</strong> Downtime activity will add <strong class=\"red-bright\">+2 Heat</strong> to your crew.</p>"
+          }
+        );
+      }
+    }
+
+    return compiledModSchemaSets;
+  }
+
+  get rollModsDataSet(): Record<IDString, BladesRollMod.Data> {
+    const {linkData} = this;
+    const modLinkConfig = {
+      targetID: linkData.targetID,
+      isScopingById: true,
+      ...("targetKey" in linkData
+        ? {targetKey: `${this.targetKeyPrefix}.rollModsData` as TargetKey}
+        : {}),
+      ...("targetFlagKey" in linkData
+        ? {targetFlagKey: `${this.targetFlagKeyPrefix}.rollModsData` as TargetFlagKey}
+        : {})
+    };
+    return Object.fromEntries(this.rollModsSchemaSets
+      .map((modSchema) => {
+        const modData = BladesTargetLink.ParseConfigToData(
+          {
+            ...BladesRollMod.ApplySchemaDefaults(modSchema),
+            ...modLinkConfig
+          }
+        ) as BladesRollMod.Data;
+        return [modData.id, modData];
+      })
+    );
+  }
   // #endregion
 
   // #region SOCKET CALLS & RESPONSES ~
+  static GetRollSubClass(linkData: BladesTargetLink.Data) {
+    const targetLink = new BladesTargetLink<BladesRoll.Schema>(linkData);
+    switch (targetLink.data.rollType) {
+      case RollType.Action: return BladesActionRoll;
+      case RollType.Fortune: {
+        if (targetLink.data.rollSubType === RollSubType.Engagement) {
+          return BladesEngagementRoll;
+        } else if (targetLink.data.rollSubType === RollSubType.Incarceration) {
+          return BladesIncarcerationRoll;
+        }
+        return BladesFortuneRoll;
+      }
+      case RollType.Resistance: {
+        if (targetLink.data.isInlineResistanceRoll) {
+          return BladesInlineResistanceRoll;
+        }
+        return BladesResistanceRoll;
+      }
+      case RollType.IndulgeVice: return BladesIndulgeViceRoll;
+    }
+  }
+
   constructRollCollab_SocketCall(linkData: BladesTargetLink.Data) {
     socketlib.system.executeForEveryone("constructRollCollab_SocketCall", linkData);
   }
 
   static constructRollCollab_SocketResponse(linkData: BladesTargetLink.Data) {
-    const rollInst = new BladesRoll(linkData);
+    const rollInst = new (this.GetRollSubClass(linkData))(linkData);
     eLog.checkLog3("rollCollab", "constructRollCollab_SocketResponse()", {params: {linkData}, rollInst});
     this.renderRollCollab_SocketResponse(rollInst.id);
   }
@@ -1687,7 +1835,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   async renderRollCollab() {
     this.prepareRollParticipantData();
-    const html = await renderTemplate("systems/eunoblades/templates/rolls/roll-collab.hbs", this.context);
+    const html = await renderTemplate(this.collabTemplate, this.context);
     this.elem$.html(html);
     this.activateListeners();
   }
@@ -1820,13 +1968,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   get rollPrimaryDoc(): BladesRoll.PrimaryDoc | undefined {
-    if (BladesRollPrimary.IsDoc(this.rollPrimaryDoc)) {
-      return this.rollPrimaryDoc;
-    }
-    if (BladesRollPrimary.IsDoc(this.rollPrimary)) {
-      return this.rollPrimary;
-    }
-    return undefined;
+    return this.rollPrimary.rollPrimaryDoc;
   }
 
   get rollOpposition(): BladesRollOpposition | undefined {
@@ -2281,8 +2423,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     this.rollFactorPenaltiesNegated = {};
     this.tempGMBoosts = {};
 
-    this.rollMods = Object.values(this.data.rollModsData).map((modData) => new BladesRollMod(modData, this));
-
     // ESLINT DISABLE: Dev Code.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const initReport: Record<string, any> = {};
@@ -2322,7 +2462,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     watchMod("INITIAL");
 
     /* *** PASS ZERO: ROLLTYPE VALIDATION PASS *** */
-    this.rollMods = this.rollMods.filter((rollMod) => rollMod.isValidForRollType());
+    this._rollMods = this.rollMods.filter((rollMod) => rollMod.isValidForRollType());
 
     watchMod("ROLLTYPE VALIDATION");
 
@@ -2603,11 +2743,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   get rollMods(): BladesRollMod[] {
-    if (!this._rollMods) {throw new Error("[get rollMods] No roll mods found!");}
+    if (!this._rollMods) {
+      this._rollMods = Object.values(this.data.rollModsData).map((modData) => new BladesRollMod(modData, this));
+    }
     return [...this._rollMods].sort((modA: BladesRollMod, modB: BladesRollMod) => this.compareMods(modA, modB));
   }
-
-  set rollMods(val: BladesRollMod[]) {this._rollMods = val;}
 
   canResistWithArmor(csq: BladesConsequence) {
     if (!this.rollPrimary.hasArmor) {return false;}
@@ -2669,203 +2809,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     this.rollMods.forEach((rollMod) => rollMod.applyRollModEffectKeys());
 
     return this.getTemplateContext();
-  }
-
-  getFortuneRollModsSchemaSet(): BladesRollMod.Schema[] {
-    const modsData: BladesRollMod.Schema[] = [];
-
-    if (this.rollSubType === RollSubType.Engagement) {
-      modsData.push({
-        key: "BoldPlan-positive-roll",
-        name: "Bold Plan",
-        section: RollModSection.roll,
-        base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1></h1><p></p>"
-      });
-      modsData.push({
-        key: "ComplexPlan-negative-roll",
-        name: "Complex Plan",
-        section: RollModSection.roll,
-        base_status: RollModStatus.ToggledOff,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1></h1><p></p>"
-      });
-      modsData.push({
-        key: "ExploitWeakness-positive-roll",
-        name: "Exploiting a Weakness",
-        section: RollModSection.roll,
-        base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1></h1><p></p>"
-      });
-      modsData.push({
-        key: "WellDefended-negative-roll",
-        name: "Well-Defended",
-        section: RollModSection.roll,
-        base_status: RollModStatus.ToggledOff,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1></h1><p></p>"
-      });
-      modsData.push({
-        key: "HelpFromFriend-positive-roll",
-        name: "Help From a Friend",
-        section: RollModSection.position,
-        base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1>Help From a Friend</h1><p>Add <strong>+1d</strong> if you enlist the help of a friend or contact.</p>"
-      });
-      modsData.push({
-        key: "EnemyInterference-negative-roll",
-        name: "Enemy Interference",
-        section: RollModSection.roll,
-        base_status: RollModStatus.ToggledOff,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1></h1><p></p>"
-      });
-    }
-
-    return modsData;
-  }
-
-  getDowntimeActionRollModsSchemaSet(): BladesRollMod.Schema[] {
-    const modsData: BladesRollMod.Schema[] = [];
-    modsData.push({
-      key: "HelpFromFriend-positive-roll",
-      name: "Help From a Friend",
-      section: RollModSection.position,
-      base_status: RollModStatus.ToggledOff,
-      posNeg: "positive",
-      modType: RollModType.general,
-      value: 1,
-      effectKeys: [],
-      tooltip: "<h1>Help From a Friend</h1><p>Add <strong>+1d</strong> if you enlist the help of a friend or contact.</p>"
-    });
-    if (this.rollDowntimeAction !== DowntimeAction.IndulgeVice) {
-      modsData.push({
-        key: "CanBuyResultLevel-positive-after",
-        name: "Buying Result Level",
-        section: RollModSection.after,
-        base_status: RollModStatus.ForcedOn,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 0,
-        effectKeys: [],
-        tooltip: "<h1>Buying Result Level</h1><p>After your roll, you can <strong>increase the result level</strong> by one for each <strong class=\"gold-bright\">Coin</strong> you spend.</p>"
-      });
-    }
-    switch (this.rollDowntimeAction) {
-      case DowntimeAction.AcquireAsset: {
-        modsData.push({
-          key: "RepeatPurchase-positive-roll",
-          name: "Repeat Purchase",
-          section: RollModSection.roll,
-          base_status: RollModStatus.ToggledOff,
-          posNeg: "positive",
-          modType: RollModType.general,
-          value: 1,
-          effectKeys: [],
-          tooltip: "<h1>Repeat Purchase Bonus</h1><p>Add <strong>+1d</strong> if you have previously acquired this asset or service with a <strong>Acquire Asset</strong> Downtime activity.</p>"
-        });
-        modsData.push({
-          key: "RestrictedItem-negative-after",
-          name: "Restricted",
-          section: RollModSection.after,
-          base_status: RollModStatus.Hidden,
-          posNeg: "negative",
-          modType: RollModType.general,
-          value: 0,
-          effectKeys: ["Cost-Heat2"],
-          tooltip: "<h1>Restricted</h1><p>Whether contraband goods or dangerous materials, this <strong>Acquire Asset</strong> Downtime activity will add <strong class=\"red-bright\">+2 Heat</strong> to your crew.</p>"
-        });
-        break;
-      }
-      default: break;
-    }
-
-    /*
-    modsData.push({
-      id: "--",
-      name: "",
-      section: RollModSection,
-      base_status: RollModStatus,
-      posNeg: "",
-      modType: RollModType.general,
-      value: 1,
-      effectKeys: [],
-      tooltip: "<h1></h1><p></p>"
-    })
-*/
-    return modsData;
-  }
-
-  /**
-   * Gets the roll modifications data.
-   * @returns {BladesRollMod.Data[]} The roll modifications data.
-   */
-  protected getRollModsData(): BladesRollMod.Data[] {
-    const defaultMods: BladesRollMod.Schema[] = [];
-    if (this.rollType === RollType.Fortune) {
-      defaultMods.push(...this.getFortuneRollModsSchemaSet());
-    }
-    if (this.rollDowntimeAction) {
-      defaultMods.push(...this.getDowntimeActionRollModsSchemaSet());
-    }
-    if (this.rollType === RollType.Action) {
-      if (this.rollPrimary.isWorsePosition) {
-        defaultMods.push({
-          key: "WorsePosition-negative-position",
-          name: "Worse Position",
-          section: RollModSection.position,
-          base_status: RollModStatus.ForcedOn,
-          posNeg: "negative",
-          modType: RollModType.general,
-          value: 1,
-          effectKeys: [],
-          tooltip: "<h1>Worse Position</h1><p>A <strong class='red-bright'>Consequence</strong> on a previous roll has worsened your <strong>Position</strong>.</p>"
-        });
-      }
-    }
-    if (
-      this.rollType === RollType.Action
-      && this.acceptedConsequences.some((csq) => csq.type === ConsequenceType.ReducedEffect)
-    ) {
-      defaultMods.push({
-        key: "ReducedEffect-negative-effect",
-        name: "Reduced Effect",
-        section: RollModSection.effect,
-        base_status: RollModStatus.ForcedOn,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1>Reduced Effect</h1><p>A <strong class='red-bright'>Consequence</strong> has worsened your <strong>Effect</strong>.</p>"
-      });
-    }
-    return Object.values(BladesRoll.GetRollModsDataSet(
-      this,
-      [
-        ...defaultMods,
-        ...this.rollOpposition?.rollOppModsSchemaSet ?? []
-      ]));
   }
 
   /**
@@ -3377,7 +3320,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     return chatSpeaker;
   }
   // #endregion
-
 
   // #region *** ROLL COLLAB HTML ELEMENT ***
 
@@ -4043,8 +3985,25 @@ class BladesActionRoll extends BladesRoll {
     ];
   }
 
-  static override async New(config: BladesRoll.Config): Promise<BladesActionRoll> {
-
+  /**
+   * Asynchronously creates a new instance of this subclass of `BladesRoll`.
+   *
+   * Overrides the `New` static method from `BladesRoll`, applying subclass-specific configurations
+   * to the instance creation process. It ensures that the returned instance is correctly typed
+   * and configured for this subclass.
+   *
+   * @param {BladesRoll.Config} config The configuration object for creating a new roll instance,
+   * extended with any subclass-specific configurations or requirements.
+   *
+   * @returns {Promise<InstanceType<this>>} A promise that resolves to an instance of this subclass.
+   *
+   * @see {@link BladesRoll.New} for the base method's functionality and the generic creation process
+   * for roll instances.
+   */
+  static override async New<C extends typeof BladesRoll = typeof BladesActionRoll>(
+    this: C,
+    config: BladesRoll.Config
+  ): Promise<InstanceType<C>> {
     // Build link config
     const linkConfig = this.BuildLinkConfig(config);
 
@@ -4053,9 +4012,45 @@ class BladesActionRoll extends BladesRoll {
       ...linkConfig
     };
 
-    const rollInst = await this.Create<BladesActionRoll, BladesRoll.Schema>(parsedConfig);
+    // Call super.New and cast the result appropriately.
+    // The cast to InstanceType<C> is safe here because C is constrained to typeof BladesActionRoll.
+    const rollInst = await super.New(parsedConfig) as InstanceType<C>;
 
     return rollInst;
+  }
+
+  override get rollModsSchemaSets(): BladesRollMod.Schema[] {
+    const rollModSchemaSets: BladesRollMod.Schema[] = super.rollModsSchemaSets;
+
+    // Add additional conditional roll mods based on effects of previous consequences.
+    if (this.rollPrimary.isWorsePosition) {
+      rollModSchemaSets.push({
+        key: "WorsePosition-negative-position",
+        name: "Worse Position",
+        section: RollModSection.position,
+        base_status: RollModStatus.ForcedOn,
+        posNeg: "negative",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: [],
+        tooltip: "<h1>Worse Position</h1><p>A <strong class='red-bright'>Consequence</strong> on a previous roll has worsened your <strong>Position</strong>.</p>"
+      });
+    }
+    if (this.acceptedConsequences.some((csq) => csq.type === ConsequenceType.ReducedEffect)) {
+      rollModSchemaSets.push({
+        key: "ReducedEffect-negative-effect",
+        name: "Reduced Effect",
+        section: RollModSection.effect,
+        base_status: RollModStatus.ForcedOn,
+        posNeg: "negative",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: [],
+        tooltip: "<h1>Reduced Effect</h1><p>A <strong class='red-bright'>Consequence</strong> has worsened your <strong>Effect</strong>.</p>"
+      });
+    }
+
+    return rollModSchemaSets;
   }
 
   override get collabTemplate(): string {
@@ -4084,7 +4079,7 @@ class BladesActionRoll extends BladesRoll {
     return templateParts.join("");
   }
 
-  override get rollResult(): RollResult|false {
+  override get rollResult(): RollResult|number|false {
     if (!this.isResolved) { return false; }
     if (this.isCritical) {return RollResult.critical;}
     if (this.isSuccess) {return RollResult.success;}
@@ -4142,8 +4137,25 @@ class BladesResistanceRoll extends BladesRoll {
     return config as Schema;
   }
 
-  static override async New(config: BladesRoll.Config): Promise<BladesResistanceRoll> {
-
+  /**
+   * Asynchronously creates a new instance of this subclass of `BladesRoll`.
+   *
+   * Overrides the `New` static method from `BladesRoll`, applying subclass-specific configurations
+   * to the instance creation process. It ensures that the returned instance is correctly typed
+   * and configured for this subclass.
+   *
+   * @param {BladesRoll.Config} config The configuration object for creating a new roll instance,
+   * extended with any subclass-specific configurations or requirements.
+   *
+   * @returns {Promise<InstanceType<this>>} A promise that resolves to an instance of this subclass.
+   *
+   * @see {@link BladesRoll.New} for the base method's functionality and the generic creation process
+   * for roll instances.
+   */
+  static override async New<C extends typeof BladesRoll = typeof BladesResistanceRoll>(
+    this: C,
+    config: BladesRoll.Config
+  ): Promise<BladesRoll & InstanceType<C>> {
     // Build link config
     const linkConfig = this.BuildLinkConfig(config);
 
@@ -4152,7 +4164,9 @@ class BladesResistanceRoll extends BladesRoll {
       ...linkConfig
     };
 
-    const rollInst = await this.Create<BladesResistanceRoll, BladesRoll.Schema>(parsedConfig);
+    // Call super.New and cast the result appropriately.
+    // The cast to InstanceType<C> is safe here because C is constrained to typeof BladesResistanceRoll.
+    const rollInst = await super.New(parsedConfig) as InstanceType<C>;
 
     return rollInst;
   }
@@ -4204,8 +4218,25 @@ class BladesFortuneRoll extends BladesRoll {
     return config as Schema;
   }
 
-  static override async New(config: BladesRoll.Config): Promise<BladesFortuneRoll> {
-
+  /**
+   * Asynchronously creates a new instance of this subclass of `BladesRoll`.
+   *
+   * Overrides the `New` static method from `BladesRoll`, applying subclass-specific configurations
+   * to the instance creation process. It ensures that the returned instance is correctly typed
+   * and configured for this subclass.
+   *
+   * @param {BladesRoll.Config} config The configuration object for creating a new roll instance,
+   * extended with any subclass-specific configurations or requirements.
+   *
+   * @returns {Promise<InstanceType<this>>} A promise that resolves to an instance of this subclass.
+   *
+   * @see {@link BladesRoll.New} for the base method's functionality and the generic creation process
+   * for roll instances.
+   */
+  static override async New<C extends typeof BladesRoll = typeof BladesFortuneRoll>(
+    this: C,
+    config: BladesRoll.Config
+  ): Promise<InstanceType<C>> {
     // Build link config
     const linkConfig = this.BuildLinkConfig(config);
 
@@ -4214,7 +4245,9 @@ class BladesFortuneRoll extends BladesRoll {
       ...linkConfig
     };
 
-    const rollInst = await this.Create<BladesFortuneRoll, BladesRoll.Schema>(parsedConfig);
+    // Call super.New and cast the result appropriately.
+    // The cast to InstanceType<C> is safe here because C is constrained to typeof BladesFortuneRoll.
+    const rollInst = await super.New(parsedConfig) as InstanceType<C>;
 
     return rollInst;
   }
@@ -4243,8 +4276,25 @@ class BladesIndulgeViceRoll extends BladesRoll {
     return config as Schema;
   }
 
-  static override async New(config: BladesRoll.Config): Promise<BladesIndulgeViceRoll> {
-
+  /**
+   * Asynchronously creates a new instance of this subclass of `BladesRoll`.
+   *
+   * Overrides the `New` static method from `BladesRoll`, applying subclass-specific configurations
+   * to the instance creation process. It ensures that the returned instance is correctly typed
+   * and configured for this subclass.
+   *
+   * @param {BladesRoll.Config} config The configuration object for creating a new roll instance,
+   * extended with any subclass-specific configurations or requirements.
+   *
+   * @returns {Promise<InstanceType<this>>} A promise that resolves to an instance of this subclass.
+   *
+   * @see {@link BladesRoll.New} for the base method's functionality and the generic creation process
+   * for roll instances.
+   */
+  static override async New<C extends typeof BladesRoll = typeof BladesIndulgeViceRoll>(
+    this: C,
+    config: BladesRoll.Config
+  ): Promise<InstanceType<C>> {
     // Build link config
     const linkConfig = this.BuildLinkConfig(config);
 
@@ -4253,7 +4303,9 @@ class BladesIndulgeViceRoll extends BladesRoll {
       ...linkConfig
     };
 
-    const rollInst = await this.Create<BladesIndulgeViceRoll, BladesRoll.Schema>(parsedConfig);
+    // Call super.New and cast the result appropriately.
+    // The cast to InstanceType<C> is safe here because C is constrained to typeof BladesIndulgeViceRoll.
+    const rollInst = await super.New(parsedConfig) as InstanceType<C>;
 
     return rollInst;
   }
@@ -4280,6 +4332,77 @@ class BladesIndulgeViceRoll extends BladesRoll {
 }
 
 class BladesEngagementRoll extends BladesFortuneRoll {
+
+  static override get DefaultRollModSchemaSet(): BladesRollMod.Schema[] {
+    return [
+      {
+        key: "BoldPlan-positive-roll",
+        name: "Bold Plan",
+        section: RollModSection.roll,
+        base_status: RollModStatus.ToggledOff,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: [],
+        tooltip: "<h1></h1><p></p>"
+      },
+      {
+        key: "ComplexPlan-negative-roll",
+        name: "Complex Plan",
+        section: RollModSection.roll,
+        base_status: RollModStatus.ToggledOff,
+        posNeg: "negative",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: [],
+        tooltip: "<h1></h1><p></p>"
+      },
+      {
+        key: "ExploitWeakness-positive-roll",
+        name: "Exploiting a Weakness",
+        section: RollModSection.roll,
+        base_status: RollModStatus.ToggledOff,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: [],
+        tooltip: "<h1></h1><p></p>"
+      },
+      {
+        key: "WellDefended-negative-roll",
+        name: "Well-Defended",
+        section: RollModSection.roll,
+        base_status: RollModStatus.ToggledOff,
+        posNeg: "negative",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: [],
+        tooltip: "<h1></h1><p></p>"
+      },
+      {
+        key: "HelpFromFriend-positive-roll",
+        name: "Help From a Friend",
+        section: RollModSection.position,
+        base_status: RollModStatus.ToggledOff,
+        posNeg: "positive",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: [],
+        tooltip: "<h1>Help From a Friend</h1><p>Add <strong>+1d</strong> if you enlist the help of a friend or contact.</p>"
+      },
+      {
+        key: "EnemyInterference-negative-roll",
+        name: "Enemy Interference",
+        section: RollModSection.roll,
+        base_status: RollModStatus.ToggledOff,
+        posNeg: "negative",
+        modType: RollModType.general,
+        value: 1,
+        effectKeys: [],
+        tooltip: "<h1></h1><p></p>"
+      }
+    ];
+  }
 
   override get chatTemplate(): string {
     return "systems/eunos-blades/templates/chat/roll-result/fortune-engagement.hbs";

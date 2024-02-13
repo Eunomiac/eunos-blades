@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
-import C, { ActionTrait, AttributeTrait, RollType, ConsequenceType } from "./core/constants.js";
+import C, { ActionTrait, RollType } from "./core/constants.js";
 import registerSettings, { initTinyMCEStyles, initCanvasStyles, initDOMStyles } from "./core/settings.js";
 import { registerHandlebarHelpers, preloadHandlebarsTemplates } from "./core/helpers.js";
 import BladesChat from "./classes/BladesChat.js";
@@ -18,15 +18,16 @@ import BladesPCSheet from "./sheets/actor/BladesPCSheet.js";
 import BladesCrewSheet from "./sheets/actor/BladesCrewSheet.js";
 import BladesNPCSheet from "./sheets/actor/BladesNPCSheet.js";
 import BladesFactionSheet from "./sheets/actor/BladesFactionSheet.js";
-import BladesRoll, { BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant, BladesActionRoll, BladesResistanceRoll } from "./classes/BladesRoll.js";
+import BladesRoll, { BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant, BladesActionRoll, BladesEngagementRoll, BladesFortuneRoll, BladesIncarcerationRoll, BladesIndulgeViceRoll, BladesInlineResistanceRoll, BladesResistanceRoll } from "./classes/BladesRoll.js";
 import BladesDialog from "./classes/BladesDialog.js";
 import BladesAI, { AGENTS, AIAssistant } from "./core/ai.js";
 import BladesActiveEffect from "./documents/BladesActiveEffect.js";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet.js";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet.js";
-CONFIG.debug.logging = true;
 /* DEVCODE*/
-Object.assign(globalThis, { eLog: logger });
+import BladesDebug from "./core/debug.js";
+CONFIG.debug.logging = true;
+Object.assign(globalThis, { eLog: logger, BladesDebug });
 Handlebars.registerHelper("eLog", logger.hbsLog);
 /* !DEVCODE*/
 let socket; // ~ SocketLib interface
@@ -59,45 +60,6 @@ class GlobalGetter {
         };
         BladesActionRoll.New(conf);
     }
-    async newResistanceRoll() {
-        const pc = game.actors.getName("Alistair");
-        if (!pc?.id) {
-            return;
-        }
-        const csq = await BladesConsequence.Create({
-            target: pc,
-            targetFlagKey: "rollConsequence",
-            name: "Shattered Knee",
-            isScopingById: true,
-            type: ConsequenceType.ProwessHarm3,
-            primaryID: pc.uuid,
-            attribute: AttributeTrait.prowess,
-            attributeVal: 3,
-            resistSchema: {
-                name: "Banged Knee",
-                type: ConsequenceType.ProwessHarm2,
-                primaryID: pc.uuid,
-                canResistWithSpecial: true,
-                resistWithSpecialNegates: true,
-                specialFooterMsg: "Ability: Spend to Fully Negate."
-            },
-            canResistWithRoll: true,
-            canResistWithSpecial: true,
-            resistWithSpecialNegates: true,
-            specialFooterMsg: "Ability: Spend to Fully Negate."
-        });
-        const conf = {
-            target: pc,
-            targetFlagKey: "rollCollab",
-            rollType: RollType.Resistance,
-            rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id,
-            rollPrimaryData: pc,
-            resistanceData: {
-                consequence: csq.data
-            }
-        };
-        BladesResistanceRoll.New(conf);
-    }
 }
 // #region Globals: Exposing Functionality to Global Scope ~
 /* DEVCODE*/ Object.assign(globalThis, {
@@ -126,6 +88,13 @@ class GlobalGetter {
     BladesRollPrimary,
     BladesRollOpposition,
     BladesRollParticipant,
+    BladesActionRoll,
+    BladesEngagementRoll,
+    BladesFortuneRoll,
+    BladesIncarcerationRoll,
+    BladesIndulgeViceRoll,
+    BladesInlineResistanceRoll,
+    BladesResistanceRoll,
     BladesChat,
     BladesConsequence,
     G,

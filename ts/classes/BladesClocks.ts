@@ -121,7 +121,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
       clocksInitialData.push({});
     }
 
-    // Generate a local-only TargetLink nstance, to assist in deriving values for the clocks data
+    // Generate a local-only TargetLink instance, to assist in deriving values for the clocks data
     const tempLink = new BladesTargetLink(config);
 
     // Generate the targetKey or targetFlagKey for each clockData
@@ -162,10 +162,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
 
 
     // Create and initialize the target link
-    const clockKeyLink = await super.Create<
-      BladesTargetLink<BladesClockKey.Schema>,
-      BladesClockKey.Schema
-    >(tempLink.data);
+    const clockKeyLink = await super.Create<typeof BladesClockKey, BladesClockKey.Schema>(tempLink.data);
 
     // Instantiate the ClockKey
     const clockKey = new BladesClockKey(clockKeyLink.data);
@@ -410,10 +407,12 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
 
   // #region ~~~ CONSTRUCTOR & CLOCK CONFIG PARSER ~~~
 
-  constructor(data: BladesClockKey.Data) {
-    super(data);
+  constructor(config: BladesTargetLink.Config & Partial<BladesClockKey.Schema>)
+  constructor(data: BladesClockKey.Data)
+  constructor(dataOrConfig: BladesClockKey.Data | (BladesTargetLink.Config & Partial<BladesClockKey.Schema>)) {
+    super(dataOrConfig);
     game.eunoblades.ClockKeys.set(this.id, this);
-    Object.values(data.clocksData).forEach((clockData) => new BladesClock(clockData));
+    Object.values(dataOrConfig.clocksData ?? {}).forEach((clockData) => new BladesClock(clockData));
   }
 
   // parseClockConfig(config: BladesClock.Config, indexOverride?: ClockIndex): BladesClock.Data {

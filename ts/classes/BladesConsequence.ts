@@ -154,9 +154,15 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
   _consequenceNone?: BladesConsequence;
   get consequenceNone(): Promise<BladesConsequence>|BladesConsequence {
     if (this._consequenceNone) { return this._consequenceNone; }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {id, ...linkData} = this.linkData;
-    return BladesConsequence.Create({...linkData, ...BladesConsequence.PartialNoneSchema})
-      .then((csq) => this._consequenceNone = csq);
+    return BladesConsequence.Create<
+      new(
+        dataConfigOrSchema: BladesTargetLink.Config & Partial<BladesConsequence.Schema>,
+        parentCsq?: BladesConsequence.Data
+      ) => BladesConsequence,
+      BladesConsequence.Schema
+        >({...linkData, ...BladesConsequence.PartialNoneSchema}).then((csq) => this._consequenceNone = csq);
   }
   get parentConsequence(): BladesConsequence|undefined {
     if (!this.parentCsqID) { return undefined; }

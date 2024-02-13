@@ -50,20 +50,20 @@ declare global {
       rollSubType?: RollSubType,
       rollPrompt?: string;
       rollUserID?: IDString,
-      rollTrait?: RollTrait,
+      rollTrait: RollTrait,
       rollDowntimeAction?: DowntimeAction,
       rollClockKey?: IDString,
 
-      rollPrimaryData?: PrimaryData;
+      rollPrimaryData: PrimaryData;
       rollOppData?: OppositionData;
       rollParticipantData?: RollParticipantDataSet,
 
-      participantRollTo?: string,
-      resistanceRollTo?: {
-        id: string,
-        userID: string,
-        consequenceID: string
-      },
+      // participantRollTo?: string,
+      // resistanceRollTo?: {
+      //   id: string,
+      //   userID: string,
+      //   consequenceID: string
+      // },
       consequenceData?: Partial<Record<
         Position,
         Partial<Record<
@@ -93,12 +93,10 @@ declare global {
         Partial<Record<Factor, FactorFlagData>>
       >,
 
-      userPermissions: Record<IDString, RollPermissions>,
-
       rollPositionFinal?: Position,
       rollEffectFinal?: Effect,
       rollResult?: number|false|RollResult,
-      rollResultDelta: number,
+      rollResultDelta?: number,
       rollResultFinal?: number|false|RollResult,
       rollTraitVerb?: string,
       rollTraitPastVerb?: string,
@@ -106,7 +104,7 @@ declare global {
 
       isInlineResistanceRoll?: boolean,
 
-      userPermissions?: Record<IDString, RollPermissions>
+      userPermissions: Record<IDString, RollPermissions>
     }
 
     export type Config = BladesTargetLink.Config & Partial<Schema>;

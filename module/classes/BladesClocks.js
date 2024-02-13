@@ -64,7 +64,7 @@ class BladesClockKey extends BladesTargetLink {
             // If no clocks provided, add one default clock.
             clocksInitialData.push({});
         }
-        // Generate a local-only TargetLink nstance, to assist in deriving values for the clocks data
+        // Generate a local-only TargetLink instance, to assist in deriving values for the clocks data
         const tempLink = new BladesTargetLink(config);
         // Generate the targetKey or targetFlagKey for each clockData
         if (tempLink.targetKeyPrefix) {
@@ -316,12 +316,10 @@ class BladesClockKey extends BladesTargetLink {
         }
         return options;
     }
-    // #endregion
-    // #region ~~~ CONSTRUCTOR & CLOCK CONFIG PARSER ~~~
-    constructor(data) {
-        super(data);
+    constructor(dataOrConfig) {
+        super(dataOrConfig);
         game.eunoblades.ClockKeys.set(this.id, this);
-        Object.values(data.clocksData).forEach((clockData) => new BladesClock(clockData));
+        Object.values(dataOrConfig.clocksData ?? {}).forEach((clockData) => new BladesClock(clockData));
     }
     // parseClockConfig(config: BladesClock.Config, indexOverride?: ClockIndex): BladesClock.Data {
     //   if (this.size === 6) {throw new Error("Cannot add a clock to a clock key with 6 clocks.");}

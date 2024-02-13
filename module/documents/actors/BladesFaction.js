@@ -14,6 +14,9 @@ class BladesFaction extends BladesActor {
         return new Collection(super.GetTypeWithTags(BladesActorType.faction)
             .map((faction) => [faction.id, faction]));
     }
+    static IsType(doc) {
+        return super.IsType(doc, BladesActorType.faction);
+    }
     // #region BladesRoll Implementation
     // #region BladesRoll.OppositionDoc Implementation
     get rollOppID() { return this.id; }

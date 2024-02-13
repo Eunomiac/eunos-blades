@@ -9,20 +9,23 @@ class BladesTargetLink<Schema> {
 
   // #region STATIC METHODS ~
 
-  static readonly ValidTargetClasses = [
-    BladesActor,
-    BladesItem,
-    BladesChat,
-    User
-  ] as const;
+  static get ValidTargetClasses() {
+    return [
+      BladesActor,
+      BladesItem,
+      BladesChat,
+      User
+    ] as const;
+  }
 
   static IsValidConfig(ref: unknown): ref is BladesTargetLink.Config {
     return U.isSimpleObj(ref)
-    && (U.isDocID(ref.target)
-        || U.isDocUUID(ref.target)
-        || U.isDocID(ref.targetID)
-        || U.isDocUUID(ref.targetID)
-        || this.ValidTargetClasses.some((cls) => ref.target instanceof cls)
+    && (
+      U.isDocID(ref.target)
+      || U.isDocUUID(ref.target)
+      || U.isDocID(ref.targetID)
+      || U.isDocUUID(ref.targetID)
+      || this.ValidTargetClasses.some((cls) => ref.target instanceof cls)
     )
     && (U.isTargetKey(ref.targetKey) || U.isTargetFlagKey(ref.targetFlagKey))
     && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey));
@@ -33,8 +36,8 @@ class BladesTargetLink<Schema> {
       && U.isDocID(ref.id)
       && U.isDocUUID(ref.targetID)
       && (U.isTargetKey(ref.targetKey) || U.isTargetFlagKey(ref.targetFlagKey))
-      && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey))
-      && (typeof ref.isScopingById === "boolean");
+      && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey));
+    // && (typeof ref.isScopingById === "boolean");
   }
 
   static #ParseChildLinkData<Schema>(
@@ -146,14 +149,14 @@ class BladesTargetLink<Schema> {
         ...partialSchema,
         targetID: U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
         targetKey: fullConfig.targetKey
-      });
+      }, parentLinkData);
     }
     return this.ParseConfigToData<Schema>({
       id: randomID() as IDString,
       ...partialSchema,
       targetID: U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
       targetFlagKey: fullConfig.targetFlagKey
-    });
+    }, parentLinkData);
   }
 
   /**
@@ -173,7 +176,7 @@ class BladesTargetLink<Schema> {
     parentLinkData?: BladesTargetLink.Data
   ): BladesTargetLink.Data & Partial<Schema> {
     if (this.IsValidData(data)) { return this.#ParseChildLinkData(data, parentLinkData); }
-    return this.#ParseConfigToData(data);
+    return this.#ParseConfigToData(data, parentLinkData);
   }
 
   static PartitionSchemaData<Schema>(
@@ -235,7 +238,7 @@ class BladesTargetLink<Schema> {
     };
   }
 
-  static #ApplySchemaDefaults<Schema>(
+  static _ApplySchemaDefaults<Schema>(
     this: BladesTargetLink.StaticThisContext<Schema>,
     schemaData: Partial<Schema>
   ): Schema {
@@ -271,17 +274,17 @@ class BladesTargetLink<Schema> {
    *
    * @throws {Error} - Throws an error if the initialization of the target link fails.
    */
-  static async Create<C extends BladesTargetLink<Schema>, Schema>(
-    this: new (
-      config: BladesTargetLink.Config & Partial<Schema>,
-      parentLinkData?: BladesTargetLink.Data & Schema
-    ) => C,
+  static async Create<C extends new(
     config: BladesTargetLink.Config & Partial<Schema>,
     parentLinkData?: BladesTargetLink.Data & Schema
-  ): Promise<C> {
+  ) => BladesTargetLink<Schema>, Schema>(
+    this: C,
+    config: BladesTargetLink.Config & Partial<Schema>,
+    parentLinkData?: BladesTargetLink.Data & Schema
+  ): Promise<InstanceType<C>> {
     const tLink = new this(config, parentLinkData);
     await tLink.initTargetLink();
-    return tLink;
+    return tLink as InstanceType<C>;
   }
   // #endregion
 
@@ -400,10 +403,12 @@ class BladesTargetLink<Schema> {
     let linkData: BladesTargetLink.Data;
     let schema: Schema;
 
+    const subclassConstructor = this.constructor as typeof BladesTargetLink<Schema>;
+
     // First, we construct the link data from the config or data object.
-    if (BladesTargetLink.IsValidData(dataOrConfig)) {
+    if (subclassConstructor.IsValidData(dataOrConfig)) {
       // If a simple link data object was provided, acquire the schema from the source document
-      ({linkData} = BladesTargetLink.PartitionSchemaData(dataOrConfig));
+      ({linkData} = subclassConstructor.PartitionSchemaData(dataOrConfig));
       const target = fromUuidSync(linkData.targetID);
       if (!target) {
         throw new Error(`[new BladesTargetLink()] Unable to resolve target from uuid '${linkData.targetID}'`);
@@ -426,10 +431,10 @@ class BladesTargetLink<Schema> {
 
       // Next we separate the linkData and the schemaData from the parsedData object.
       let partialSchema: Partial<Schema>;
-      ({linkData, partialSchema} = BladesTargetLink.PartitionSchemaData<Schema>(parsedData));
+      ({linkData, partialSchema} = subclassConstructor.PartitionSchemaData<Schema>(parsedData));
 
       // And apply any schema defaults to the provided schema data.
-      schema = BladesTargetLink.#ApplySchemaDefaults(partialSchema);
+      schema = subclassConstructor._ApplySchemaDefaults<Schema>(partialSchema);
     }
 
     this._id = linkData.id;
@@ -529,7 +534,7 @@ class BladesTargetLink<Schema> {
         }).catch(reject);
       } else if (this.targetFlagKeyPrefix) {
         const updateData = mergeObject(
-          this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix) as Partial<BladesTargetLink.Data & Schema>,
+          (this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix) ?? {}) as Partial<BladesTargetLink.Data & Schema>,
           data
         );
         (this.target as BladesItem).setFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix, updateData).then(() => {
@@ -540,6 +545,8 @@ class BladesTargetLink<Schema> {
         reject();
       }
     });
+
+    return this.initPromise;
   }
 
   async #updateTargetViaMerge(updateData: Record<string, unknown>, waitFor?: Promise<unknown>|gsapAnim) {
@@ -550,7 +557,7 @@ class BladesTargetLink<Schema> {
       return this.target.update(updateData, {render: false});
     } else if (this.targetFlagKeyPrefix) {
       // We must retrieve the existing flag data, flattenObject it, then merge it with updateData
-      const existingFlagData = this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix);
+      const existingFlagData = this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix) ?? {};
       const flattenedFlagData = flattenObject(existingFlagData as BladesTargetLink.Data & Schema);
       const mergedFlagData = mergeObject(flattenedFlagData, updateData);
 

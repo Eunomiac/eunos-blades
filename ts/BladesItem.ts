@@ -220,7 +220,7 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   get rollPrimaryImg() { return this.img; }
 
-  get rollModsSchemaSet(): BladesRollMod.Schema[] {
+  get rollPrimaryModsSchemaSet(): BladesRollMod.Schema[] {
     // Add roll mods from COHORT harm
     return BladesRollMod.ParseDocModsToSchemaSet(this);
   }

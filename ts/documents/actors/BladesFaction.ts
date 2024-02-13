@@ -22,6 +22,12 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
     );
   }
 
+  static override IsType<T extends BladesActorType = BladesActorType.faction>(
+    doc: unknown
+  ): doc is BladesFaction & BladesActorOfType<T> {
+    return super.IsType(doc, BladesActorType.faction);
+  }
+
   // #region BladesRoll Implementation
 
   // #region BladesRoll.OppositionDoc Implementation

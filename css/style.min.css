@@ -18184,7 +18184,7 @@ template {
 :root body.vtt.game.system-eunos-blades #hotbar #chat #chat-log *,
 :root body.vtt.game.system-eunos-blades #players #chat #chat-log,
 :root body.vtt.game.system-eunos-blades #players #chat #chat-log * {
-  --font-primary: "Beaufort", ;
+  --font-primary: "Beaufort", serif, ;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .flexrow.jump-to-bottom,
 :root body.vtt.game.system-eunos-blades #controls #chat .flexrow.jump-to-bottom,

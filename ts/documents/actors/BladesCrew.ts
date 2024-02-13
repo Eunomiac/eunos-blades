@@ -22,7 +22,12 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
   // #endregion
 
   // #region Static Overrides: Create ~
-  static override IsType<T extends BladesActorType = BladesActorType.crew>(doc: unknown): doc is BladesActorOfType<T> {
+  // static override IsType<T extends BladesActorType = BladesActorType.crew>(doc: unknown): doc is BladesActorOfType<T> {
+  //   return super.IsType(doc, BladesActorType.crew);
+  // }
+  static override IsType<T extends BladesActorType = BladesActorType.crew>(
+    doc: unknown
+  ): doc is BladesCrew & BladesActorOfType<T> {
     return super.IsType(doc, BladesActorType.crew);
   }
 
@@ -150,8 +155,6 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
   // #endregion
 
   // #region BladesRoll Implementation
-
-  get rollPrimaryModsSchemaSet(): BladesRollMod.Schema[] { return this.rollModsSchemaSet; }
 
   // #region BladesRoll.ParticipantDoc Implementation
   get rollParticipantID() {return this.id;}
