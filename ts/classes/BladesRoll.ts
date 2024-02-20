@@ -210,6 +210,8 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
       });
   }
 
+  public isRerendering = false;
+
   get status() {
     // USER STATUS of "ForcedOn", "ForcedOff", or "Hidden" trumps all other status values.
     if (this.userStatus && BladesRollMod.GMOnlyModStatuses.includes(this.userStatus)) {
@@ -572,10 +574,11 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
   get userStatus(): RollModStatus | undefined {return this.data.user_status;}
   set userStatus(val: RollModStatus | undefined) {
     if (val === this.userStatus) {return;}
+    const {isRerendering} = this;
     if (!val || val === this.baseStatus) {
       this.updateTarget("user_status", null)
         .then(() => {
-          if (this.rollInstance.isRendered) {
+          if (isRerendering) {
             this.rollInstance.renderRollCollab_SocketCall();
           }
         });
@@ -588,7 +591,7 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
       }
       this.updateTarget("user_status", val)
         .then(() => {
-          if (this.rollInstance.isRendered) {
+          if (isRerendering) {
             this.rollInstance.renderRollCollab_SocketCall();
           }
         });
@@ -599,17 +602,18 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
   get heldStatus(): RollModStatus | undefined {return this.data.held_status;}
   set heldStatus(val: RollModStatus | undefined) {
     if (val === this.heldStatus) {return;}
+    const {isRerendering} = this;
     if (!val) {
       this.updateTarget("held_status", null)
         .then(() => {
-          if (this.rollInstance.isRendered) {
+          if (isRerendering) {
             this.rollInstance.renderRollCollab_SocketCall();
           }
         });
     } else {
       this.updateTarget("held_status", val)
         .then(() => {
-          if (this.rollInstance.isRendered) {
+          if (isRerendering) {
             this.rollInstance.renderRollCollab_SocketCall();
           }
         });
@@ -1856,55 +1860,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     this.renderRollCollab_SocketResponse(rollInst.id);
   }
 
-  _elem$?: JQuery<HTMLElement>;
-  _overlayPosition: gsap.Point2D = {x: 200, y: 200};
-  get overlayPosition(): gsap.Point2D { return this._overlayPosition; }
-  set overlayPosition(val: gsap.Point2D) { this._overlayPosition = val; }
-
-  _positionDragger?: Dragger;
-  get positionDragger(): Dragger {
-    if (this._positionDragger) { return this._positionDragger; }
-    return this.spawnPositionDragger();
-  }
-
-  spawnPositionDragger() {
-    const self = this;
-    if (!this._elem$) {
-      throw new Error(`[BladesRoll.spawnPositionDragger] No elem$ found for roll ${this.id}.`);
-    }
-    return (this._positionDragger = new Dragger(this._elem$, {
-      type: "top,left",
-      trigger: ".window-header.draggable",
-      onDragStart(this: Dragger) {
-        U.gsap.to(this.target, {opacity: 0.25, duration: 0.25, ease: "power2"});
-      },
-      onDragEnd(this: Dragger) {
-        U.gsap.to(this.target, {opacity: 1, duration: 0.25, ease: "power2"});
-        self.overlayPosition = {x: this.endX, y: this.endY};
-      }
-    }));
-  }
-
-  get elem$(): JQuery<HTMLElement> {
-    if (this._elem$) { return this._elem$; }
-    this._positionDragger = undefined;
-    const elem$ = $(`#${this.id}`);
-    if (elem$.length) {
-      this._elem$ = elem$;
-    } else {
-      this._elem$ = $(`<div id="${this.id}" class="app window-app ${C.SYSTEM_ID} sheet roll-collab${game.user.isGM ? " gm-roll-collab" : ""}"></div>`).appendTo("body");
-    }
-    this.spawnPositionDragger();
-    return this._elem$;
-  }
-
-  async renderRollCollab() {
-    this.prepareRollParticipantData();
-    const html = await renderTemplate(this.collabTemplate, this.context);
-    this.elem$.html(html);
-    this.activateListeners();
-  }
-
   renderRollCollab_SocketCall() {
     socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
@@ -2863,8 +2818,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // #endregion
 
-  // #region *** ROLL COLLAB CONTEXT *** ~
-
+  // #region *** ROLL COLLAB HTML INTERACTION *** ~
 
   /**
    * Retrieve the data for rendering the base RollCollab sheet.
@@ -3390,6 +3344,33 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // #region *** ROLL COLLAB HTML ELEMENT ***
 
+  _elem$?: JQuery<HTMLElement>;
+  _overlayPosition: gsap.Point2D = {x: 200, y: 200};
+  get overlayPosition(): gsap.Point2D { return this._overlayPosition; }
+  set overlayPosition(val: gsap.Point2D) { this._overlayPosition = val; }
+
+  get elem$(): JQuery<HTMLElement> {
+    if (this._elem$) { return this._elem$; }
+    const elem$ = $(`#${this.id}`);
+    if (elem$.length) {
+      this._elem$ = elem$;
+    } else {
+      this._elem$ = $(`<div id="${this.id}" class="app window-app ${C.SYSTEM_ID} sheet roll-collab${game.user.isGM ? " gm-roll-collab" : ""}"></div>`).appendTo("body");
+      this._elem$.css({
+        left: `${this.overlayPosition.x}px`,
+        top: `${this.overlayPosition.y}px`
+      });
+    }
+    return this._elem$;
+  }
+
+  async renderRollCollab() {
+    this.prepareRollParticipantData();
+    const html = await renderTemplate(this.collabTemplate, this.context);
+    this.elem$.html(html);
+    this.activateListeners();
+  }
+
   get isRendered(): boolean {
     return Boolean(this._elem$?.length);
   }
@@ -3433,17 +3414,19 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     const rollMod = this.getRollModByID(id);
     if (!rollMod) {throw new Error(`Unable to find roll mod with id '${id}'`);}
 
+    rollMod.isRerendering = true;
     switch (rollMod.status) {
-      case RollModStatus.Hidden: rollMod.userStatus = RollModStatus.ForcedOff; return;
-      case RollModStatus.ForcedOff: rollMod.userStatus = RollModStatus.ToggledOff; return;
-      case RollModStatus.ToggledOff: rollMod.userStatus = RollModStatus.ToggledOn; return;
+      case RollModStatus.Hidden: rollMod.userStatus = RollModStatus.ForcedOff; break;
+      case RollModStatus.ForcedOff: rollMod.userStatus = RollModStatus.ToggledOff; break;
+      case RollModStatus.ToggledOff: rollMod.userStatus = RollModStatus.ToggledOn; break;
       case RollModStatus.ToggledOn: rollMod.userStatus = game.user.isGM
         ? RollModStatus.ForcedOn
         : RollModStatus.ToggledOff;
-        return;
-      case RollModStatus.ForcedOn: rollMod.userStatus = RollModStatus.Hidden; return;
+        break;
+      case RollModStatus.ForcedOn: rollMod.userStatus = RollModStatus.Hidden; break;
       default: throw new Error(`Unrecognized RollModStatus: ${rollMod.status}`);
     }
+    rollMod.isRerendering = false;
   }
 
   /**
@@ -3662,9 +3645,36 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // #endregion
   // #region ACTIVATE LISTENERS ~
+
+  _positionDragger?: Dragger;
+  get positionDragger(): Dragger {
+    if (this._positionDragger) { return this._positionDragger; }
+    return this.spawnPositionDragger();
+  }
+  spawnPositionDragger() {
+    const self = this;
+    if (!this._elem$) {
+      throw new Error(`[BladesRoll.spawnPositionDragger] No elem$ found for roll ${this.id}.`);
+    }
+    this._positionDragger?.kill();
+    return (this._positionDragger = new Dragger(this._elem$, {
+      type: "top,left",
+      trigger: ".window-header.dragger",
+      onDragStart(this: Dragger) {
+        U.gsap.to(this.target, {opacity: 0.25, duration: 0.25, ease: "power2"});
+      },
+      onDragEnd(this: Dragger) {
+        U.gsap.to(this.target, {opacity: 1, duration: 0.25, ease: "power2"});
+        self.overlayPosition = {x: this.endX, y: this.endY};
+      }
+    }));
+  }
   activateListeners() {
+
     ApplyTooltipAnimations(this.elem$);
     ApplyConsequenceAnimations(this.elem$);
+
+    this.spawnPositionDragger();
 
     // If a rollClockKey exists, initialize its elements
     if (this.rollClockKey) {

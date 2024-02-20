@@ -1468,7 +1468,9 @@ const withLog = (fn: (...args: unknown[]) => unknown) => {
 
 // #region ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████ ~
 
-const changeContainer = (elem: HTMLElement, container: HTMLElement) => {
+const changeContainer = (elem: HTMLElement, container: HTMLElement, isCloning = false): HTMLElement => {
+  elem = $(elem)[0];
+  container = $(container)[0];
   // Get the element's current container, which defines its current coordinate space.
   const curContainer = $(elem).parent()[0];
   // Get the element's current position in its current coordinate space.
@@ -1482,10 +1484,15 @@ const changeContainer = (elem: HTMLElement, container: HTMLElement) => {
     container,
     curPosition
   );
-  // eLog.checkLog3("changeContainer", "Target Element", {elem, container, curContainer, curPosition, relPos});
+  eLog.checkLog3("changeContainer", "Target Element", {elem, container, curContainer, curPosition, relPos});
+  // Clone the element, if indicated
+  if (isCloning) {
+    elem = $(elem).clone()[0];
+  }
   // Append the element to the new container, and set its new position
   $(elem).appendTo($(container));
   gsap.set(elem, relPos);
+  return elem;
 };
 
 const adjustTextContainerAspectRatio = (

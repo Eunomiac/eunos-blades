@@ -438,6 +438,7 @@ const C = {
       "gpt-4-32k"
     ]
   },
+  MIN_MOUSE_MOVEMENT_THRESHOLD: 2000,
   AI_FILE_IDS: {
     BladesPDF: "file-n72HTTNwt051piPbswQ8isUa"
   },

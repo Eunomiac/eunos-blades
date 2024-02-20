@@ -1,7 +1,14 @@
 import { BladesItemType, ClockColor, District, BladesPhase, Randomizers } from "../core/constants";
 import BladesItem from "../BladesItem";
+import BladesPC from "../documents/actors/BladesPC.js";
+import BladesCrew from "../documents/actors/BladesCrew.js";
+import BladesNPC from "../documents/actors/BladesNPC.js";
+import BladesFaction from "../documents/actors/BladesFaction.js";
 import BladesClockKeeper from '../documents/items/BladesClockKeeper.js';
 import BladesGMTracker from '../documents/items/BladesGMTracker.js';
+import BladesLocation from "../documents/items/BladesLocation.js";
+import BladesScore from "../documents/items/BladesScore.js";
+import BladesProject from "../documents/items/BladesProject.js";
 
 declare global {
 
@@ -10,6 +17,15 @@ declare global {
 
   // Random categories for BladesScore
   type RandomCat = keyof typeof Randomizers["GM"];
+
+  // Embeddable BladesItem types
+  // type EmbeddableItemType<ParentType extends BladesActorType|BladesItemType> =
+  //   ParentType extends BladesActorType.pc ? BladesItemType.ability|BladesItemType.background|BladesItemType.cohort_expert|BladesItemType.cohort_gang|BladesItemType.feature|BladesItemType.heritage|BladesItemType.gear|BladesItemType.playbook|BladesItemType.stricture|BladesItemType.vice|BladesItemType.project|BladesItemType.ritual|BladesItemType.design :
+  //   ParentType extends BladesActorType.crew ? BladesItemType.cohort_expert|BladesItemType.cohort_gang|BladesItemType.crew_ability|BladesItemType.crew_playbook|BladesItemType.crew_reputation|BladesItemType.crew_upgrade|BladesItemType.preferred_op :
+  //   ParentType extends BladesActorType.npc ? BladesItemType.ability|BladesItemType.background|BladesItemType.cohort_expert|BladesItemType.cohort_gang|BladesItemType.feature|BladesItemType.heritage|BladesItemType.gear|BladesItemType.playbook|BladesItemType.stricture|BladesItemType.vice|BladesItemType.project|BladesItemType.ritual|BladesItemType.design :
+  //   ParentType extends BladesActorType.faction ? BladesItemType.cohort_expert|BladesItemType.cohort_gang|BladesItemType.crew_ability|BladesItemType.crew_playbook|BladesItemType.crew_reputation|BladesItemType.crew_upgrade|BladesItemType.gear|BladesItemType.preferred_op|BladesItemType.project|BladesItemType.ritual|BladesItemType.design :
+  //   ParentType extends BladesItemType.location ? BladesItemType.location :
+  //   ParentType extends BladesItemType.score ? BladesItemType.location : never;
 
   // #region SCHEMA DATA: TEMPLATE.JSON & SYSTEM
 
@@ -217,9 +233,30 @@ declare global {
     Partial<BladesItemSchema.Location>,
     Partial<BladesItemSchema.Score> { }
 
-  type BladesItemOfType<T extends BladesItemType> = BladesItem & {
-    system: ExtractBladesItemSystem<T>
-  };
+  type BladesItemOfType<T extends BladesItemType> =
+  // T extends BladesItemType.ability ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.ability> } :
+  // T extends BladesItemType.background ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.background> } :
+  // T extends BladesItemType.clock_keeper ? BladesClockKeeper & { system: ExtractBladesItemSystem<BladesItemType.clock_keeper> } :
+  // T extends BladesItemType.cohort_gang ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.cohort_gang> } :
+  // T extends BladesItemType.cohort_expert ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.cohort_expert> } :
+  // T extends BladesItemType.crew_ability ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.crew_ability> } :
+  // T extends BladesItemType.crew_reputation ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.crew_reputation> } :
+  // T extends BladesItemType.crew_playbook ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.crew_playbook> } :
+  // T extends BladesItemType.crew_upgrade ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.crew_upgrade> } :
+  // T extends BladesItemType.feature ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.feature> } :
+  // T extends BladesItemType.gm_tracker ? BladesGMTracker & { system: ExtractBladesItemSystem<BladesItemType.gm_tracker> } :
+  // T extends BladesItemType.heritage ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.heritage> } :
+  // T extends BladesItemType.gear ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.gear> } :
+  // T extends BladesItemType.playbook ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.playbook> } :
+  // T extends BladesItemType.preferred_op ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.preferred_op> } :
+  // T extends BladesItemType.stricture ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.stricture> } :
+  // T extends BladesItemType.vice ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.vice> } :
+  // T extends BladesItemType.project ? BladesProject & { system: ExtractBladesItemSystem<BladesItemType.project> } :
+  // T extends BladesItemType.ritual ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.ritual> } :
+  // T extends BladesItemType.design ? BladesItem & { system: ExtractBladesItemSystem<BladesItemType.design> } :
+  // T extends BladesItemType.location ? BladesLocation & { system: ExtractBladesItemSystem<BladesItemType.location> } :
+  // T extends BladesItemType.score ? BladesScore & { system: ExtractBladesItemSystem<BladesItemType.score> } :
+  BladesItem & { system: ExtractBladesItemSystem<T> }
 
   type ExtractBladesItemSystem<T extends BladesItemType | "ANY" = "ANY"> = {
     [BladesItemType.ability]: BladesItemSchema.Ability,

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities.js";
-import { ClockKey_SVGDATA, BladesPhase, ClockKeyDisplayMode } from "../core/constants.js";
+import C, { ClockKey_SVGDATA, BladesPhase, ClockKeyDisplayMode } from "../core/constants.js";
 import BladesClockKey, { BladesClock } from "./BladesClockKey.js";
 class BladesDirector {
     // #region INITIALIZATION ~
@@ -123,7 +123,7 @@ class BladesDirector {
     }
     // #endregion
     // #endregion
-    // #region CLOCKS & CLOCK KEYS
+    // #region CLOCKS & CLOCK KEYS ~
     // #region   >> INITIALIZATION ~
     initClockKeySection(isResetting = false) {
         if (isResetting) {
@@ -368,7 +368,7 @@ class BladesDirector {
     }
     // #endregion
     // #endregion
-    // #region SCORE PANEL
+    // #region SCORE PANEL ~
     // #region   >> INITIALIZATION ~
     initScorePanelSockets() {
         // tbd...
@@ -383,7 +383,7 @@ class BladesDirector {
         // tbd...
     }
     // #endregion
-    // #region LOCATIONS
+    // #region LOCATIONS ~
     // #region   >> INITIALIZATION ~
     initLocationSockets() {
         // tbd...
@@ -398,7 +398,7 @@ class BladesDirector {
         // tbd...
     }
     // #endregion
-    // #region NPCs
+    // #region NPCs ~
     // #region   >> INITIALIZATION ~
     initNPCSockets() {
         // tbd...
@@ -410,7 +410,7 @@ class BladesDirector {
         // tbd...
     }
     // #endregion
-    // #region PCs, COHORTs, CREW
+    // #region PCs, COHORTs, CREW ~
     // #region   >> INITIALIZATION ~
     initPCSockets() {
         // tbd...
@@ -439,7 +439,7 @@ class BladesDirector {
         // tbd...
     }
     // #endregion
-    // #region NOTIFICATIONS
+    // #region NOTIFICATIONS ~
     // #region   >> INITIALIZATION ~
     initNotificationSockets() {
         socketlib.system.register("pushNotice_SocketCall", BladesDirector.pushNotice_SocketResponse.bind(BladesDirector));
@@ -520,7 +520,7 @@ class BladesDirector {
         });
     }
     // #endregion
-    // #region TRANSITIONS
+    // #region TRANSITIONS ~
     // #region   >> INITIALIZATION ~
     initTransitionSockets() {
         // tbd...
@@ -534,19 +534,110 @@ class BladesDirector {
     // #endregion
     // #region TOOLTIPS ~
     _tooltipObserver;
+    _tooltipElems = new Map();
+    _displayedTooltipID;
+    displayTooltip(tooltip) {
+        if (!tooltip.id) {
+            throw new Error("Tooltip must have an ID to be cloned to the overlay.");
+        }
+        this._displayedTooltipID = tooltip.id;
+        const self = this;
+        // Clear out any other tooltips in the overlay.
+        game.eunoblades.Director.clearTooltips();
+        if (!this._tooltipElems.has(tooltip.id)) {
+            // Create cloned tooltip and attach it to the tooltip overlay.
+            const ttClone$ = $(U.changeContainer(tooltip, game.eunoblades.Director.tooltipSection$[0], true));
+            // Generate the reveal timeline and attach it to the cloned tooltip element.
+            const revealTimeline = U.gsap.effects.blurRevealTooltip(ttClone$[0], {
+                onReverseComplete() {
+                    if (ttClone$.attr("id") === self._displayedTooltipID) {
+                        delete self._displayedTooltipID;
+                    }
+                    game.eunoblades.Director._tooltipElems.delete(ttClone$.attr("id"));
+                    game.eunoblades.Director.tooltipSection$.find(`#${ttClone$.attr("id")}`).remove();
+                    game.eunoblades.Director.tooltipSection$.children("[style*='opacity: 0'], [style*='opacity:0']").each(function () {
+                        const id = this.id; // Get the ID of the current element
+                        if (id === self._displayedTooltipID) {
+                            return;
+                        }
+                        if (id) {
+                            game.eunoblades.Director._tooltipElems.delete(id); // Remove from the map if the ID exists
+                        }
+                        $(this).remove(); // Remove the element from the DOM
+                    });
+                }
+            });
+            ttClone$.data("revealTimeline", revealTimeline);
+            // Register the cloned tooltip element to the master map
+            this._tooltipElems.set(tooltip.id, ttClone$);
+        }
+        // Play the timeline.
+        this._tooltipElems.get(tooltip.id)?.data("revealTimeline")?.play();
+    }
+    clearTooltip(tooltipID, isClearingIfTweening = true) {
+        if (tooltipID === this._displayedTooltipID) {
+            delete this._displayedTooltipID;
+        }
+        const ttElem = game.eunoblades.Director._tooltipElems.get(tooltipID);
+        if (!ttElem) {
+            return;
+        }
+        const ttTimeline = ttElem.data("revealTimeline");
+        if (ttTimeline.isActive() && !isClearingIfTweening) {
+            return;
+        }
+        ttTimeline.reverse();
+    }
     clearTooltips() {
-        // Look for tooltip elements in the overlay container, and reverse their timelines.
-        game.eunoblades.Director.tooltipSection$.find(".tooltip").each((i, el) => {
-            U.gsap.effects.blurRemoveTooltip(el);
+        eLog.checkLog3("Observer", "Observer Triggered!");
+        // Look for tooltip elements in the overlay container, and remove them.
+        game.eunoblades.Director._tooltipElems.forEach((ttElem) => {
+            if (ttElem.attr("id") === this._displayedTooltipID) {
+                return;
+            }
+            game.eunoblades.Director.clearTooltip(ttElem.attr("id"), true);
         });
     }
     initTooltipSection() {
-        const { clearTooltips } = this;
+        const self = this;
+        this.clearTooltips();
         // Reset tooltip observer
         this._tooltipObserver?.kill();
+        // Simplified throttle function that takes a function with Observer parameter
+        const throttle = (func, limit) => {
+            let lastFunc;
+            let lastRan;
+            return function (obs) {
+                const now = Date.now();
+                if (!lastRan || now - lastRan >= limit) {
+                    func(obs);
+                    lastRan = now;
+                }
+                else {
+                    clearTimeout(lastFunc);
+                    lastFunc = window.setTimeout(() => {
+                        if (now - lastRan >= limit) {
+                            func(obs);
+                            lastRan = now;
+                        }
+                    }, limit - (now - lastRan));
+                }
+            };
+        };
+        // Throttled onMove callback
+        const throttledOnMove = throttle((obs) => {
+            // Calculate the absolute magnitude of velocity independent of direction
+            const magnitudeOfVelocity = Math.sqrt((obs.velocityX ** 2) + (obs.velocityY ** 2));
+            if (magnitudeOfVelocity >= C.MIN_MOUSE_MOVEMENT_THRESHOLD) {
+                self.clearTooltips();
+            }
+        }, 200); // Adjust 200ms to your preferred throttling limit
         this._tooltipObserver = Observer.create({
             type: "touch,pointer",
-            onClick: clearTooltips
+            // onMove: throttledOnMove,
+            onClick() {
+                self.clearTooltips();
+            }
         });
     }
 }

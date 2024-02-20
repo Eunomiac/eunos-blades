@@ -8,6 +8,7 @@ import BladesConsequence from "../classes/BladesConsequence";
 import BladesClockKey from "../classes/BladesClockKey";
 import BladesPushAlert from "../classes/BladesPushAlert";
 import BladesChat from "../classes/BladesChat";
+import BladesDirector from "../classes/BladesDirector";
 import C from "../core/constants";
 import type gsap from "gsap/all";
 
