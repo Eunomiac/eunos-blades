@@ -6,7 +6,7 @@ import BladesItemSheet from "./BladesItemSheet";
 import {BladesActor, BladesPC} from "../../documents/BladesActorProxy";
 import {BladesProject} from "../../documents/BladesItemProxy";
 import BladesRoll, {BladesRollOpposition} from "../../classes/BladesRoll";
-import BladesClockKey, {BladesClock, ClockKeyElems$} from "../../classes/BladesClocks";
+import BladesClockKey, {BladesClock, ClockKeyElems$} from "../../classes/BladesClockKey";
 
 class BladesProjectSheet extends BladesItemSheet {
 

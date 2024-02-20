@@ -4,7 +4,7 @@ import U from "../core/utilities.js";
 import C, { BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag } from "../core/constants.js";
 import { BladesActor, BladesPC, BladesCrew } from "../documents/BladesActorProxy.js";
 import { BladesItem, BladesGMTracker } from "../documents/BladesItemProxy.js";
-import { ApplyTooltipAnimations, ApplyConsequenceAnimations } from "../core/gsap.js";
+import { ApplyTooltipAnimations, ApplyConsequenceAnimations, Dragger } from "../core/gsap.js";
 import BladesConsequence from "./BladesConsequence.js";
 import BladesDialog from "./BladesDialog.js";
 import BladesChat from "./BladesChat.js";
@@ -545,7 +545,11 @@ class BladesRollMod extends BladesTargetLink {
         }
         if (!val || val === this.baseStatus) {
             this.updateTarget("user_status", null)
-                .then(this.rollInstance.renderRollCollab_SocketCall.bind(this.rollInstance));
+                .then(() => {
+                if (this.rollInstance.isRendered) {
+                    this.rollInstance.renderRollCollab_SocketCall();
+                }
+            });
         }
         else {
             if (!game.user.isGM
@@ -554,7 +558,11 @@ class BladesRollMod extends BladesTargetLink {
                 return;
             }
             this.updateTarget("user_status", val)
-                .then(this.rollInstance.renderRollCollab_SocketCall.bind(this.rollInstance));
+                .then(() => {
+                if (this.rollInstance.isRendered) {
+                    this.rollInstance.renderRollCollab_SocketCall();
+                }
+            });
         }
     }
     get baseStatus() { return this.data.base_status; }
@@ -565,11 +573,19 @@ class BladesRollMod extends BladesTargetLink {
         }
         if (!val) {
             this.updateTarget("held_status", null)
-                .then(this.rollInstance.renderRollCollab_SocketCall.bind(this.rollInstance));
+                .then(() => {
+                if (this.rollInstance.isRendered) {
+                    this.rollInstance.renderRollCollab_SocketCall();
+                }
+            });
         }
         else {
             this.updateTarget("held_status", val)
-                .then(this.rollInstance.renderRollCollab_SocketCall.bind(this.rollInstance));
+                .then(() => {
+                if (this.rollInstance.isRendered) {
+                    this.rollInstance.renderRollCollab_SocketCall();
+                }
+            });
         }
     }
     get value() { return this.data.value; }
@@ -664,7 +680,7 @@ class BladesRollPrimary {
         if ("target" in config && BladesRollPrimary.IsDoc(config.target)) {
             rollPrimary = config.target;
         }
-        else if (BladesRollPrimary.IsDoc(rollUser?.character)) {
+        else if (rollUser && BladesRollPrimary.IsDoc(rollUser.character)) {
             rollPrimary = rollUser.character;
         }
         else {
@@ -888,6 +904,16 @@ class BladesRollOpposition {
     static IsDoc(doc) {
         return BladesActor.IsType(doc, BladesActorType.npc, BladesActorType.faction) || BladesItem.IsType(doc, BladesItemType.cohort_expert, BladesItemType.cohort_gang);
     }
+    static GetDataFromDoc(doc) {
+        return {
+            rollOppID: doc.id,
+            rollOppName: doc.name,
+            rollOppType: doc.type,
+            rollOppImg: doc.img,
+            rollOppModsSchemaSet: doc.rollOppModsSchemaSet,
+            rollFactors: doc.rollFactors
+        };
+    }
     // #endregion
     rollInstance;
     rollOppID;
@@ -956,7 +982,9 @@ class BladesRollOpposition {
             return;
         }
         await this.rollInstance.updateTarget("rollOppData", this.data);
-        socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
+        if (this.rollInstance.isRendered) {
+            socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
+        }
     }
     refresh() {
         if (!this.rollInstance) {
@@ -1066,7 +1094,9 @@ class BladesRollParticipant {
     }
     async updateRollFlags() {
         await this.rollInstance.updateTarget(`rollParticipantData.${this.rollParticipantSection}.${this.rollParticipantSubSection}`, this.data);
-        socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
+        if (this.rollInstance.isRendered) {
+            socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
+        }
     }
     refresh() {
         const rollParticipantFlagData = this.rollInstance.data.rollParticipantData?.[this.rollParticipantSection];
@@ -1604,11 +1634,46 @@ class BladesRoll extends BladesTargetLink {
         this.renderRollCollab_SocketResponse(rollInst.id);
     }
     _elem$;
+    _overlayPosition = { x: 200, y: 200 };
+    get overlayPosition() { return this._overlayPosition; }
+    set overlayPosition(val) { this._overlayPosition = val; }
+    _positionDragger;
+    get positionDragger() {
+        if (this._positionDragger) {
+            return this._positionDragger;
+        }
+        return this.spawnPositionDragger();
+    }
+    spawnPositionDragger() {
+        const self = this;
+        if (!this._elem$) {
+            throw new Error(`[BladesRoll.spawnPositionDragger] No elem$ found for roll ${this.id}.`);
+        }
+        return (this._positionDragger = new Dragger(this._elem$, {
+            type: "top,left",
+            trigger: ".window-header.draggable",
+            onDragStart() {
+                U.gsap.to(this.target, { opacity: 0.25, duration: 0.25, ease: "power2" });
+            },
+            onDragEnd() {
+                U.gsap.to(this.target, { opacity: 1, duration: 0.25, ease: "power2" });
+                self.overlayPosition = { x: this.endX, y: this.endY };
+            }
+        }));
+    }
     get elem$() {
         if (this._elem$) {
             return this._elem$;
         }
-        this._elem$ = $(`#${this.id}`) ?? $(`<div id="${this.id}" class="blades-roll-collab window-content"></div>`).appendTo("body");
+        this._positionDragger = undefined;
+        const elem$ = $(`#${this.id}`);
+        if (elem$.length) {
+            this._elem$ = elem$;
+        }
+        else {
+            this._elem$ = $(`<div id="${this.id}" class="app window-app ${C.SYSTEM_ID} sheet roll-collab${game.user.isGM ? " gm-roll-collab" : ""}"></div>`).appendTo("body");
+        }
+        this.spawnPositionDragger();
         return this._elem$;
     }
     async renderRollCollab() {
@@ -1692,7 +1757,9 @@ class BladesRoll extends BladesTargetLink {
         }
         const rollParticipant = new BladesRollParticipant(this, rollSection, rollSubSection, participantData);
         await rollParticipant.updateRollFlags();
-        socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+        if (this.isRendered) {
+            socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+        }
     }
     async removeRollParticipant(rollSection, rollSubSection) {
         await this.updateTarget(`rollParticipantData.${rollSection}.${rollSubSection}`, null);
@@ -2858,6 +2925,9 @@ class BladesRoll extends BladesTargetLink {
     }
     // #endregion
     // #region *** ROLL COLLAB HTML ELEMENT ***
+    get isRendered() {
+        return Boolean(this._elem$?.length);
+    }
     get collabTemplate() {
         /* Subclass overrides determine template against which data is parsed */
         throw new Error("[BladesRoll.collabTemplate] Unimplemented by Subclass.");

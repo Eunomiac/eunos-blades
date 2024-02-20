@@ -3,7 +3,7 @@ import U from "../../core/utilities.js";
 import { BladesActor } from "../BladesActorProxy.js";
 import BladesPCSheet from "../../sheets/actor/BladesPCSheet.js";
 import { BladesItem } from "../BladesItemProxy.js";
-import BladesClockKey from "../../classes/BladesClocks.js";
+import BladesClockKey from "../../classes/BladesClockKey.js";
 import BladesDirector from "../../classes/BladesDirector.js";
 import { SelectionCategory } from "../../classes/BladesDialog.js";
 class BladesPC extends BladesActor {

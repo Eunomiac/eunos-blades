@@ -2,7 +2,7 @@ import { BladesItemType, Factor, ClockColor, ClockKeyDisplayMode } from "../../c
 import U from "../../core/utilities.js";
 import { BladesItem } from "../BladesItemProxy.js";
 import BladesProjectSheet from "../../sheets/item/BladesProjectSheet.js";
-import BladesClockKey from "../../classes/BladesClocks.js";
+import BladesClockKey from "../../classes/BladesClockKey.js";
 class BladesProject extends BladesItem {
     // #region INITIALIZATION ~
     static async Initialize() {

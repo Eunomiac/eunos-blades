@@ -2,7 +2,7 @@ import {BladesActorType, BladesItemType, BladesPhase, RollType, RollSubType, Rol
 import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
 import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../classes/BladesRoll";
-import BladesClockKey from "../classes/BladesClocks";
+import BladesClockKey from "../classes/BladesClockKey";
 import BladesTargetLink from "../classes/BladesTargetLink";
 
 declare global {

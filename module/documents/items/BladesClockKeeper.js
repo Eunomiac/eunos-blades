@@ -1,5 +1,5 @@
 import { BladesItem } from "../BladesItemProxy.js";
-import BladesClockKey from "../../classes/BladesClocks.js";
+import BladesClockKey from "../../classes/BladesClockKey.js";
 class BladesClockKeeper extends BladesItem {
     static async Initialize() {
         const clockKeeper = game.items.find((item) => item.type === "clock_keeper");

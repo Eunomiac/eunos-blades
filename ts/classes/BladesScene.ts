@@ -1,4 +1,4 @@
-import BladesClockKey from "./BladesClocks";
+import BladesClockKey from "./BladesClockKey";
 
 
 class BladesScene extends Scene {

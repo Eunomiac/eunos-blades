@@ -1,7 +1,7 @@
 import {BladesActorType} from "../../core/constants";
 import {BladesActor} from "../BladesActorProxy";
 import BladesFactionSheet from "../../sheets/actor/BladesFactionSheet";
-import BladesClockKey from "../../classes/BladesClocks";
+import BladesClockKey from "../../classes/BladesClockKey";
 
 class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
                                                    BladesRoll.OppositionData {

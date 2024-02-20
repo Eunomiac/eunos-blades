@@ -1,7 +1,7 @@
 import { BladesActorType } from "../../core/constants.js";
 import { BladesActor } from "../BladesActorProxy.js";
 import BladesFactionSheet from "../../sheets/actor/BladesFactionSheet.js";
-import BladesClockKey from "../../classes/BladesClocks.js";
+import BladesClockKey from "../../classes/BladesClockKey.js";
 class BladesFaction extends BladesActor {
     // #region INITIALIZATION ~
     static async Initialize() {

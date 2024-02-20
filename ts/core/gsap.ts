@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./utilities";
 import C, {ClockDisplayContext} from "./constants";
-import BladesClockKey, {BladesClock} from "../classes/BladesClocks";
+import BladesClockKey, {BladesClock} from "../classes/BladesClockKey";
 // eslint-disable-next-line import/no-unresolved
 import {TextPlugin, Flip, Draggable as Dragger, MotionPathPlugin, SplitText, Observer, CustomEase, CustomWiggle, CustomBounce, EasePack} from "gsap/all";
 

@@ -4,7 +4,7 @@ import {SVGDATA, BladesActorType, BladesItemType} from "../../core/constants";
 // import U from "../../core/utilities";
 import BladesActor from "../../BladesActor";
 import {BladesItem} from "../BladesItemProxy";
-import BladesClockKey from "../../classes/BladesClocks";
+import BladesClockKey from "../../classes/BladesClockKey";
 import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import type {ItemDataBaseProperties} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type {DocumentModificationOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";

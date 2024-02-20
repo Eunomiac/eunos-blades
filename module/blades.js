@@ -7,7 +7,7 @@ import BladesChat from "./classes/BladesChat.js";
 import U from "./core/utilities.js";
 import logger from "./core/logger.js";
 import G, { Initialize as GsapInitialize } from "./core/gsap.js";
-import BladesClockKey from "./classes/BladesClocks.js";
+import BladesClockKey from "./classes/BladesClockKey.js";
 import BladesDirector from "./classes/BladesDirector.js";
 import BladesConsequence from "./classes/BladesConsequence.js";
 import BladesScene from "./classes/BladesScene.js";

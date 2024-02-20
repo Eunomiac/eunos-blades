@@ -7,7 +7,7 @@ import BladesChat from "../classes/BladesChat";
 import U from "../core/utilities";
 import logger from "../core/logger";
 import G, {Initialize as GsapInitialize} from "../core/gsap";
-import BladesClockKey from "../classes/BladesClocks";
+import BladesClockKey from "../classes/BladesClockKey";
 import BladesDirector from "../classes/BladesDirector";
 import BladesConsequence from "../classes/BladesConsequence";
 import BladesScene from "../classes/BladesScene";
@@ -43,13 +43,21 @@ import BladesGMTrackerSheet from "../sheets/item/BladesGMTrackerSheet";
 import BladesClockKeeperSheet from "../sheets/item/BladesClockKeeperSheet";
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
+type DocNames = {
+  user?: string,
+  pc?: string,
+  npc?: string,
+  faction?: string
+};
+
 class BladesDebug {
 
-  static async GetSampleSchemas() {
+  static async GetSampleSchemas(docNames: DocNames = {}) {
     // Documents
-    const SAMPLE_USER_NAME = "Alistair" as const;
-    const SAMPLE_PC_NAME = "Alistair" as const;
-    const SAMPLE_NPC_NAME = "Setarra" as const;
+    const SAMPLE_USER_NAME = docNames.user || "Alistair" as const;
+    const SAMPLE_PC_NAME = docNames.pc || "Alistair" as const;
+    const SAMPLE_NPC_NAME = docNames.npc || "Setarra" as const;
+    const SAMPLE_FACTION_NAME = docNames.faction || "the Bluecoats" as const;
 
     const sampleUser = game.users.getName(SAMPLE_USER_NAME);
     if (!sampleUser) {
@@ -63,6 +71,10 @@ class BladesDebug {
     if (!BladesNPC.IsType(sampleNPC)) {
       throw new Error(`Sample BladesNPC with name "${SAMPLE_NPC_NAME}" not found or is not a valid BladesNPC.`);
     }
+    const sampleFaction: BladesActor|BladesFaction|undefined = game.actors.getName(SAMPLE_FACTION_NAME);
+    if (!BladesFaction.IsType(sampleFaction)) {
+      throw new Error(`Sample BladesFaction with name "${SAMPLE_FACTION_NAME}" not found or is not a valid BladesFaction.`);
+    }
 
     // BladesActionRoll
     const BladesActionRoll_Schema: BladesRoll.Schema = {
@@ -75,7 +87,7 @@ class BladesDebug {
       // rollClockKey: U.getLast(game.eunoblades.ClockKeys.contents)?.id,
 
       rollPrimaryData: BladesRollPrimary.GetDataFromDoc(samplePC),
-      // rollOppData: sampleNPC,
+      rollOppData: BladesRollOpposition.GetDataFromDoc(sampleFaction),
       // rollParticipantData: {},
 
       // consequenceData: {},

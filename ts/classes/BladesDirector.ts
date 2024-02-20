@@ -4,7 +4,7 @@ import C, {ClockKey_SVGDATA, BladesPhase, BladesNoticeType, BladesActorType, Bla
 // import U from "../core/utilities";
 import {BladesActor} from "../documents/BladesActorProxy";
 import {BladesItem} from "../documents/BladesItemProxy";
-import BladesClockKey, {BladesClock, ClockKeyElems$} from "./BladesClocks";
+import BladesClockKey, {BladesClock, ClockKeyElems$} from "./BladesClockKey";
 
 import {gsapEffects, gsapEffect, gsapConfig} from "../core/gsap";
 

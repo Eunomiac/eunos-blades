@@ -27808,18 +27808,6 @@ template {
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.active-effect-sheet .window-content form section.tab.active[data-tab=effects] ol.changes-list li.effect-change.flexrow .value {
   flex-grow: 3;
 }
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .clock-key {
-  background: rgba(0, 255, 255, 0.25);
-  outline: 2px dotted rgb(0, 255, 255);
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .key-image-container {
-  background: rgba(255, 255, 0, 0.25);
-  outline: 2px dotted rgb(255, 255, 0);
-}
-:root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .clock-key-container {
-  background: rgba(255, 0, 255, 0.25);
-  outline: 2px dotted rgb(255, 0, 255);
-}
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab {
   --roll-spacing: 5px;
   height: auto !important;

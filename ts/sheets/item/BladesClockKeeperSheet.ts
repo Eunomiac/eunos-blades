@@ -6,7 +6,7 @@ import BladesClockKeeper from "../../documents/items/BladesClockKeeper";
 // import U from "../../core/utilities";
 import {BladesItemType, ClockColor, ClockDisplayContext, ClockKeyUpdateAction} from "../../core/constants";
 import {BladesPC, BladesFaction} from "../../documents/BladesActorProxy";
-import BladesClockKey, {BladesClock} from "../../classes/BladesClocks";
+import BladesClockKey, {BladesClock} from "../../classes/BladesClockKey";
 
 class BladesClockKeeperSheet extends BladesItemSheet {
 

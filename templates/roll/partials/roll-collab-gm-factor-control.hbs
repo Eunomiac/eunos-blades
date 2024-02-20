@@ -13,10 +13,10 @@
 
 <div class="factor-control-row flex-horizontal">
 
-  <span class="factor-toggle {{~#if sourceData.isActive}} toggle-active{{/if}} factor-toggle-isActive"
+  <span class="factor-toggle {{#if sourceData.isActive}} toggle-active{{/if}} factor-toggle-isActive"
     data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.source.{{data.factor}}.isActive"
       data-value="{{sourceData.isActive}}">A</span>
-  <span class="factor-toggle {{~#if sourceData.isPrimary}} toggle-active{{/if}} factor-toggle-isPrimary"
+  <span class="factor-toggle {{#if sourceData.isPrimary}} toggle-active{{/if}} factor-toggle-isPrimary"
     data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.source.{{data.factor}}.isPrimary"
       data-value="{{sourceData.isPrimary}}">P</span>
   {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-number-line.hbs"
@@ -62,13 +62,13 @@
 
   {{#if (lookup data.rollFactors.opposition data.factor)}}
   {{#with (lookup data.rollFactors.opposition data.factor) as |oppData|}}
-  <span class="factor-toggle {{~#if oppData.isActive}} toggle-active{{/if}} factor-toggle-isActive factor-toggle-opp"
+  <span class="factor-toggle {{#if oppData.isActive}} toggle-active{{/if}} factor-toggle-isActive factor-toggle-opp"
     data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.opposition.{{data.factor}}.isActive"
       data-value="{{oppData.isActive}}">A</span>
-  <span class="factor-toggle {{~#if oppData.isPrimary}} toggle-active{{/if}} factor-toggle-isPrimary factor-toggle-opp"
+  <span class="factor-toggle {{#if oppData.isPrimary}} toggle-active{{/if}} factor-toggle-isPrimary factor-toggle-opp"
     data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.opposition.{{data.factor}}.isPrimary"
       data-value="{{oppData.isPrimary}}">P</span>
-  <span class="factor-toggle {{~#if oppData.isDominant}} toggle-active{{/if}} factor-toggle-isDominant factor-toggle-opp"
+  <span class="factor-toggle {{#if oppData.isDominant}} toggle-active{{/if}} factor-toggle-isDominant factor-toggle-opp"
     data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.opposition.{{data.factor}}.isDominant"
       data-value="{{oppData.isDominant}}">D</span>
   {{/with}}

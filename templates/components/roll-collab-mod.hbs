@@ -1,14 +1,3 @@
-<svg style="display: none;">
-  <defs>
-    <linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="20%" stop-color="#FFF" />
-      <stop offset="25%" stop-color="#444" />
-      <stop offset="75%" stop-color="#444" />
-      <stop offset="78%" stop-color="#000" />
-    </linearGradient>
-  </defs>
-</svg>
-
 <span class="roll-mod-container status-{{case "lower" status}} posneg-{{posNeg}} {{~#if tooltip}} tooltip-trigger{{/if}}{{~#if modType}} roll-mod-{{modType}}{{/if}}">
 
   <span class="roll-mod roll-mod-icon" {{~#if (test "Toggle" "in" status)}} data-action="toggle" data-id="{{id}}"{{/if}}>

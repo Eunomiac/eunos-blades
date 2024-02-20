@@ -7,7 +7,7 @@ import C, {BladesActorType, BladesPhase, BladesItemType, DowntimeAction, Attribu
 import Tags from "../../core/tags";
 import {BladesActor, BladesPC, BladesCrew} from "../../documents/BladesActorProxy";
 import {BladesItem, BladesProject} from "../../documents/BladesItemProxy";
-import BladesClockKey from "../../classes/BladesClocks";
+import BladesClockKey from "../../classes/BladesClockKey";
 import BladesDialog, {SelectionCategory} from "../../classes/BladesDialog";
 import BladesActiveEffect from "../../documents/BladesActiveEffect";
 import BladesRoll, {BladesRollPrimary, BladesRollOpposition, BladesActionRoll, BladesResistanceRoll, BladesFortuneRoll, BladesIndulgeViceRoll} from "../../classes/BladesRoll";

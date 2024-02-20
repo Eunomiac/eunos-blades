@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities.js";
 import { ClockKey_SVGDATA, BladesPhase, ClockKeyDisplayMode } from "../core/constants.js";
-import BladesClockKey, { BladesClock } from "./BladesClocks.js";
+import BladesClockKey, { BladesClock } from "./BladesClockKey.js";
 class BladesDirector {
     // #region INITIALIZATION ~
     // #region   >>  Single-Instance Factory Construction ~

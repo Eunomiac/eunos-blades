@@ -4,7 +4,7 @@ import {BladesActor, BladesCrew} from "../BladesActorProxy";
 import BladesPCSheet from "../../sheets/actor/BladesPCSheet";
 import {BladesItem, BladesProject} from "../BladesItemProxy";
 import BladesRoll from "../../classes/BladesRoll";
-import BladesClockKey from "../../classes/BladesClocks";
+import BladesClockKey from "../../classes/BladesClockKey";
 import BladesDirector from "../../classes/BladesDirector";
 import {SelectionCategory} from "../../classes/BladesDialog";
 import type {ActorDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";

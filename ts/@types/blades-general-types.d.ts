@@ -2,7 +2,7 @@ import {AttributeTrait, ActionTrait, District} from "../core/constants";
 import BladesItem from "../BladesItem";
 import BladesActor from "../BladesActor";
 import BladesChat from "../classes/BladesChat";
-import BladesClockKey, {BladesClock} from "../classes/BladesClocks";
+import BladesClockKey, {BladesClock} from "../classes/BladesClockKey";
 import BladesConsequence from "../classes/BladesConsequence";
 import BladesRoll, {BladesRollMod} from "../classes/BladesRoll";
 import {gsap} from "gsap/all";

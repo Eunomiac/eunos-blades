@@ -16,7 +16,7 @@ import BladesChat from "./classes/BladesChat";
 import U from "./core/utilities";
 import logger from "./core/logger";
 import G, {Initialize as GsapInitialize} from "./core/gsap";
-import BladesClockKey from "./classes/BladesClocks";
+import BladesClockKey from "./classes/BladesClockKey";
 import BladesDirector from "./classes/BladesDirector";
 import BladesConsequence from "./classes/BladesConsequence";
 import BladesScene from "./classes/BladesScene";

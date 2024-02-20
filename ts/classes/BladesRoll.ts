@@ -4,9 +4,9 @@ import U from "../core/utilities";
 import C, {BladesActorType, BladesItemType, BladesPhase, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag} from "../core/constants";
 import {BladesActor, BladesPC, BladesCrew} from "../documents/BladesActorProxy";
 import {BladesItem, BladesGMTracker, BladesProject} from "../documents/BladesItemProxy";
-import {ApplyTooltipAnimations, ApplyConsequenceAnimations} from "../core/gsap";
+import {ApplyTooltipAnimations, ApplyConsequenceAnimations, Dragger} from "../core/gsap";
 import BladesConsequence from "./BladesConsequence";
-import BladesClockKey from "./BladesClocks";
+import BladesClockKey from "./BladesClockKey";
 import BladesDialog from "./BladesDialog";
 import BladesChat from "./BladesChat";
 import BladesTargetLink from "./BladesTargetLink";
@@ -574,7 +574,11 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     if (val === this.userStatus) {return;}
     if (!val || val === this.baseStatus) {
       this.updateTarget("user_status", null)
-        .then(this.rollInstance.renderRollCollab_SocketCall.bind(this.rollInstance));
+        .then(() => {
+          if (this.rollInstance.isRendered) {
+            this.rollInstance.renderRollCollab_SocketCall();
+          }
+        });
     } else {
       if (!game.user.isGM
         && (BladesRollMod.GMOnlyModStatuses.includes(val)
@@ -583,7 +587,11 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
         return;
       }
       this.updateTarget("user_status", val)
-        .then(this.rollInstance.renderRollCollab_SocketCall.bind(this.rollInstance));
+        .then(() => {
+          if (this.rollInstance.isRendered) {
+            this.rollInstance.renderRollCollab_SocketCall();
+          }
+        });
     }
   }
 
@@ -593,10 +601,18 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     if (val === this.heldStatus) {return;}
     if (!val) {
       this.updateTarget("held_status", null)
-        .then(this.rollInstance.renderRollCollab_SocketCall.bind(this.rollInstance));
+        .then(() => {
+          if (this.rollInstance.isRendered) {
+            this.rollInstance.renderRollCollab_SocketCall();
+          }
+        });
     } else {
       this.updateTarget("held_status", val)
-        .then(this.rollInstance.renderRollCollab_SocketCall.bind(this.rollInstance));
+        .then(() => {
+          if (this.rollInstance.isRendered) {
+            this.rollInstance.renderRollCollab_SocketCall();
+          }
+        });
     }
   }
 
@@ -702,7 +718,7 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
     const rollUser = game.users.get(config.rollUserID ?? game.user.id);
     if ("target" in config && BladesRollPrimary.IsDoc(config.target)) {
       rollPrimary = config.target;
-    } else if (BladesRollPrimary.IsDoc(rollUser?.character)) {
+    } else if (rollUser && BladesRollPrimary.IsDoc(rollUser.character)) {
       rollPrimary = rollUser.character as BladesRoll.PrimaryDoc;
     } else {
       throw new Error("[BladesRollPrimary.BuildData()] A valid source of PrimaryData must be provided to construct a roll.");
@@ -965,6 +981,17 @@ class BladesRollOpposition implements BladesRoll.OppositionData {
       BladesItemType.cohort_gang
     );
   }
+
+  static GetDataFromDoc(doc: BladesRoll.OppositionDoc): BladesRoll.OppositionData {
+    return {
+      rollOppID: doc.id,
+      rollOppName: doc.name,
+      rollOppType: doc.type as BladesRoll.OppositionType,
+      rollOppImg: doc.img,
+      rollOppModsSchemaSet: doc.rollOppModsSchemaSet,
+      rollFactors: doc.rollFactors
+    };
+  }
   // #endregion
 
   rollInstance: BladesRoll;
@@ -1051,7 +1078,9 @@ class BladesRollOpposition implements BladesRoll.OppositionData {
   async updateRollFlags() {
     if (!this.rollInstance) {return;}
     await this.rollInstance.updateTarget("rollOppData", this.data);
-    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
+    if (this.rollInstance.isRendered) {
+      socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
+    }
   }
 
   refresh() {
@@ -1194,7 +1223,9 @@ class BladesRollParticipant implements BladesRoll.ParticipantData {
 
   async updateRollFlags() {
     await this.rollInstance.updateTarget(`rollParticipantData.${this.rollParticipantSection}.${this.rollParticipantSubSection}`, this.data);
-    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
+    if (this.rollInstance.isRendered) {
+      socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
+    }
   }
 
   refresh() {
@@ -1826,10 +1857,44 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   _elem$?: JQuery<HTMLElement>;
+  _overlayPosition: gsap.Point2D = {x: 200, y: 200};
+  get overlayPosition(): gsap.Point2D { return this._overlayPosition; }
+  set overlayPosition(val: gsap.Point2D) { this._overlayPosition = val; }
+
+  _positionDragger?: Dragger;
+  get positionDragger(): Dragger {
+    if (this._positionDragger) { return this._positionDragger; }
+    return this.spawnPositionDragger();
+  }
+
+  spawnPositionDragger() {
+    const self = this;
+    if (!this._elem$) {
+      throw new Error(`[BladesRoll.spawnPositionDragger] No elem$ found for roll ${this.id}.`);
+    }
+    return (this._positionDragger = new Dragger(this._elem$, {
+      type: "top,left",
+      trigger: ".window-header.draggable",
+      onDragStart(this: Dragger) {
+        U.gsap.to(this.target, {opacity: 0.25, duration: 0.25, ease: "power2"});
+      },
+      onDragEnd(this: Dragger) {
+        U.gsap.to(this.target, {opacity: 1, duration: 0.25, ease: "power2"});
+        self.overlayPosition = {x: this.endX, y: this.endY};
+      }
+    }));
+  }
 
   get elem$(): JQuery<HTMLElement> {
     if (this._elem$) { return this._elem$; }
-    this._elem$ = $(`#${this.id}`) ?? $(`<div id="${this.id}" class="blades-roll-collab window-content"></div>`).appendTo("body");
+    this._positionDragger = undefined;
+    const elem$ = $(`#${this.id}`);
+    if (elem$.length) {
+      this._elem$ = elem$;
+    } else {
+      this._elem$ = $(`<div id="${this.id}" class="app window-app ${C.SYSTEM_ID} sheet roll-collab${game.user.isGM ? " gm-roll-collab" : ""}"></div>`).appendTo("body");
+    }
+    this.spawnPositionDragger();
     return this._elem$;
   }
 
@@ -1937,7 +2002,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     const rollParticipant = new BladesRollParticipant(this, rollSection, rollSubSection, participantData);
 
     await rollParticipant.updateRollFlags();
-    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+    if (this.isRendered) {
+      socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+    }
   }
 
   async removeRollParticipant(
@@ -3323,6 +3390,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // #region *** ROLL COLLAB HTML ELEMENT ***
 
+  get isRendered(): boolean {
+    return Boolean(this._elem$?.length);
+  }
   get collabTemplate(): string {
     /* Subclass overrides determine template against which data is parsed */
     throw new Error("[BladesRoll.collabTemplate] Unimplemented by Subclass.");

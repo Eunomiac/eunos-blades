@@ -2,7 +2,7 @@ import {BladesItemType, Factor, ClockColor, ClockKeyDisplayMode} from "../../cor
 import U from "../../core/utilities";
 import {BladesItem} from "../BladesItemProxy";
 import BladesProjectSheet from "../../sheets/item/BladesProjectSheet";
-import BladesClockKey from "../../classes/BladesClocks";
+import BladesClockKey from "../../classes/BladesClockKey";
 import BladesRoll from "../../classes/BladesRoll";
 import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 

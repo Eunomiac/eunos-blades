@@ -5,7 +5,7 @@ import BladesActor from "../BladesActor";
 import {BladesItem, BladesClockKeeper, BladesGMTracker} from "../documents/BladesItemProxy";
 import BladesConsequence from "../classes/BladesConsequence";
 // import BladesGMTracker from "../documents/items/BladesGMTracker";
-import BladesClockKey from "../classes/BladesClocks";
+import BladesClockKey from "../classes/BladesClockKey";
 import BladesPushAlert from "../classes/BladesPushAlert";
 import BladesChat from "../classes/BladesChat";
 import C from "../core/constants";

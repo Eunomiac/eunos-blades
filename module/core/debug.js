@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import { RollPermissions, ActionTrait, RollPhase, Effect, RollType, Position } from "../core/constants.js";
-import { BladesPC, BladesNPC } from "../documents/BladesActorProxy.js";
-import { BladesRollPrimary } from "../classes/BladesRoll.js";
-// #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
+import { BladesPC, BladesNPC, BladesFaction } from "../documents/BladesActorProxy.js";
+import { BladesRollPrimary, BladesRollOpposition } from "../classes/BladesRoll.js";
 class BladesDebug {
-    static async GetSampleSchemas() {
+    static async GetSampleSchemas(docNames = {}) {
         // Documents
-        const SAMPLE_USER_NAME = "Alistair";
-        const SAMPLE_PC_NAME = "Alistair";
-        const SAMPLE_NPC_NAME = "Setarra";
+        const SAMPLE_USER_NAME = docNames.user || "Alistair";
+        const SAMPLE_PC_NAME = docNames.pc || "Alistair";
+        const SAMPLE_NPC_NAME = docNames.npc || "Setarra";
+        const SAMPLE_FACTION_NAME = docNames.faction || "the Bluecoats";
         const sampleUser = game.users.getName(SAMPLE_USER_NAME);
         if (!sampleUser) {
             throw new Error(`Sample user with name "${SAMPLE_USER_NAME}" not found.`);
@@ -22,6 +22,10 @@ class BladesDebug {
         if (!BladesNPC.IsType(sampleNPC)) {
             throw new Error(`Sample BladesNPC with name "${SAMPLE_NPC_NAME}" not found or is not a valid BladesNPC.`);
         }
+        const sampleFaction = game.actors.getName(SAMPLE_FACTION_NAME);
+        if (!BladesFaction.IsType(sampleFaction)) {
+            throw new Error(`Sample BladesFaction with name "${SAMPLE_FACTION_NAME}" not found or is not a valid BladesFaction.`);
+        }
         // BladesActionRoll
         const BladesActionRoll_Schema = {
             rollType: RollType.Action,
@@ -32,7 +36,7 @@ class BladesDebug {
             // rollDowntimeAction: DowntimeAction.AcquireAsset,
             // rollClockKey: U.getLast(game.eunoblades.ClockKeys.contents)?.id,
             rollPrimaryData: BladesRollPrimary.GetDataFromDoc(samplePC),
-            // rollOppData: sampleNPC,
+            rollOppData: BladesRollOpposition.GetDataFromDoc(sampleFaction),
             // rollParticipantData: {},
             // consequenceData: {},
             // resistanceData: {
