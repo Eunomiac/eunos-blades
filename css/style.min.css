@@ -5127,7 +5127,6 @@ template {
   text-align: center;
   position: absolute;
   pointer-events: none;
-  transform-origin: 50% 100%;
 }
 :root body.vtt.game.system-eunos-blades #blades-overlay .tooltip > h1 {
   text-align: left;
@@ -8474,7 +8473,6 @@ template {
   text-align: center;
   position: absolute;
   pointer-events: none;
-  transform-origin: 50% 100%;
 }
 :root body.vtt.game.system-eunos-blades #clocks-overlay .tooltip > h1 {
   text-align: left;
@@ -17219,7 +17217,6 @@ template {
   text-align: center;
   position: absolute;
   pointer-events: none;
-  transform-origin: 50% 100%;
 }
 :root body.vtt.game.system-eunos-blades #interface #chat .tooltip > h1,
 :root body.vtt.game.system-eunos-blades #controls #chat .tooltip > h1,
@@ -21431,7 +21428,6 @@ template {
   text-align: center;
   position: absolute;
   pointer-events: none;
-  transform-origin: 50% 100%;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app .tooltip > h1 {
   text-align: left;
@@ -23986,7 +23982,6 @@ template {
   text-align: center;
   position: absolute;
   pointer-events: none;
-  transform-origin: 50% 100%;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet .window-content form .tooltip > h1 {
   text-align: left;
@@ -28988,6 +28983,8 @@ template {
   font-style: normal;
   margin-left: 0;
   position: unset;
+  left: unset;
+  right: unset;
   height: 20px;
 }
 :root body.vtt.game.system-eunos-blades .app.window-app.sheet.roll-collab .window-content form .sheet-root .roll-sheet-block.rolling-block .roll-sheet-sub-block.roll-header-block .roll-sheet-select.roll-sheet-select,

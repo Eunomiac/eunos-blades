@@ -226,6 +226,12 @@
   }
 
   .tooltip {
+    // filter: none !important;
+    // opacity: 1 !important;
+    // visibility: visible !important;
+    // pointer-events: all !important;
+
+
     visibility: hidden;
     display: flex;
     flex-direction: column;
@@ -255,7 +261,7 @@
 
     pointer-events: none;
 
-    transform-origin: 50% 100%;
+    // transform-origin: 50% 100%;
 
     // bottom: 50px;
 

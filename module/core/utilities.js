@@ -1412,38 +1412,74 @@ const changeContainer = (elem, container, isCloning = false) => {
     gsap.set(elem, relPos);
     return elem;
 };
+/**
+ * Adjusts the aspect ratio of a text container to match a target ratio by modifying its font size and line height.
+ * This function recursively adjusts the font size and line height until the container's aspect ratio or maximum dimensions are met.
+ *
+ * @param {HTMLElement|JQuery<HTMLElement>} textContainer - The text container element or jQuery object to adjust.
+ * @param {number} targetRatio - The target aspect ratio (width / height) to achieve.
+ * @param {number} [maxHeight] - Optional maximum height for the text container.
+ * @param {number} [maxWidth] - Optional maximum width for the text container.
+ * @param {number} [minFontSize=8] - Optional minimum font size to prevent the text from becoming too small.
+ * @returns {void}
+ */
 const adjustTextContainerAspectRatio = (textContainer, targetRatio, maxHeight, maxWidth, minFontSize = 8) => {
+    // Ensure textContainer is an HTMLElement
     textContainer = $(textContainer)[0];
+    // If no maxWidth is provided, initialize textContainer's width to maximum possible
+    if (!maxWidth) {
+        textContainer.style.setProperty("width", "max-content", "important");
+    }
+    else {
+        textContainer.style.setProperty("width", `${maxWidth}px`, "important");
+    }
+    /**
+     * Recursively adjusts the font size and line height of the text container.
+     * This function is called if the current adjustments do not meet the target aspect ratio or maximum dimensions.
+     *
+     * @returns {boolean} - Returns false if the new font size is below the minimum font size, indicating no further adjustments should be made.
+     */
     function recurAdjustment() {
+        // Ensure textContainer is an HTMLElement for each recursive call
         textContainer = $(textContainer)[0];
+        // Calculate new font size and line height as 80% of their current values
         const newFontSize = parseFloat(style.fontSize) * 0.8;
         const newLineHeight = parseFloat(style.lineHeight) * 0.8;
+        // Stop recursion if the new font size is below the minimum
         if (newFontSize < minFontSize) {
             return false;
         }
+        // Apply the new font size and line height
         textContainer.style.fontSize = `${newFontSize}px`;
         textContainer.style.lineHeight = `${newLineHeight}px`;
-        return adjustTextContainerAspectRatio(textContainer, targetRatio, lineCount ?? maxHeight, maxWidth);
+        // Recursively call adjustTextContainerAspectRatio with updated parameters
+        return adjustTextContainerAspectRatio(textContainer, targetRatio, lineCount ?? maxHeight, maxWidth, minFontSize);
     }
+    // Get computed styles of the text container
     const style = window.getComputedStyle(textContainer);
     const lineHeight = parseFloat(style.lineHeight);
-    // If maxHeight is provided AND it is an integer that is less than lineHeight,
-    //   assume maxHeight is referring to the number of lines, and calculate pixel
-    //   height accordingly:
+    // Initialize lineCount as undefined
     let lineCount = undefined;
+    // If maxHeight is provided and is an integer less than lineHeight, calculate lineCount
     if (isInt(maxHeight) && maxHeight < lineHeight) {
         lineCount = maxHeight;
     }
+    // Get the initial width of the text container
     const initialWidth = parseFloat(style.width);
+    // Initialize bestWidth with the initial width
     let bestWidth = initialWidth;
+    // Flag to indicate if the maximum line count has been reached
     let isAtMaxLineCount = false;
+    // Loop to find the best width that matches the target aspect ratio
     for (let lines = 1;; lines++) {
         const expectedHeight = lineHeight * lines;
         const expectedWidth = initialWidth / lines;
         const expectedRatio = expectedWidth / expectedHeight;
+        // Break the loop if the expected ratio is less than the target ratio
         if (expectedRatio < targetRatio) {
             break;
         }
+        // Handle cases where lineCount is defined
         if (isInt(lineCount)) {
             if (lines > lineCount) {
                 if (recurAdjustment()) {
@@ -1453,26 +1489,28 @@ const adjustTextContainerAspectRatio = (textContainer, targetRatio, maxHeight, m
             }
         }
         else if (maxHeight && expectedHeight > maxHeight) {
+            // Handle cases where maxHeight is exceeded
             if (recurAdjustment()) {
                 return;
             }
             break;
         }
+        // Update bestWidth with the expected width
         bestWidth = expectedWidth;
+        // Check if the current line count matches the maximum line count
         if (isInt(lineCount) && lines === lineCount) {
             isAtMaxLineCount = true;
             break;
         }
     }
-    // If a maximum width is provided but we've exceeded that,
-    // reduce the font size and line height by 80% and recursively return this function to try again
+    // If the best width exceeds maxWidth, attempt to adjust font size and line height
     if (!isAtMaxLineCount && maxWidth && bestWidth > maxWidth) {
         if (recurAdjustment()) {
             return;
         }
     }
-    // Apply the best width
-    textContainer.style.width = `${bestWidth}px`;
+    // Apply the best width to the text container
+    textContainer.style.setProperty("width", `${bestWidth}px`, "important");
 };
 const getSvgCode = (svgDotKey, svgPathKeys) => {
     const svgData = getProperty(SVGDATA, svgDotKey);

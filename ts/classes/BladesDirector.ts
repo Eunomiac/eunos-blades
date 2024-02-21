@@ -662,6 +662,50 @@ class BladesDirector {
   _tooltipElems: Map<string, JQuery<HTMLElement>> = new Map<string, JQuery<HTMLElement>>();
   _displayedTooltipID?: string;
 
+  /**
+   * Adjusts the tooltip's position to ensure it remains within its parent container using jQuery methods.
+   * @param tooltip - The tooltip element, which can be either an HTMLElement or a JQuery<HTMLElement>.
+   */
+  adjustTooltipPosition(
+    tooltip$: JQuery<HTMLElement>
+  ) {
+
+    // Validate tooltip position style
+    if (tooltip$.css("position") !== "absolute") {
+      throw new Error("Tooltip position must be 'absolute'.");
+    }
+
+    // Calculate bounds and directly apply necessary shifts to the tooltip element
+    const tooltipRect = tooltip$[0].getBoundingClientRect();
+    const containerRect = this.tooltipSection$[0].getBoundingClientRect();
+
+    // Initial position of the tooltip
+    const currentTop = tooltip$.position().top;
+    const currentLeft = tooltip$.position().left;
+
+    // Check for right overflow and adjust left position if necessary
+    if (tooltipRect.right > containerRect.right) {
+      const xShift = containerRect.right - tooltipRect.right;
+      tooltip$.css("left", `${currentLeft + xShift}px`);
+    }
+    // Check for left overflow and adjust left position if necessary
+    else if (tooltipRect.left < containerRect.left) {
+      const xShift = containerRect.left - tooltipRect.left;
+      tooltip$.css("left", `${currentLeft + xShift}px`);
+    }
+
+    // Check for bottom overflow and adjust top position if necessary
+    if (tooltipRect.bottom > containerRect.bottom) {
+      const yShift = containerRect.bottom - tooltipRect.bottom;
+      tooltip$.css("top", `${currentTop + yShift}px`);
+    }
+    // Check for top overflow and adjust top position if necessary
+    else if (tooltipRect.top < containerRect.top) {
+      const yShift = containerRect.top - tooltipRect.top;
+      tooltip$.css("top", `${currentTop + yShift}px`);
+    }
+  }
+
   displayTooltip(tooltip: HTMLElement) {
     if (!tooltip.id) {
       throw new Error("Tooltip must have an ID to be cloned to the overlay.");
@@ -677,6 +721,9 @@ class BladesDirector {
         game.eunoblades.Director.tooltipSection$[0],
         true
       ));
+      // Adjust the tooltip's position so it does not overflow the tooltip container
+      this.adjustTooltipPosition(ttClone$);
+
       // Generate the reveal timeline and attach it to the cloned tooltip element.
       const revealTimeline = U.gsap.effects.blurRevealTooltip(
         ttClone$[0],

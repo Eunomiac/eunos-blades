@@ -784,44 +784,34 @@ export const gsapEffects: Record<string, gsapEffect> = {
     },
     extendTimeline: true
   },
-  blurRemoveTooltip: {
-    effect: (tooltip, config) => {
-
-      const tl = U.gsap.timeline({})
-        .blurRemove(tooltip, {ignoreMargin: true, blur: 15, stagger: config.stagger});
-
-      return tl;
-    },
-    defaults: {
-      stagger: 0
-    },
-    extendTimeline: true
-  },
   blurRevealTooltip: {
-    effect: (tooltip, config) => {
+    effect: (target, config) => {
+      if (!target) { throw new Error(`blurRevealTooltip effect: tooltip element is ${target === null ? "null" : typeof target}`); }
+      const tooltip$: JQuery<HTMLElement> = $(target as HTMLElement);
+
       return U.gsap.timeline({
         paused: true,
         onReverseComplete: config.onReverseComplete
-        // onInterrupt() { this.reverse(); }
-      }).fromTo(
-        tooltip,
-        {
-          filter: `blur(${config.blurStrength}px)`,
-          autoAlpha: 0,
-          xPercent: 50,
-          yPercent: -200,
-          scale: config.scale
-        },
-        {
-          filter: "none",
-          autoAlpha: 1,
-          xPercent: -50,
-          yPercent: -100,
-          scale: 1,
-          ease: config.ease,
-          duration: config.duration
-        }
-      );
+      })
+        .fromTo(
+          tooltip$,
+          {
+            filter: `blur(${config.blurStrength}px)`,
+            autoAlpha: 0,
+            xPercent: 50,
+            yPercent: -200,
+            scale: config.scale
+          },
+          {
+            filter: "blur(0px)",
+            autoAlpha: 1,
+            xPercent: -50,
+            yPercent: -100,
+            scale: 1,
+            ease: config.ease,
+            duration: config.duration
+          }
+        );
     },
     defaults: {
       scale: 1.5,
@@ -922,20 +912,33 @@ export function ApplyTooltipAnimations(html: JQuery<HTMLElement>) {
   html.find(".tooltip-trigger").each((_, el) => {
     const tooltipElem = $(el).find(".tooltip")[0] ?? $(el).next(".tooltip")[0];
     if (!tooltipElem) {return;}
+    const tooltip$ = $(tooltipElem);
+
+    /**
+     * Use the .tooltip-trigger element as the definitive positioning element for the tooltip itself.
+     * If the tooltip-trigger's absolute position relative to the viewport is, e.g., near the top,
+     * then the tooltip should appear beneath, etc
+     */
 
     // Find the tooltip's parent container. If its position isn't relative or absolute, set it to relative.
-    const tooltipContainer = $(tooltipElem).parent()[0];
-    if ($(tooltipContainer).css("position") !== "relative"
-      && $(tooltipContainer).css("position") !== "absolute") {
-      $(tooltipContainer).css("position", "relative");
+    const tooltipContainer$ = tooltip$.parent();
+    if (tooltipContainer$.css("position") !== "relative"
+      && tooltipContainer$.css("position") !== "absolute") {
+      tooltipContainer$.css("position", "relative");
     }
 
     // Set the tooltip itself to absolute positioning
-    $(tooltipElem).css("position", "absolute");
+    tooltip$.css("position", "absolute");
 
     // Assign a unique ID to the tooltip element
     const tooltipID = `tooltip-${randomID()}`;
-    $(tooltipElem).attr("id", tooltipID);
+    tooltip$.attr("id", tooltipID);
+
+    // For .tooltip-wide tooltips, adjust the aspect ratio accordingly
+    if (tooltip$.hasClass("tooltip-wide")) {
+      U.adjustTextContainerAspectRatio(tooltipElem, 6);
+    }
+
 
     $(el).on({
       mouseenter: function() {
