@@ -116,7 +116,8 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
   }
   // #endregion
 
-  // #region Getters (Target Data)
+  // #region *** GETTERS *** ~
+  // #region Getters (Target Data) ~
   get primaryID(): UUIDString {return this.data.primaryID ?? this.parentConsequence?.primaryID;}
   get parentCsqID(): IDString | undefined {return this.data.parentCsqID;}
   get name(): string {return this.data.name;}
@@ -129,7 +130,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
   }
   // #endregion
 
-  // #region Getters (Derived Data)
+  // #region Getters (Derived Data) ~
   get primary(): BladesRollPrimary {
     const primary = fromUuidSync(this.primaryID);
     if (!BladesRollPrimary.IsDoc(primary)) {throw new Error(`Could not find primary with UUID '${this.primaryID}'`);}
@@ -154,7 +155,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
 
   // #endregion
 
-  // #region Getters (Resolved Roll Data that Applied This Consequence)
+  // #region Getters (Resolved Roll Data that Applied This Consequence) ~
   get rollData(): BladesRoll.Data | undefined {
     return this.data.actionRollData ?? this.parentConsequence?.rollData;
   }
@@ -171,7 +172,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
   get result(): RollResult | undefined {return this.roll?.rollResultFinal as RollResult | undefined;}
   // #endregion
 
-  // #region Getters (Resistibility & Acceptance Status)
+  // #region Getters (Resistibility & Acceptance Status) ~
   isResistible(): boolean {
     return Boolean(this.type !== ConsequenceType.None && !this.isAccepted && this.data.resistSchema);
   }
@@ -239,6 +240,9 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
     return this.data.acceptanceMode;
   }
   // #endregion
+  // #endregion
+
+  // #region *** RESISTING CONSEQUENCES ***
 
   // #region Constructing Resistable Consequence Schema
   get noneSchema(): BladesConsequence.Schema {
@@ -282,33 +286,8 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
 
     return resSchema;
   }
-
-  // _resistCsq?: BladesConsequence;
-  // private async createResistConsequence(): Promise<BladesConsequence|undefined> {
-  //   if (!this.resistSchema) {return;}
-  //   await U.waitFor(this.initPromise);
-  //   if (this._resistCsq) {
-  //     await this._resistCsq.delete(game.eunoblades.Consequences);
-  //     delete this._resistCsq;
-  //   }
-  //   this._resistCsq = await BladesConsequence.Create<
-  //     new(
-  //       dataConfigOrSchema: BladesTargetLink.Config & Partial<BladesConsequence.Schema>,
-  //       parentCsq?: BladesConsequence.Data
-  //     ) => BladesConsequence,
-  //     BladesConsequence.Schema
-  //       >({
-  //         ...this.linkData,
-  //         ...this.resistSchema
-  //       }, this.data);
-
-  //   return this._resistCsq;
-  // }
-
-  // get resistConsequence(): BladesConsequence|undefined { return this._resistCsq; }
   // #endregion
 
-  // #region *** RESISTING CONSEQUENCES ***
   public async resistConsequence(resistMode: BladesConsequence.ResistanceType, rollInstance?: BladesResistanceRoll) {
     if (!this.isResistible()) {
       throw new Error("Cannot resist a consequence that is not resistible.");
@@ -382,41 +361,40 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
   // #endregion
 
   // #region === CONSTRUCTOR === ~
-  constructor(
-    config: BladesConsequence.Config,
-    parentCsq?: BladesConsequence.Data
-  )
-  constructor(
-    data: BladesConsequence.Data
-  )
-  constructor(
-    schema: Partial<BladesConsequence.Schema>,
-    parentCsq: BladesConsequence.Data
-  )
-  constructor(
-    dataConfigOrSchema: BladesConsequence.Config | BladesConsequence.Data | Partial<BladesConsequence.Schema>,
-    parentCsq?: BladesConsequence.Data
-  ) {
-    // If a parentCsq is provided...
-    if (parentCsq) {
-      super({
-        ...BladesTargetLink.BuildLinkConfig(parentCsq),
-        ...dataConfigOrSchema
-      });
-    } else {
-      super(dataConfigOrSchema as BladesConsequence.Config | BladesConsequence.Data);
-    }
-  }
+  // constructor(
+  //   config: BladesConsequence.Config,
+  //   parentCsq?: BladesConsequence.Data
+  // )
+  // constructor(
+  //   data: BladesConsequence.Data
+  // )
+  // constructor(
+  //   schema: Partial<BladesConsequence.Schema>,
+  //   parentCsq: BladesConsequence.Data
+  // )
+  // constructor(
+  //   dataConfigOrSchema: BladesConsequence.Config | BladesConsequence.Data | Partial<BladesConsequence.Schema>,
+  //   parentCsq?: BladesConsequence.Data
+  // ) {
+  //   // If a parentCsq is provided...
+  //   if (parentCsq) {
+  //     super({
+  //       ...BladesTargetLink.BuildLinkConfig(parentCsq),
+  //       ...dataConfigOrSchema
+  //     });
+  //   } else {
+  //     super(dataConfigOrSchema as BladesConsequence.Config | BladesConsequence.Data);
+  //   }
+  // }
   // #endregion
-
 
   // #region *** HTML INTERACTION ***
 
-  // #region *** BladesDialog ***
+  // #region *** BladesDialog *** ~
 
   // #endregion
 
-  // #region *** BladesChat ***
+  // #region *** BladesChat *** ~
 
   static ApplyChatListeners(message: BladesChat) {
     /**
@@ -465,11 +443,11 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply master on-enter hover timeline to consequence container.
           $(csqContainer).data("hoverTimeline", U.gsap.effects.csqEnter(csqContainer));
           $(csqContainer).on({
-            mouseenter: function () {
+            mouseenter: function() {
               $(csqContainer).css("z-index", 10);
               $(csqContainer).data("hoverTimeline").play();
             },
-            mouseleave: function () {
+            mouseleave: function() {
               if (!(iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) || iconContainer$.data("isTogglingOff")) {
                 $(csqContainer).data("hoverTimeline").reverse().then(() => {
                   $(csqContainer).css("z-index", "");
@@ -481,7 +459,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply click timeline to icon circle
           iconContainer$.data("clickTimeline", U.gsap.effects.csqClickIcon(iconContainer$[0]));
           iconContainer$.on({
-            click: function () {
+            click: function() {
               if (iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) {
                 iconContainer$.data("isTogglingOn", false);
                 iconContainer$.data("isTogglingOff", true);
@@ -520,12 +498,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply hover timelines to right (accept) interaction pad
           rightInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterRight(csqContainer));
           rightInteractionPad$.on({
-            mouseenter: function () {
+            mouseenter: function() {
               if (iconContainer$.data("isToggled")) {
                 rightInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave: function () {
+            mouseleave: function() {
               rightInteractionPad$.data("hoverTimeline").reverse();
             }
           });
@@ -533,12 +511,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply hover timeline to left (resist/armor/special) interaction pad
           leftInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterLeft(csqContainer));
           leftInteractionPad$.on({
-            mouseenter: function () {
+            mouseenter: function() {
               if (iconContainer$.data("isToggled")) {
                 leftInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave: function () {
+            mouseleave: function() {
               leftInteractionPad$.data("hoverTimeline").reverse();
             }
           });
@@ -546,12 +524,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply hover timelines to specific left interaction pads
           resistInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, {type: "resist"}));
           resistInteractionPad$.on({
-            mouseenter: function () {
+            mouseenter: function() {
               if (iconContainer$.data("isToggled")) {
                 resistInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave: function () {
+            mouseleave: function() {
               if (iconContainer$.data("isToggled")) {
                 resistInteractionPad$.data("hoverTimeline").reverse();
               }
@@ -560,12 +538,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
 
           armorInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, {type: "armor"}));
           armorInteractionPad$.on({
-            mouseenter: function () {
+            mouseenter: function() {
               if (iconContainer$.data("isToggled")) {
                 armorInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave: function () {
+            mouseleave: function() {
               if (iconContainer$.data("isToggled")) {
                 armorInteractionPad$.data("hoverTimeline").reverse();
               }
@@ -574,12 +552,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
 
           specialInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, {type: "special"}));
           specialInteractionPad$.on({
-            mouseenter: function () {
+            mouseenter: function() {
               if (iconContainer$.data("isToggled")) {
                 specialInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave: function () {
+            mouseleave: function() {
               if (iconContainer$.data("isToggled")) {
                 specialInteractionPad$.data("hoverTimeline").reverse();
               }
@@ -593,6 +571,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
   }
   // #endregion
 
+  // #endregion
 }
 
 

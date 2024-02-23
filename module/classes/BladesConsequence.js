@@ -105,7 +105,8 @@ class BladesConsequence extends BladesTargetLink {
         return C.ConsequenceValues[cType];
     }
     // #endregion
-    // #region Getters (Target Data)
+    // #region *** GETTERS *** ~
+    // #region Getters (Target Data) ~
     get primaryID() { return this.data.primaryID ?? this.parentConsequence?.primaryID; }
     get parentCsqID() { return this.data.parentCsqID; }
     get name() { return this.data.name; }
@@ -116,7 +117,7 @@ class BladesConsequence extends BladesTargetLink {
         return this.data.specialFooterMsg ?? this.parentConsequence?.specialFooterMsg;
     }
     // #endregion
-    // #region Getters (Derived Data)
+    // #region Getters (Derived Data) ~
     get primary() {
         const primary = fromUuidSync(this.primaryID);
         if (!BladesRollPrimary.IsDoc(primary)) {
@@ -141,7 +142,7 @@ class BladesConsequence extends BladesTargetLink {
     get icon() { return C.ConsequenceIcons[this.type]; }
     get value() { return BladesConsequence.GetCsqTypeValue(this.type, this); }
     // #endregion
-    // #region Getters (Resolved Roll Data that Applied This Consequence)
+    // #region Getters (Resolved Roll Data that Applied This Consequence) ~
     get rollData() {
         return this.data.actionRollData ?? this.parentConsequence?.rollData;
     }
@@ -158,7 +159,7 @@ class BladesConsequence extends BladesTargetLink {
     get effect() { return this.roll?.rollEffectFinal; }
     get result() { return this.roll?.rollResultFinal; }
     // #endregion
-    // #region Getters (Resistibility & Acceptance Status)
+    // #region Getters (Resistibility & Acceptance Status) ~
     isResistible() {
         return Boolean(this.type !== ConsequenceType.None && !this.isAccepted && this.data.resistSchema);
     }
@@ -252,6 +253,8 @@ class BladesConsequence extends BladesTargetLink {
         return this.data.acceptanceMode;
     }
     // #endregion
+    // #endregion
+    // #region *** RESISTING CONSEQUENCES ***
     // #region Constructing Resistable Consequence Schema
     get noneSchema() {
         return {
@@ -294,29 +297,7 @@ class BladesConsequence extends BladesTargetLink {
         }
         return resSchema;
     }
-    // _resistCsq?: BladesConsequence;
-    // private async createResistConsequence(): Promise<BladesConsequence|undefined> {
-    //   if (!this.resistSchema) {return;}
-    //   await U.waitFor(this.initPromise);
-    //   if (this._resistCsq) {
-    //     await this._resistCsq.delete(game.eunoblades.Consequences);
-    //     delete this._resistCsq;
-    //   }
-    //   this._resistCsq = await BladesConsequence.Create<
-    //     new(
-    //       dataConfigOrSchema: BladesTargetLink.Config & Partial<BladesConsequence.Schema>,
-    //       parentCsq?: BladesConsequence.Data
-    //     ) => BladesConsequence,
-    //     BladesConsequence.Schema
-    //       >({
-    //         ...this.linkData,
-    //         ...this.resistSchema
-    //       }, this.data);
-    //   return this._resistCsq;
-    // }
-    // get resistConsequence(): BladesConsequence|undefined { return this._resistCsq; }
     // #endregion
-    // #region *** RESISTING CONSEQUENCES ***
     async resistConsequence(resistMode, rollInstance) {
         if (!this.isResistible()) {
             throw new Error("Cannot resist a consequence that is not resistible.");
@@ -382,23 +363,38 @@ class BladesConsequence extends BladesTargetLink {
         // If COMPLICATION -> No change.
         // If LOST OPPORTUNITY -> No change.
     }
-    constructor(dataConfigOrSchema, parentCsq) {
-        // If a parentCsq is provided...
-        if (parentCsq) {
-            super({
-                ...BladesTargetLink.BuildLinkConfig(parentCsq),
-                ...dataConfigOrSchema
-            });
-        }
-        else {
-            super(dataConfigOrSchema);
-        }
-    }
+    // #endregion
+    // #region === CONSTRUCTOR === ~
+    // constructor(
+    //   config: BladesConsequence.Config,
+    //   parentCsq?: BladesConsequence.Data
+    // )
+    // constructor(
+    //   data: BladesConsequence.Data
+    // )
+    // constructor(
+    //   schema: Partial<BladesConsequence.Schema>,
+    //   parentCsq: BladesConsequence.Data
+    // )
+    // constructor(
+    //   dataConfigOrSchema: BladesConsequence.Config | BladesConsequence.Data | Partial<BladesConsequence.Schema>,
+    //   parentCsq?: BladesConsequence.Data
+    // ) {
+    //   // If a parentCsq is provided...
+    //   if (parentCsq) {
+    //     super({
+    //       ...BladesTargetLink.BuildLinkConfig(parentCsq),
+    //       ...dataConfigOrSchema
+    //     });
+    //   } else {
+    //     super(dataConfigOrSchema as BladesConsequence.Config | BladesConsequence.Data);
+    //   }
+    // }
     // #endregion
     // #region *** HTML INTERACTION ***
-    // #region *** BladesDialog ***
+    // #region *** BladesDialog *** ~
     // #endregion
-    // #region *** BladesChat ***
+    // #region *** BladesChat *** ~
     static ApplyChatListeners(message) {
         /**
          * TIMELINES
