@@ -33,23 +33,29 @@ declare global {
 
     export type DisplayType = "base"|"accept"|ResistanceType;
 
+    export type ResistSubSchema = {
+      name: string,
+      type: ConsequenceType,
+      resistSchema?: {
+        name: "",
+        type: ConsequenceType.None
+      }
+    }
+
     export type Schema = {
       name: string,
       type: ConsequenceType,
-      rollData?: BladesRoll.Data,
+      actionRollData?: BladesRoll.Data,
+      resistanceRollData?: BladesRoll.Data,
 
-      isAccepted?: boolean,
-        acceptanceMode?: DisplayType,
-      wasResisted?: boolean,
-        resistanceMode?: ResistanceType,
+      acceptanceMode?: DisplayType,
+      resistanceModes?: ResistanceType[],
 
       primaryID: UUIDString, // ID of PrimaryDoc who can resist this consequence
 
-      resistSchema?: Schema,
+      resistSchema?: ResistSubSchema,
       parentCsqID?: IDString,
 
-
-      canResistWithRoll?: boolean,
       resistWithRollNegates?: boolean,
       attribute?: AttributeTrait,
       attributeVal?: number,

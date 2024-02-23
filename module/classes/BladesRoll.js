@@ -4,7 +4,7 @@ import U from "../core/utilities.js";
 import C, { BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag } from "../core/constants.js";
 import { BladesActor, BladesPC, BladesCrew } from "../documents/BladesActorProxy.js";
 import { BladesItem, BladesGMTracker } from "../documents/BladesItemProxy.js";
-import { ApplyTooltipAnimations, ApplyConsequenceAnimations, Dragger } from "../core/gsap.js";
+import { ApplyTooltipAnimations, Dragger } from "../core/gsap.js";
 import BladesConsequence from "./BladesConsequence.js";
 import BladesDialog from "./BladesDialog.js";
 import BladesChat from "./BladesChat.js";
@@ -753,69 +753,40 @@ class BladesRollPrimary {
             return this.rollPrimaryDoc.applyWorsePosition();
         }
     }
-    get hasArmor() {
-        if (!this.rollPrimaryDoc) {
-            return false;
-        }
-        if (this.rollPrimaryType === BladesActorType.pc) {
-            const rollPrimaryDoc = this.rollPrimaryDoc;
-            // Can PC spend normal armor?
-            if (!rollPrimaryDoc.system.armor.checked.light
-                && (rollPrimaryDoc.system.armor.active.light
-                    || rollPrimaryDoc.remainingLoad >= 2)) {
-                return true;
-            }
-            // Otherwise, can PC spend heavy armor?
-            if (!rollPrimaryDoc.system.armor.checked.heavy
-                && (rollPrimaryDoc.system.armor.active.heavy
-                    || rollPrimaryDoc.remainingLoad >= 3)) {
-                return true;
-            }
-        }
-        if (BladesItem.IsType(this.rollPrimaryDoc, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
-            const { value, max } = this.rollPrimaryDoc.system.armor;
-            return max - value > 1;
-        }
-        return false;
-    }
     get hasSpecialArmor() {
-        if (!this.rollPrimaryDoc) {
-            return false;
+        return BladesPC.IsType(this.rollPrimaryDoc) && this.rollPrimaryDoc.isSpecialArmorAvailable;
+    }
+    get availableArmorCount() {
+        if (BladesPC.IsType(this.rollPrimaryDoc)) {
+            return this.rollPrimaryDoc.availableArmor.length;
         }
-        if (!BladesPC.IsType(this.rollPrimaryDoc)) {
-            return false;
+        else if (BladesItem.IsType(this.rollPrimaryDoc, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
+            return this.rollPrimaryDoc.system.armor.max - this.rollPrimaryDoc.system.armor.value;
         }
-        if (!this.rollPrimaryDoc.system.armor.active.special) {
-            return false;
-        }
-        if (this.rollPrimaryDoc.system.armor.checked.special) {
-            return false;
-        }
-        return true;
+        return 0;
     }
     async spendArmor(count) {
-        if (this.hasArmor) {
-            if (BladesPC.IsType(this.rollPrimaryDoc)) {
-                const updateData = {
-                    "system.armor.checked.heavy": this.rollPrimaryDoc.system.armor.checked.heavy,
-                    "system.armor.checked.light": this.rollPrimaryDoc.system.armor.checked.light
-                };
-                while (count > 0) {
-                    if (updateData["system.armor.checked.light"]) {
-                        if (updateData["system.armor.checked.heavy"]) {
-                            throw new Error(`[BladesRollPrimary.spendArmor()] Cannot spend more armor (${count}) than PC has.`);
-                        }
-                        updateData["system.armor.checked.heavy"] = true;
-                    }
-                    else {
-                        updateData["system.armor.checked.light"] = true;
-                    }
-                    count--;
-                }
+        if (!this.rollPrimaryDoc) {
+            throw new Error("[BladesRollPrimary.spendArmor()] Cannot spend armor when rollPrimaryDoc is not defined.");
+        }
+        if (count > this.availableArmorCount) {
+            throw new Error(`[BladesRollPrimary.spendArmor()] Cannot spend more armor (${count}) than ${this.rollPrimaryDoc?.name} has (${this.availableArmorCount}).`);
+        }
+        if (BladesPC.IsType(this.rollPrimaryDoc)) {
+            const armorToSpend = this.rollPrimaryDoc.availableArmor.slice(0, count);
+            const updateData = {};
+            if (armorToSpend.includes("Light Armor")) {
+                updateData["system.armor.active.light"] = true;
+                updateData["system.armor.checked.light"] = true;
             }
-            else if (BladesItem.IsType(this.rollPrimaryDoc, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
-                await this.rollPrimaryDoc.update({ "system.armor.value": this.rollPrimaryDoc.system.armor.value + count });
+            if (armorToSpend.includes("Heavy Armor")) {
+                updateData["system.armor.active.heavy"] = true;
+                updateData["system.armor.checked.heavy"] = true;
             }
+            await this.rollPrimaryDoc.update(updateData);
+        }
+        else if (BladesItem.IsType(this.rollPrimaryDoc, BladesItemType.cohort_gang, BladesItemType.cohort_expert)) {
+            await this.rollPrimaryDoc.update({ "system.armor.value": this.rollPrimaryDoc.system.armor.value + count });
         }
     }
     constructor(...args) {
@@ -2220,7 +2191,7 @@ class BladesRoll extends BladesTargetLink {
             if (this.isPushed(cat)) {
                 // ... if pushed by positive mod, Force Off any visible Bargain
                 if (cat === RollModSection.roll && this.isPushed(cat, "positive")) {
-                    const bargainMod = this.getRollModByID("Bargain-positive-roll");
+                    const bargainMod = this.getRollModByKey("Bargain-positive-roll");
                     if (bargainMod?.isVisible) {
                         bargainMod.heldStatus = RollModStatus.ForcedOff;
                     }
@@ -2280,9 +2251,9 @@ class BladesRoll extends BladesTargetLink {
         if (!this.isPushed) {
             return 0;
         }
-        const harmPush = this.getRollModByID("Push-negative-roll");
-        const rollPush = this.getRollModByID("Push-positive-roll");
-        const effectPush = this.getRollModByID("Push-positive-effect");
+        const harmPush = this.getRollModByKey("Push-negative-roll");
+        const rollPush = this.getRollModByKey("Push-positive-roll");
+        const effectPush = this.getRollModByKey("Push-positive-effect");
         const negatePushCostMods = this.getActiveRollMods(RollModSection.after, "positive")
             .filter((mod) => mod.effectKeys.includes("Negate-PushCost"));
         return ((harmPush?.isActive && harmPush?.stressCost) || 0)
@@ -2295,6 +2266,7 @@ class BladesRoll extends BladesTargetLink {
             .map((rollMod) => rollMod.costs ?? [])
             .flat();
     }
+    getRollModByID(id) { return this.rollMods.find((rollMod) => rollMod.id === id); }
     getRollModByName(name, cat, posNeg) {
         const modMatches = this.rollMods.filter((rollMod) => {
             if (U.lCase(rollMod.name) !== U.lCase(name)) {
@@ -2316,7 +2288,7 @@ class BladesRoll extends BladesTargetLink {
         }
         return modMatches[0];
     }
-    getRollModByID(id) { return this.rollMods.find((rollMod) => rollMod.id === id); }
+    getRollModByKey(key) { return this.rollMods.find((rollMod) => rollMod.data.key === key); }
     getRollMods(cat, posNeg) {
         return this.rollMods.filter((rollMod) => (!cat || rollMod.section === cat)
             && (!posNeg || rollMod.posNeg === posNeg));
@@ -2409,18 +2381,6 @@ class BladesRoll extends BladesTargetLink {
             this._rollMods = Object.values(this.data.rollModsData).map((modData) => new BladesRollMod(modData, this));
         }
         return [...this._rollMods].sort((modA, modB) => this.compareMods(modA, modB));
-    }
-    canResistWithArmor(csq) {
-        if (!this.rollPrimary.hasArmor) {
-            return false;
-        }
-        return csq.attribute === AttributeTrait.prowess;
-    }
-    canResistWithSpecialArmor(csq) {
-        if (!BladesPC.IsType(this.rollPrimaryDoc)) {
-            return false;
-        }
-        return this.rollPrimaryDoc.isSpecialArmorAvailable;
     }
     // #endregion
     // #region CONSEQUENCES: Getting, Accepting, Resisting
@@ -3201,7 +3161,6 @@ class BladesRoll extends BladesTargetLink {
     }
     activateListeners() {
         ApplyTooltipAnimations(this.elem$);
-        ApplyConsequenceAnimations(this.elem$);
         this.spawnPositionDragger();
         // If a rollClockKey exists, initialize its elements
         if (this.rollClockKey) {
@@ -3294,9 +3253,9 @@ class BladesRoll extends BladesTargetLink {
         this.elem$
             .find("select[data-action='gm-select']")
             .on({ change: this._onSelectChange.bind(this) });
-        this.elem$
-            .find("[data-action=\"gm-edit-consequences\"]")
-            .on({ click: () => BladesDialog.DisplayRollConsequenceDialog(this) });
+        // this.elem$
+        //   .find("[data-action=\"gm-edit-consequences\"]")
+        //   .on({click: () => BladesDialog.DisplayRollConsequenceDialog(this)});
         this.elem$
             .find("[data-action=\"gm-text-popup\"]")
             .on({ click: this._onGMPopupClick.bind(this) });
@@ -3689,7 +3648,9 @@ class BladesActionRoll extends BladesRoll {
         if (armorCost !== 0) {
             this.rollPrimary.spendArmor(armorCost);
         }
-        this.rollPrimaryDoc?.unsetFlag("eunos-blades", "isWorsePosition");
+        if (this.getRollModByKey("WorsePosition-negative-position")?.isActive) {
+            this.rollPrimaryDoc?.unsetFlag("eunos-blades", "isWorsePosition");
+        }
     }
 }
 class BladesResistanceRoll extends BladesRoll {

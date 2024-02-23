@@ -77,7 +77,7 @@ class BladesDialog extends Dialog {
           icon: '<i class="fa-solid fa-arrow-down-to-arc"></i>',
           label: "Apply",
           callback: (html: HTMLElement|JQuery<HTMLElement>) => (app as BladesDialog)
-            .writeToRollInstance(html as JQuery<HTMLElement>)
+          //   .writeToRollInstance(html as JQuery<HTMLElement>)
         },
         cancel: {
           icon: '<i class="fas fa-times"></i>',
@@ -125,34 +125,34 @@ class BladesDialog extends Dialog {
     return app.hasItems ? app.render(true, {width: app.width}) : undefined;
   }
 
-  static async DisplayRollConsequenceDialog(rollInst: BladesRoll) {
+  // static async DisplayRollConsequenceDialog(rollInst: BladesRoll) {
 
-    const app: BladesDialog = new BladesDialog({
-      parent: rollInst,
-      title: "Consequences",
-      dialogType: BladesDialogType.Consequence,
-      content: "",
-      buttons: {
-        apply: {
-          icon: '<i class="fa-solid fa-arrow-down-to-arc"></i>',
-          label: "Apply",
-          callback: (html: HTMLElement|JQuery<HTMLElement>) => (app as BladesDialog)
-            .writeToRollInstance(html as JQuery<HTMLElement>)
-        },
-        cancel: {
-          icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize("Cancel"),
-          callback: (html: JQuery|HTMLElement) => {
-            eLog.checkLog3("dialog", "Callback Scope", {this: app, html});
-            return false;
-          }
-        }
-      },
-      default: "apply"
-    }, {classes: ["eunos-blades", "sheet", "dialog", "consequence-dialog"]});
+  // const app: BladesDialog = new BladesDialog({
+  //   parent: rollInst,
+  //   title: "Consequences",
+  //   dialogType: BladesDialogType.Consequence,
+  //   content: "",
+  //   buttons: {
+  //     apply: {
+  //       icon: '<i class="fa-solid fa-arrow-down-to-arc"></i>',
+  //       label: "Apply",
+  //       callback: (html: HTMLElement|JQuery<HTMLElement>) => (app as BladesDialog)
+  //         .writeToRollInstance(html as JQuery<HTMLElement>)
+  //     },
+  //     cancel: {
+  //       icon: '<i class="fas fa-times"></i>',
+  //       label: game.i18n.localize("Cancel"),
+  //       callback: (html: JQuery|HTMLElement) => {
+  //         eLog.checkLog3("dialog", "Callback Scope", {this: app, html});
+  //         return false;
+  //       }
+  //     }
+  //   },
+  //   default: "apply"
+  // }, {classes: ["eunos-blades", "sheet", "dialog", "consequence-dialog"]});
 
-    return app._render(true, {width: app.width}).then(() => eLog.checkLog3("dialog", "Dialog Instance", {this: app}));
-  }
+  // return app._render(true, {width: app.width}).then(() => eLog.checkLog3("dialog", "Dialog Instance", {this: app}));
+  // }
 
   override get template() { return `systems/eunos-blades/templates/dialog-${U.lCase(this.dialogType)}.hbs`; }
 
@@ -307,39 +307,39 @@ class BladesDialog extends Dialog {
   //   return data;
   // }
 
-  get consequenceTypeOptions(): Record<
-    Position,
-    Record<
-      RollResult.partial|RollResult.fail,
-      Array<BladesSelectOption<string, ConsequenceType>>
-    >
-    > {
-    if (this.parent instanceof BladesRoll) {
-      const returnData: Partial<Record<
-      Position,
-      Record<
-        RollResult.partial|RollResult.fail,
-        Array<BladesSelectOption<string, ConsequenceType>>
-      >
-    >> = {};
-      [Position.controlled, Position.risky, Position.desperate].forEach((pos) => {
-        returnData[pos] = {
-          [RollResult.partial]: C.Consequences[pos][RollResult.partial]
-            .map((cType) => ({value: cType, display: cType})),
-          [RollResult.fail]: C.Consequences[pos][RollResult.fail]
-            .map((cType) => ({value: cType, display: cType}))
-        };
-      });
-      return returnData as Record<
-      Position,
-      Record<
-        RollResult.partial|RollResult.fail,
-        Array<BladesSelectOption<string, ConsequenceType>>
-      >
-    >;
-    }
-    return {} as never;
-  }
+  // get consequenceTypeOptions(): Record<
+  //   Position,
+  //   Record<
+  //     RollResult.partial|RollResult.fail,
+  //     Array<BladesSelectOption<string, ConsequenceType>>
+  //   >
+  //   > {
+  //   if (this.parent instanceof BladesRoll) {
+  //     const returnData: Partial<Record<
+  //     Position,
+  //     Record<
+  //       RollResult.partial|RollResult.fail,
+  //       Array<BladesSelectOption<string, ConsequenceType>>
+  //     >
+  //   >> = {};
+  //     [Position.controlled, Position.risky, Position.desperate].forEach((pos) => {
+  //       returnData[pos] = {
+  //         [RollResult.partial]: C.Consequences[pos][RollResult.partial]
+  //           .map((cType) => ({value: cType, display: cType})),
+  //         [RollResult.fail]: C.Consequences[pos][RollResult.fail]
+  //           .map((cType) => ({value: cType, display: cType}))
+  //       };
+  //     });
+  //     return returnData as Record<
+  //     Position,
+  //     Record<
+  //       RollResult.partial|RollResult.fail,
+  //       Array<BladesSelectOption<string, ConsequenceType>>
+  //     >
+  //   >;
+  //   }
+  //   return {} as never;
+  // }
 
   updateInputText(inputElem$: JQuery<HTMLElement>) {
     const value = inputElem$.val();
@@ -537,12 +537,12 @@ class BladesDialog extends Dialog {
   //   }
   // }
 
-  async writeToRollInstance(html: JQuery<HTMLElement>) {
-    if (this.parent instanceof BladesRoll) {
-      // this.updateConsequenceDialog(html, false);
-      // await this.parent.updateTarget("consequenceData", this.csqData);
-    }
-  }
+  // async writeToRollInstance(html: JQuery<HTMLElement>) {
+  // if (this.parent instanceof BladesRoll) {
+  // this.updateConsequenceDialog(html, false);
+  // await this.parent.updateTarget("consequenceData", this.csqData);
+  // }
+  // }
 
   // _consequenceAI?: BladesAI;
 
@@ -589,11 +589,11 @@ class BladesDialog extends Dialog {
   //   this.render();
   // }
 
-  async setFlagVal(target: string, value: unknown) {
-    if (this.parent instanceof BladesRoll) {
-      await this.parent.updateTarget(target, value);
-    }
-  }
+  // async setFlagVal(target: string, value: unknown) {
+  //   if (this.parent instanceof BladesRoll) {
+  //     await this.parent.updateTarget(target, value);
+  //   }
+  // }
 
   // async refreshResistanceOptions(rollPosition: Position, rollResult: RollResult, cID: string, rOptions: string[]) {
   //   if (!this.csqData) { return; }
@@ -690,11 +690,11 @@ class BladesDialog extends Dialog {
     switch (this.dialogType) {
       case BladesDialogType.Input: this.activateInputListeners(html); break;
       case BladesDialogType.Selection: this.activateSelectionListeners(html); break;
-      case BladesDialogType.Consequence: {
-        this.activateConsequenceListeners(html);
+      // case BladesDialogType.Consequence: {
+        // this.activateConsequenceListeners(html);
         // Select --> updateConsequenceDialog -> updateConsequenceData(each csq)
-        break;
-      }
+        // break;
+      // }
     }
   }
 
@@ -738,21 +738,21 @@ class BladesDialog extends Dialog {
     super.close();
   }
 
-  activateConsequenceListeners(html: JQuery<HTMLElement>) {
-    // html.find("input").on({change: () => this.updateConsequenceDialog(html)});
-    // html.find("select").on({change: () => this.updateConsequenceDialog(html)});
-    // html.find('[data-action^="ai-query"]').on({
-    //   click: (event) => this.queryAI(event),
-    //   contextmenu: (event) => this.clearResistOptions(event)
-    // });
-    // html.find('[data-action^="blank-option"]').on({
-    //   click: (event) => this.spawnBlankResistOption(event),
-    //   contextmenu: (event) => this.clearResistOptions(event)
-    // });
-    // html.find('[data-action^="gm-select-toggle"]').on({click: (event) => this.selectResistOption(event) });
-    // html.find('[data-action^="toggle-armor"]').on({click: (event) => this.toggleArmor(event) });
-    // html.find('[data-action^="toggle-special"]').on({click: (event) => this.toggleSpecialArmor(event) });
-  }
+  // activateConsequenceListeners(html: JQuery<HTMLElement>) {
+  // html.find("input").on({change: () => this.updateConsequenceDialog(html)});
+  // html.find("select").on({change: () => this.updateConsequenceDialog(html)});
+  // html.find('[data-action^="ai-query"]').on({
+  //   click: (event) => this.queryAI(event),
+  //   contextmenu: (event) => this.clearResistOptions(event)
+  // });
+  // html.find('[data-action^="blank-option"]').on({
+  //   click: (event) => this.spawnBlankResistOption(event),
+  //   contextmenu: (event) => this.clearResistOptions(event)
+  // });
+  // html.find('[data-action^="gm-select-toggle"]').on({click: (event) => this.selectResistOption(event) });
+  // html.find('[data-action^="toggle-armor"]').on({click: (event) => this.toggleArmor(event) });
+  // html.find('[data-action^="toggle-special"]').on({click: (event) => this.toggleSpecialArmor(event) });
+  // }
 }
 
 export default BladesDialog;

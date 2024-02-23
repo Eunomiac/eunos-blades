@@ -466,83 +466,44 @@ const C = {
         [DowntimeAction.ReduceHeat]: "Reduce the Crew's Heat",
         [DowntimeAction.Train]: "Train"
     },
-    Consequences: {
-        [Position.controlled]: {
-            [RollResult.partial]: [
-                ConsequenceType.ComplicationMinor,
-                ConsequenceType.ReducedEffect,
-                ConsequenceType.WorsePosition,
-                ConsequenceType.InsightHarm1,
-                ConsequenceType.ProwessHarm1,
-                ConsequenceType.ResolveHarm1,
-                ConsequenceType.None
-            ],
-            [RollResult.fail]: [
-                ConsequenceType.WorsePosition,
-                ConsequenceType.None
-            ]
-        },
-        [Position.risky]: {
-            [RollResult.partial]: [
-                ConsequenceType.ComplicationMajor,
-                ConsequenceType.WorsePosition,
-                ConsequenceType.ReducedEffect,
-                ConsequenceType.InsightHarm1,
-                ConsequenceType.ProwessHarm1,
-                ConsequenceType.ResolveHarm1,
-                ConsequenceType.InsightHarm2,
-                ConsequenceType.ProwessHarm2,
-                ConsequenceType.ResolveHarm2,
-                ConsequenceType.None
-            ],
-            [RollResult.fail]: [
-                ConsequenceType.ComplicationMajor,
-                ConsequenceType.WorsePosition,
-                ConsequenceType.LostOpportunity,
-                ConsequenceType.InsightHarm2,
-                ConsequenceType.ProwessHarm2,
-                ConsequenceType.ResolveHarm2
-            ]
-        },
-        [Position.desperate]: {
-            [RollResult.partial]: [
-                ConsequenceType.ComplicationSerious,
-                ConsequenceType.ReducedEffect,
-                ConsequenceType.InsightHarm2,
-                ConsequenceType.ProwessHarm2,
-                ConsequenceType.ResolveHarm2,
-                ConsequenceType.InsightHarm3,
-                ConsequenceType.ProwessHarm3,
-                ConsequenceType.ResolveHarm3
-            ],
-            [RollResult.fail]: [
-                ConsequenceType.ComplicationSerious,
-                ConsequenceType.LostOpportunity,
-                ConsequenceType.InsightHarm3,
-                ConsequenceType.ProwessHarm3,
-                ConsequenceType.ResolveHarm3,
-                ConsequenceType.InsightHarm4,
-                ConsequenceType.ProwessHarm4,
-                ConsequenceType.ResolveHarm4
-            ]
-        }
+    ConsequenceValues: {
+        [ConsequenceType.ReducedEffect]: undefined,
+        [ConsequenceType.LostOpportunity]: 2,
+        [ConsequenceType.WorsePosition]: undefined,
+        [ConsequenceType.None]: 0,
+        [ConsequenceType.InsightHarm4]: 4,
+        [ConsequenceType.InsightHarm3]: 3,
+        [ConsequenceType.InsightHarm2]: 2,
+        [ConsequenceType.InsightHarm1]: 1,
+        [ConsequenceType.ProwessHarm4]: 4,
+        [ConsequenceType.ProwessHarm3]: 3,
+        [ConsequenceType.ProwessHarm2]: 2,
+        [ConsequenceType.ProwessHarm1]: 1,
+        [ConsequenceType.ResolveHarm4]: 4,
+        [ConsequenceType.ResolveHarm3]: 3,
+        [ConsequenceType.ResolveHarm2]: 2,
+        [ConsequenceType.ResolveHarm1]: 1,
+        [ConsequenceType.ComplicationSerious]: 3,
+        [ConsequenceType.ComplicationMajor]: 2,
+        [ConsequenceType.ComplicationMinor]: 1
     },
     ResistedConsequenceTypes: {
-        [ConsequenceType.InsightHarm4]: ConsequenceType.InsightHarm3,
-        [ConsequenceType.InsightHarm3]: ConsequenceType.InsightHarm2,
-        [ConsequenceType.InsightHarm2]: ConsequenceType.InsightHarm1,
-        [ConsequenceType.InsightHarm1]: ConsequenceType.None,
-        [ConsequenceType.ProwessHarm4]: ConsequenceType.ProwessHarm3,
-        [ConsequenceType.ProwessHarm3]: ConsequenceType.ProwessHarm2,
-        [ConsequenceType.ProwessHarm2]: ConsequenceType.ProwessHarm1,
-        [ConsequenceType.ProwessHarm1]: ConsequenceType.None,
-        [ConsequenceType.ResolveHarm4]: ConsequenceType.ResolveHarm3,
-        [ConsequenceType.ResolveHarm3]: ConsequenceType.ResolveHarm2,
-        [ConsequenceType.ResolveHarm2]: ConsequenceType.ResolveHarm1,
-        [ConsequenceType.ResolveHarm1]: ConsequenceType.None,
-        [ConsequenceType.ComplicationSerious]: ConsequenceType.ComplicationMajor,
-        [ConsequenceType.ComplicationMajor]: ConsequenceType.ComplicationMinor,
-        [ConsequenceType.ComplicationMinor]: ConsequenceType.None
+        [ConsequenceType.None]: [],
+        [ConsequenceType.InsightHarm4]: [ConsequenceType.InsightHarm3],
+        [ConsequenceType.InsightHarm3]: [ConsequenceType.InsightHarm2],
+        [ConsequenceType.InsightHarm2]: [ConsequenceType.InsightHarm1],
+        [ConsequenceType.InsightHarm1]: [ConsequenceType.None],
+        [ConsequenceType.ProwessHarm4]: [ConsequenceType.ProwessHarm3],
+        [ConsequenceType.ProwessHarm3]: [ConsequenceType.ProwessHarm2],
+        [ConsequenceType.ProwessHarm2]: [ConsequenceType.ProwessHarm1],
+        [ConsequenceType.ProwessHarm1]: [ConsequenceType.None],
+        [ConsequenceType.ResolveHarm4]: [ConsequenceType.ResolveHarm3],
+        [ConsequenceType.ResolveHarm3]: [ConsequenceType.ResolveHarm2],
+        [ConsequenceType.ResolveHarm2]: [ConsequenceType.ResolveHarm1],
+        [ConsequenceType.ResolveHarm1]: [ConsequenceType.None],
+        [ConsequenceType.ComplicationSerious]: [ConsequenceType.ComplicationMajor],
+        [ConsequenceType.ComplicationMajor]: [ConsequenceType.ComplicationMinor],
+        [ConsequenceType.ComplicationMinor]: [ConsequenceType.None]
     },
     ConsequenceDisplay: {
         [ConsequenceType.ReducedEffect]: "Reduced Effect",

@@ -803,6 +803,11 @@ export function ApplyTooltipAnimations(html) {
             return;
         }
         const tooltip$ = $(tooltipElem);
+        /**
+         * Use the .tooltip-trigger element as the definitive positioning element for the tooltip itself.
+         * If the tooltip-trigger's absolute position relative to the viewport is, e.g., near the top,
+         * then the tooltip should appear beneath, etc
+         */
         // Find the tooltip's parent container. If its position isn't relative or absolute, set it to relative.
         const tooltipContainer$ = tooltip$.parent();
         if (tooltipContainer$.css("position") !== "relative"
@@ -826,167 +831,6 @@ export function ApplyTooltipAnimations(html) {
                 game.eunoblades.Director.clearTooltip(tooltipID);
             }
         });
-    });
-}
-/**
- * Applies listeners to .consequence-display-container and children found in document.
- * @param {JQuery<HTMLElement>} html The document to be searched.
- */
-export function ApplyConsequenceAnimations(html) {
-    /**
-     * TIMELINES
-     * .comp.consequence-display-container:mouseenter
-     *   = fade in grey interaction buttons
-     *   ...:mouseleave = reverse
-     *
-     * .consequence-accept-button-container:mouseenter
-     *   = turn type line white, text shadow
-     *     slide out .consequence-accept-button-bg from left
-     *     turn .consequence-accept-button i black, and scale
-     *     turn .consequence-accept-button-label black, add letter spacing, bold
-     *   ...:mouseleave = reverse
-     *
-     * .consequence-resist-button-container:mouseenter
-     *   = slide in .consequence-type-bg.base-consequence to left
-     *     fade out all .base-consequence:not(.consequence-type-bg)
-     *     slide out .consequence-type.resist-consequence from left
-     *     slide out .consequence-resist-button-bg from right
-     *     slide out .consequence-footer-bg.resist-consequence from left
-     *     slide out .consequence-resist-attribute from left
-     *     slide out .consequence-name.resist-consequence from left
-     *     fade in .consequence-icon-circle.resist-consequence
-     *   ...:mouseleave = reverse
-     *   --> IF resistTo.type === "None", blurRemove the base_consequence name and type instead of sliding them in,
-     *                                       and don't slide the resistance ones out at all.
-     * */
-    html
-        .find(".comp.consequence-display-container")
-        .each((_i, csqContainer) => {
-        if (!$(csqContainer).hasClass("consequence-accepted")) {
-            const iconContainer$ = $(csqContainer).find(".consequence-icon-container");
-            const rightInteractionPad$ = $(csqContainer).find(".interaction-pad-right");
-            const leftInteractionPad$ = $(csqContainer).find(".interaction-pad-left");
-            const resistInteractionPad$ = $(csqContainer).find(".interaction-pad-left-resist");
-            const armorInteractionPad$ = $(csqContainer).find(".interaction-pad-left-armor");
-            const specialInteractionPad$ = $(csqContainer).find(".interaction-pad-left-special");
-            // Apply master on-enter hover timeline to consequence container.
-            $(csqContainer).data("hoverTimeline", U.gsap.effects.csqEnter(csqContainer));
-            $(csqContainer).on({
-                mouseenter: function () {
-                    $(csqContainer).css("z-index", 10);
-                    $(csqContainer).data("hoverTimeline").play();
-                },
-                mouseleave: function () {
-                    if (!(iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) || iconContainer$.data("isTogglingOff")) {
-                        $(csqContainer).data("hoverTimeline").reverse().then(() => {
-                            $(csqContainer).css("z-index", "");
-                        });
-                    }
-                }
-            });
-            // Apply click timeline to icon circle
-            iconContainer$.data("clickTimeline", U.gsap.effects.csqClickIcon(iconContainer$[0]));
-            iconContainer$.on({
-                click: function () {
-                    if (iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) {
-                        iconContainer$.data("isTogglingOn", false);
-                        iconContainer$.data("isTogglingOff", true);
-                        iconContainer$.data("clickTimeline").reverse().then(() => {
-                            iconContainer$.data("isTogglingOff", false);
-                            iconContainer$.data("isToggled", false);
-                        });
-                    }
-                    else {
-                        iconContainer$.data("isTogglingOn", true);
-                        iconContainer$.data("isTogglingOff", false);
-                        // Find any siblings with toggled-on iconContainers, and toggle them off
-                        Array.from($(csqContainer).siblings(".consequence-display-container"))
-                            .forEach((containerElem) => {
-                            const iContainer$ = $(containerElem).find(".consequence-icon-container");
-                            if (iContainer$?.data("isToggled") || iContainer$?.data("isTogglingOn")) {
-                                iContainer$.data("isTogglingOn", false);
-                                iContainer$.data("isTogglingOff", true);
-                                iContainer$.data("clickTimeline").reverse().then(() => {
-                                    iContainer$.data("isTogglingOff", false);
-                                    iContainer$.data("isToggled", false);
-                                    $(containerElem).data("hoverTimeline").reverse().then(() => {
-                                        $(containerElem).css("z-index", "");
-                                    });
-                                });
-                            }
-                        });
-                        iconContainer$.data("clickTimeline").play().then(() => {
-                            iconContainer$.data("isTogglingOn", false);
-                            iconContainer$.data("isToggled", true);
-                        });
-                    }
-                }
-            });
-            // Apply hover timelines to right (accept) interaction pad
-            rightInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterRight(csqContainer));
-            rightInteractionPad$.on({
-                mouseenter: function () {
-                    if (iconContainer$.data("isToggled")) {
-                        rightInteractionPad$.data("hoverTimeline").play();
-                    }
-                },
-                mouseleave: function () {
-                    rightInteractionPad$.data("hoverTimeline").reverse();
-                }
-            });
-            // Apply hover timeline to left (resist/armor/special) interaction pad
-            leftInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterLeft(csqContainer));
-            leftInteractionPad$.on({
-                mouseenter: function () {
-                    if (iconContainer$.data("isToggled")) {
-                        leftInteractionPad$.data("hoverTimeline").play();
-                    }
-                },
-                mouseleave: function () {
-                    leftInteractionPad$.data("hoverTimeline").reverse();
-                }
-            });
-            // Apply hover timelines to specific left interaction pads
-            resistInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, { type: "resist" }));
-            resistInteractionPad$.on({
-                mouseenter: function () {
-                    if (iconContainer$.data("isToggled")) {
-                        resistInteractionPad$.data("hoverTimeline").play();
-                    }
-                },
-                mouseleave: function () {
-                    if (iconContainer$.data("isToggled")) {
-                        resistInteractionPad$.data("hoverTimeline").reverse();
-                    }
-                }
-            });
-            armorInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, { type: "armor" }));
-            armorInteractionPad$.on({
-                mouseenter: function () {
-                    if (iconContainer$.data("isToggled")) {
-                        armorInteractionPad$.data("hoverTimeline").play();
-                    }
-                },
-                mouseleave: function () {
-                    if (iconContainer$.data("isToggled")) {
-                        armorInteractionPad$.data("hoverTimeline").reverse();
-                    }
-                }
-            });
-            specialInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, { type: "special" }));
-            specialInteractionPad$.on({
-                mouseenter: function () {
-                    if (iconContainer$.data("isToggled")) {
-                        specialInteractionPad$.data("hoverTimeline").play();
-                    }
-                },
-                mouseleave: function () {
-                    if (iconContainer$.data("isToggled")) {
-                        specialInteractionPad$.data("hoverTimeline").reverse();
-                    }
-                }
-            });
-        }
     });
 }
 export { TextPlugin, Flip, MotionPathPlugin, Dragger, SplitText, Observer, CustomEase, CustomWiggle, CustomBounce, EasePack };

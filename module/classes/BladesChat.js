@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // #region IMPORTS ~
-import { ApplyTooltipAnimations, ApplyConsequenceAnimations } from "../core/gsap.js";
+import { ApplyTooltipAnimations } from "../core/gsap.js";
 import C, { RollType, Position, RollResult } from "../core/constants.js";
 import U from "../core/utilities.js";
 import BladesRoll from "./BladesRoll.js";
@@ -11,8 +11,7 @@ class BladesChat extends ChatMessage {
             ApplyTooltipAnimations(html);
             const { rollData } = msg.flagData;
             if (rollData) {
-                ApplyConsequenceAnimations(html);
-                BladesConsequence.ApplyChatListeners(html);
+                BladesConsequence.ApplyChatListeners(msg);
             }
             html.addClass("display-ok");
         });
@@ -157,8 +156,7 @@ class BladesChat extends ChatMessage {
             return;
         }
         ApplyTooltipAnimations(this.elem$);
-        ApplyConsequenceAnimations(this.elem$);
-        BladesConsequence.ApplyChatListeners(this.elem$);
+        BladesConsequence.ApplyChatListeners(this);
         if (this.parentRoll) {
             this.elem$.addClass(`${this.parentRoll.rollType.toLowerCase()}-roll`);
             if (this.parentRoll.rollType === RollType.Action && this.rollConsequences.some((csq) => !csq.isAccepted)) {
