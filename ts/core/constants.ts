@@ -553,7 +553,7 @@ const C = {
     }
   },
   //
-  Colors: {
+  Colors: { /* IMPORT FROM CSS via css-loader */
     bWHITE: "rgba(255, 255, 255, 1)",
     WHITE: "rgba(200, 200, 200, 1)",
     bGREY: "rgba(170, 170, 170, 1)",
