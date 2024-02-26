@@ -1,14 +1,14 @@
 import { BladesItemType, ClockColor, District, BladesPhase, Randomizers } from "../core/constants";
 import BladesItem from "../BladesItem";
-import BladesPC from "../documents/actors/BladesPC.js";
-import BladesCrew from "../documents/actors/BladesCrew.js";
-import BladesNPC from "../documents/actors/BladesNPC.js";
-import BladesFaction from "../documents/actors/BladesFaction.js";
+import BladesPC from "../documents/actors/BladesPC";
+import BladesCrew from "../documents/actors/BladesCrew";
+import BladesNPC from "../documents/actors/BladesNPC";
+import BladesFaction from "../documents/actors/BladesFaction";
 import BladesClockKeeper from '../documents/items/BladesClockKeeper.js';
 import BladesGMTracker from '../documents/items/BladesGMTracker.js';
-import BladesLocation from "../documents/items/BladesLocation.js";
-import BladesScore from "../documents/items/BladesScore.js";
-import BladesProject from "../documents/items/BladesProject.js";
+import BladesLocation from "../documents/items/BladesLocation";
+import BladesScore from "../documents/items/BladesScore";
+import BladesProject from "../documents/items/BladesProject";
 
 declare global {
 

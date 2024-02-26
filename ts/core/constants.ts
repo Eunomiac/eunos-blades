@@ -552,7 +552,7 @@ const C = {
       [RollResult.fail]: "You fail from a desperate position!"
     }
   },
-  //
+
   Colors: { /* IMPORT FROM CSS via css-loader */
     bWHITE: "rgba(255, 255, 255, 1)",
     WHITE: "rgba(200, 200, 200, 1)",

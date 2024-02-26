@@ -1,4 +1,4 @@
-import Tagify from "../../lib/tagify/tagify.esm.js";
+import Tagify from "../../lib/tagify/tagify.esm";
 import {Tag, MainDistrict, OtherDistrict, Vice, Playbook, BladesActorType} from "./constants";
 import U from "./utilities";
 
