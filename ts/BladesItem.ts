@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import C, {BladesItemType, BladesNoticeType, Tag, Factor} from "./core/constants";
 import U from "./core/utilities";
 import {BladesActor, BladesCrew, BladesPC} from "./documents/BladesActorProxy";

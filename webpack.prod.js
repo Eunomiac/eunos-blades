@@ -40,7 +40,7 @@ async function loadPlugins() {
 
 async function createWebpackProductionConfig() {
   const plugins = await loadPlugins();
-  merge(common, {
+  return merge(common, {
     // Set the mode to 'production'. This enables optimizations like minification and tree shaking out of the box.
     mode: "production",
 
@@ -98,6 +98,12 @@ async function createWebpackProductionConfig() {
           ]
         }
       ]
+    },
+
+    externals: {
+      // Configure Webpack to treat "gsap/all" as an external module
+      // This prevents Webpack from attempting to bundle it, allowing FoundryVTT to handle the import at runtime
+      "gsap/all": "commonjs gsap/all"
     },
 
     // Configuration for plugins used in the production build.

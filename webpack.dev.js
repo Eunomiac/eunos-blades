@@ -58,8 +58,20 @@ export default merge(common, {
     ]
   },
 
+  resolve: {
+    // Aliases are used to point imports to specific file paths, allowing for simpler import statements
+    alias: {
+      // Alias "gsap/all" to the absolute path of the gsap library provided by FoundryVTT
+      // This allows Webpack to resolve the "gsap/all" import to the correct file during development
+      "gsap/all": "D:/LTSC Programs/FoundryVTT/Foundry Virtual Tabletop/resources/app/public/scripts/greensock/esm/all.js"
+    }
+  },
+
   // Configure source maps for better error debugging. Allows you to see the original source code during debugging
   devtool: "eval-source-map",
+
+  // Enable watch mode
+  watch: true,
 
   // Configuration for the webpack-dev-server, which provides live reloading
   devServer: {
