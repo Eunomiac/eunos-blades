@@ -864,16 +864,16 @@
 .chat-message.unresolved-action-roll {
 
   &, * {
-    --bg-controlled: url("../assets/animations/chat/roll-position-controlled.webp");
-    --bg-risky: url("../assets/animations/chat/roll-position-risky.webp");
-    --bg-desperate: url("../assets/animations/chat/roll-position-desperate.webp");
+    --bg-controlled: url("../../public/assets/animations/chat/roll-position-controlled.webp");
+    --bg-risky: url("../../public/assets/animations/chat/roll-position-risky.webp");
+    --bg-desperate: url("../../public/assets/animations/chat/roll-position-desperate.webp");
 
     // --bg-critical: transparent;
     // --bg-success: transparent;
     // --bg-partial: transparent;
-    --bg-fail: url("../assets/animations/chat/fail-bg.webp");
+    --bg-fail: url("../../public/assets/animations/chat/fail-bg.webp");
 
-    --dice-strip-bg: url("../assets/animations/chat/lightning-ray.webp") no-repeat center / 100% auto;
+    --dice-strip-bg: url("../../public/assets/animations/chat/lightning-ray.webp") no-repeat center / 100% auto;
 
     --top-die-animation: die-pulse 5s ease infinite;
     --ghost-die-animation: die-ghost 4s ease infinite;

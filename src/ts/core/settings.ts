@@ -79,9 +79,9 @@ export function initTinyMCEStyles() {
     ...CONFIG.TinyMCE,
     ...{
       skin: "skin",
-      skin_url: "systems/eunos-blades/css/tinymce/skin",
-      content_css: `systems/eunos-blades/css/tinymce/content.css?${new Date().getTime()}`,
-      font_css: "systems/eunos-blades/css/fonts.css",
+      skin_url: "systems/eunos-blades/tinymce/skin",
+      content_css: `systems/eunos-blades/tinymce/content.css?${new Date().getTime()}`,
+      font_css: "systems/eunos-blades/fonts.css",
       max_height: 500,
       min_height: 40,
       autoresize_overflow_padding: 0,

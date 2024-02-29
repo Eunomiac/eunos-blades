@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import "../scss/style.scss";
-import "../scss/tinymce/skin/skin.scss";
-import "../scss/tinymce/content.scss";
-import "../scss/tinymce/fonts.scss";
+// import "../scss/fonts.scss";
+// import "../scss/tinymce/skin/skin.scss";
+// import "../scss/tinymce/content.scss";
+// import "../scss/tinymce/fonts.scss";
 import C, {
   ActionTrait,
   ClockColor,

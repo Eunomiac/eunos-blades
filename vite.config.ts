@@ -41,6 +41,8 @@ const config: UserConfig = defineConfig({
       keep_classnames: true, // Preserve class names
       keep_fnames: true // Preserve function names
     },
+    // Temporarily disable minification for output checking
+    // minify: false,
     // Configuration for Rollup (used by Vite under the hood)
     rollupOptions: {
       // Specify external modules that shouldn't be bundled
@@ -52,6 +54,11 @@ const config: UserConfig = defineConfig({
       entry: path.resolve(__dirname, "src/ts/blades.ts"), // Entry point for the library
       formats: ["es"], // Output format(s) for the library
       fileName: "blades" // Name for the output file(s)
+    }
+  },
+  resolve: {
+    alias: {
+      "gsap/all": path.resolve("D:/LTSC Programs/FoundryVTT/Foundry Virtual Tabletop/resources/app/public/scripts/greensock/esm/all.js")
     }
   }
 });

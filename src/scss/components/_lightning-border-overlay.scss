@@ -5,7 +5,7 @@
   width: 100%;
   pointer-events: none;
   overflow: visible;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.85) 250px, transparent 500px), url("../assets/debug-false-canvas.webp"); // url("../assets/debug-false-canvas.webp");
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.85) 250px, transparent 500px), url("../../public/assets/debug-false-canvas.webp"); // url("../../public/assets/debug-false-canvas.webp");
   background-size: cover;
 
   .border-lightning {

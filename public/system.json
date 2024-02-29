@@ -21,15 +21,13 @@
 		}
 	],
   "esmodules": [
-    "index.js",
+    "blades.js",
     "greensock/esm/all.js",
     "lib/tagify/tagify.esm.js"
   ],
   "styles": [
     "style.css",
-    "tinymce/skin/skin.css",
-    "tinymce/content.css",
-    "tinymce/fonts.css"
+    "fonts.css"
   ],
 	"relationships": {
 		"requires": [{
