@@ -2,6 +2,15 @@ import {Tagify} from "../libraries";
 import {Tag, MainDistrict, OtherDistrict, Vice, Playbook, BladesActorType} from "./constants";
 import U from "./utilities";
 
+type HTMLTaggableElement = HTMLInputElement | HTMLTextAreaElement;
+
+type TagifyPlus<T extends Tagify.BaseTagData> = Tagify<T> & {
+  dropdown: {
+    createListHTML: (optionsArray: T[]) => string,
+    getMappedValue: (tagData: T) => string
+  }
+}
+
 const _onTagifyChange = (event: Event, doc: BladesDoc, targetKey: keyof BladesDoc) => {
   const tagString = (event.target as HTMLInputElement).value;
   if (tagString) {
@@ -12,18 +21,6 @@ const _onTagifyChange = (event: Event, doc: BladesDoc, targetKey: keyof BladesDo
   }
 };
 
-interface TagData {
-  value: string;
-  [key: string]: unknown;
-}
-
-interface TagifyFunctions {
-  dropdown: {
-    createListHTML: (optionsArray: Array<{ value: BladesTag; "data-group": string }>) => string,
-    getMappedValue: (tagData: TagData) => string
-  }
-}
-
 const Tags = {
   InitListeners: (html: JQuery<HTMLElement>, doc: BladesDoc) => {
 
@@ -32,10 +29,10 @@ const Tags = {
      * @param {HTMLElement} elem The element to tagify.
      * @param {Record<string,BladesTag[]>} tags The tags, sorted into groups, to apply.
      */
-    function makeTagInput(elem: HTMLElement, tags: Record<string, BladesTag[]>) {
+    function makeTagInput(elem: HTMLTaggableElement, tags: Record<string, BladesTag[]>) {
 
       // Create tagify instance; populate dropdown list with tags
-      const tagify = new Tagify(elem, {
+      const tagify = new Tagify<{value: string, "data-group": string}>(elem, {
         enforceWhitelist: true,
         editTags: false,
         whitelist: Object.entries(tags)
@@ -51,13 +48,13 @@ const Tags = {
           placeAbove: false,
           appendTarget: html[0]
         }
-      }) as Tagify & TagifyFunctions;
+      }) as TagifyPlus<{value: string, "data-group": string}>;
 
       tagify.dropdown.createListHTML = (optionsArr: Array<{ value: BladesTag; "data-group": string }>) => {
         const map: Record<string, unknown> = {};
 
         return structuredClone(optionsArr)
-          .map((suggestion, idx) => {
+          .map((suggestion) => {
 
             const value = tagify.dropdown.getMappedValue.call(
               tagify,
@@ -83,7 +80,7 @@ const Tags = {
 
             tagHTMLString += tagify.settings.templates.dropdownItem.apply(
               tagify,
-              [suggestion, idx]
+              [suggestion]
             );
 
             return tagHTMLString;
@@ -111,7 +108,7 @@ const Tags = {
           .filter(findDataGroup)
           .map((tag: BladesTag) => ({
             value: (new Handlebars.SafeString(tag)).toString(),
-            "data-group": findDataGroup(tag)
+            "data-group": findDataGroup(tag) as string
           })),
         true,
         true
@@ -146,11 +143,11 @@ const Tags = {
         actor.type === BladesActorType.faction && actor.name !== null)
       .map((faction) => faction.name)};
 
-    $(html).find(".tags-gm").each((_, e) => makeTagInput(e, systemTags));
+    $(html).find(".tags-gm").each((_, e) => makeTagInput(e as HTMLTaggableElement, systemTags));
 
-    $(html).find(".tags-district").each((_, e) => makeTagInput(e, districtTags));
+    $(html).find(".tags-district").each((_, e) => makeTagInput(e as HTMLTaggableElement, districtTags));
 
-    $(html).find(".tags-faction").each((_, e) => makeTagInput(e, factionTags));
+    $(html).find(".tags-faction").each((_, e) => makeTagInput(e as HTMLTaggableElement, factionTags));
 
   }
 };

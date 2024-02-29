@@ -1,39 +1,48 @@
 // Importing necessary functions and types from the Vite package and the path module from Node.js
-import { defineConfig, type UserConfig, type Plugin } from "vite";
+import { defineConfig, type UserConfig/* , type Plugin  */} from "vite";
 import path from "path";
 
-function foundryPlugin(): Plugin {
-  const virtualPrefix = "\0virtual:foundry:";
+// function foundryPlugin(): Plugin {
+//   const usesFoundryPlugin = Symbol("foundry-plugin");
 
-  return {
-    name: "foundry-plugin",
+//   return {
+//     name: "foundry-plugin",
 
-    resolveId(source) {
-      if (source === "gsap/all") {
-        return {
-          // See https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention
-          id: `${virtualPrefix}scripts/greensock/esm/all.js`,
+//     async resolveId(source) {
+//       if (source === "gsap/all") {
+//         return {
+//           id: "scripts/greensock/esm/all.js",
 
-          // This is used to make sure that there's no later.
-          external: "absolute"
-        };
-      }
+//           // This is used to make sure that there's no later transformations during production.
+//           external: "absolute",
 
-      return null;
-    },
-    load(id) {
-      if (id.startsWith(virtualPrefix)) {
-        const loadPath = id.slice(virtualPrefix.length);
-        const escapedPath = loadPath.replace('"', '\\"');
+//           meta: {
+//             [usesFoundryPlugin]: true,
+//           },
+//         };
+//       }
 
-        return `
-            const importPath = import; // Defeat Vite's dynamic import bundling.
-            export default = await importPath("${escapedPath}");
-        `;
-      }
-    }
-  };
-}
+//       return null;
+//     },
+//     async load(id) {
+//       const moduleInfo = this.getModuleInfo(id);
+
+//       if (moduleInfo == null) {
+//         return null;
+//       }
+
+//       // During a production build since all of the Foundry imports are external it never even gets here, like one might expect.
+//       // However development doesn't completely understand external, see https://github.com/vitejs/vite/issues/6582
+//       if (usesFoundryPlugin in moduleInfo.meta) {
+//         // By default all imports (or in this case a re-export) will get recursively handled by Vite.
+//         // The tag `/* @vite-ignore */` is used to avoid an error when trying to resolve `id` again.
+//         return `export * from /* @vite-ignore */ ${JSON.stringify(id)};`;
+//       }
+
+//       return null;
+//     },
+//   };
+// }
 
 // Defining the Vite configuration object with specific settings for this project
 const config: UserConfig = defineConfig({
@@ -77,10 +86,10 @@ const config: UserConfig = defineConfig({
     // Temporarily disable minification for output checking
     minify: false,
     // Configuration for Rollup (used by Vite under the hood)
-    rollupOptions: {
-      // Specify external modules that shouldn't be bundled
-      external: ["gsap/all"]
-    },
+    // rollupOptions: {
+    //   // Specify external modules that shouldn't be bundled
+    //   external: ["gsap/all"]
+    // },
     // Configuration for building a library
     lib: {
       name: "blades", // Name of the library
@@ -88,15 +97,15 @@ const config: UserConfig = defineConfig({
       formats: ["es"], // Output format(s) for the library
       fileName: "blades" // Name for the output file(s)
     }
-  },
-  resolve: {
-    alias: {
-      "gsap/all": "scripts/greensock/esm/all.js"
-    }
-  },
-  plugins: [
-    foundryPlugin()
-  ]
+  }
+  // resolve: {
+  //   alias: {
+  //     "gsap/all": "scripts/greensock/esm/all.js"
+  //   }
+  // },
+  // plugins: [
+  //   foundryPlugin()
+  // ]
 });
 
 // Exporting the configuration object to be used by Vite

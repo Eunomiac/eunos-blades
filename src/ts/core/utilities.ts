@@ -3,8 +3,9 @@
 
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 import C, {SVGDATA, HbsSvgData} from "./constants";
-// eslint-disable-next-line import/no-unresolved
-import {gsap, TextPlugin, Flip, MotionPathPlugin} from "gsap/all";
+import {gsap, MotionPathPlugin} from "../libraries";
+// import gsap from "../../../public/lib/greensock/all";
+// import gsap, {MotionPathPlugin} from "gsap/all";
 gsap.registerPlugin(MotionPathPlugin);
 // #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
 
@@ -2150,7 +2151,7 @@ export default {
   // ░░░░░░░ GreenSock ░░░░░░░
   gsap, get, set, getGSAngleDelta, getNearestLabel, reverseRepeatingTimeline, /* to, from, fromTo, */
 
-  TextPlugin, Flip, MotionPathPlugin,
+  /* TextPlugin, Flip, */ MotionPathPlugin,
 
   // ████████ ASYNC: Async Functions, Asynchronous Flow Control ████████
   sleep, waitFor,

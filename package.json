@@ -22,7 +22,7 @@
 		"@types/node": "^20.11.22",
 		"@typescript-eslint/eslint-plugin": "^7.0.2",
 		"@typescript-eslint/parser": "^7.0.2",
-		"@yaireo/tagify": "^4.17.8",
+		"@yaireo/tagify": "^4.21.1",
 		"chokidar": "^3.6.0",
 		"eslint": "^8.57.0",
 		"eslint-import-resolver-node": "^0.3.9",
@@ -53,6 +53,7 @@
 		"@types/yaireo__tagify": "^4.17.0",
 		"axios": "^1.5.1",
 		"form-data": "^4.0.0",
+		"gsap": "^3.12.5",
 		"openai": "^4.20.0",
 		"tinymce": "^6.7.1",
 		"yargs": "^17.7.2"
