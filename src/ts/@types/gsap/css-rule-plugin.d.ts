@@ -10,7 +10,7 @@ declare namespace gsap.plugins {
   interface CSSRulePlugin extends Plugin {
     /**
      * Gets the style sheet object associated with a particular selector.
-     * 
+     *
      * ```js
      * var rule = CSSRulePlugin.getRule(".myClass::before");
      * // Then do what you want with it, such as:

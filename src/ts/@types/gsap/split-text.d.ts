@@ -9,7 +9,7 @@ declare class SplitText {
 
   /**
    * Reverts the innerHTML to the original content.
-   * 
+   *
    * ```js
    * split.revert();
    * ```
@@ -21,7 +21,7 @@ declare class SplitText {
 
   /**
    * Re-splits a SplitText according to the vars provided. It will automatically call revert() first if necessary. Useful if you want to change the way the text is split after the SplitText instance is created.
-   * 
+   *
    * ```js
    * split.split({type: "lines,chars"});
    * ```

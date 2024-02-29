@@ -8,7 +8,7 @@ declare namespace gsap {
 declare namespace gsap.plugins {
 
   interface MorphSVGPlugin extends Plugin {
-    
+
     defaultRender?: Function;
     defaultType?: String;
     defaultUpdateTarget?: Boolean;
@@ -21,7 +21,7 @@ declare namespace gsap.plugins {
      * ```
      *
      * @param {DOMTarget} shape
-     * @param {boolean} [swap] 
+     * @param {boolean} [swap]
      * @returns {SVGPathElement[]} The converted paths
      * @memberof MorphSVGPlugin
      * @link https://greensock.com/docs/v3/Plugins/MorphSVGPlugin/static.convertToPath()

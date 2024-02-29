@@ -4,7 +4,7 @@ declare class GSDevTools {
 
   /**
    * Create a GSDevTools instance.
-   * 
+   *
    * ```js
    * GSDevTools.create({animation: tl});
    * ```

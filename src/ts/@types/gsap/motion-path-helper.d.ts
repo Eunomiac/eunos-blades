@@ -16,7 +16,7 @@ declare class MotionPathHelper {
 
   /**
    * Create a MotionPathHelper instance.
-   * 
+   *
    * ```js
    * MotionPathHelper.create(".myClass");
    * ```

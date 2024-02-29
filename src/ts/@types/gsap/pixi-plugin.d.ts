@@ -75,9 +75,9 @@ declare namespace gsap.plugins {
   interface PixiPlugin extends Plugin {
 
     /**
-     * Registers the main PIXI library object with the PixiPlugin so that it can find the 
+     * Registers the main PIXI library object with the PixiPlugin so that it can find the
      * necessary classes/objects. You only need to register it once.
-     * 
+     *
      * ```js
      * PixiPlugin.registerPIXI(PIXI);
      * ```

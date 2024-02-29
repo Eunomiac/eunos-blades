@@ -16,7 +16,7 @@ declare class Flip {
    * @link https://greensock.com/docs/v3/Plugins/Flip/static.batch()
    */
   static batch(id?: string): FlipBatch;
-  
+
   /**
    * Gets the matrix to convert points from one element's local coordinates into a
    * different element's local coordinate system.
@@ -32,7 +32,7 @@ declare class Flip {
    * @memberof Flip
    */
   static convertCoordinates(fromElement: Element, toElement: Element): gsap.plugins.Matrix2D;
-    
+
   /**
    * Converts a point from one element's local coordinates into a
    * different element's local coordinate system.
@@ -49,15 +49,15 @@ declare class Flip {
    * @memberof Flip
    */
   static convertCoordinates(fromElement: Element, toElement: Element, point: gsap.Point2D): gsap.Point2D;
-   
+
   /**
    * Changes the x/y/rotation/skewX transforms (and width/height or scaleX/scaleY) to fit one element exactly into the the position/size/rotation of another element.
-   * 
+   *
    * ```js
    * Flip.fit("#el1", "#el2", {
-   *   scale: true, 
-   *   absolute: true, 
-   *   duration: 1, 
+   *   scale: true,
+   *   absolute: true,
+   *   duration: 1,
    *   ease: "power2"
    * });
    * ```
@@ -73,7 +73,7 @@ declare class Flip {
 
   /**
    * Animates the targets from the provided state to their current state (position/size).
-   * 
+   *
    * ```js
    * Flip.from(state, {
    *   duration: 1,
@@ -94,7 +94,7 @@ declare class Flip {
 
   /**
    * Captures information about the current state of the targets so that they can be flipped later.
-   * 
+   *
    * ```js
    * let state = Flip.getState(".my-class, .another-class", {props: "backgroundColor,color", simple: true});
    * ```
@@ -130,7 +130,7 @@ declare class Flip {
    *   // do stuff
    * }
    * ```
-   * 
+   *
    * @static
    * @param {gsap.DOMTarget} target
    * @returns {boolean} whether or not the target element is actively flipping
@@ -171,7 +171,7 @@ declare class Flip {
 
   /**
    * Animates the targets from the current state to the provided state.
-   * 
+   *
    * ```js
    * Flip.to(state, {
    *   duration: 1,
@@ -271,7 +271,7 @@ declare namespace Flip {
     onComplete?: BatchActionFunction;
     once?: boolean;
   }
-  
+
   class ElementState {
     readonly bounds: DOMRect;
     readonly cache: object;
@@ -500,7 +500,7 @@ declare namespace gsap {
    * @deprecated since 3.7.0
    * @see Flip.FromToVars
    */
-  type FlipToFromVars = Flip.FromToVars;  
+  type FlipToFromVars = Flip.FromToVars;
 
   /**
    * @deprecated since 3.7.0

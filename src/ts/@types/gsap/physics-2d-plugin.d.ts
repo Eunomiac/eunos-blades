@@ -20,7 +20,7 @@ declare namespace gsap {
 
 declare namespace gsap.plugins {
   interface Physics2DPlugin extends Plugin {
-     
+
   }
 
   interface Physics2DPluginClass extends Physics2DPlugin {

@@ -21,7 +21,7 @@ declare namespace gsap {
 
 declare namespace gsap.plugins {
   interface ScrambleTextPlugin extends Plugin {
-     
+
   }
 
   interface ScrambleTextPluginClass extends ScrambleTextPlugin {

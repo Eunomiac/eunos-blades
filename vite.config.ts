@@ -1,6 +1,39 @@
 // Importing necessary functions and types from the Vite package and the path module from Node.js
-import { defineConfig, type UserConfig } from "vite";
+import { defineConfig, type UserConfig, type Plugin } from "vite";
 import path from "path";
+
+function foundryPlugin(): Plugin {
+  const virtualPrefix = "\0virtual:foundry:";
+
+  return {
+    name: "foundry-plugin",
+
+    resolveId(source) {
+      if (source === "gsap/all") {
+        return {
+          // See https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention
+          id: `${virtualPrefix}scripts/greensock/esm/all.js`,
+
+          // This is used to make sure that there's no later.
+          external: "absolute"
+        };
+      }
+
+      return null;
+    },
+    load(id) {
+      if (id.startsWith(virtualPrefix)) {
+        const loadPath = id.slice(virtualPrefix.length);
+        const escapedPath = loadPath.replace('"', '\\"');
+
+        return `
+            const importPath = import; // Defeat Vite's dynamic import bundling.
+            export default = await importPath("${escapedPath}");
+        `;
+      }
+    }
+  };
+}
 
 // Defining the Vite configuration object with specific settings for this project
 const config: UserConfig = defineConfig({
@@ -42,7 +75,7 @@ const config: UserConfig = defineConfig({
       keep_fnames: true // Preserve function names
     },
     // Temporarily disable minification for output checking
-    // minify: false,
+    minify: false,
     // Configuration for Rollup (used by Vite under the hood)
     rollupOptions: {
       // Specify external modules that shouldn't be bundled
@@ -58,9 +91,12 @@ const config: UserConfig = defineConfig({
   },
   resolve: {
     alias: {
-      "gsap/all": path.resolve("D:/LTSC Programs/FoundryVTT/Foundry Virtual Tabletop/resources/app/public/scripts/greensock/esm/all.js")
+      "gsap/all": "scripts/greensock/esm/all.js"
     }
-  }
+  },
+  plugins: [
+    foundryPlugin()
+  ]
 });
 
 // Exporting the configuration object to be used by Vite

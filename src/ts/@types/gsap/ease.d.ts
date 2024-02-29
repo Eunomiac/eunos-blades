@@ -3,12 +3,12 @@ declare namespace gsap {
   interface EaseFunction {
     (progress: number): number;
   }
-  
+
   interface Ease {
     easeIn: EaseFunction;
     easeOut: EaseFunction;
     easeInOut: EaseFunction;
-  } 
+  }
 
   interface BackConfig extends EaseFunction {
     config(overshoot: number): EaseFunction;
@@ -63,7 +63,7 @@ declare namespace gsap {
 
   interface RoughEase extends EaseFunction {
     config: RoughEaseConfig;
-    ease: RoughEaseEase;   
+    ease: RoughEaseEase;
   }
 
   interface SlowMoEase extends EaseFunction {
@@ -76,7 +76,7 @@ declare namespace gsap {
 
   interface SlowMo extends EaseFunction {
     config: SlowMoConfig;
-    ease: SlowMoEase;   
+    ease: SlowMoEase;
   }
 
   interface SteppedEase {

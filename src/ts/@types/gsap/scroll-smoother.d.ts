@@ -137,7 +137,7 @@ declare class ScrollSmoother {
    * ```js
    * scrollSmoother.kill();
    * ```
-   * 
+   *
    * @memberof ScrollSmoother
    * @link https://greensock.com/docs/v3/Plugins/ScrollSmoother/kill()
    */

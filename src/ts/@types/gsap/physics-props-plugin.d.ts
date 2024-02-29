@@ -19,7 +19,7 @@ declare namespace gsap {
 
 declare namespace gsap.plugins {
   interface PhysicsPropsPlugin extends Plugin {
-     
+
   }
 
   interface PhysicsPropsPluginClass extends PhysicsPropsPlugin {

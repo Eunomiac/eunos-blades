@@ -61,7 +61,7 @@ declare namespace gsap.plugins {
      * ```js
      * MotionPathPlugin.convertCoordinates(fromElement, toElement);
      * ```
-     * 
+     *
      * @param {Element} fromElement
      * @param {Element} toElement
      * @returns {Matrix2D} A matrix to convert from one element's coordinate system to another's
@@ -76,7 +76,7 @@ declare namespace gsap.plugins {
      * ```js
      * MotionPathPlugin.convertCoordinates(fromElement, toElement, point);
      * ```
-     * 
+     *
      * @param {Element} fromElement
      * @param {Element} toElement
      * @param {Point2D} point
@@ -94,7 +94,7 @@ declare namespace gsap.plugins {
      * ```
      *
      * @param {DOMTarget} shape
-     * @param {boolean} [swap] 
+     * @param {boolean} [swap]
      * @returns {SVGPathElement[]} The converted paths
      * @memberof MotionPathPlugin
      * @link https://greensock.com/docs/v3/Plugins/MotionPathPlugin/static.convertToPath()
@@ -108,7 +108,7 @@ declare namespace gsap.plugins {
      * ```js
      * MotionPathPlugin.getAlignMatrix(fromElement, toElement);
      * ```
-     * 
+     *
      * @param {Element} fromElement
      * @param {Element} toElement
      * @param {number[] | Point2D} [fromOrigin]
@@ -120,13 +120,13 @@ declare namespace gsap.plugins {
     getAlignMatrix(fromElement: Element, toElement: Element, fromOrigin?: number[] | Point2D, toOrigin?: number[] | Point2D | "auto"): Matrix2D;
 
     /**
-     * Gets the Matrix2D that would be used to convert the element's local coordinate 
+     * Gets the Matrix2D that would be used to convert the element's local coordinate
      * space into the global coordinate space.
      *
      * ```js
      * MotionPathPlugin.getGlobalMatrix(element);
      * ```
-     * 
+     *
      * @param {Element} element
      * @param {Boolean} [inverse]
      * @param {Boolean} [adjustGOffset]
@@ -137,13 +137,13 @@ declare namespace gsap.plugins {
     getGlobalMatrix(element: Element, inverse?: boolean, adjustGOffset?: boolean): Matrix2D;
 
     /**
-     * Calculates the x/y position (and optionally the angle) corresponding to a 
+     * Calculates the x/y position (and optionally the angle) corresponding to a
      * particular progress value along the RawPath.
      *
      * ```js
      * MotionPathPlugin.getPositionOnPath(rawPath, 0.5);
      * ```
-     * 
+     *
      * @param {RawPath} rawPath
      * @param {Number} progress
      * @param {Boolean} [includeAngle]
@@ -154,12 +154,12 @@ declare namespace gsap.plugins {
     getPositionOnPath(rawPath: RawPath, progress: number, includeAngle?: boolean): Point2D | getRelativePositionObject;
 
     /**
-     * Gets the RawPath for the provided element or raw SVG <path> data. 
+     * Gets the RawPath for the provided element or raw SVG <path> data.
      *
      * ```js
      * MotionPathPlugin.getRawPath(element);
      * ```
-     * 
+     *
      * @param {DOMTarget} value
      * @returns {RawPath} The rawPath
      * @memberof MotionPathPlugin
@@ -173,7 +173,7 @@ declare namespace gsap.plugins {
      * ```js
      * MotionPathPlugin.getRelativePosition(dot, inner, [0.5, 0.5], [0.5, 0.5]);
      * ```
-     * 
+     *
      * @param {Element} fromElement
      * @param {Element} toElement
      * @param {number[] | Point2D[]} [fromOrigin]
@@ -190,7 +190,7 @@ declare namespace gsap.plugins {
      * ```js
      * MotionPathPlugin.pointsToSegment([0,0, 10,10, ...], 0.5);
      * ```
-     * 
+     *
      * @param {number[]} points
      * @param {number} [curviness]
      * @returns {number[]} Cubic Bezier data in alternating x, y, x, y format
@@ -205,7 +205,7 @@ declare namespace gsap.plugins {
      * ```js
      * MotionPathPlugin.rawPathToString(rawPath);
      * ```
-     * 
+     *
      * @param {RawPath} rawPath
      * @returns {string} The converted path
      * @memberof MotionPathPlugin
@@ -219,7 +219,7 @@ declare namespace gsap.plugins {
      * ```js
      * MotionPathPlugin.sliceRawPath(rawPath, 0, 3);
      * ```
-     * 
+     *
      * @param {RawPath} rawPath
      * @param {number} start
      * @param {number} end

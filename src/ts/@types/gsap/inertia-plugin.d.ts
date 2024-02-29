@@ -5,7 +5,7 @@ declare namespace gsap {
   interface InertiaDuration {
     min?: number;
     max?: number;
-    overshoot?: number; 
+    overshoot?: number;
   }
 
   interface InertiaLinkedProps {
@@ -16,7 +16,7 @@ declare namespace gsap {
     min?: number;
     max?: number;
     end?: number | number[] | InertiaEndFunction<any>;
-    // end?: number | number[] | InertiaEndFunction<number> | InertiaEndFunction<InertiaLinkedProps>; 
+    // end?: number | number[] | InertiaEndFunction<number> | InertiaEndFunction<InertiaLinkedProps>;
     velocity?: number | "auto";
   }
 
@@ -45,7 +45,7 @@ declare namespace gsap.plugins {
      * ```js
      * InertiaPlugin.getVelocity(obj, "x,y");
      * ```
-     * 
+     *
      * @param {Element} target
      * @param {string} props
      * @returns {number} The current velocity

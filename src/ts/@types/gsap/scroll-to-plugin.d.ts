@@ -18,7 +18,7 @@ declare namespace gsap {
 
 declare namespace gsap.plugins {
   interface ScrollToPlugin extends Plugin {
-     
+
   }
 
   interface ScrollToPluginClass extends ScrollToPlugin {

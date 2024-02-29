@@ -100,7 +100,7 @@ declare class ScrollTrigger {
    *
    * ```js
    * ScrollTrigger.config({
-   *   limitCallbacks: true, 
+   *   limitCallbacks: true,
    *   autoRefreshEvents: "resize,load,visibilitychange,DOMContentLoaded"
    * });
    * ```
@@ -207,7 +207,7 @@ declare class ScrollTrigger {
 
   /**
    * Returns a function to control the scroll position of a particular element
-   * 
+   *
    * ```js
    * let setScroll = ScrollTrigger.getScrollFunc(window);
    * setScroll(250);
@@ -487,7 +487,7 @@ declare class ScrollTrigger {
    * scrollTrigger.disable();
    * scrollTrigger.disable(true);
    * ```
-   * 
+   *
    * @param {boolean} [revert]
    * @param {boolean} [allowAnimation]
    * @memberof ScrollTrigger
@@ -728,7 +728,7 @@ declare namespace ScrollTrigger {
     fastScrollEnd?: boolean | number;
     horizontal?: boolean;
     id?: string;
-    immediateRender?: boolean; 
+    immediateRender?: boolean;
     invalidateOnRefresh?: boolean;
     markers?: boolean | MarkersVars;
     once?: boolean;
