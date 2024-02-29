@@ -1,0 +1,197 @@
+& {
+
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+
+  color: var(--color-default);
+
+  font: {
+    family: var(--font-default);
+    size: var(--font-size-default);
+    weight: var(--font-weight-default);
+    style: var(--font-style-default);
+    variant: var(--font-variant-default);
+  }
+  line-height: var(--line-height-default);
+  text: {
+    shadow: var(--text-shadow-default);
+    transform: var(--text-transform-default);
+  }
+
+  *:not(i):not(button) {
+    color: inherit;
+    font: {
+      family: inherit;
+      size: inherit;
+      weight: inherit;
+      style: inherit;
+      variant: inherit;
+    }
+    line-height: inherit;
+    text: {
+      shadow: inherit;
+      transform: inherit;
+    }
+  }
+
+  b, strong { font-weight: bold !important; color: var(--blades-white-bright) !important}
+  i:not([class]), em { font-style: italic  !important }
+  i[class] { font-family: var(--font-awesome) }
+  i.fab { font-family: var(--font-awesome-alt)}
+  i.fa-duotone { font-family: var(--font-awesome-duotone)}
+  button { color: var(--blades-white) }
+
+  h1:not(i):not(button), h2:not(i):not(button) {
+    margin: var(--margin-heading-strong);
+    padding: var(--padding-heading-strong);
+
+    color: var(--color-heading-strong);
+    background: var(--background-heading-strong);
+    font: {
+      family: var(--font-heading-strong);
+      weight: var(--font-weight-heading-strong);
+      style: var(--font-style-heading-strong);
+      variant: var(--font-variant-heading-strong);
+    }
+    line-height: var(--line-height-heading-strong);
+    text: {
+      shadow: var(--text-shadow-heading-strong);
+      transform: var(--text-transform-heading-strong);
+    }
+    border-color: var(--border-color-heading-strong);
+    border-style: var(--border-style-heading-strong);
+    border-width: var(--border-width-heading-strong);
+    box-shadow: var(--box-shadow-heading-strong);
+  }
+
+  h3:not(i):not(button), h4:not(i):not(button) {
+    margin: var(--margin-heading);
+    padding: var(--padding-heading);
+
+    color: var(--color-heading);
+    background: var(--background-heading);
+    font: {
+      family: var(--font-heading);
+      weight: var(--font-weight-heading);
+      style: var(--font-style-heading);
+      variant: var(--font-variant-heading);
+    }
+    line-height: var(--line-height-heading);
+    text: {
+      shadow: var(--text-shadow-heading);
+      transform: var(--text-transform-heading);
+    }
+    border-color: var(--border-color-heading);
+    border-style: var(--border-style-heading);
+    border-width: var(--border-width-heading);
+    box-shadow: var(--box-shadow-heading);
+  }
+
+  h1:not(i):not(button) { font-size: toRem(20px) }
+  h2:not(i):not(button),
+  h3:not(i):not(button) { font-size: toRem(18px) }
+  h4:not(i):not(button) { font-size: toRem(16px) }
+
+  select:not(i):not(button),
+  input:not(i):not(button),
+  option:not(i):not(button),
+  textarea:not(i):not(button) {
+    margin: var(--margin-input);
+    padding: var(--padding-input);
+
+    min-height: unset;
+
+    color: var(--color-input);
+    background: var(--background-input);
+    font: {
+      family: var(--font-input);
+      size: var(--font-size-input);
+      weight: var(--font-weight-input);
+      style: var(--font-style-input);
+      variant: var(--font-variant-input);
+    }
+    line-height: var(--line-height-input);
+    text: {
+      shadow: var(--text-shadow-input);
+      transform: var(--text-transform-input);
+      indent: toRem(3px);
+    }
+    border-color: var(--border-color-input);
+    border-style: var(--border-style-input);
+    border-width: var(--border-width-input);
+    box-shadow: var(--box-shadow-input);
+
+    &[type="number"],
+    &[data-dtype="number"],
+    &[data-dtype="number"] option {
+      text-align: right;
+    }
+
+    option {
+      color: var(--blades-white);
+      background: var(--blades-black);
+    }
+  }
+
+  p + p {
+    margin: 0.5rem 0;
+    min-height: 1rem;
+  }
+
+  .window-header {
+    background: var(--blades-black-dark);
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0 0 20px;
+    > * {
+        flex-basis: auto;
+        flex-shrink: 0.5;
+    }
+    .window-title {
+        border: none;
+        margin: 0;
+        line-height: 1.2;
+        flex-shrink: 0.5;
+    }
+    a {
+        margin: 0 toRem(5px);
+        i {
+            // color: var(--blades-white-bright);
+        }
+    }
+    .close {
+        font-size: 0;
+        margin: 0;
+        transform: scale(1.5);
+        i {
+            font-weight: bold;
+            color: var(--blades-white-bright);
+            font-size: toRem(20px);
+            line-height: 1;
+            margin-top: toRem(-1px);
+
+            font-family: var(--font-emphasis), serif;
+            transform-origin: center center;
+            transform: scaleY(0.75);
+            &::before {
+                content: "X";
+                padding-top: toRem(4px);
+            }
+        }
+    }
+
+  }
+  .window-content {
+    .compendium, .directory {
+      h1, h2, h3, h4 {
+        margin: 0;
+        border: 0;
+        padding: 0;
+      }
+    }
+  }
+
+  @import "./components";
+}

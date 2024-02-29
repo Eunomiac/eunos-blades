@@ -1,0 +1,258 @@
+.dotline {
+  --dotline-zero-dot-size: #{toRem(14px)};
+  --dotline-dot-size: #{toRem(14px)};
+  --dotline-dot-spacing: #{toRem(3px)};
+  --dotline-horiz-align: flex-start;
+  --dotline-vert-align: center;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: var(--dotline-horiz-align);
+  align-items: var(--dotline-vert-align);
+  position: relative;
+
+  &.centered {
+    --dotline-horiz-align: center;
+  }
+
+  &.locked {
+    .dot {
+      pointer-events: none;
+      cursor: default;
+    }
+  }
+
+  &.dotline-right {
+    margin-left: auto;
+    margin-right: toRem(20px);
+  }
+
+  .dotline-label {
+    font-family: var(--font-emphasis);
+    font-size: toRem(14px);
+    color: var(--blades-white);
+    text-transform: uppercase;
+    line-height: toRem(14px);
+    margin-right: toRem(5px);
+  }
+
+  .dot {
+    --dot-frame-color: var(--frame-color, var(--blades-white));
+    --dot-frame-color-empty: var(--frame-color-empty, var(--dot-frame-color));
+    --dot-frame-color-full: var(--frame-color-full, var(--dot-frame-color));
+
+    --dot-fill-color-empty: var(--fill-color-empty, transparent);
+    --dot-fill-color-full: var(--fill-color-full, var(--blades-white-bright));
+
+    --dot-half-color-empty: var(--half-color-empty, var(--dot-frame-color));
+    --dot-half-color-full: var(--half-color-full, var(--dot-frame-color));
+
+    height: var(--dotline-dot-sizeY, var(--dotline-dot-size));
+    width: var(--dotline-dot-sizeX, var(--dotline-dot-size));
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0 var(--dotline-dot-spacing) 0 0;
+    pointer-events: auto;
+    cursor: pointer;
+    position: relative;
+
+    &:last-of-type {
+      margin: 0;
+    }
+
+    .img-main, .img-hover {
+      display: block;
+      height: 100%;
+      width: 100%;
+      filter: drop-shadow(0px 0px 2px black) drop-shadow(0px 0px 1px black);
+
+      &.img-hover { display: none }
+    }
+
+    &.svg-dot {
+      height: auto;
+
+      svg {
+        width: 100%;
+        height: auto;
+        max-height: var(--dotline-dot-sizeY, unset);
+      }
+
+      &.full-dot {
+        svg .full { fill: var(--current-fill-color, var(--dot-fill-color-full)) }
+        svg .frame { fill: var(--current-frame-color, var(--dot-frame-color-full)) }
+        svg .half { fill: var(--current-half-color, var(--dot-half-color-full)) }
+      }
+      &.empty-dot {
+        svg .full { fill: var(--current-fill-color, var(--dot-fill-color-empty)) }
+        svg .frame { fill: var(--current-frame-color, var(--dot-frame-color-empty)) }
+        svg .half { fill: var(--current-half-color, var(--dot-half-color-empty)) }
+      }
+    }
+
+    &:hover {
+      .img-main { opacity: 0.5 }
+      .img-hover { display: block }
+      .img-hover + .img-main { display: none }
+      &.svg-dot { opacity: 0.5 }
+    }
+
+    &.full-dot:last-of-type ~ .advance-button {
+      display: block;
+    }
+  }
+
+  .advance-button {
+    display: none;
+    position: absolute;
+    cursor: pointer;
+    pointer-events: auto;
+    font-family: var(--font-emphasis-narrow);
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    // line-height: 25px;
+    z-index: 10;
+    top: 0px;
+    right: -50px;
+    height: 25px;
+    width: 85px;
+    padding: 3px 3px;
+    transition: .5s;
+
+    &.rainbow-glow {
+      background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+      border-radius: 10px;
+      color: black;
+      outline: 2px solid var(--blades-black);
+
+      &:before {
+        content: '';
+        background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+        position: absolute;
+        top: -2px;
+        left:-2px;
+        background-size: 400%;
+        filter: blur(5px);
+        width: calc(100% + 4px);
+        height: calc(100% + 4px);
+        animation: glowing 20s linear infinite;
+        opacity: 0;
+        transition: opacity .3s ease-in-out;
+        border-radius: 10px;
+        z-index: -1;
+      }
+
+      &:hover:before { opacity: 1 }
+
+      &:after {
+        z-index: -1;
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(-45deg, var(--blades-gold-dark) 0%, var(--blades-gold-bright) 70%);
+        left: 0;
+        top: 0;
+        border-radius: 10px;
+        opacity: 0.5;
+      }
+
+      @keyframes glowing {
+          0% { background-position: 0 0; }
+          50% { background-position: 400% 0; }
+          100% { background-position: 0 0; }
+      }
+    }
+
+    &.gold-orbit {
+      --button-glow-color: var(--blades-gold-bright);
+
+      background: var(--blades-black);
+      color: var(--blades-white-bright);
+      // color: var(--button-glow-color);
+      box-shadow: 5px 5px 10px var(--blades-black-dark);
+      overflow: hidden;
+      transition: 0.5s;
+      animation: btn-throb 3s ease-in-out infinite;
+
+      &:hover {
+        animation-play-state: paused;
+        background: var(--button-glow-color);
+        color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 5px var(--button-glow-color),
+                    0 0 25px var(--button-glow-color),
+                    0 0 50px var(--button-glow-color),
+                    0 0 100px var(--button-glow-color);
+      }
+      span {
+        position: absolute;
+        display: block;
+
+        &:nth-child(1) {
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, var(--button-glow-color));
+          animation: btn-anim1 1s linear infinite;
+        }
+
+        &:nth-child(2) {
+          top: -100%;
+          right: 0;
+          width: 2px;
+          height: 100%;
+          background: linear-gradient(180deg, transparent, var(--button-glow-color));
+          animation: btn-anim2 1s linear infinite;
+          animation-delay: .25s
+        }
+
+        &:nth-child(3) {
+          bottom: 0;
+          right: -100%;
+          width: 100%;
+          height: 2px;
+          background: linear-gradient(270deg, transparent, var(--button-glow-color));
+          animation: btn-anim3 1s linear infinite;
+          animation-delay: .5s
+        }
+
+        &:nth-child(4) {
+          bottom: -100%;
+          left: 0;
+          width: 2px;
+          height: 100%;
+          background: linear-gradient(360deg, transparent, var(--button-glow-color));
+          animation: btn-anim4 1s linear infinite;
+          animation-delay: .75s
+        }
+      }
+      @keyframes btn-throb {
+        0% { scale: 0.9 }
+        50% { scale: 1.1 }
+        100% { scale: 0.9 }
+      }
+      @keyframes btn-anim1 {
+        0% { left: -100% }
+        50%,100% { left: 100% }
+      }
+      @keyframes btn-anim2 {
+        0% { top: -100% }
+        50%,100% { top: 100% }
+      }
+      @keyframes btn-anim3 {
+        0% { right: -100% }
+        50%,100% { right: 100% }
+      }
+      @keyframes btn-anim4 {
+        0% { bottom: -100% }
+        50%,100% { bottom: 100% }
+      }
+
+    }
+  }
+}

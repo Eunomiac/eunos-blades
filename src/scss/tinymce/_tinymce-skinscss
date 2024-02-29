@@ -1,0 +1,62 @@
+& {
+  --editor-top-shift: -30px;
+
+  --toolbar-scale-factor: 1; // 0.75;
+  --toolbar-margin-bottom: -15px;
+
+  --statusbar-height: 15px;
+
+  position: relative;
+  top: -30px;
+  z-index: 3;
+  margin-bottom: var(--editor-top-shift);
+  overflow: visible;
+
+  .tox.tox-tinymce {
+    border: 1px solid #808080;
+    border-radius: 0px;
+    box-shadow: none;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    font-family: Minion Pro;
+    overflow: hidden;
+    position: relative;
+    visibility: inherit !important;
+
+    .tox-editor-container {
+      .tox-editor-header {
+        width: calc(100% / var(--toolbar-scale-factor));
+        transform-origin: top left;
+        transform: scale(var(--toolbar-scale-factor));
+        margin-bottom: var(--toolbar-margin-bottom);
+
+        .tox-toolbar-overlord {
+          .tox-toolbar__primary {
+            .tox-toolbar__group {
+              .tox-tbtn {
+                margin: 0;
+                height: 24px;
+              }
+            }
+          }
+        }
+      }
+      .tox-sidebar-wrap {
+        .tox-edit-area {
+          .tox-edit-area__iframe {
+            background-color: var(--blades-black-dark);
+          }
+        }
+      }
+    }
+    .tox-statusbar {
+      height: var(--statusbar-height);
+
+      .tox-statusbar__text-container {
+
+      }
+    }
+  }
+
+}

@@ -1,5 +1,5 @@
 # Euno's "Blades In The Dark" for Foundry VTT
- 
+
 | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades)  | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) |
 | :-----------: | :-----------: |
 | [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) <br /> [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) <br /> [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) |
@@ -8,7 +8,7 @@ Welcome to Eunomiac's system implementation for "Blades in the Dark" by [Evil Ha
 
 ## THE GAME
 > *Blades in the Dark is a game about a group of daring scoundrels building a criminal enterprise on the haunted streets of an industrial-fantasy city. There are heists, chases, escapes, dangerous bargains, bloody skirmishes, deceptions, betrayals, victories, and deaths.*
->  
+>
 > *We play to find out if the fledgling crew can thrive amidst the teeming threats of rival gangs, powerful noble families, vengeful ghosts, the Bluecoats of the City Watch, and the siren song of the scoundrels’ own vices.*
 
 <h1 color="#FF0000" align="center" style="border: none; font-size: 18px; text-align: center; display: block; width: 100%;">You’re in a haunted Victorian-era city <br /> trapped inside a wall of lightning <br /> powered by demon blood.</h1>
@@ -77,4 +77,3 @@ The main highlights include detailed sheets for all character types, easy-to-use
 <p align="center">
   <img src="https://github.com/Eunomiac/eunos-blades/assets/5692071/2926f84c-c175-4800-aff1-6b6893fc1bc6" width="800px" alt="Abilities">
 </p>
-

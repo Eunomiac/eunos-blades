@@ -1,0 +1,37 @@
+.button-icon, .toggle-icon {
+  position: absolute;
+  height: 1.5rem;
+  width: 1.5rem;
+  line-height: 1.5rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  right: 0;
+      text-shadow: none;
+
+  i {
+    height: 1.5rem;
+    width: 1.5rem;
+    line-height: 1.75rem;
+    text-align: center;
+    opacity: 0.75;
+    margin-top: -0.125rem;
+    pointer-events: none;
+
+    &.toggle-off {
+      opacity: 0.25;
+    }
+  }
+
+  .hidden-toggle {
+    margin: 0;
+    border: none;
+    opacity: 0;
+    position: absolute;
+    transition: 0.25s;
+
+    &[type="checkbox"]:checked + .toggle-on + .toggle-off { display: none }
+    &[type="checkbox"]:not(:checked) + .toggle-on { display: none }
+  }
+
+}
