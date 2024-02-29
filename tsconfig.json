@@ -1,0 +1,54 @@
+{
+  "extends": "@tsconfig/node21/tsconfig.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "checkJs": false,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "paths": {
+      "*": [
+        "*",
+        "D:/Users/Ryan/Documents/Projects/.CODING/FoundryVTT/FoundryDevData/Data/modules/*",
+        "D:/LTSC Programs/FoundryVTT/resources/app/*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "typescript-eslint-language-service"
+      }
+    ],
+    "rootDir": ".",
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "sourceMap": false,
+    "target": "ES2022",
+    "traceResolution": false,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@league-of-foundry-developers",
+      "./src/ts/@types"
+    ],
+  },
+  "include": [
+    "./src/ts/**/*.ts" ],
+  "exclude": [
+    "dist/**",
+    "/scripts/**",
+    "POSTCSSgulpfile.js",
+    "node_modules/**",
+    ".dev-refs/**/*.*",
+    "**/*.js"
+  ]
+}
