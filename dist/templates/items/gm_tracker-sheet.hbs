@@ -1,0 +1,31 @@
+<form class="{{cssClass}} tracker-sheet" autocomplete="off">
+
+  <img class="sheet-img" src="{{item.img}}" />
+  {{eLog "Tracker Sheet" this}}
+
+  {{!-- Sheet Container --}}
+  <div class="sheet-root">
+    <section class="sheet-top">
+      <input class="sheet-title shadowed" type="text" readonly value="GM Tracker">
+    </section>
+    <section class="sheet-mid-bar flex-vertical full-width">
+      <select class="phase-select" data-dtype="String" name="system.phase">
+        {{#select system.phase}}
+        <option value="" hidden disabled selected></option>
+        {{#each system.phases}}
+        <option value="{{this}}">{{localize this}}</option>
+        {{/each}}
+        {{/select}}
+      </select>
+      <div class="flex-horizontal full-width">
+        <div class="comp comp-horizontal">
+          <label class="comp-label comp-input-label">Spoof Player: </label>
+          <input  data-dtype="Boolean" type="checkbox" name="system.is_spoofing_player" {{checked system.is_spoofing_player}} />
+        </div>
+      </div>
+    </section>
+    <section class="sheet-footer-small"></section>
+  </div>
+
+
+</form>

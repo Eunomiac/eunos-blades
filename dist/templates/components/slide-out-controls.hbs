@@ -1,0 +1,13 @@
+<div class="comp controls-container">
+  <div class="controls-panel">
+    <div class="controls-toggle"><i></i><i></i></div>
+    <ul class="controls-list">
+      <li><a class="control control-hidden {{~#if (test status "==" "Hidden")}} control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="Hidden"><i class="fa-sharp fa-solid fa-eye-slash"></i></a></li>
+      <li><a class="control control-forcedoff {{~#if (test status "==" "ForcedOff")}} control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ForcedOff"><i class="fa-sharp fa-solid fa-stop"></i></a></li>
+      <li><a class="control control-toggledoff {{~#if (test status "==" "ToggledOff")}} control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ToggledOff"><i class="fa-sharp fa-solid fa-pause"></i></a></li>
+      <li><a class="control control-toggledon {{~#if (test status "==" "ToggledOn")}} control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ToggledOn"><i class="fa-sharp fa-solid fa-play"></i></a></li>
+      <li><a class="control control-forcedon {{~#if (test status "==" "ForcedOn")}} control-active{{/if}}" data-id="{{id}}" data-action="gm-set" data-status="ForcedOn"><i class="fa-sharp fa-solid fa-forward-fast"></i></a></li>
+      <li><a class="control control-reset" data-id="{{id}}" data-action="gm-set" data-status="Reset"><i class="fa-sharp fa-solid fa-rotate-left"></i></a></li>
+    </ul>
+  </div>
+</div>

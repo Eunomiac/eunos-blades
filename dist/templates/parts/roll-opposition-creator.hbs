@@ -1,0 +1,86 @@
+
+{{eLog "Roll Opposition Container" this}}
+
+
+<div class="roll-opposition-container {{~#if (test id "==" selectedID)}} selected-opposition{{/if}}{{~#if isBlank}} opposition-blank{{/if}}">
+    <div class="roll-opposition-top-container">
+        <img class="roll-opposition-img" src="{{#if rollOppImg}}{{rollOppImg}}{{else}}icons/svg/cancel.svg{{/if}}" data-edit="system.oppositions.{{id}}.rollOppImg" {{~#unless rollOppImg}} style="rotate: 45deg"{{/unless}}{{#if (test rollOppImg "==" "icons/svg/cancel.svg")}} style="rotate: 45deg"{{/if}} />
+        <div class="roll-opposition-text-container">
+            <input class="roll-opposition-name shadowed" name="system.oppositions.{{id}}.rollOppName" type="text" value="{{rollOppName}}" placeholder="Name" data-opp-id="{{id}}" />
+            <input class="roll-opposition-subname shadowed" name="system.oppositions.{{id}}.rollOppSubName" type="text" value="{{rollOppSubName}}" placeholder="Sub-Name" />
+            <input class="roll-opposition-type shadowed" name="system.oppositions.{{id}}.rollOppType" type="text" value="{{rollOppType}}" placeholder="Type" />
+        </div>
+    </div>
+    <div class="roll-opposition-factor-label-container">
+        <span class="factor-label shadowed">TIER</span>
+        <span class="factor-label shadowed">QUALITY</span>
+        <span class="factor-label shadowed">SCALE</span>
+        <span class="factor-label shadowed">MAGNITUDE</span>
+    </div>
+    <div class="roll-opposition-factors-container">
+        <select class="roll-opposition-factor factor-selector" data-dtype="String" name="system.oppositions.{{id}}.rollFactors.tier.value">
+            {{#select rollFactors.tier.value}}
+            <option value="" hidden disabled selected></option>
+            {{#for 0 10}}
+            <option value="{{this}}">{{this}}</option>
+            {{/for}}
+            {{/select}}
+        </select>
+
+        <select class="roll-opposition-factor factor-selector" data-dtype="String" name="system.oppositions.{{id}}.rollFactors.quality.value">
+        {{#if (test rollFactors.quality.value "!=" "")}}
+            {{#select rollFactors.quality.value}}
+            <option value="" hidden disabled selected></option>
+            {{#for 0 10}}
+            <option value="{{this}}">{{this}}</option>
+            {{/for}}
+            {{/select}}
+        {{else}}
+            {{#select rollFactors.tier.value}}
+            <option value="" hidden disabled selected></option>
+            {{#for 0 10}}
+            <option value="{{this}}">{{this}}</option>
+            {{/for}}
+            {{/select}}
+        {{/if}}
+        </select>
+
+        <select class="roll-opposition-factor factor-selector" data-dtype="String" name="system.oppositions.{{id}}.rollFactors.scale.value">
+        {{#if rollFactors.scale}}
+            {{#select rollFactors.scale.value}}
+            <option value="" hidden disabled selected></option>
+            {{#for 0 10}}
+            <option value="{{this}}">{{this}}</option>
+            {{/for}}
+            {{/select}}
+        {{else}}
+            {{#select rollFactors.tier.value}}
+            <option value="" hidden disabled selected></option>
+            {{#for 0 10}}
+            <option value="{{this}}">{{this}}</option>
+            {{/for}}
+            {{/select}}
+        {{/if}}
+        </select>
+
+        <select class="roll-opposition-factor factor-selector" data-dtype="String" name="system.oppositions.{{id}}.rollFactors.magnitude.value">
+        {{#if rollFactors.magnitude}}
+            {{#select rollFactors.magnitude.value}}
+            <option value="" hidden disabled selected></option>
+            {{#for 0 10}}
+            <option value="{{this}}">{{this}}</option>
+            {{/for}}
+            {{/select}}
+        {{else}}
+            {{#select rollFactors.tier.value}}
+            <option value="" hidden disabled selected></option>
+            {{#for 0 10}}
+            <option value="{{this}}">{{this}}</option>
+            {{/for}}
+            {{/select}}
+        {{/if}}
+        </select>
+    </div>
+
+
+</div>

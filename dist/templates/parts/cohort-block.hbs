@@ -1,0 +1,154 @@
+{{eLog "COHORT BLOCK" this}}
+<div class="comp comp-vertical comp-cohort flex-vertical" data-comp-id="{{id}}" data-comp-type="Item">
+  <div class="cohort-top">
+    <div class="cohort-image-container">
+      {{#if (test type "==" "cohort_gang")}}
+      {{#if system.imageLeft}}
+      <div class="half-image half-image-left">
+        <img src="systems/eunos-blades/assets/icons/cohort-gang-type-icons/{{system.imageLeft}}" title="{{name}}" />
+      </div>
+      <div class="half-image half-image-right">
+        <img src="systems/eunos-blades/assets/icons/cohort-gang-type-icons/{{system.imageRight}}" title="{{name}}" />
+      </div>
+      {{else}}{{#if system.image}}
+      <div class="full-image">
+        <img src="systems/eunos-blades/assets/icons/cohort-gang-type-icons/{{system.image}}" title="{{name}}" />
+      </div>
+      {{/if}}{{/if}}
+      {{else}}
+      <div class="full-image">
+        <img src="{{img}}" title="{{name}}" />
+      </div>
+      {{/if}}
+    </div>
+
+    <div class="cohort-title-container">
+      <label class="shadowed cohort-name comp-title">{{name}}</label>
+    </div>
+
+    <div class="cohort-subtitle-container">
+      <span class="shadowed cohort-subtitle">{{system.subtitle}}</span>
+    </div>
+
+
+    <div class="cohort-quality-container">
+      <label class="shadowed cohort-quality-label">QUALITY</label>
+      <span class="shadowed cohort-quality-number">{{system.tierTotal}}</span>
+    </div>
+    {{#if (test type "==" "cohort_gang")}}
+    <div class="cohort-scale-container">
+      <label class="shadowed cohort-scale-label">SCALE</label>
+      <span class="shadowed cohort-scale-number">{{system.scale}}</span>
+    </div>
+    {{/if}}
+
+
+    <div class="cohort-harm-container flex-horizontal {{~#if (test system.harm.value "==" 4)}} wide-bar{{/if}}">
+      <label class="filled-label">Harm</label>
+      <div class="flex-horizontal cohort-harm-bar">
+
+        <div class="cohort-harm-box harm-level-0 tooltip-trigger {{~#if (test system.harm.value "==" 0)}} active{{/if}}">
+          <span class="harm-number shadowed">0</span>
+          <span class="harm-effect shadowed">(no effect)</span>
+          <div class="tooltip cohort-harm-tooltip">
+            <h2>Healthy</h2>
+            <p>(no effect)</p>
+          </div>
+        </div>
+
+        <div class="cohort-harm-box harm-level-1 tooltip-trigger {{~#if (test system.harm.value "==" 1)}} active{{/if}}">
+          <span class="harm-number shadowed">1</span>
+          <span class="harm-effect shadowed">Reduced Effect</span>
+          <div class="tooltip cohort-harm-tooltip">
+            <h2>Weakened</h2>
+            <p>Reduced Effect</p>
+          </div>
+        </div>
+
+        <div class="cohort-harm-box harm-level-2 tooltip-trigger {{~#if (test system.harm.value "==" 2)}} active{{/if}}">
+          <span class="harm-number shadowed">2</span>
+          <span class="harm-effect shadowed">Reduced Effect, -1d</span>
+          <div class="tooltip cohort-harm-tooltip">
+            <h2>Impaired</h2>
+            <p>Reduced Effect, -1d</p>
+          </div>
+        </div>
+
+        <div class="cohort-harm-box harm-level-3 tooltip-trigger {{~#if (test system.harm.value "==" 3)}} active{{/if}}">
+          <span class="harm-number shadowed">3</span>
+          <span class="harm-effect shadowed">Can't Act</span>
+          <div class="tooltip cohort-harm-tooltip">
+            <h2>Broken</h2>
+            <p>Can't Act</p>
+          </div>
+        </div>
+
+        <div class="cohort-harm-box harm-level-4 tooltip-trigger {{~#if (test system.harm.value "==" 4)}} active{{/if}}">
+          <span class="harm-number shadowed">4</span>
+          <span class="harm-effect shadowed">DEAD: Pay {{#if parent}}{{calc parent.system.tier.value "+" 2}}{{else}}Tier + 2{{/if}} Coin to Replace</span>
+          <div class="tooltip cohort-harm-tooltip">
+            <h2>DEAD</h2>
+            <p>Pay {{#if parent}}{{calc parent.system.tier.value "+" 2}}{{else}}Tier + 2{{/if}} Coin to Replace</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    {{#unless (test system.harm.value "==" 4)}}
+    <div class="cohort-roll-container flex-horizontal">
+      <label class="filled-label">Roll</label>
+      <button class="cohort-roll-button tooltip-trigger" data-action="cohort-roll-untrained" data-roll-label="Untrained">
+        <svg class="roll-button-icon tooltip-scaling-elem" viewBox="0 0 400 400">
+          <circle cx="200" cy="200" r="180"></circle>
+        </svg>
+        <div class="tooltip tooltip-cohort-roll"><h2>Roll Untrained</h2></div>
+      </button>
+      {{#if (test (test type "==" "cohort_expert") "||" (count system.subtypes))}}
+      <button class="cohort-roll-button tooltip-trigger" data-action="cohort-roll-trained" data-roll-label="Trained">
+        <svg class="roll-button-icon tooltip-scaling-elem" viewBox="0 0 400 400">
+          <circle cx="200" cy="200" r="180"></circle>
+        </svg>
+        <div class="tooltip tooltip-cohort-roll"><h2>Roll Trained</h2></div>
+      </button>
+      {{/if}}
+      {{#if (count system.elite_subtypes)}}
+      <button class="cohort-roll-button tooltip-trigger" data-action="cohort-roll-elite" data-roll-label="Elite">
+        <svg class="roll-button-icon tooltip-scaling-elem" viewBox="0 0 400 400">
+          <circle cx="200" cy="200" r="180"></circle>
+        </svg>
+        <div class="tooltip tooltip-cohort-roll"><h2>Roll Elite</h2></div>
+      </button>
+      {{/if}}
+    </div>
+    {{/unless}}
+  </div>
+  <div class="cohort-description full-width">
+    <div class="editor">
+      <div class="editor-content" data-engine="tinymce" data-collaborate="false">
+        {{{system.description}}}
+      </div>
+    </div>
+  </div>
+  <div class="cohort-flaws-edges flex-horizontal">
+    {{#if system.edgeData}}
+    {{#each system.edgeData as |edgeTooltip edgeName|}}
+    <div class="edge-container tooltip-trigger">
+      <label class="edge-name tooltip-scaling-elem shadowed">{{edgeName}}</label>
+      <div class="tooltip tooltip-small tooltip-edge">{{{edgeTooltip}}}</div>
+    </div>
+    {{/each}}
+    {{/if}}
+    {{#if system.flawData}}
+    {{#each system.flawData as |flawTooltip flawName|}}
+    <div class="flaw-container tooltip-trigger">
+      <label class="flaw-name tooltip-scaling-elem shadowed">{{flawName}}</label>
+      <div class="tooltip tooltip-small tooltip-flaw">{{{flawTooltip}}}</div>
+    </div>
+    {{/each}}
+    {{/if}}
+  </div>
+
+
+
+</div>

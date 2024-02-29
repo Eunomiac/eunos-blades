@@ -1,0 +1,94 @@
+<form class="{{cssClass}} clock-keeper-sheet" autocomplete="off">
+
+  <img class="sheet-img" src="{{item.img}}" />
+  {{eLog "Clock Keeper Sheet" this}}
+
+  {{!-- Sheet Container --}}
+  <div class="sheet-root">
+
+    {{!-- Header --}}
+    <section class="sheet-top flex-horizontal">
+      <input class="sheet-title shadowed" type="text" readonly value="Clock Keeper">
+      <div class="scene-selection">
+        <label>Scene:</label>
+        <select name="system.targetScene">
+          {{#select system.targetScene}}
+          {{#each sceneOptions }}
+          <option value="{{id}}">{{name}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
+    </section>
+
+    {{!-- Tabs, Tab Navigation --}}
+    <section class="tab-content nav-group flex-vertical">
+        {{!-- Nav menu --}}
+        <nav class="nav-tabs flex-horizontal">
+          <a class="tab-selector" data-tab="scene-keys">By Scene</a>
+          {{#if hasScoreKeys}}
+            <a class="tab-selector" data-tab="score-keys">Score</a>
+          {{/if}}
+          <a class="tab-selector" data-tab="project-keys">Project</a>
+          <a class="tab-selector" data-tab="faction-keys">Faction</a>
+        </nav>
+
+        {{!-- Scene Keys --}}
+        <div class="tab scene-keys flex-vertical {{~#unless (test targetScene "==" currentScene)}} other-scene-keys{{/unless}}" data-tab="scene-keys">
+
+          <label class="comp tab-label">
+            {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+              blockClass="create-clock-key-button"
+              buttonClass="fa-sharp fa-solid fa-location-plus"
+              action="create-clock-key"
+            }}
+            <span class="tab-title">Clock Keys in Scene</span>
+          </label>
+
+          {{#each sceneKeys as |clockKey| }}
+            {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls.hbs"
+              clockKey = clockKey
+              isSceneTab = true
+            }}
+          {{/each}}
+        </div>
+
+        {{#if hasScoreKeys}}
+        {{!-- Score Keys --}}
+        <div class="tab score-keys flex-vertical" data-tab="score-keys">
+          <div class="keys-container full-width">
+            {{#each scoreKeys }}
+              {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls.hbs"
+              clockKey = clockKey }}
+            {{/each}}
+          </div>
+        </div>
+        {{/if}}
+
+        {{!-- Project Keys --}}
+        <div class="tab project-keys flex-vertical" data-tab="project-keys">
+          <div class="keys-container full-width">
+            {{#each pcsWithProjects as |pc|}}
+              <h2>{{pc.name}}</h2>
+              {{#each pc.projects as |project|}}
+                {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls.hbs" clockKey = project.clockKey }}
+              {{/each}}
+            {{/each}}
+          </div>
+        </div>
+
+        {{!-- Faction Keys --}}
+        <div class="tab faction-keys flex-vertical" data-tab="faction-keys">
+          <div class="keys-container full-width">
+            {{#each factions as |faction|}}
+              <h2>{{faction.name}}</h2>
+              {{#each faction.clocks as |clockKey|}}
+                {{> "systems/eunos-blades/templates/parts/clock-sheet-key-controls.hbs" clockKey = clockKey }}
+              {{/each}}
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</form>

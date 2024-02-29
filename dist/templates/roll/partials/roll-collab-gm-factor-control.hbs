@@ -1,0 +1,83 @@
+{{#with this as |data|}}
+{{#with (lookup data.rollFactors.source data.factor) as |sourceData|}}
+{{#with (lookup data.rollFactors.opposition data.factor) as |oppData|}}
+{{#with (lookup data.GMBoosts data.factor) as |sourceBoost|}}
+{{#with (lookup data.GMOppBoosts data.factor) as |oppBoost|}}
+
+{{eLog "CONTEXT" data}}
+{{eLog "Source Data" sourceData}}
+{{eLog "Source Boost" sourceBoost}}
+{{eLog "Opp Data" oppData}}
+
+{{eLog "OppBoost" oppBoost}}
+
+<div class="factor-control-row flex-horizontal">
+
+  <span class="factor-toggle {{#if sourceData.isActive}} toggle-active{{/if}} factor-toggle-isActive"
+    data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.source.{{data.factor}}.isActive"
+      data-value="{{sourceData.isActive}}">A</span>
+  <span class="factor-toggle {{#if sourceData.isPrimary}} toggle-active{{/if}} factor-toggle-isPrimary"
+    data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.source.{{data.factor}}.isPrimary"
+      data-value="{{sourceData.isPrimary}}">P</span>
+  {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-number-line.hbs"
+    label=(case "title" data.factor)
+    range=4
+    target=(concat "GMBoosts." data.factor)
+    curValue=sourceBoost
+    origValue=(calc sourceData.value "-" sourceBoost)
+  }}
+  {{#if sourceData.highFavorsPC}}
+  <span class="factor-spacer roll-num-container factor-toggle toggle-active"
+    data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.source.{{data.factor}}.highFavorsPC"
+      data-value="true"><</span>
+  {{else}}
+  <span class="factor-spacer roll-num-container"></span>
+  {{/if}}
+  <span class="factor-spacer roll-num-container">/</span>
+  {{#unless sourceData.highFavorsPC}}
+  <span class="factor-spacer roll-num-container factor-toggle toggle-active"
+    data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.source.{{data.factor}}.highFavorsPC"
+      data-value="false">></span>
+  {{/unless}}
+  {{#if sourceData.highFavorsPC}}
+  <span class="roll-num-container factor-spacer"></span>
+  {{/if}}
+  {{#if (lookup data.rollFactors.opposition data.factor)}}
+  {{#with (lookup data.rollFactors.opposition data.factor) as |oppData|}}
+  {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-number-line.hbs"
+    range=4
+    target=(concat "GMOppBoosts." data.factor)
+    curValue=oppBoost
+    origValue=(calc oppData.value "-" oppBoost)
+  }}
+  {{/with}}
+  {{else}}
+  {{> "systems/eunos-blades/templates/roll/partials/roll-collab-gm-number-line.hbs"
+    range=4
+    target=(concat "GMOppBoosts." data.factor)
+    curValue=oppBoost
+    origValue=(calc 0 "-" oppBoost)
+  }}
+  {{/if}}
+
+  {{#if (lookup data.rollFactors.opposition data.factor)}}
+  {{#with (lookup data.rollFactors.opposition data.factor) as |oppData|}}
+  <span class="factor-toggle {{#if oppData.isActive}} toggle-active{{/if}} factor-toggle-isActive factor-toggle-opp"
+    data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.opposition.{{data.factor}}.isActive"
+      data-value="{{oppData.isActive}}">A</span>
+  <span class="factor-toggle {{#if oppData.isPrimary}} toggle-active{{/if}} factor-toggle-isPrimary factor-toggle-opp"
+    data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.opposition.{{data.factor}}.isPrimary"
+      data-value="{{oppData.isPrimary}}">P</span>
+  <span class="factor-toggle {{#if oppData.isDominant}} toggle-active{{/if}} factor-toggle-isDominant factor-toggle-opp"
+    data-dType="boolean" data-action="gm-toggle-factor" data-target="rollFactorToggles.opposition.{{data.factor}}.isDominant"
+      data-value="{{oppData.isDominant}}">D</span>
+  {{/with}}
+  {{/if}}
+
+</div>
+
+{{/with}}
+{{/with}}
+{{/with}}
+{{/with}}
+{{/with}}

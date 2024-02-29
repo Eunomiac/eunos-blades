@@ -1,0 +1,79 @@
+<svg class="svg-defs" viewBox="0 0 400 400">
+  <defs>
+    {{#each svgData as |keyData size|}}
+    {{#if (test size "==" 1)}}
+      {{#each keyData.paths as |path index|}}
+      <path id="{{index}}-one-key" d="{{path}}" />
+      <clipPath id="{{index}}-one-key-clip">
+        <use href="#{{index}}-one-key" />
+      </clipPath>
+      {{/each}}
+    {{else}}
+      <path id="{{size}}-key" d="{{keyData.path}}" />
+      <clipPath id="{{size}}-key-clip">
+        <use href="#{{size}}-key" />
+      </clipPath>
+    {{/if}}
+    {{/each}}
+
+    <filter id="metallicFilter">
+      <feTurbulence
+        type="turbulence"
+        baseFrequency="0.03"
+        numOctaves="3"
+        stitchTiles="stitch"
+        result="turbulence" />
+      <feDisplacementMap
+        in2="turbulence"
+        in="SourceGraphic"
+        scale="660"
+        xChannelSelector="B"
+        yChannelSelector="B" />
+     </filter>
+  </defs>
+</svg>
+
+{{eLog "BLADES OVERLAY" this}}
+
+<div class="overlay-section overlay-section-clock-keys">
+
+</div>
+
+<div class="overlay-section overlay-section-location">
+  {{#if location}}
+    {{> "systems/eunos-blades/templates/overlay/location.hbs" location}}
+  {{/if}}
+</div>
+
+<div class="overlay-section overlay-section-score-panel">
+  {{#if score}}
+    {{> "systems/eunos-blades/templates/overlay/score-panel.hbs" score}}
+  {{/if}}
+</div>
+
+<div class="overlay-section overlay-section-npcs">
+  {{#if location}}
+  {{#each location.npcs}}
+    {{> "systems/eunos-blades/templates/overlay/npc-portrait.hbs"}}
+  {{/each}}
+  {{/if}}
+</div>
+
+<div class="overlay-section overlay-section-players">
+  {{#each pcs}}
+    {{> "systems/eunos-blades/templates/overlay/pc-portrait.hbs"}}
+  {{/each}}
+  {{#each cohorts}}
+    {{> "systems/eunos-blades/templates/overlay/cohort-portrait.hbs"}}
+  {{/each}}
+</div>
+
+<div class="overlay-section overlay-section-crew">
+  {{> "systems/eunos-blades/templates/overlay/crew-status-bar.hbs" crew}}
+</div>
+
+<div id="notifications-overlay" class="overlay-section overlay-section-notifications"></div>
+
+<div id="transitions-overlay" class="overlay-section overlay-section-transitions"></div>
+
+<div id="tooltips-overlay" class="overlay-section overlay-section-tooltips"></div>

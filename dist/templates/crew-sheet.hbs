@@ -1,0 +1,299 @@
+<form class="{{cssClass}} actor-sheet" autocomplete="off">
+
+  {{!-- Actor Img: Portrait --}}
+  <img class="sheet-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+
+  {{!-- Playbook XP --}}
+  {{#if preparedItems.playbook}}
+  {{> "systems/eunos-blades/templates/components/comp.hbs" playbookData
+  class="comp-xp comp-xp-playbook comp-horizontal comp-teeth comp-teeth-long"
+  tooltipClass="tooltip-small tooltip-playbook tooltip-left tooltip-wide"
+  }}
+  {{/if}}
+
+  {{!-- Sheet Container --}}
+  <div class="sheet-root">
+
+    {{!-- Header --}}
+    <section class="sheet-top">
+
+      <input class="sheet-title shadowed" type="text" name="name" value="{{actor.name}}" />
+
+      <div class="members comp comp-horizontal portrait-container actors-container">
+        {{#each preparedActors.members as |actor|}}
+        {{> "systems/eunos-blades/templates/components/portrait.hbs" actor
+          id = actor._id
+          cat="Member"
+          docType="Actor"
+        }}
+        {{/each}}
+      </div>
+
+
+      {{> "systems/eunos-blades/templates/components/comp.hbs" preparedItems.playbook
+      class="comp-playbook comp-vertical"
+      label="Playbook"
+      cat="Playbook"
+      docType="Item"
+      addButton=true
+      remButton=true
+      id=preparedItems.playbook._id
+      }}
+
+      {{> "systems/eunos-blades/templates/components/comp.hbs" preparedItems.reputation
+      id=preparedItems.reputation.id
+      class="comp-reputation comp-vertical no-img"
+      label="Reputation"
+      cat="Reputation"
+      docType="Item"
+      addButton=true
+      remButton=true
+      }}
+
+      {{> "systems/eunos-blades/templates/components/comp.hbs" preparedItems.preferredOp
+      id=preparedItems.preferredOp._id
+      class="comp-preferred-op comp-vertical"
+      label="Preferred Op"
+      cat="Preferred_Op"
+      docType="Item"
+      addButton=true
+      remButton=true
+      }}
+
+      <div class="comp-hunting-grounds comp-vertical comp">
+        <label class="comp-label shadowed">
+          Hunting Grounds
+        </label>
+        <div class="comp-body">
+          <textarea class="comp-body-text shadowed" placeholder="(Hunting Grounds)" name="system.hunting_grounds"
+        spellcheck="false">{{system.hunting_grounds}}</textarea>
+        </div>
+      </div>
+
+      {{> "systems/eunos-blades/templates/components/comp.hbs" coinsData
+      label="Coins"
+      class="comp-coins comp-vertical"
+      }}
+
+    </section>
+
+    {{!-- Rep/Turf, Heat, Wanted --}}
+    <section class="sheet-mid-bar flex-horizontal full-width">
+
+      {{> "systems/eunos-blades/templates/components/comp.hbs"
+      class="comp-rep comp-horizontal comp-teeth"
+      label=repData.label
+      labelClass="filled-label"
+      dotlines=repData.dotlines
+      }}
+
+      <div class="comp-hold comp-vertical comp">
+        <label class="comp-label filled-label short-label">Hold</label>
+        <div class="comp-body">
+          <div class="comp-title shadowed hold-toggle">{{system.hold}}</div>
+        </div>
+      </div>
+
+      {{> "systems/eunos-blades/templates/components/comp.hbs"
+      class="comp-heat comp-horizontal comp-teeth"
+      label=heatData.label
+      labelClass="filled-label"
+      dotline=heatData.dotline
+      }}
+
+      {{> "systems/eunos-blades/templates/components/comp.hbs"
+      class="comp-wanted comp-vertical comp-teeth"
+      label=wantedData.label
+      labelClass="filled-label"
+      dotline=wantedData.dotline
+      }}
+
+      {{> "systems/eunos-blades/templates/parts/tier-block.hbs" }}
+    </section>
+
+    {{!-- Tabs, Tab Navigation --}}
+    <section class="tab-content nav-group flex-vertical">
+      {{!-- Nav menu --}}
+      <nav class="nav-tabs flex-horizontal">
+        <a class="tab-selector" data-tab="claims">Claims</a>
+        <a class="tab-selector" data-tab="upgrades">Upgrades</a>
+        <a class="tab-selector" data-tab="abilities">Abilities</a>
+        <a class="tab-selector" data-tab="contacts">Contacts</a>
+        <a class="tab-selector" data-tab="cohorts">Cohorts</a>
+        <a class="tab-selector" data-tab="player-notes">Notes</a>
+        {{#if isGM}}
+        <a class="tab-selector" data-tab="gm-notes">GM Notes</a>
+        <a class="tab-selector" data-tab="all-items">All Items</a>
+        {{/if}}
+      </nav>
+
+      {{!-- Claims --}}
+      <div class="tab claims" data-tab="claims">
+        {{#if preparedItems.playbook}}
+        {{> "systems/eunos-blades/templates/parts/turf-list.hbs"
+        actor=actor
+        turfs_data=preparedItems.playbook.system.turfs
+        can_edit=false
+        }}
+        {{/if}}
+      </div>
+
+      {{!-- Crew Upgrades --}}
+      <div class="tab upgrades flex-vertical" data-tab="upgrades">
+        <label class="comp tab-label" data-comp-cat="Upgrade" data-comp-type="Item">
+          {{#if preparedItems.playbook}}
+          <a class="comp-control comp-button comp-add">
+            <i class="fa-sharp fa-solid fa-square-plus"></i>
+          </a>
+          {{/if}}
+          <span class="tab-title">Crew Upgrades</span>
+          {{#if (test preparedItems.playbook "&&" (test actor.availableUpgradePoints ">" 0)) }}
+          {{> "systems/eunos-blades/templates/components/dotline.hbs" upgradeData.dotline }}
+          {{/if}}
+        </label>
+
+        {{#each preparedItems.upgrades}}
+        {{> "systems/eunos-blades/templates/components/comp.hbs" this
+        class="comp-desc-trait comp-horizontal full-width"
+        docType="Item"
+        cat="Upgrade"
+        remButton=true
+        id=id
+        }}
+        {{/each}}
+      </div>
+
+
+      {{!-- Crew Abilities --}}
+      <div class="tab abilities flex-vertical" data-tab="abilities">
+        <label class="comp tab-label" data-comp-cat="Ability" data-comp-type="Item">
+          {{#if preparedItems.playbook}}
+          <a class="comp-control comp-button comp-add">
+            <i class="fa-sharp fa-solid fa-square-plus"></i>
+          </a>
+          {{/if}}
+          <span class="tab-title">Crew Abilities</span>
+          {{#if (test preparedItems.playbook "&&" (test actor.availableAbilityPoints ">" 0)) }}
+          {{> "systems/eunos-blades/templates/components/dotline.hbs" abilityData.dotline }}
+          {{/if}}
+        </label>
+
+        {{#each preparedItems.abilities}}
+        {{> "systems/eunos-blades/templates/components/comp.hbs" this
+        class="comp-desc-trait comp-horizontal full-width"
+        docType="Item"
+        cat="Ability"
+        remButton=true
+        id=id
+        }}
+        {{/each}}
+      </div>
+
+      {{!-- Contacts --}}
+      <div class="tab contacts flex-vertical" data-tab="contacts">
+        <label class="comp tab-label" data-comp-cat="Contact" data-comp-type="Actor">
+          {{#if preparedItems.playbook}}
+          <a class="comp-control comp-button comp-add">
+            <i class="fa-sharp fa-solid fa-square-plus"></i>
+          </a>
+          {{/if}}
+          <span class="tab-title">Contacts</span>
+        </label>
+
+        <div class="comp comp-horizontal portrait-container actors-container">
+          {{#each preparedActors.contacts as |actor|}}
+          {{> "systems/eunos-blades/templates/components/comp.hbs" actor
+          class="comp-vertical portrait-block"
+          docType="Actor"
+          cat="Contact"
+          remButton=true
+          id=id
+          }}
+          {{/each}}
+        </div>
+      </div>
+
+      {{!-- Cohorts --}}
+      <div class="tab cohorts flex-horizontal" data-tab="cohorts">
+        <div class="half-panel cohort-gang-panel">
+          <label class="comp tab-label" data-add-type="cohort_gang">
+            {{#if (test preparedItems.playbook "&&" (test actor.availableCohortPoints ">" 0)) }}
+            <a class="comp-control comp-button comp-add">
+              <i class="fa-sharp fa-solid fa-square-plus"></i>
+            </a>
+            {{/if}}
+            <span class="tab-title">Gangs</span>
+          </label>
+
+          {{#each preparedItems.cohorts.gang}}
+          {{> "systems/eunos-blades/templates/parts/cohort-block.hbs" }}
+          {{/each}}
+        </div>
+        <div class="half-panel cohort-expert-panel">
+          <label class="comp tab-label" data-add-type="cohort_expert">
+            {{#if (test preparedItems.playbook "&&" (test actor.availableCohortPoints ">" 0)) }}
+            <a class="comp-control comp-button comp-add">
+              <i class="fa-sharp fa-solid fa-square-plus"></i>
+            </a>
+            {{/if}}
+            <span class="tab-title">Experts</span>
+            {{#if (test preparedItems.playbook "&&" (test actor.availableCohortPoints ">" 0)) }}
+            {{> "systems/eunos-blades/templates/components/dotline.hbs" cohortData.dotline }}
+            {{/if}}
+          </label>
+
+          {{#each preparedItems.cohorts.expert}}
+          {{> "systems/eunos-blades/templates/parts/cohort-block.hbs" }}
+          {{/each}}
+        </div>
+      </div>
+
+      {{!-- Description & Notes Tab --}}
+      <div class="tab player-notes flex-vertical" data-tab="player-notes">
+        <label class="tab-label">
+          <span class="tab-title">Description</span>
+        </label>
+        {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+
+        <label class="tab-label">
+          <span class="tab-title">{{localize "BITD.Notes"}}</span>
+        </label>
+        {{editor system.notes target="system.notes" button=true owner=owner editable=editable}}
+      </div>
+
+      {{!-- GM-ONLY TABS --}}
+      {{#if isGM}}
+
+      {{!-- GM Notes & Effects Tab --}}
+      <div class="tab gm-notes flex-vertical" data-tab="gm-notes">
+        <label class="tab-label">
+          <span class="tab-title">GM Notes</span>
+        </label>
+        {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=isGM}}
+        <label class="tab-label">
+          <span class="tab-title">{{localize "BITD.Effects"}}</span>
+        </label>
+        {{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
+      </div>
+
+      {{!-- Full Item List Tab --}}
+      <div class="tab all-items flex-vertical" data-tab="all-items">
+        <label class="comp tab-label">
+          <span class="tab-title">{{localize "BITD.AllItems"}}</span>
+        </label>
+
+        {{#each actor.items as |item id|}}
+        {{> "systems/eunos-blades/templates/components/comp.hbs" item
+        id=item.id
+        class="comp-desc-trait comp-horizontal full-width"
+        docType="Item"
+        remFullButton=true
+        }}
+        {{/each}}
+      </div>
+
+      {{/if}}
+
+    </section>
+  </div>
+</form>
