@@ -30,13 +30,13 @@
 }
 
 :root {
-  @import './core/globals';
-  @import './core/components';
+  // @import './core/globals';
+  // @import './core/components';
 
   &,
   * {
     @import './core/vars';
-    // @import './core/components';
+    @import './core/components';
     // @import './core/globals';
 
     // @import './components/clocks';
@@ -64,16 +64,16 @@
     }
 
     #blades-overlay {
-      // @import './core/reset';
-      // @import './core/globals';
+      @import './core/reset';
+      @import './core/globals';
       @import './overlay/blades-overlay';
     }
 
     #clocks-overlay {
       margin-top: toRem(4px);
-      // @import './core/reset';
-      // @import './core/globals';
-      // @import './components/clocks-overlay';
+      @import './core/reset';
+      @import './core/globals';
+      @import './components/clocks-overlay';
     }
 
     #sidebar {
@@ -93,7 +93,7 @@
     #navigation,
     #hotbar,
     #players {
-      // @import './core/reset';
+      @import './core/reset';
 
       &,
       * {
@@ -110,8 +110,8 @@
       }
 
       #chat {
-        // @import './core/reset';
-        // @import './core/globals';
+        @import './core/reset';
+        @import './core/globals';
 
         #chat-form { display: none }
         #chat-controls {
@@ -153,7 +153,8 @@
 
     .app.window-app {
       @import './core/reset';
-      // @import './core/globals';
+      @import './core/globals';
+
       // General App Window Styles
       @import "./core/app";
 
@@ -164,7 +165,7 @@
       // > TAGIFY CUSTOM CONFIG
       @import './tagify-custom';
 
-
+      // @import './components/clocks';
 
       .editor:not(.tinymce) {
         position: relative;
@@ -205,6 +206,8 @@
           position: relative;
           padding-left: var(--content-padding);
           padding-right: var(--content-padding);
+          // @import './tinymce/tinymce-content';
+
         }
       }
 
@@ -215,6 +218,10 @@
         max-width: unset;
         width: 100%;
         min-height: 100px;
+
+        .editor-content {
+          // @import './tinymce/tinymce-content';
+        }
 
       }
 

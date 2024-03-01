@@ -35,7 +35,7 @@
 
   .clock-key-container:nth-child(2n+1) { top: var(--alternating-top-shift) }
 
-  // @import './clocks';
+  @import './clocks';
 
   .clock-key-container {
     height: calc(0.5 * var(--key-height));

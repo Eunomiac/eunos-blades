@@ -172,7 +172,7 @@
               gap: 0 5px;
 
               &, .half-panel {
-                // @import "../components/cohort-block";
+                @import "../components/cohort-block";
               }
             }
           }
@@ -233,7 +233,7 @@
       position: relative;
       pointer-events: none;
 
-      // @import "../components/clocks";
+      @import "../components/clocks";
 
       // .clock {
       //   top: 50%;
