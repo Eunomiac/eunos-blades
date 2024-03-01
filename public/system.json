@@ -21,7 +21,7 @@
 		}
 	],
   "esmodules": [
-    "blades.js",
+    "index.js",
     "greensock/esm/all.js",
     "lib/tagify/tagify.esm.js"
   ],

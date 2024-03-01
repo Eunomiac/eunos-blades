@@ -1,4 +1,4 @@
-// @import './core/normalize.scss';
+@import './core/normalize.scss';
 
 // Utility imports
 @import './core/functions';
@@ -30,12 +30,14 @@
 }
 
 :root {
+  @import './core/globals';
+  @import './core/components';
 
   &,
   * {
     @import './core/vars';
-    @import './core/components';
-    @import './core/globals';
+    // @import './core/components';
+    // @import './core/globals';
 
     // @import './components/clocks';
     // @import "./components/accordian-block";
@@ -62,12 +64,16 @@
     }
 
     #blades-overlay {
+      // @import './core/reset';
+      // @import './core/globals';
       @import './overlay/blades-overlay';
     }
 
     #clocks-overlay {
       margin-top: toRem(4px);
-      @import './components/clocks-overlay';
+      // @import './core/reset';
+      // @import './core/globals';
+      // @import './components/clocks-overlay';
     }
 
     #sidebar {
@@ -87,6 +93,7 @@
     #navigation,
     #hotbar,
     #players {
+      // @import './core/reset';
 
       &,
       * {
@@ -103,6 +110,8 @@
       }
 
       #chat {
+        // @import './core/reset';
+        // @import './core/globals';
 
         #chat-form { display: none }
         #chat-controls {
@@ -143,6 +152,8 @@
     }
 
     .app.window-app {
+      @import './core/reset';
+      // @import './core/globals';
       // General App Window Styles
       @import "./core/app";
 

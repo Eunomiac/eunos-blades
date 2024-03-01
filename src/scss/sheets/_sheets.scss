@@ -27,7 +27,7 @@
     // max-height: calc(100% - var(--sheet-header-height));
 
     form {
-      // @import "../core/globals";
+      @import "../core/globals";
 
       justify-content: flex-start;
       max-height: 800px;
