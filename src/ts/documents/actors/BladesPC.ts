@@ -668,10 +668,10 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   // #endregion
 
   override render(force?: boolean) {
-    if (!this.isHealingClockReady) {
-      setTimeout(() => this.render(force), 1000);
-      return;
-    }
+    // if (!this.isHealingClockReady) {
+    //   setTimeout(() => this.render(force), 1000);
+    //   return;
+    // }
     super.render(force);
   }
 }

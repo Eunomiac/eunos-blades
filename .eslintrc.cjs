@@ -81,7 +81,7 @@ const TYPESCRIPTRULES = {
     ],
     // "no-unnecessary-type-assertion": "warn", // @@ REQUIRES CONFIGURED TYPE INFORMATION @@
     "no-unnecessary-type-constraint": "warn",
-    "no-unsafe-declaration-merging": "warn"
+    "no-unsafe-declaration-merging": "off"
     // "prefer-readonly": "error", // @@ REQUIRES CONFIGURED TYPE INFORMATION @@
   },
 

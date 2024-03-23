@@ -1,0 +1,40 @@
+{
+  "news": [
+    {
+      "title": "Year In Review: Three-Year Anniversary",
+      "caption": "Our annual \"Year in Review\" article shares an overview of how the product, team, and community have evolved since this time last year. Give it a read for some interesting statistics, previews of upcoming work, and a recap of things you might have missed from the past few months.",
+      "url": "https://foundryvtt.com/article/year-in-review-2023/",
+      "image": "https://foundryvtt.s3.us-west-2.amazonaws.com/website-media-dev/user_70/asset/year-in-review-banner-2023-2023-05-24.webp"
+    },
+    {
+      "title": "Dungeons & Dragons Arrives on Foundry Virtual Tabletop",
+      "caption": "We are thrilled to share that Foundry Virtual Tabletop is now partnered with Wizards of the Coast to bring official content for Dungeons & Dragons to Foundry VTT!",
+      "url": "https://foundryvtt.com/article/dungeons-dragons-arrives/",
+      "image": "https://foundryvtt.s3.us-west-2.amazonaws.com/website-media-dev/user_70/screen/dnd-partnership-news-2024-01-30.webp"
+    },
+    {
+      "title": "Overview Video",
+      "caption": "Watch a comprehensive video overview which summarizes the features of Foundry Virtual Tabletop.",
+      "url": "https://youtu.be/_d7k8ognC0w",
+      "image": "https://foundryvtt.s3.us-west-2.amazonaws.com/website-media-dev/user_70/screen/2023-overview-banner-2023-06-23.webp"
+    },
+    {
+      "title": "V12 Development Update Q&A",
+      "caption": "Catch up with Atropos, Kim, Ludovic, and Eber as they walk through the changes in V12 Prototype 1 and answer audience questions!",
+      "url": "https://www.youtube.com/watch?v=Y-i-SqSJTC0",
+      "image": "https://foundryvtt.s3.us-west-2.amazonaws.com/website-media-dev/user_70/screen/scene-regions-2023-12-28.webp"
+    },
+    {
+      "title": "Built-in Backup Support",
+      "caption": "Foundry Virtual Tabletop now has built-in support for backing up your Worlds, Game Systems, and Modules from directly within the software with prompts for major version upgrades to make sure your data stays safe.",
+      "url": "https://foundryvtt.com/article/backups/",
+      "image": "https://foundryvtt.s3.us-west-2.amazonaws.com/website-media-dev/user_70/screen/manage-backups-banner-2023-09-28.webp"
+    }
+  ],
+  "featuredContent": {
+    "title": "Roll More Easily with Dice Tray!",
+    "caption": "Add an easy to use dice tray below the chat log and a new dice calculator with buttons for dice, numbers, attributes for the selected token, and simple math.",
+    "url": "https://foundryvtt.com/packages/dice-calculator",
+    "image": "https://foundryvtt.s3.us-west-2.amazonaws.com/website-media-dev/user_70/screen/dice-tray-featured-block-2024-03-13.webp"
+  }
+}

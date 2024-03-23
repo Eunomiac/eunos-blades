@@ -715,6 +715,9 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
   }
 
   static BuildData(config: BladesRoll.Config|BladesRoll.Schema): BladesRoll.PrimaryData {
+    if (BladesRollPrimary.IsDoc(config.rollPrimaryData)) {
+      return BladesRollPrimary.GetDataFromDoc(config.rollPrimaryData);
+    }
     if (BladesRollPrimary.IsValidData(config.rollPrimaryData)) {
       return config.rollPrimaryData;
     }

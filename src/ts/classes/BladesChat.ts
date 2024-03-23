@@ -162,7 +162,7 @@ class BladesChat extends ChatMessage {
   }
   get elem(): HTMLElement|undefined { return this.elem$[0]; }
 
-  get isRollResult(): boolean { return "rollData" in this.flagData; }
+  get isRollResult(): boolean { return this.flagData && "rollData" in this.flagData; }
 
   get parentRoll(): BladesRoll|undefined {
     if (!this.isRollResult) { return undefined; }

@@ -159,7 +159,7 @@
 
           &,
           & * {
-            --roll-mod-size: 20px
+            --roll-mod-height: 20px
           }
 
           display: inline-flex;
@@ -167,25 +167,25 @@
           align-items: center;
           background: transparent;
           box-shadow: none;
-          height: var(--roll-mod-size);
+          height: var(--roll-mod-height);
           margin: 0;
           padding: 0;
           justify-content: flex-start;
 
           .roll-mod-icon {
-            line-height: var(--roll-mod-size);
+            line-height: var(--roll-mod-height);
             white-space: nowrap;
           }
 
           .roll-mod-label {
             top: 0;
             margin: 0;
-            padding: 0 0 0 calc(0.5 * var(--roll-mod-size));
-            left: calc(-0.5 * var(--roll-mod-size));
+            padding: 0 0 0 calc(0.5 * var(--roll-mod-height));
+            left: calc(-0.5 * var(--roll-mod-height));
 
             svg {
               display: block;
-              margin-left: calc(-1 * var(--roll-mod-size));
+              margin-left: calc(-1 * var(--roll-mod-height));
             }
 
             .roll-mod-text {
@@ -199,7 +199,7 @@
 
           &.status-forcedoff {
             .roll-mod-label {
-              left: calc(-1.35 * var(--roll-mod-size));
+              left: calc(-1.35 * var(--roll-mod-height));
 
               svg {
                 opacity: 0
@@ -213,7 +213,7 @@
 
           &.status-hidden {
             .roll-mod-label {
-              left: calc(-1.35 * var(--roll-mod-size));
+              left: calc(-1.35 * var(--roll-mod-height));
 
               svg {
                 opacity: 0
@@ -235,312 +235,171 @@
 
     .roll-mod-container {
 
-      --roll-mod-size: 30px;
-      --label-font: var(--font-emphasis);
-      --sidestring-font: var(--font-emphasis-narrow);
+      &, & * {
+        /* General Styles */
+        --roll-mod-height: 20px;
+        --roll-mod-line-height: calc(1 * var(--roll-mod-height));
 
-      --glow-animation: anim-glow-gold;
-      --roll-mod-bright-color: var(--blades-gold-bright);
-      --roll-mod-med-color: var(--blades-gold);
-      --roll-mod-dark-color: var(--blades-gold-darkest);
+        --roll-mod-border-size: 1px;
+        --roll-mod-border-style: none;
+        --roll-mod-border-color: transparent;
+        --roll-mod-border-radius: 0px;
 
-      &.posneg-negative {
-        --glow-animation: anim-glow-red;
-        --roll-mod-bright-color: var(--blades-red-bright);
-        --roll-mod-med-color: var(--blades-red);
-        --roll-mod-dark-color: var(--blades-red-darkest);
+        --roll-mod-bg-color: var(--blades-black-fade-strong);
+
+        --roll-mod-font-color: var(--blades-white);
+        --roll-mod-font-family: var(--font-emphasis);
+        --roll-mod-font-size: calc(0.7 * var(--roll-mod-height));
+        --roll-mod-font-variant: small-caps;
+        --roll-mod-font-style: normal;
+        --roll-mod-font-weight: normal;
+        --roll-mod-text-transform: none;
+        --roll-mod-text-indent: 10px;
+        --roll-mod-text-shadow: var(--text-shadow-dark);
+
+        // --roll-mod-sidestring-font-color: var(--roll-mod-font-color);
+        --roll-mod-sidestring-font-family: var(--font-emphasis-narrow);
+        // --roll-mod-sidestring-font-size: var(--roll-mod-font-size);
+        // --roll-mod-sidestring-font-variant: var(--roll-mod-font-variant);
+        // --roll-mod-sidestring-font-style: var(--roll-mod-font-style);
+        --roll-mod-sidestring-font-weight: bold;
+        --roll-mod-sidestring-text-transform: uppercase;
+        --roll-mod-sidestring-text-indent: 5px;
+        // --roll-mod-sidestring-text-shadow: var(--roll-mod-text-shadow);
       }
 
-      &.roll-mod-ability,
-      &.roll-mod-harm {
-
-        .roll-mod-label {
-          .roll-mod-text:last-of-type {
-            --label-font: var(--font-emphasis-narrow);
-            font-weight: bold;
-          }
-        }
-      }
-
-      &.status-hidden {
-        --glow-animation: none;
-        --roll-mod-color: var(--blades-grey-dark);
-        --roll-mod-text-shadow:
-          -1px -1px 1px var(--blades-grey),
-          1px 1px 2px var(--blades-black-dark),
-          1px 1px 0px var(--blades-black-dark);
-
-        .roll-mod-label svg {
-          display: none
-        }
-
-        .roll-mod-icon {
-          opacity: 0
-        }
-
-        .roll-mod-label .roll-mod-text {
-          margin-bottom: -1px;
-        }
-      }
-
-      &.status-forcedoff {
-        --glow-animation: none;
-        --roll-mod-color: var(--blades-grey-bright);
-        --roll-mod-text-shadow:
-          1px 1px 2px var(--blades-black-dark),
-          1px 1px 0px var(--blades-black-dark);
-
-        .roll-mod-label svg {
-          display: none
-        }
-
-        .roll-mod-icon {
-          opacity: 0
-        }
-
-        .roll-mod-label .roll-mod-text {
-          margin: 0
-        }
-      }
-
-      &.status-toggledoff {
-        --glow-animation: anim-glow-grey;
-
-        --roll-mod-color: var(--blades-grey);
-        --diamond-fill-color: var(--blades-black-dark);
-
-        --roll-mod-glow-color: var(--blades-grey-bright); //var(--roll-mod-bright-color);
-        --icon-center-color: transparent; // var(--roll-mod-dark-color);
-        --icon-center-bg-color-start: transparent; // var(--roll-mod-dark-color);
-        --icon-center-bg-color-end: var(--blades-grey-bright);
-        --icon-border-color: var(--roll-mod-dark-color);
-        --icon-border-bg-color: transparent;
-
-        .icon {
-          filter: brightness(0.5)
-        }
-
-        &:hover {
-          --roll-mod-glow-color: var(--roll-mod-bright-color);
-          --icon-center-color: var(--roll-mod-bright-color);
-          --icon-center-bg-color-start: transparent;
-          --icon-center-bg-color-end: var(--roll-mod-bright-color);
-
-          .icon {
-            filter: none
-          }
-        }
-      }
-
-      &.status-toggledon {
-
-        --roll-mod-color: var(--blades-black-dark);
-
-        --diamond-fill-color: var(--blades-black-dark);
-        --label-fill-color: var(--roll-mod-bright-color);
-
-        --roll-mod-glow-color: var(--roll-mod-bright-color);
-        --icon-center-color: var(--roll-mod-bright-color);
-        --icon-center-bg-color-start: var(--roll-mod-dark-color);
-        --icon-center-bg-color-end: var(--roll-mod-bright-color);
-        --icon-center-bg-color: var(--roll-mod-bright-color);
-        --icon-border-color: var(--roll-mod-bright-color);
-        --icon-border-bg-color: transparent;
-
-        .icon {
-          box-shadow: 0px 0px 15px 8px var(--roll-mod-bright-color)
-        }
-
-        &:hover {
-          --icon-center-color: var(--roll-mod-dark-color);
-          --icon-border-color: var(--roll-mod-dark-color);
-
-          .icon {
-            filter: brightness(0.75)
-          }
-        }
-      }
-
-      &.status-forcedon {
-        --roll-mod-color: var(--blades-black-dark);
-        --glow-animation: none;
-
-        --diamond-fill-color: var(--roll-mod-bright-color);
-        --label-fill-color: var(--roll-mod-med-color);
-
-        --roll-mod-glow-color: transparent;
-        --icon-center-color: transparent;
-        --icon-center-bg-color: transparent;
-        --icon-border-color: transparent;
-        --icon-border-bg-color: transparent;
-
-        .roll-mod-icon svg .diamond-base {
-          stroke: none
-        }
-
-        .icon {
-          box-shadow: 0px 0px 15px 8px var(--roll-mod-bright-color)
-        }
-      }
-
-      // font-family: "Font Awesome 6 Free";
+      height: var(--roll-mod-height);
       width: min-content;
       display: block;
-      height: var(--roll-mod-size);
       flex-grow: 0;
       flex-shrink: 0;
       position: relative;
 
-      .shadow-stroke {
-        stroke-width: 3px;
+      border: var(--roll-mod-border-size) var(--roll-mod-border-style) var(--roll-mod-border-color);
+      box-sizing: border-box;
+      border-radius: var(--roll-mod-border-radius);
 
-        &.brightest-stroke {
-          stroke: var(--blades-white);
-        }
+      background: var(--roll-mod-bg-color);
 
-        &.bright-stroke {
-          stroke: var(--blades-grey);
-        }
-
-        &.dark-stroke {
-          stroke: var(--blades-black-dark-fade);
-        }
-
-        &.darkest-stroke {
-          stroke: var(--blades-black-dark);
-          filter: blur(1px);
-        }
+      &.posneg-negative, &.posneg-negative * {
+        --roll-mod-bright-color: var(--blades-red-bright);
+        --roll-mod-medium-color: var(--blades-red);
+        --roll-mod-dark-color: var(--blades-red-dark);
       }
 
-      .roll-mod-icon {
-        display: block;
-        // opacity: 0;
-        height: var(--roll-mod-size);
-        width: var(--roll-mod-size);
-        z-index: 1;
-        position: relative;
+      &.posneg-positive, &.posneg-positive * {
+        --roll-mod-bright-color: var(--blades-gold-bright);
+        --roll-mod-medium-color: var(--blades-gold);
+        --roll-mod-dark-color: var(--blades-gold-dark);
+      }
 
-        svg {
-          height: 100%;
+      &.status-hidden, &.status-hidden * {
+        --roll-mod-font-style: italic;
+        --roll-mod-font-weight: normal;
+        --roll-mod-text-transform: lowercase;
+        // --roll-mod-font-variant: none;
+        --roll-mod-font-size: smaller;
+        --roll-mod-font-color: var(--roll-mod-medium-color);
+        // --roll-mod-text-shadow: none;
+        --roll-mod-bg-color: transparent;
+        filter: brightness(0.86);
+      }
 
-          .diamond-base {
-            fill: var(--diamond-fill-color);
-            stroke: var(--blades-grey-dark);
-            stroke-width: 10px;
-            filter: drop-shadow(2px 2px 3px var(--blades-black-dark));
-          }
+      &.status-forcedoff, &.status-forcedoff * {
 
-          .diamond-inner-stroke {
-            fill: none;
-            stroke: var(--blades-black);
-            stroke-width: 2px;
-            filter: blur(1px);
-          }
-        }
+      }
 
-        .icon {
-          position: absolute;
-          translate: -50% -50%;
-          top: 50%;
-          left: 50%;
-          // border-radius: 50%;
-          rotate: 45deg;
-          // border: 2px solid var(--icon-border-color);
-          // background-color: var(--icon-border-bg-color);
-          width: 14px;
-          height: 14px;
-          background: darkolive;
-          text-align: center;
-          overflow: hidden;
+      &.status-toggledoff, &.status-toggledoff * {
+        --roll-mod-font-color: var(--roll-mod-medium-color);
+        --roll-mod-border-color: var(--roll-mod-medium-color);
+        --roll-mod-border-style: dotted;
+        --roll-mod-border-radius: 5px;
+      }
 
-          i {
-            // border-radius: 50%;
-            border: 0px solid var(--icon-center-color);
-            width: 4px;
-            height: 4px;
-            display: block;
-            position: absolute;
-            translate: -50% -50%;
-            top: 50%;
-            left: 50%;
-            vertical-align: 7px;
-            animation: var(--glow-animation) 2s ease infinite;
-            background-color: var(--icon-center-bg-color);
-          }
-        }
+      &.status-toggledon, &.status-toggledon * {
+        --roll-mod-font-color: var(--blades-white-bright);
+        // --roll-mod-text-shadow: none;
+        --roll-mod-border-color: var(--roll-mod-bright-color);
+        --roll-mod-border-style: outset;
+        --roll-mod-border-size: 2px;
+        --roll-mod-border-radius: 5px;
+        --roll-mod-bg-color: var(--roll-mod-medium-color);
+      }
+
+      &.status-forcedon, &.status-forcedon * {
+        --roll-mod-font-color: var(--blades-white-bright);
+        // --roll-mod-text-shadow: none;
+        --roll-mod-border-color: var(--roll-mod-bright-color);
+        --roll-mod-border-style: outset;
+        --roll-mod-border-size: 2px;
+        --roll-mod-border-radius: 0px;
+        --roll-mod-bg-color: var(--roll-mod-medium-color);
       }
 
       .roll-mod-label {
         display: flex;
         width: min-content;
-        // background: lime;
         overflow: hidden;
         position: relative;
-        height: var(--roll-mod-size);
-        margin-left: calc(0.5 * var(--roll-mod-size));
-        padding-right: calc(0.5 * var(--roll-mod-size));
-        top: calc(-1 * var(--roll-mod-size));
+        height: calc(var(--roll-mod-height) - 2 * var(--roll-mod-border-size));
         left: 0;
         white-space: nowrap;
         align-items: center;
         justify-content: flex-start;
         flex-direction: row;
 
-        svg {
-          // height: 100%;
-          // width: 150px;
-          height: var(--roll-mod-size);
-
-          translate: 0% -50%;
-          top: 50%;
-          right: 0;
-          position: absolute;
-
-          .shadow-stroke {
-            stroke-width: 3px;
-
-            &.darkest-stroke {
-              stroke: var(--blades-black-dark);
-            }
-          }
-
-          .label-base {
-            stroke: var(--blades-grey-dark);
-            stroke-width: 10px;
-            filter: drop-shadow(2px 2px 3px var(--blades-black-dark));
-            fill: var(--label-fill-color);
-          }
-        }
+        top: 0;
+        margin: 0;
+        padding: 0;
 
         .roll-mod-text {
           position: relative;
           white-space: nowrap;
           z-index: 1;
-          color: var(--roll-mod-color);
-          text-shadow: var(--roll-mod-text-shadow);
-          // translate: 0% -50%;
-          // top: 50%;
-          // height: 100%;
-          width: 100%;
-          // background: red;
           display: block;
-          // text-align: center;
-          font-family: var(--label-font);
-          // font-variant: small-caps;
-          margin-left: 15px;
-          line-height: var(--roll-mod-size);
-          // margin-top: 2px;
+
+          color: var(--roll-mod-font-color);
+          font: {
+            family: var(--roll-mod-font-family);
+            size: var(--roll-mod-font-size);
+            variant: var(--roll-mod-font-variant);
+            style: var(--roll-mod-font-style);
+            weight: var(--roll-mod-font-weight);
+          }
+          text: {
+            transform: var(--roll-mod-text-transform);
+            indent: var(--roll-mod-text-indent);
+            shadow: var(--roll-mod-text-shadow);
+          }
+          line-height: calc(var(--roll-mod-line-height) - 2 * var(--roll-mod-border-size));
 
           &.roll-mod-sidestring {
-            font-family: var(--font-emphasis-narrow);
-            margin-left: 5px;
-            text-transform: uppercase;
-            font-size: 14px;
-            font-weight: bold;
+            color: var(--roll-mod-sidestring-font-color, var(--roll-mod-font-color));
+            font: {
+              family: var(--roll-mod-sidestring-font-family, var(--roll-mod-font-family));
+              size: var(--roll-mod-sidestring-font-size, var(--roll-mod-font-size));
+              variant: var(--roll-mod-sidestring-font-variant, var(--roll-mod-font-variant));
+              style: var(--roll-mod-sidestring-font-style, var(--roll-mod-font-style));
+              weight: var(--roll-mod-sidestring-font-weight, var(--roll-mod-font-weight));
+            }
+            text: {
+              transform: var(--roll-mod-sidestring-text-transform, var(--roll-mod-text-transform));
+              indent: var(--roll-mod-sidestring-text-indent, var(--roll-mod-text-indent));
+              shadow: var(--roll-mod-sidestring-text-shadow, var(--roll-mod-text-shadow));
+            }
+            line-height: var(--roll-mod-sidestring-line-height, var(--roll-mod-line-height));
           }
         }
       }
+
+
+
+
+
     }
+
+
+
   }
 
   .roll-sheet-float-block {

@@ -77,13 +77,13 @@
     }
 
     #sidebar {
-      border: none;
-      background: transparent;
-      top: 0px;
-      bottom: 0px;
-      height: 100%;
+      // border: none;
+      // background: transparent;
+      // top: 0px;
+      // bottom: 0px;
+      // height: 100%;
 
-      #sidebar-tabs { background: var(--blades-black-dark); }
+      // #sidebar-tabs { background: var(--blades-black-dark); }
 
       @import "./components/push-notifications";
     }
@@ -93,7 +93,7 @@
     #navigation,
     #hotbar,
     #players {
-      @import './core/reset';
+      // @import './core/reset';
 
       &,
       * {
@@ -110,18 +110,18 @@
       }
 
       #chat {
-        @import './core/reset';
-        @import './core/globals';
+        // @import './core/reset';
+        // @import './core/globals';
 
-        #chat-form { display: none }
-        #chat-controls {
-          opacity: 0 !important;
-          transition: 0.5s;
+        // #chat-form { display: none }
+        // #chat-controls {
+        //   opacity: 0 !important;
+        //   transition: 0.5s;
 
-          &:hover {
-            opacity: 1 !important;
-          }
-        }
+        //   &:hover {
+        //     opacity: 1 !important;
+        //   }
+        // }
         &,
         * {
           --font-heading: var(--font-emphasis);
@@ -322,4 +322,4 @@
   }
 }
 
-@import "./emu-styles";
+// @import "./emu-styles";

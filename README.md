@@ -1,3 +1,16 @@
+<!--
+TO RUN DEVELOPMENT SERVER:
+
+- Open Powershell7 window (as Administrator)
+  - cd 'D:\Users\Ryan\Documents\Projects\.CODING\FoundryVTT\FoundryDevData\Data\systems\eunos-blades'
+  - npx vite build
+- When build process completes, run (in the same window):
+  - node 'D:/LTSC Programs/FoundryVTT/Foundry Virtual Tabletop/resources/app/main.js' --dataPath='D:\Users\Ryan\Documents\Projects\!Roleplaying\!!!FOUNDRY'
+- Open second Powershell7 window (as Administrator)
+  - npx vite serve
+-->
+
+
 # Euno's "Blades In The Dark" for Foundry VTT
 
 | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades)  | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) |
