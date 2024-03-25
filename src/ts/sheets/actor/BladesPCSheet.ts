@@ -417,22 +417,25 @@ class BladesPCSheet extends BladesActorSheet {
   }
 
   get activeArmor() {
-    return Object.keys(U.objFilter(this.actor.system.armor.active, (val: boolean) => val === true));
+    return Object.keys(U.objFilter(
+      this.actor.system.armor.active,
+      ((val: boolean) => val === true) as testFunc<valFunc>
+    ));
   }
 
   get checkedArmor() {
     return Object.keys(U.objFilter(
       this.actor.system.armor.checked,
-      (val: string|number|boolean, key: KeyOf<typeof this.actor.system.armor.checked>) => val === true
-        && this.actor.system.armor.active[key] === true
+      ((val: string|number|boolean, key: KeyOf<typeof this.actor.system.armor.checked>) => val === true
+        && this.actor.system.armor.active[key] === true) as testFunc<keyFunc>
     ));
   }
 
   get uncheckedArmor() {
     return Object.keys(U.objFilter(
       this.actor.system.armor.active,
-      (val: string|number|boolean, key: KeyOf<typeof this.actor.system.armor.active>) => val === true
-        && this.actor.system.armor.checked[key] === false
+      ((val: string|number|boolean, key: KeyOf<typeof this.actor.system.armor.active>) => val === true
+        && this.actor.system.armor.checked[key] === false) as testFunc<keyFunc>
     ));
   }
 

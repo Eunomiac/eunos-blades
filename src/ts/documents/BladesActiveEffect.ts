@@ -169,7 +169,8 @@ class BladesActiveEffect extends ActiveEffect {
       }
 
       // Partition effect.changes into permanent and non-permanent changes:
-      const [permChanges, changes] = U.partition(effect.changes, (change) => change.key.startsWith("perm"));
+      // const allChanges = effect.changes;
+      const [permChanges, changes] = U.partition(effect.changes, ((change: EffectChangeData) => change.key.startsWith("perm")) as testFunc<valFunc>);
       await effect.updateSource({changes});
 
       for (const permChange of permChanges) {

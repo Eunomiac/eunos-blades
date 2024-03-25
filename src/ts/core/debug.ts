@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import C, {BladesActorType, BladesItemType, RollPermissions, ActionTrait, DowntimeAction, RollSubType, RollPhase, Effect, ClockColor, ClockKeyDisplayMode, AttributeTrait, RollType, ConsequenceType, Position, RollResult} from "../core/constants";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initDOMStyles} from "../core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "../core/helpers";
@@ -37,10 +37,10 @@ import BladesFactionSheet from "../sheets/actor/BladesFactionSheet";
 import BladesRoll, {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant, BladesActionRoll, BladesEngagementRoll, BladesFortuneRoll, BladesIncarcerationRoll, BladesIndulgeViceRoll, BladesInlineResistanceRoll, BladesResistanceRoll} from "../classes/BladesRoll";
 
 import BladesDialog from "../classes/BladesDialog";
-import BladesAI, {AGENTS, AIAssistant} from "../core/ai";
 import BladesActiveEffect from "../documents/BladesActiveEffect";
 import BladesGMTrackerSheet from "../sheets/item/BladesGMTrackerSheet";
 import BladesClockKeeperSheet from "../sheets/item/BladesClockKeeperSheet";
+/* eslint-enable @typescript-eslint/no-unused-vars */
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
 type DocNames = {

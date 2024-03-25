@@ -1,6 +1,15 @@
 // Importing necessary functions and types from the Vite package and the path module from Node.js
 import { defineConfig, type UserConfig, type Plugin } from "vite";
 import path from "path";
+import checker from 'vite-plugin-checker';
+
+/** *** CHECK: *** https://vitejs.dev/guide/performance
+ *
+ * TypeScript: Enable:
+ * - "moduleResolution": "bundler",
+ * - "allowImportingTsExtensions": true
+ * ... in your tsconfig.json's compilerOptions to use .ts and .tsx extensions directly in your code.
+ * */
 
 function foundryPlugin(): Plugin {
   const usesFoundryPlugin = Symbol("foundry-plugin");
@@ -104,7 +113,8 @@ const config: UserConfig = defineConfig({
     }
   },
   plugins: [
-    foundryPlugin()
+    foundryPlugin(),
+    checker({ typescript: true }) // Add this line
   ]
 });
 

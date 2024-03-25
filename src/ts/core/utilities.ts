@@ -1,12 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // /// <reference types="gsap" />
 
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import C, {SVGDATA, HbsSvgData} from "./constants";
 import {gsap, MotionPathPlugin} from "../libraries";
 // import gsap from "../../../public/lib/greensock/all";
 // import gsap, {MotionPathPlugin} from "gsap/all";
 gsap.registerPlugin(MotionPathPlugin);
+/* eslint-enable @typescript-eslint/no-unused-vars */
 // #endregion ▮▮▮▮ IMPORTS ▮▮▮▮
 
 // #region ▮▮▮▮▮▮▮ [HELPERS] Internal Functions, Data & References Used by Utility Functions ▮▮▮▮▮▮▮ ~
@@ -160,7 +161,7 @@ const isBooleanString = (ref: unknown): ref is "true"|"false" => typeof ref === 
 const isArray = (ref: unknown): ref is unknown[] => Array.isArray(ref);
 const isSimpleObj = (ref: unknown): ref is Record<key, unknown> => ref === Object(ref) && !isArray(ref);
 const isList = <T>(ref: T): ref is Record<key, unknown> & T => ref === Object(ref) && !isArray(ref);
-const isFunc = (ref: unknown): ref is typeof Function => typeof ref === "function";
+const isFunc = (ref: unknown): ref is ((...args: unknown[]) => unknown) => typeof ref === "function";
 const isInt = (ref: unknown): ref is int => isNumber(ref) && Math.round(ref) === ref;
 const isFloat = (ref: unknown): ref is float => isNumber(ref) && /\./.test(`${ref}`);
 const isPosInt = (ref: unknown): ref is posInt => isInt(ref) && ref >= 0;
@@ -170,7 +171,7 @@ const isHTMLCode = (ref: unknown): ref is HTMLCode => typeof ref === "string" &&
 const isHexColor = (ref: unknown): ref is HEXColor => typeof ref === "string" && /^#(([0-9a-fA-F]{2}){3,4}|[0-9a-fA-F]{3,4})$/.test(ref);
 const isRGBColor = (ref: unknown): ref is RGBColor => typeof ref === "string" && /^rgba?\((\d{1,3},\s*){1,2}?\d{1,3},\s*\d{1,3}(\.\d+)?\)$/.test(ref);
 const isUndefined = (ref: unknown): ref is undefined => ref === undefined;
-const isDefined = (ref: unknown): ref is NonNullable<unknown> | null => !isUndefined(ref);
+const isDefined = <T>(ref: T): ref is T & (null | NonNullable<T>) => !isUndefined(ref);
 const isEmpty = (ref: Record<key, unknown> | unknown[]): boolean => Object.keys(ref).length === 0;
 const hasItems = (ref: Index<unknown>): boolean => !isEmpty(ref);
 const isInstance = <T extends new (...args: unknown[]) => unknown>(
@@ -907,14 +908,11 @@ const toArray = <T>(target: JQuery|string|Record<string, unknown>|Element|null):
 // #region ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████ ~
 
 const checkVal = ({k, v}: {k?: unknown, v?: unknown}, checkTest: checkTest) => {
-  if (typeof checkTest === "function") {
+  if (isFunc(checkTest)) {
     if (isDefined(v)) {return checkTest(v, k);}
     return checkTest(k);
   }
-  if (typeof checkTest === "number") {
-    checkTest = `${checkTest}`;
-  }
-  return (new RegExp(checkTest)).test(`${v}`);
+  return (new RegExp(`${checkTest}`)).test(`${v}`);
 };
 /**
  * Given an array or list and a search function, will remove the first matching element and return it.
@@ -1019,7 +1017,7 @@ const objClean = <T>(data: T, remVals: UncleanValues[] = [undefined, null, "", {
 //   one with entries that pass, one with entries that fail.
 const partition = <Type>(obj: Type[], predicate: testFunc<valFunc> = () => true): [Type[], Type[]] => [
   objFilter(obj, predicate),
-  objFilter(obj, (v: unknown, k: string | number | undefined) => !predicate(v, k))
+  objFilter(obj, (v: unknown, k: key | undefined) => !predicate(v, k))
 ];
 
 /**
@@ -1078,8 +1076,8 @@ function objMap<T extends Record<PropertyKey, unknown> | unknown[]>(
   keyFunc: mapFunc<keyFunc> | mapFunc<valFunc> | false,
   valFunc?: mapFunc<valFunc> | mapFunc<keyFunc>
 ): T {
-  let valFuncTyped: mapFunc<valFunc> | undefined = valFunc;
-  let keyFuncTyped: mapFunc<keyFunc> | false = keyFunc;
+  let valFuncTyped = valFunc as mapFunc<valFunc> | undefined;
+  let keyFuncTyped = keyFunc as mapFunc<keyFunc> | false;
 
   if (!valFuncTyped) {
     valFuncTyped = keyFunc as mapFunc<valFunc>;
@@ -1133,14 +1131,10 @@ function objFindKey<Type extends Index<unknown>>(
     valFunc = keyFunc as testFunc<valFunc>;
     keyFunc = false;
   }
-  // If keyFunc is not provided, create a function that returns the key
-  if (!keyFunc) {
-    keyFunc = ((k: unknown) => k) as testFunc<keyFunc>;
-  }
   // If obj is an array, find the index of the first element that passes the test
   if (isArray(obj)) {return obj.findIndex(valFunc);}
   // Define the testing functions for keys and values
-  const kFunc = keyFunc || (() => true);
+  const kFunc = (keyFunc || (() => true)) as testFunc<keyFunc>;
   const vFunc = valFunc || (() => true);
   // Find the first entry that passes the test
   const validEntry = Object.entries(obj).find(([k, v]) => kFunc(k, v) && vFunc(v, k));
@@ -1167,13 +1161,9 @@ const objFilter = <Type extends Index<unknown>>(
   valFunc?: testFunc<valFunc>,
   isMutating = false
 ): Type => {
-  //
   if (!valFunc) {
     valFunc = keyFunc as testFunc<valFunc>;
     keyFunc = false;
-  }
-  if (!keyFunc) {
-    keyFunc = ((k: unknown) => k) as testFunc<keyFunc>;
   }
   if (isArray(obj)) {
     const keptValues = obj.filter(valFunc);
@@ -1184,7 +1174,7 @@ const objFilter = <Type extends Index<unknown>>(
     return keptValues as Type;
   }
 
-  const kFunc = keyFunc || (() => true);
+  const kFunc = (keyFunc || (() => true)) as testFunc<keyFunc>;
   const vFunc = valFunc || (() => true);
   if (isMutating) {
     const entriesToRemove = Object.entries(obj)
@@ -1907,25 +1897,6 @@ function waitFor(waitForTarget: unknown): Promise<void> {
 // #endregion ▄▄▄▄▄ ASYNC ▄▄▄▄▄
 
 const EventHandlers = {
-  onTextInputBlur: async (inst: BladesSheet, event: InputChangeEvent) => {
-    const elem = event.target;
-    const {action, target, flagTarget} = elem.dataset;
-    if (!action) {
-      throw new Error("Input text elements require a data-action attribute.");
-    }
-    if (!target && !flagTarget) {
-      throw new Error("Input text elements require a 'data-target' or 'data-flag-target' attribute.");
-    }
-    if (target) {
-      await inst.document.update({[target]: elem.value});
-    } else if (flagTarget) {
-      if (elem.value === "") {
-        await inst.document.unsetFlag(C.SYSTEM_ID, flagTarget);
-      } else {
-        await inst.document.setFlag(C.SYSTEM_ID, flagTarget, elem.value);
-      }
-    }
-  },
   onSelectChange: async (inst: BladesSheet, event: SelectChangeEvent) => {
     const elem = event.currentTarget;
     const {action, dtype, target, flagTarget} = elem.dataset;
@@ -1959,7 +1930,7 @@ const EventHandlers = {
       if (elem.value === "") {
         await inst.document.unsetFlag(C.SYSTEM_ID, flagTarget);
       } else {
-        await inst.document.setFlag(C.SYSTEM_ID, flagTarget, value);
+        await (inst.document as Item).setFlag(C.SYSTEM_ID, flagTarget, value);
       }
     }
   }
@@ -2024,9 +1995,10 @@ const loc = (locRef: string, formatDict: Record<string, string> = {}) => {
   return locRef;
 };
 
-const getSetting = (setting: string) => {
-  if (game.settings.settings.has(`${C.SYSTEM_ID}.${setting}`)) {
-    return game.settings.get(C.SYSTEM_ID, setting);
+const getSetting = (setting: string, submenu?: string) => {
+  const settingPath = [submenu, setting].filter(isDefined).join(".");
+  if (game.settings.settings.has(`${C.SYSTEM_ID}.${settingPath}`)) {
+    return game.settings.get(C.SYSTEM_ID, settingPath);
   }
   return undefined;
 };

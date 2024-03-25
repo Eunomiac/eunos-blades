@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import "../scss/style.scss";
 // import "../scss/fonts.scss";
 // import "../scss/tinymce/skin/skin.scss";
@@ -63,7 +64,7 @@ import BladesRoll, {
 } from "./classes/BladesRoll";
 
 import BladesDialog from "./classes/BladesDialog";
-import BladesAI, {AGENTS, AIAssistant} from "./core/ai";
+import BladesAI, {AGENTS} from "./core/ai";
 import BladesActiveEffect from "./documents/BladesActiveEffect";
 import BladesGMTrackerSheet from "./sheets/item/BladesGMTrackerSheet";
 import BladesClockKeeperSheet from "./sheets/item/BladesClockKeeperSheet";
@@ -77,6 +78,7 @@ Handlebars.registerHelper("eLog", logger.hbsLog);
 
 let socket: Socket; // ~ SocketLib interface
 
+/* eslint-enable @typescript-eslint/no-unused-vars */
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
 class GlobalGetter {
@@ -210,7 +212,6 @@ class GlobalGetter {
     BladesClockKeeperSheet,
     BladesGMTrackerSheet,
     BladesAI,
-    AIAssistant,
     AGENTS
   }
 );/* !DEVCODE*/
@@ -230,7 +231,7 @@ Hooks.once("init", async () => {
 
   // Register System Settings
   registerSettings();
-  CONFIG.debug.hooks = U.getSetting("debugHooks") as boolean;
+  CONFIG.debug.hooks = U.getSetting("debugHooks", "debugSettings") as boolean;
 
   // Initialize Fonts & Gsap Animations
   GsapInitialize();

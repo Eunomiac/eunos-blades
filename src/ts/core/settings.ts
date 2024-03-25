@@ -1,64 +1,185 @@
+// #region IMPORTS ~
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./utilities";
 import C from "./constants";
+import {UploadBladesPDF} from "./ai";
+/* eslint-enable @typescript-eslint/no-unused-vars */
+// #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
+
+// #region SubMenu FormApplication Definitions
+class DebugSettingsSubmenu extends FormApplication {
+
+  constructor(object = {}, formApplicationOptions = {}) {
+    super(object, formApplicationOptions);
+  }
+
+  /**
+ * Default Options for this FormApplication
+ */
+  static override get defaultOptions() {
+    return mergeObject(super.defaultOptions, {
+      id: "debug-settings-menu",
+      title: "Debug Settings",
+      popOut: true,
+      template: "systems/eunos-blades/templates/settings/debug-settings.hbs",
+      classes: ["eunos-blades", "settings"],
+      width: 500,
+      closeOnSubmit: true,
+      submitOnChange: false,
+      submitOnClose: true
+    });
+  }
+
+  /**
+  * Provide data to the template
+  */
+  override getData() {
+    return game.settings.get("eunos-blades", "debugSettings") as FormApplication.Data<object>;
+  }
+
+  /**
+   * Executes on form submission.
+   * @param _event - the form submission event
+   * @param formData - the form data
+   */
+  override async _updateObject(_event: Event, formData: Record<string, unknown>|undefined) {
+    if (!formData) { return; }
+    const data = expandObject(formData);
+    game.settings.set("eunos-blades", "debugSettings", data);
+  }
+}
+
+class OpenAISettingsSubmenu extends FormApplication {
+
+  constructor(object = {}, formApplicationOptions = {}) {
+    super(object, formApplicationOptions);
+  }
+
+  /**
+ * Default Options for this FormApplication
+ */
+  static override get defaultOptions() {
+    return mergeObject(super.defaultOptions, {
+      id: "openai-settings-menu",
+      title: "Open AI Settings",
+      popOut: true,
+      template: "systems/eunos-blades/templates/settings/openai-settings.hbs",
+      classes: ["eunos-blades", "settings"],
+      width: 500,
+      closeOnSubmit: true,
+      submitOnChange: false,
+      submitOnClose: true
+    });
+  }
+
+  /**
+  * Provide data to the template
+  */
+  override getData() {
+    return game.settings.get("eunos-blades", "openAISettings") as FormApplication.Data<object>;
+  }
+
+  /**
+   * Executes on form submission.
+   * @param _event - the form submission event
+   * @param formData - the form data
+   */
+  override async _updateObject(_event: Event, formData: Record<string, unknown>|undefined) {
+    if (!formData) { return; }
+    const data = expandObject(formData);
+    game.settings.set("eunos-blades", "openAISettings", data);
+  }
+
+}
+// class OpenAIFileUploadForm extends FormApplication {
+//   constructor(object = {}, options = {}) {
+//     super(object, options);
+//   }
+
+//   static override get defaultOptions() {
+//     return mergeObject(super.defaultOptions, {
+//       id: "openai-file-upload-form",
+//       title: "Upload 'Blades in the Dark' PDF to OpenAI",
+//       template: "systems/eunos-blades/templates/settings/openai-file-upload.hbs",
+//       width: 400
+//     });
+//   }
+
+//   // Add listeners to the form elements, specifically the file input and the submit button.
+//   override activateListeners(html: JQuery<HTMLElement>) {
+//     super.activateListeners(html);
+//     const fileInput = html.find("input[type='file']");
+//     const submitButton = html.find("button[type='submit']");
+//     // Implement listeners as needed, for example, validating the file type
+//   }
+
+//   // This method handles the form submission.
+//   async _updateObject(event: Event, formData: FormData) {
+//     event.preventDefault();
+//     const file = formData.get("file"); // Assuming your input's name is 'file'
+//     if (file instanceof File) {
+//       ui.notifications?.info("Uploading file to OpenAI...");
+//       const fileID = await UploadBladesPDF(file);
+//       if (fileID) {
+//         game.settings.set("eunos-blades", "openAIBladesFile", fileID);
+//       }
+//       ui.notifications?.info("File upload complete!");
+//     }
+//   }
+// }
+// #endregion
+
 
 const registerSettings = function() {
-  game.settings.register("eunos-blades", "debug", {
-    name: "Debug Level",
-    hint: "The verbosity of the debug messages to console.",
-    scope: "client",      // This specifies a world-level setting
-    config: true,        // This specifies that the setting appears in the configuration view
-    type: Number,
-    range: {             // If range is specified, the resulting setting will be a range slider
-      min: 0,
-      max: 5,
-      step: 1
-    } as { min: number; max: number; step: number },
-    default: 3         // The default value for the setting
+
+  // #region Debug Settings ~
+  game.settings.registerMenu("eunos-blades", "debugSettingsMenu", {
+    name: "Debug Settings",
+    label: "Open Debug Settings",
+    hint: "Configure settings related to debugging.",
+    icon: "fa-duotone fa-ban-bug",
+    type: DebugSettingsSubmenu,
+    restricted: true
   });
-  game.settings.register("eunos-blades", "debugHooks", {
-    name: "Debug HOOKS",
-    hint: "Whether all Hooks are logged to the console.",
-    scope: "client",
-    config: true,
-    type: Boolean,
-    default: false
+  game.settings.register("eunos-blades", "debugSettings", {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {
+      debugLevel: 3,
+      debugHooks: false,
+      whitelist: "",
+      blacklist: ""
+    }
   });
-  game.settings.register("eunos-blades", "openAPIModelLevel", {
-    name: "AI Base Quality",
-    hint: "Lower values are cheaper to run, at the cost of quality.",
-    scope: "client",      // This specifies a world-level setting
-    config: true,        // This specifies that the setting appears in the configuration view
-    type: Number,
-    range: {             // If range is specified, the resulting setting will be a range slider
-      min: 0,
-      max: 2,
-      step: 1
-    } as { min: number; max: number; step: number }
+  // #endregion
+
+  // #region AI Settings ~
+  game.settings.registerMenu("eunos-blades", "openAISettingsMenu", {
+    name: "OpenAI Settings",
+    label: "Open AI Integration",
+    hint: "Configure settings related to integration with AI for content generation during play.",
+    icon: "fa-duotone fa-brain-circuit",
+    type: OpenAISettingsSubmenu,
+    restricted: true
   });
-  game.settings.register("eunos-blades", "blacklist", {
-    name: "Debug Blacklist",
-    hint: "Comma-delimited list of categories of debug messages to silence.",
-    scope: "client",      // This specifies a world-level setting
-    config: true,        // This specifies that the setting appears in the configuration view
-    type: String,
-    default: ""         // The default value for the setting
+
+  game.settings.register("eunos-blades", "openAISettings", {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {
+      apiKey: "",
+      models: {
+        text: "gpt-3.5-turbo",
+        speech: "tts-1-hd",
+        image: "gpt-4-vision-preview"
+      },
+      fileID: ""
+    }
   });
-  game.settings.register("eunos-blades", "openAPIKey", {
-    name: "OpenAI API Key",
-    hint: "Your personal OpenAI API Key (necessary to enable AI functionality)",
-    scope: "client",      // This specifies a world-level setting
-    config: true,        // This specifies that the setting appears in the configuration view
-    type: String,
-    default: ""         // The default value for the setting
-  });
-  game.settings.register("eunos-blades", "whitelist", {
-    name: "Debug Whitelist",
-    hint: "Comma-delimited list of categories of debug messages to promote.",
-    scope: "client",      // This specifies a world-level setting
-    config: true,        // This specifies that the setting appears in the configuration view
-    type: String,
-    default: ""         // The default value for the setting
-  });
+  // #endregion
+
   /**
    * Track the system version upon which point a migration was last applied
    */

@@ -1,9 +1,13 @@
+// #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {BladesActorType, BladesItemType, BladesPhase, RollType, RollSubType, RollModType, RollPermissions, ConsequenceType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollPhase, RollResult} from "../core/constants";
 import BladesActor from "../BladesActor";
 import BladesItem from "../BladesItem";
 import {BladesRollMod, BladesRollPrimary, BladesRollOpposition, BladesRollParticipant} from "../classes/BladesRoll";
 import BladesClockKey from "../classes/BladesClockKey";
 import BladesTargetLink from "../classes/BladesTargetLink";
+/* eslint-enable @typescript-eslint/no-unused-vars */
+// #endregion
 
 declare global {
 
@@ -78,16 +82,16 @@ declare global {
         consequence: BladesConsequence.Data
       },
 
-      rollModsData: Record<IDString,BladesRollMod.Data>,
+      rollModsData: Record<IDString, BladesRollMod.Data>,
 
       rollPositionInitial: Position;
       rollEffectInitial: Effect;
       rollPosEffectTrade: "position"|"effect"|false,
       rollPhase: RollPhase,
 
-      GMBoosts: Partial<Record<"Dice"|Factor|"Result",number>>,
-      GMOppBoosts: Partial<Record<Factor,number>>,
-      GMOverrides: Record<string,string>,
+      GMBoosts: Partial<Record<"Dice"|Factor|"Result", number>>,
+      GMOppBoosts: Partial<Record<Factor, number>>,
+      GMOverrides: Record<string, string>,
       rollFactorToggles: Record<
         "source"|"opposition",
         Partial<Record<Factor, FactorFlagData>>
@@ -143,10 +147,10 @@ declare global {
       isAffectingAfter: boolean,
 
       rollTraitValOverride?: number,
-      rollFactorPenaltiesNegated: Partial<Record<Factor,boolean>>,
+      rollFactorPenaltiesNegated: Partial<Record<Factor, boolean>>,
 
-      GMBoosts: Record<"Dice"|Factor|"Result",number>,
-      GMOppBoosts: Record<Factor,number>,
+      GMBoosts: Record<"Dice"|Factor|"Result", number>,
+      GMOppBoosts: Record<Factor, number>,
 
       canTradePosition: boolean,
       canTradeEffect: boolean,
@@ -155,7 +159,7 @@ declare global {
       negRollMods: Record<RollModSection, BladesRollMod[]>,
       hasInactiveConditionals: Record<RollModSection, boolean>,
 
-      rollFactors: Record<"source"|"opposition", Partial<Record<Factor,FactorData>>>,
+      rollFactors: Record<"source"|"opposition", Partial<Record<Factor, FactorData>>>,
 
       oddsHTMLStart: string,
       oddsHTMLStop: string,
@@ -231,7 +235,7 @@ declare global {
       rollPrimaryImg: string,
 
       rollPrimaryModsSchemaSet: BladesRollMod.Schema[],
-      rollFactors: Partial<Record<Factor,FactorData>>
+      rollFactors: Partial<Record<Factor, FactorData>>
     }
 
     export type OppositionType =
@@ -266,7 +270,7 @@ declare global {
       rollOppSubName?: string,
 
       rollOppModsSchemaSet?: BladesRollMod.Schema[],
-      rollFactors: Partial<Record<Factor,FactorData>>
+      rollFactors: Partial<Record<Factor, FactorData>>
     }
 
     export type ParticipantType =
@@ -293,7 +297,7 @@ declare global {
       rollParticipantIcon: string,
 
       rollParticipantModsSchemaSet?: BladesRollMod.Schema[],
-      rollFactors: Partial<Record<Factor,FactorData>>
+      rollFactors: Partial<Record<Factor, FactorData>>
     }
 
     export type ParticipantSection = RollModSection.roll|RollModSection.position|RollModSection.effect;

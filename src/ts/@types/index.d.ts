@@ -10,9 +10,9 @@ import BladesClockKey from "../classes/BladesClockKey";
 import BladesChat from "../classes/BladesChat";
 import BladesDirector from "../classes/BladesDirector";
 // import C from "../core/constants";
-import type gsap from "gsap/all";
+import * as gsap from "gsap/all";
 
-
+import "./blades-ai";
 import "./blades-general-types";
 
 import "./blades-document";
@@ -56,6 +56,21 @@ declare global {
 
   declare namespace EunoBlades {
 
+
+    export namespace Settings {
+      export interface Debug {
+        debugLevel: number,
+        debugHooks: boolean,
+        whitelist: string,
+        blacklist: string
+      }
+      export interface OpenAI {
+        apiKey: string,
+        models: Partial<Record<BladesAI.Usage, string>>,
+        fileID: string
+      }
+    }
+
     export interface Game {
       ClockKeeper: BladesClockKeeper,
       Director: BladesDirector,
@@ -63,7 +78,12 @@ declare global {
       Rolls: Collection<BladesRoll>,
       ClockKeys: Collection<BladesClockKey>,
       Consequences: Collection<BladesConsequence>,
-      Tooltips: WeakMap<HTMLElement, gsap.core.Timeline>
+      Tooltips: WeakMap<HTMLElement, gsap.core.Timeline>,
+
+      settings: {
+        debug: Settings.Debug,
+        openai: Settings.OpenAI
+      }
     }
   }
 

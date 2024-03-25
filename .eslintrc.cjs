@@ -89,11 +89,11 @@ const TYPESCRIPTRULES = {
         - When active, the ESLint-equivalent rule will be disabled.
         - All values must be of type = [tsValue: any, esLintOffValue?: any = "off"] */
   extensions: {
-    "default-param-last": ["error"]
+    "default-param-last": ["error"],
     // "no-unused-vars": "off"
-    // "no-unused-vars": [
-    //   ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_$" }],
-    // ],
+    "no-unused-vars": [
+      ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_$" }]
+    ]
     // "require-await": ["warn"], // @@ REQUIRES CONFIGURED TYPE INFORMATION @@
   },
 
@@ -636,7 +636,7 @@ const EXPORTS = {
       impliedStrict: true
     }
   },
-  reportUnusedDisableDirectives: true,
+  reportUnusedDisableDirectives: ISDEPLOYING,
   rules: {
     ...RULES,
     "etc/no-assign-mutated-array": "off",
@@ -648,6 +648,16 @@ const EXPORTS = {
     GLOBALCONSTANTS.map((constant) => [constant, "readonly"])
   ),
   overrides: [
+    {
+      // Specify the folders you want ESLint to lint
+      files: [
+        "eunos-blades/**/*.{js,ts,tsx}",
+        "app/**/*.{js,ts,tsx}",
+        "snippets/**/*.{js,ts,tsx}",
+        ".Webpack CODING/**/*.{js,ts,tsx}",
+        "!!VSC_Custom_CSS/**/*.{js,ts,tsx}"
+      ]
+    },
     {
       files: [".eslintrc.js", "*.js"],
       plugins: ["import"],

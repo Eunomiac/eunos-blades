@@ -11,11 +11,20 @@ const gsapPlugins: gsap.RegisterablePlugins[] = [
   Dragger,
   // SplitText,
   Observer,
-  CustomEase,
+  CustomEase
 //   CustomWiggle,
 //   CustomBounce,
 //   EasePack
 ];
+
+/**
+ * Need an onReverse()?
+ *    Track the playhead direction of any animation
+ *    https://gsap.com/docs/v3/HelperFunctions/helpers/trackDirection/
+ *
+ * Motion-Path cool progress-along-anchors-of-curve animation
+ *    https://gsap.com/docs/v3/HelperFunctions/helpers/anchorsToProgress
+ */
 
 export type gsapConfig = gsap.TweenVars & {
   duration: number,
@@ -890,7 +899,7 @@ export function Initialize() {
         Dragger,
         // SplitText,
         Observer,
-        CustomEase,
+        CustomEase
         // CustomWiggle,
         // CustomBounce,
         // EasePack

@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // #region Imports ~
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./core/utilities";
 import C, {BladesActorType, Tag, Playbook, BladesNoticeType, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";
 
@@ -15,6 +15,7 @@ import type {ItemDataConstructorData} from "@league-of-foundry-developers/foundr
 import type BladesActiveEffect from "./documents/BladesActiveEffect";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
 import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/utils/helpers.mjs";
+/* eslint-enable @typescript-eslint/no-unused-vars */
 // #endregion
 
 

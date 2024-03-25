@@ -3,8 +3,7 @@
 	"version": "0.1.0",
 	"description": "An implementation of Kult: Divinity Lost (4th Edition), based on the original Kult 4E Foundry system by Tom LaPorta.",
 	"scripts": {
-		"webpack:watch": "webpack serve --config webpack.dev.js",
-		"foundry:serve": "node 'D:/LTSC Programs/FoundryVTT/Foundry Virtual Tabletop/resources/app/main.js' --world=city-of-knives --dataPath='D:/Users/Ryan/Documents/Projects/.CODING/FoundryVTT/FoundryDevData' --hotReload"
+		"type-check": "tsc --noEmit"
 	},
 	"type": "module",
 	"browserslist": [
@@ -54,7 +53,7 @@
 		"axios": "^1.5.1",
 		"form-data": "^4.0.0",
 		"gsap": "^3.12.5",
-		"openai": "^4.20.0",
+		"openai": "^4.29.2",
 		"tinymce": "^6.7.1",
 		"yargs": "^17.7.2"
 	},

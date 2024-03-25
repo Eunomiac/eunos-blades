@@ -1,0 +1,38 @@
+
+  game.settings.register("eunos-blades", "debugLevel", {
+    name: "Debug Level",
+    hint: "The verbosity of the debug messages to console. Higher numbers will result in more messages.",
+    scope: "client",      // This specifies a world-level setting
+    config: true,        // This specifies that the setting appears in the configuration view
+    type: Number,
+    range: {             // If range is specified, the resulting setting will be a range slider
+      min: 0,
+      max: 5,
+      step: 1
+    },
+    default: 3         // The default value for the setting
+  });
+  game.settings.register("eunos-blades", "debugHooks", {
+    name: "Debug HOOKS",
+    hint: "Whether all Hooks are logged to the console.",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: false
+  });
+  game.settings.register("eunos-blades", "whitelist", {
+    name: "Debug Whitelist",
+    hint: "Comma-delimited list of categories of debug messages to promote.",
+    scope: "client",      // This specifies a world-level setting
+    config: true,        // This specifies that the setting appears in the configuration view
+    type: String,
+    default: ""         // The default value for the setting
+  });
+  game.settings.register("eunos-blades", "blacklist", {
+    name: "Debug Blacklist",
+    hint: "Comma-delimited list of categories of debug messages to silence.",
+    scope: "client",      // This specifies a world-level setting
+    config: true,        // This specifies that the setting appears in the configuration view
+    type: String,
+    default: ""         // The default value for the setting
+  });

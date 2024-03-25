@@ -260,11 +260,14 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
   get actions(): Record<ActionTrait, number> {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never; }
-    return U.objMap<Record<ActionTrait, number>>({
-      ...this.system.attributes.insight,
-      ...this.system.attributes.prowess,
-      ...this.system.attributes.resolve
-    }, ({value, max}: ValueMax) => U.gsap.utils.clamp(0, max, value)) as Record<ActionTrait, number>;
+    return U.objMap<Record<ActionTrait, number>>(
+      {
+        ...this.system.attributes.insight,
+        ...this.system.attributes.prowess,
+        ...this.system.attributes.resolve
+      },
+      (({value, max}: ValueMax) => U.gsap.utils.clamp(0, max, value)) as mapFunc<valFunc>
+    ) as Record<ActionTrait, number>;
   }
 
   get rollable(): Record<AttributeTrait | ActionTrait, number> {

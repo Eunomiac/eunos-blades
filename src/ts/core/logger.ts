@@ -102,8 +102,8 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
   const [message, ...data] = content;
 
   if (key) {
-    const blacklist = ((U.getSetting("blacklist") ?? "") as string).split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
-    const whitelist = ((U.getSetting("whitelist") ?? "") as string).split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
+    const blacklist = ((U.getSetting("blacklist", "debugSettings") ?? "") as string).split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
+    const whitelist = ((U.getSetting("whitelist", "debugSettings") ?? "") as string).split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
     const isBlack = blacklist.some((pat) => pat.test(key as string));
     const isWhite = whitelist.some((pat) => pat.test(key as string));
     if (isBlack && !isWhite) {
@@ -113,7 +113,7 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
       dbLevel = Math.min(3, Math.max(1, dbLevel - 2)) as 1|2|3;
     }
   }
-  if ((U.getSetting("debug") ?? 5) as 0|1|2|3|4|5 < dbLevel) { return; }
+  if ((U.getSetting("debugLevel", "debugSettings") ?? 5) as 0|1|2|3|4|5 < dbLevel) { return; }
   if (type === "log") {
     type = `${type}${dbLevel}`;
   }

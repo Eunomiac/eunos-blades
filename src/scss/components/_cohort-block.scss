@@ -72,7 +72,7 @@
       }
 
       .cohort-name {
-        pointer-events: all;
+        pointer-events: auto;
         font-family: var(--font-emphasis);
         font-size: toRem(18px);
         line-height: 25px;

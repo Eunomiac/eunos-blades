@@ -1,0 +1,47 @@
+<form>
+  <div>
+    <label for="pdf-upload">Upload PDF:</label>
+    <input type="file" id="pdf-upload" name="file" accept=".pdf" required>
+  </div>
+  <button type="submit">Upload</button>
+</form>
+
+  game.settings.register("eunos-blades", "openAIAPIKey", {
+    name: "OpenAI API Key",
+    hint: "Your personal OpenAI API Key (necessary to enable AI functionality). This information will not be shown to non-GM players.",
+    scope: "world",
+    config: true,
+    type: String,
+    default: ""
+  });
+  game.settings.register("eunos-blades", "openAIFileUpload", {
+    name: "Upload 'Blades in the Dark' PDF to OpenAI",
+    config: true,
+    type: String,
+    filePicker: true as unknown as undefined,
+    onChange: async (value: string) => {
+      const fileID = await UploadBladesPDF(value);
+      game.settings.set("eunos-blades", "openAIBladesFile", fileID);
+    },
+    hint: "You can upload your copy of the 'Blades in the Dark' PDF to the AI. The file will be hosted by OpenAI, and processed in a way that facilitates AI understanding of its contents, vastly improving the AI's ability to generate setting-appropriate content for your game. Be aware that this incurs a daily cost of roughly $0.05 USD, even when you are not using the system. (You can visit https://platform.openai.com/storage to manage your uploaded files.)"
+  });
+  game.settings.register("eunos-blades", "openAIBladesFile", {
+    name: "OpenAI 'Blades in the Dark' PDF File ID",
+    hint: "The ID assigned to your Blades in the Dark PDF upload by Open AI. This will be filled in automatically when you upload the file, or you can edit it manually if you have handled your OpenAI file uploads elsewhere.",
+    scope: "world",
+    config: true,
+    type: String,
+    default: "No File Uploaded."
+  });
+
+  game.settings.register("eunos-blades", "openAIModel_Text", {
+    name: "OpenAI Model: Text",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      "gpt-4-turbo-preview": "GPT-4 Turbo: The most capable model, but costs more.",
+      "gpt-3.5-turbo": "GPT-3.5 Turbo model. Cheaper than GPT-4, but less capable."
+    } as unknown as undefined,
+    default: "gpt-3.5-turbo"
+  });

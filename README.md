@@ -1,12 +1,13 @@
 <!--
 TO RUN DEVELOPMENT SERVER:
 
-- Open Powershell7 window (as Administrator)
+- Open TWO Powershell7 windows (as Administrator)
   - cd 'D:\Users\Ryan\Documents\Projects\.CODING\FoundryVTT\FoundryDevData\Data\systems\eunos-blades'
   - npx vite build
 - When build process completes, run (in the same window):
   - node 'D:/LTSC Programs/FoundryVTT/Foundry Virtual Tabletop/resources/app/main.js' --dataPath='D:\Users\Ryan\Documents\Projects\!Roleplaying\!!!FOUNDRY'
-- Open second Powershell7 window (as Administrator)
+
+- In second Powershell7 window:
   - npx vite serve
 -->
 
@@ -16,7 +17,7 @@ TO RUN DEVELOPMENT SERVER:
 | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades)  | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) |
 | :-----------: | :-----------: |
 | [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) <br /> [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) <br /> [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) |
-
+c
 Welcome to Eunomiac's system implementation for "Blades in the Dark" by [Evil Hat Productions](https://evilhat.com/) for the [Foundry Virtual Tabletop](https://foundryvtt.com/) platform. This project aims to bring the intricate and exciting world of "Blades in the Dark" to your virtual tabletop with full-featured character sheets, collaborative tools for GMs and players, and more.
 
 ## THE GAME

@@ -97,7 +97,7 @@
           line-height: 30px;
         }
         .harm-level {
-          pointer-events: all;
+          pointer-events: auto;
           flex-grow: 0.25;
           justify-content: stretch;
           background: var(--blades-red);

@@ -553,7 +553,7 @@ class BladesTargetLink<Schema> {
     await U.waitFor(waitFor);
     if (this.targetKeyPrefix) {
       // First, prepend targetKeyPrefix or targetFlagKeyPrefix (as appropriate) to each key of updateData
-      updateData = U.objMap(updateData, false, (key) => `${this.targetKeyPrefix || this.targetFlagKeyPrefix}.${key}`) as Record<string, unknown>;
+      updateData = U.objMap(updateData, false, (key) => `${this.targetKeyPrefix || this.targetFlagKeyPrefix}.${String(key)}`) as Record<string, unknown>;
       return this.target.update(updateData, {render: false});
     } else if (this.targetFlagKeyPrefix) {
       // We must retrieve the existing flag data, flattenObject it, then merge it with updateData

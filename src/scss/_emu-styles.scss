@@ -530,7 +530,7 @@ body {
 					flex-wrap: nowrap;
 					height: auto;
 					margin: 0;
-					pointer-events: all;
+					pointer-events: auto;
 					position: relative;
 				}
 				#macro-list {
@@ -553,7 +553,7 @@ body {
 					display: flex;
 					flex-direction: column;
 					margin: 0;
-					pointer-events: all;
+					pointer-events: auto;
 					position: relative;
 					&:first-child {
 						flex: 0 0 auto;
@@ -705,7 +705,7 @@ body {
 					font-size: var(--size-16px);
 					line-height: initial;
 					margin: 0;
-					pointer-events: all;
+					pointer-events: auto;
 					position: relative;
 					& > i {
 						margin: 0;
@@ -825,7 +825,7 @@ body {
 				margin-inline-start: var(--blades-spacer-sm);
 				max-height: 2.75rem;
 				max-width: 5.5rem;
-				pointer-events: all;
+				pointer-events: auto;
 				width: auto;
 			}
 			#menu {
@@ -914,7 +914,7 @@ body {
 				display: block;
 				margin: var(--blades-spacer-sm);
 				padding: 0;
-				pointer-events: all;
+				pointer-events: auto;
 				z-index: 10;
 				&.hidden {
 					display: none;
@@ -1069,7 +1069,7 @@ body {
 						flex-direction: column;
 						line-height: initial;
 						margin: 0;
-						pointer-events: all;
+						pointer-events: auto;
 						ul {
 							border-block-end: rgba(var(--color-border), 1) 1px solid;
 						}
@@ -1118,7 +1118,7 @@ body {
 					flex-wrap: wrap;
 					margin-block-end: var(--blades-spacer-sm);
 					position: relative;
-					pointer-events: all;
+					pointer-events: auto;
 					.scene {
 						background-color: rgba(var(--color-background-darkest), 0.8);
 						background-image: none;
@@ -1138,7 +1138,7 @@ body {
 						max-width: 15rem;
 						min-width: 7rem;
 						padding: 0 var(--blades-spacer-md);
-						pointer-events: all;
+						pointer-events: auto;
 						position: relative;
 						text-align: center;
 						&:last-of-type {
@@ -2715,7 +2715,7 @@ body {
 					font-size: var(--size-16px);
 					line-height: initial;
 					margin: 0;
-					pointer-events: all;
+					pointer-events: auto;
 					position: relative;
 					&:hover {
 						background-color: rgba(var(--color-primary), 1);
@@ -3748,7 +3748,7 @@ body {
 					justify-content: center;
 					line-height: initial;
 					margin: 0;
-					pointer-events: all;
+					pointer-events: auto;
 					position: relative;
 					& > i {
 						font-size: inherit;
@@ -6602,7 +6602,7 @@ body #controls .control-tools .control-tool {
 	line-height: initial;
 	margin: 0;
 	padding: 0;
-	pointer-events: all;
+	pointer-events: auto;
 	position: relative;
 }
 body #controls .control-tools .scene-control>i,

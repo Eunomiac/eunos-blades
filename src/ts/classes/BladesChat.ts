@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // #region IMPORTS ~
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {ApplyTooltipAnimations} from "../core/gsap";
 import C, {RollType, Position, Effect, RollResult} from "../core/constants";
 import U from "../core/utilities";
@@ -8,6 +8,7 @@ import BladesRoll from "./BladesRoll";
 import BladesConsequence from "./BladesConsequence";
 import {ChatMessageData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import {ChatMessageDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+/* eslint-enable @typescript-eslint/no-unused-vars */
 // #endregion
 
 namespace BladesChat {
@@ -131,7 +132,7 @@ class BladesChat extends ChatMessage {
           .forEach(([rollResult, csqDataSet]) => {
             returnData[position as Position][rollResult as RollResult] = Object.fromEntries(
               Object.entries(csqDataSet)
-                .filter(([id, cData]) => cData.id)
+                .filter(([_id, cData]) => cData.id)
                 .map(([id, cData]) => [
                   id,
                   game.eunoblades.Consequences.get(cData.id) ?? new BladesConsequence(cData)

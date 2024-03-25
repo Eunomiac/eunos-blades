@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // #region IMPORTS ~
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities";
 import C, {BladesActorType, BladesItemType, BladesPhase, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag} from "../core/constants";
 import {BladesActor, BladesPC, BladesCrew} from "../documents/BladesActorProxy";
@@ -13,17 +13,9 @@ import BladesTargetLink from "./BladesTargetLink";
 
 import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import type {ChatSpeakerDataProperties} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+/* eslint-enable @typescript-eslint/no-unused-vars */
 // #endregion
 // #region Types & Type Checking ~
-
-/**
- * Checks if the given string is a RollType.
- * @param {unknown} str The string to check.
- * @returns {boolean} True if the string is a RollType, false otherwise.
- */
-function isRollType(str: unknown): str is RollType {
-  return typeof str === "string" && str in RollType;
-}
 
 /**
  * Checks if the given trait is an ActionTrait.
@@ -598,26 +590,47 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     }
   }
 
+  get elem$() { return this.rollInstance.elem$.find(`#${this.id}`); }
+
+  get statusChangeTimeline(): gsap.core.Timeline {
+    let tl = this.elem$.data("statusChangeTimeline");
+    if (!(tl instanceof gsap.core.Timeline)) {
+      tl = U.gsap.effects.rollModStatusChange(this.elem$, {startAt: this.status});
+      /**
+      *    Single Labeled Timeline with five steps:
+      *       Hidden <--> Forced Off <--> Toggled Off <--> Toggled On <--> Forced On
+      * */
+      this.elem$.data("statusChangeTimeline", tl);
+    }
+    return tl;
+  }
+
+  async rollModStatusChange_Animation(): Promise<gsap.core.Tween> {
+    return await this.statusChangeTimeline.tweenTo(this.status)
+      .then(() => {
+        this.rollInstance.renderRollCollab();
+      });
+  }
+
+  async rollModStatusChange_SocketCall() {
+    if (this.rollInstance.isRendered) {
+      socketlib.system.executeForEveryone("rollModStatusChange_SocketCall", this.id);
+    }
+  }
+
+  static rollModStatusChange_SocketResponse(rollID: IDString, modID: IDString) {
+    const rollInstance = game.eunoblades.Rolls.get(rollID);
+    if (rollInstance?.isRendered) {
+      rollInstance.getRollModByID(modID)?.rollModStatusChange_Animation();
+    }
+  }
+
   get baseStatus(): RollModStatus {return this.data.base_status;}
-  get heldStatus(): RollModStatus | undefined {return this.data.held_status;}
+  get heldStatus(): RollModStatus | null | undefined {return this.data.held_status;}
   set heldStatus(val: RollModStatus | undefined) {
     if (val === this.heldStatus) {return;}
-    const {isRerendering} = this;
-    if (!val) {
-      this.updateTarget("held_status", null)
-        .then(() => {
-          if (isRerendering) {
-            this.rollInstance.renderRollCollab_SocketCall();
-          }
-        });
-    } else {
-      this.updateTarget("held_status", val)
-        .then(() => {
-          if (isRerendering) {
-            this.rollInstance.renderRollCollab_SocketCall();
-          }
-        });
-    }
+    this.updateTarget("held_status", val || null)
+      .then(this.rollModStatusChange_SocketCall.bind(this));
   }
 
   get value(): number {return this.data.value;}
@@ -2924,7 +2937,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         || (this.isGM && this.getRollMods(RollModSection.after).length > 0),
       ...GMBoostsData,
       ...positionEffectTradeData,
-      rollClockKey: this.rollClockKey,
+      rollClockKey,
       totalStressCost: stressCostDataSet.reduce((acc, [_label, amount]) => acc + amount, 0),
       totalArmorCost: armorCostDataSet.length,
       stressCosts: stressCostDataSet.length > 0
@@ -3555,25 +3568,16 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
-  async _onSelectChange(event: SelectChangeEvent) {
-    event.preventDefault();
-    const elem = event.currentTarget;
-    const {docType} = elem.dataset;
-    if (elem.value !== "" && docType?.startsWith("BladesRollParticipant")) {
-      const [_, section, subSection] = docType.split(".");
-      await this.addRollParticipant(
-        elem.value,
-        section as BladesRoll.ParticipantSection,
-        subSection as BladesRoll.ParticipantSubSection
-      );
-    } else {
-      await U.EventHandlers.onSelectChange(this, event);
-      socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
-    }
-  }
-
   async _onTextInputBlur(event: InputChangeEvent) {
-    await U.EventHandlers.onTextInputBlur(this, event);
+    const elem = event.target;
+    const {action, targetKey} = elem.dataset;
+    if (!action) {
+      throw new Error("Input text elements require a data-action attribute.");
+    }
+    if (!targetKey) {
+      throw new Error("Input text elements require a 'data-target-key' attribute.");
+    }
+    await this.updateTarget(targetKey, elem.value);
     socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
@@ -3637,6 +3641,71 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       }
     }));
   }
+
+  _onPlayerToggleRollMod(event: ClickEvent) {
+    event.preventDefault();
+    const elem$ = $(event.currentTarget);
+    const modID = elem$.attr("id") as IDString;
+    const mod = this.getRollModByID(modID);
+    if (!mod) {throw new Error(`Unable to find roll mod with id '${modID}'`);}
+    switch (mod.status) {
+      case RollModStatus.ToggledOff: {
+        mod.heldStatus = RollModStatus.ToggledOn;
+        break;
+      }
+      case RollModStatus.ToggledOn: {
+        mod.heldStatus = RollModStatus.ToggledOff;
+        break;
+      }
+      default: break;
+    }
+  }
+
+  _onClickToRoll(event: ClickEvent) {
+    event.preventDefault();
+    if (this.rollPhase === RollPhase.AwaitingRoll) {
+      this.resolveRoll();
+    }
+  }
+
+  async _onSelectChange(event: SelectChangeEvent) {
+    event.preventDefault();
+    const elem = event.currentTarget;
+    const {dtype, docType, targetKey} = elem.dataset;
+
+    if (game.user.isGM && elem.value !== "" && docType?.startsWith("BladesRollParticipant")) {
+      const [_, section, subSection] = docType.split(".");
+      await this.addRollParticipant(
+        elem.value,
+        section as BladesRoll.ParticipantSection,
+        subSection as BladesRoll.ParticipantSubSection
+      );
+      return;
+    }
+
+    if (!targetKey) {
+      throw new Error("Select elements require a 'data-target-key' attribute.");
+    }
+    let value;
+    switch (U.lCase(dtype)) {
+      case "number": value = U.pFloat(elem.value); break;
+      case "boolean": value = U.lCase(`${elem.value}`) === "true"; break;
+      case "string": value = `${elem.value}`; break;
+      default: {
+        if (U.isNumString(value)) {
+          throw new Error("You must set 'data-dtype=\"Number\"' for <select> elements with number values.");
+        }
+        if (U.isBooleanString(value)) {
+          throw new Error("You must set 'data-dtype=\"Boolean\"' for <select> elements with boolean values.");
+        }
+        value = `${elem.value}`;
+        break;
+      }
+    }
+    await this.updateTarget(targetKey, value);
+    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+  }
+
   activateListeners() {
 
     ApplyTooltipAnimations(this.elem$);
@@ -3644,49 +3713,49 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     this.spawnPositionDragger();
 
     // If a rollClockKey exists, initialize its elements
-    if (this.rollClockKey) {
-      this.elem$.find(".roll-clock").removeClass("hidden");
-    }
+    // if (this.rollClockKey) {
+    //   this.elem$.find(".roll-clock").removeClass("hidden");
+    // }
 
-    // User-Toggleable Roll Mods
-    this.elem$.find(".roll-mod[data-action='toggle']").on({
-      click: this._toggleRollModClick.bind(this)
+    // Player-Toggleable Roll Mods
+    this.elem$.find("[data-action='player-toggle-mod']").on({
+      click: this._onPlayerToggleRollMod.bind(this)
     });
 
-    this.elem$.find("[data-action='tradePosition']").on({
-      click: (event) => {
-        const curVal = `${$(event.currentTarget).data("value")}`;
-        if (curVal === "false") {
-          this.updateTarget("rollPosEffectTrade", "effect")
-            .then(() => socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id));
-        } else {
-          this.updateTarget("rollPosEffectTrade", false)
-            .then(() => socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id));
-        }
-      }
-    });
-    this.elem$.find("[data-action='tradeEffect']").on({
-      click: (event) => {
-        const curVal = `${$(event.currentTarget).data("value")}`;
-        if (curVal === "false") {
-          this.updateTarget("rollPosEffectTrade", "position")
-            .then(() => socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id));
-        } else {
-          this.updateTarget("rollPosEffectTrade", false)
-            .then(() => socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id));
-        }
-      }
-    });
-
-    this.elem$.find("[data-action='roll']").on({
-      click: () => this.resolveRoll()
-    });
-
+    // Player Select Elements
     this.elem$
-      .find("select[data-action='player-select']")
+      .find("[data-action='player-select']")
       .on({change: this._onSelectChange.bind(this)});
 
+    // Player Position/Effect Trading
+    this.elem$.find("[data-action='player-trade']").on({
+      click: async (event) => {
+        await this.updateTarget("rollPosEffectTrade", U.lCase(`${$(event.currentTarget).data("value")}`) === "false");
+        socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+      }
+    });
+
+    // Player-Initiated Roll Resolution
+    this.elem$.find("[data-action='player-roll']").on({
+      click: this._onClickToRoll.bind(this)
+    });
+
     if (!game.user.isGM) {return;}
+
+    // GM Slide-Out Roll Mod Controls Panel
+    this.elem$.find(".roll-mod-controls-container").each((_i, container) => {
+      const container$ = $(container);
+      const panel$ = container$.find(".roll-mod-controls-panel");
+      container$.on({
+        mouseenter: () => { panel$.toggleClass("active"); },
+        mouseleave: () => { panel$.toggleClass("active"); }
+      });
+
+      // GM Roll Mod Panel Controls
+
+
+    });
+
 
     /**
      * Handles setting of rollMod status via GM pop-out controls

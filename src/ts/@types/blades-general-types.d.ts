@@ -2,9 +2,11 @@ import {AttributeTrait, ActionTrait, District} from "../core/constants";
 import BladesItem from "../BladesItem";
 import BladesActor from "../BladesActor";
 import BladesChat from "../classes/BladesChat";
-import BladesClockKey, {BladesClock} from "../classes/BladesClockKey";
-import BladesConsequence from "../classes/BladesConsequence";
-import BladesRoll, {BladesRollMod} from "../classes/BladesRoll";
+import BladesActorSheet from "../sheets/actor/BladesActorSheet";
+import BladesItemSheet from "../sheets/item/BladesItemSheet";
+// import BladesClockKey, {BladesClock} from "../classes/BladesClockKey";
+// import BladesConsequence from "../classes/BladesConsequence";
+// import BladesRoll, {BladesRollMod} from "../classes/BladesRoll";
 import {gsap} from "gsap/all";
 
 
@@ -12,10 +14,10 @@ declare global {
   // #region MISCELLANEOUS TYPE ALIASES (nonfunctional; for clarity) ~
 
   // Represents a list of a certain type
-  type List<Type = any> = Record<number | string | symbol, Type>
+  type List<Type = unknown> = Record<key, Type>
 
   // Represents an index of a certain type
-  type Index<Type = any> = List<Type> | Type[];
+  type Index<Type = unknown> = List<Type> | Type[];
 
   // Represents a string, false, or undefined
   type MaybeStringOrFalse = string | false | undefined;
@@ -80,22 +82,22 @@ declare global {
   type KeyOf<T> = keyof T;
 
   // Represents a value of a certain type
-  type ValOf<T> = T extends Array<unknown> | ReadonlyArray<unknown> ? T[number] : T[keyof T];
+  type ValOf<T> = T extends unknown[] | readonly unknown[] ? T[number] : T[keyof T];
 
   // Represents a function that takes a key and an optional value and returns unknown
-  type keyFunc = (key: number | string, val?: any) => unknown;
+  type keyFunc = (key: key, val?: unknown) => unknown;
 
   // Represents a function that takes a value and an optional key and returns any
-  type valFunc = (val: any, key?: number | string) => any;
+  type valFunc = (val: unknown, key?: key) => unknown;
 
   // Represents a test function
   type testFunc<Type extends keyFunc | valFunc> = (...args: Parameters<Type>) => boolean;
 
   // Represents a map function
-  type mapFunc<Type extends keyFunc | valFunc> = (...args: Parameters<Type>) => unknown;
+  type mapFunc<Type extends keyFunc | valFunc> = (...args: Parameters<Type>) => ReturnType<Type>;
 
   // Represents a check test
-  type checkTest = ((...args: any[]) => any) | testFunc<keyFunc> | testFunc<valFunc> | RegExp | number | string;
+  type checkTest = ((...args: unknown[]) => unknown) | testFunc<keyFunc> | testFunc<valFunc> | RegExp | number | string;
 
   // #endregion
 
@@ -116,7 +118,9 @@ declare global {
   type TargetFlagKey = string & DotKey & { __targetFlagKeyBrand: never };
 
   // Represents a jQuery text term
-  type jQueryTextTerm = string | number | boolean | ((this: Element, index: number, text: string) => string | number | boolean);
+  type jQueryTextTerm = string | number | boolean | (
+    (this: Element, index: number, text: string) => string | number | boolean
+  );
 
   // Represents an object describing dimensions of an HTML element, of form {x: number, y: number, width: number, height: number}
   type ElemPosData = {x: number, y: number, width: number, height: number};
