@@ -1,11 +1,32 @@
-const ISDEPLOYING = false; // Toggle rule changes appropriate to package deployment.
-const ALLRULESACTIVE = false; // Toggle (most) inactive rules ON.
+/** TO RUN A PERFORMANCE PROFILE ON RULES:
+ * (in Powershell) -- $env:TIMING=1; npx eslint .
+ */
 
-const ISTYPESCRIPT = true; // Toggle TypeScript extensions of base ESLint rules.
-const ISFOUNDRY = true; // Replaces General Rules with Foundry-Recommended Rules.
-// const ISSTRICTFOUNDRY = false; // Adheres to ALL Foundry rules, including the annoying ones you've manually disabled.
-const ISJSDOC = false; // Adds JSDoc Rules governing Documentation
-const ISFIXINGCOMMENTS = false; // Include comments in style checking rules.
+/** TO MODIFY SETTINGS VIA ENVIRONMENT VARIABLES:
+ * (in Powershell) -- $env:DEPLOYING=true; $env:FAST_LINTING=false; npx eslint . --fix
+ *
+ * ENVIRONMENT VARIABLES & DEFAULTS:
+ *
+ *  - DEPLOYING = false;         // Toggle rule changes appropriate to package deployment.
+ *  - ALL_RULES_ACTIVE = false;  // Toggle (most) inactive rules ON.
+ *  - FAST_LINTING = true;       // Disables performance-hungry rules: import resolution, indentation, max-len, unused vars
+ *  - TYPE_SCRIPT = true;        // Toggle TypeScript extensions of base ESLint rules.
+ *  - FOUNDRY = true;            // Replaces General Rules with Foundry-Recommended Rules.
+ *  - JSDOC = false;             // Adds JSDoc Rules governing Documentation
+ *  - FIXING_COMMENTS = false;   // Include comments in style checking rules.
+ */
+
+
+// Use environment variables to toggle linting behavior.
+//  Note: Default values define in-IDE linting.
+
+const ISDEPLOYING = process.env.DEPLOYING === "true"; // Default to false, true if explicitly set to "true"
+const ALLRULESACTIVE = process.env.ALL_RULES_ACTIVE === "true"; // Default to false, true if explicitly set to "true"
+const ISFASTLINTING = process.env.FAST_LINTING !== "false"; // Default to true unless explicitly set to "false"
+const ISTYPESCRIPT = process.env.TYPE_SCRIPT !== "false"; // Default to true unless explicitly set to "false"
+const ISFOUNDRY = process.env.FOUNDRY !== "false"; // Default to true unless explicitly set to "false"
+const ISJSDOC = process.env.JSDOC === "true"; // Default to false, true if explicitly set to "true"
+const ISFIXINGCOMMENTS = process.env.FIXING_COMMENTS === "true"; // Default to false, true if explicitly set to "true"
 
 const GLOBALCONSTANTS = [
   ["CONFIG", "CONST", "foundry", "game", "canvas", "ui"],
@@ -91,7 +112,7 @@ const TYPESCRIPTRULES = {
   extensions: {
     "default-param-last": ["error"],
     // "no-unused-vars": "off"
-    "no-unused-vars": [
+    "no-unused-vars": ISFASTLINTING ? ["off"] : [
       ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_$" }]
     ]
     // "require-await": ["warn"], // @@ REQUIRES CONFIGURED TYPE INFORMATION @@
@@ -481,10 +502,10 @@ const FOUNDRYRULES = {
     : "off",
   "comma-spacing": "warn",
   "dot-notation": "warn",
-  indent: ["warn", 2, {SwitchCase: 1}],
+  indent: ISFASTLINTING ? "off" : ["warn", 2, {SwitchCase: 1}],
   "key-spacing": "warn",
   "keyword-spacing": ["warn", {overrides: {catch: {before: true, after: false}}}],
-  "max-len": ["warn", {
+  "max-len": ISFASTLINTING ? "off" : ["warn", {
     code: 120,
     ignoreComments: !ISFIXINGCOMMENTS,
     ignoreTrailingComments: true,
@@ -617,7 +638,7 @@ const EXPORTS = {
   plugins: ["import", "@typescript-eslint", "jsdoc", "etc"],
   extends: [
     ALLRULESACTIVE ? "eslint:all" : "eslint:recommended",
-    "plugin:import/recommended",
+    ...(ISFASTLINTING ? [] : ["plugin:import/recommended"]),
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:etc/recommended"
