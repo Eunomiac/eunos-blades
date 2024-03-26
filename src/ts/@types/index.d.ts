@@ -1,4 +1,3 @@
-
 // import BladesItem from "../BladesItem";
 import BladesActor from "../BladesActor";
 // import BladesClockKeeper from "../documents/items/BladesClockKeeper";
@@ -91,7 +90,7 @@ declare global {
   type BladesScenes = Scenes & { current: BladesScene }
 
   declare interface Game extends {
-    scenes: { current: BladesScene }
+    scenes : {current: BladesScene}
   } {
     items: Collection<BladesItem>,
     actors: Collection<BladesActor>,

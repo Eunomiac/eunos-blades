@@ -18,15 +18,15 @@ class DebugSettingsSubmenu extends FormApplication {
  */
   static override get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      id: "debug-settings-menu",
-      title: "Debug Settings",
-      popOut: true,
-      template: "systems/eunos-blades/templates/settings/debug-settings.hbs",
-      classes: ["eunos-blades", "settings"],
-      width: 500,
-      closeOnSubmit: true,
+      id:             "debug-settings-menu",
+      title:          "Debug Settings",
+      popOut:         true,
+      template:       "systems/eunos-blades/templates/settings/debug-settings.hbs",
+      classes:        ["eunos-blades", "settings"],
+      width:          500,
+      closeOnSubmit:  true,
       submitOnChange: false,
-      submitOnClose: true
+      submitOnClose:  true
     });
   }
 
@@ -60,15 +60,15 @@ class OpenAISettingsSubmenu extends FormApplication {
  */
   static override get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      id: "openai-settings-menu",
-      title: "Open AI Settings",
-      popOut: true,
-      template: "systems/eunos-blades/templates/settings/openai-settings.hbs",
-      classes: ["eunos-blades", "settings"],
-      width: 500,
-      closeOnSubmit: true,
+      id:             "openai-settings-menu",
+      title:          "Open AI Settings",
+      popOut:         true,
+      template:       "systems/eunos-blades/templates/settings/openai-settings.hbs",
+      classes:        ["eunos-blades", "settings"],
+      width:          500,
+      closeOnSubmit:  true,
       submitOnChange: false,
-      submitOnClose: true
+      submitOnClose:  true
     });
   }
 
@@ -134,48 +134,48 @@ const registerSettings = function() {
 
   // #region Debug Settings ~
   game.settings.registerMenu("eunos-blades", "debugSettingsMenu", {
-    name: "Debug Settings",
-    label: "Open Debug Settings",
-    hint: "Configure settings related to debugging.",
-    icon: "fa-duotone fa-ban-bug",
-    type: DebugSettingsSubmenu,
+    name:       "Debug Settings",
+    label:      "Open Debug Settings",
+    hint:       "Configure settings related to debugging.",
+    icon:       "fa-duotone fa-ban-bug",
+    type:       DebugSettingsSubmenu,
     restricted: true
   });
   game.settings.register("eunos-blades", "debugSettings", {
-    scope: "world",
-    config: false,
-    type: Object,
+    scope:   "world",
+    config:  false,
+    type:    Object,
     default: {
       debugLevel: 3,
       debugHooks: false,
-      whitelist: "",
-      blacklist: ""
+      whitelist:  "",
+      blacklist:  ""
     }
   });
   // #endregion
 
   // #region AI Settings ~
   game.settings.registerMenu("eunos-blades", "openAISettingsMenu", {
-    name: "OpenAI Settings",
-    label: "Open AI Integration",
-    hint: "Configure settings related to integration with AI for content generation during play.",
-    icon: "fa-duotone fa-brain-circuit",
-    type: OpenAISettingsSubmenu,
+    name:       "OpenAI Settings",
+    label:      "Open AI Integration",
+    hint:       "Configure settings related to integration with AI for content generation during play.",
+    icon:       "fa-duotone fa-brain-circuit",
+    type:       OpenAISettingsSubmenu,
     restricted: true
   });
 
   game.settings.register("eunos-blades", "openAISettings", {
-    scope: "world",
-    config: false,
-    type: Object,
+    scope:   "world",
+    config:  false,
+    type:    Object,
     default: {
       apiKey: "",
       models: {
-        text: "gpt-3.5-turbo",
+        text:   "gpt-3.5-turbo",
         speech: "tts-1-hd",
-        image: "gpt-4-vision-preview"
+        image:  "gpt-4-vision-preview"
       },
-      fileID: ""
+      fileID : ""
     }
   });
   // #endregion
@@ -184,10 +184,10 @@ const registerSettings = function() {
    * Track the system version upon which point a migration was last applied
    */
   game.settings.register("eunos-blades", "systemMigrationVersion", {
-    name: "System Migration Version",
-    scope: "world",
-    config: false,
-    type: Number,
+    name:    "System Migration Version",
+    scope:   "world",
+    config:  false,
+    type:    Number,
     default: 0
   });
 };
@@ -199,23 +199,23 @@ export function initTinyMCEStyles() {
   CONFIG.TinyMCE = {
     ...CONFIG.TinyMCE,
     ...{
-      skin: "skin",
-      skin_url: "systems/eunos-blades/tinymce/skin",
-      content_css: `systems/eunos-blades/tinymce/content.css?${new Date().getTime()}`,
-      font_css: "systems/eunos-blades/fonts.css",
-      max_height: 500,
-      min_height: 40,
+      skin:                        "skin",
+      skin_url:                    "systems/eunos-blades/tinymce/skin",
+      content_css:                 `systems/eunos-blades/tinymce/content.css?${new Date().getTime()}`,
+      font_css:                    "systems/eunos-blades/fonts.css",
+      max_height:                  500,
+      min_height:                  40,
       autoresize_overflow_padding: 0,
-      autoresize_bottom_margin: 0, // 25,
-      menubar: false,
-      statusbar: false, // True,
-      elementPath: true,
-      branding: false,
-      resize: false,
-      plugins: "lists image table code save autoresize searchreplace quickbars template",
-      save_enablewhendirty: false,
+      autoresize_bottom_margin:    0, // 25,
+      menubar:                     false,
+      statusbar:                   false, // True,
+      elementPath:                 true,
+      branding:                    false,
+      resize:                      false,
+      plugins:                     "lists image table code save autoresize searchreplace quickbars template",
+      save_enablewhendirty:        false,
       // Table_default_styles: {},
-      style_formats: [
+      style_formats:               [
         {
           title: "Headings",
           items: [
@@ -244,34 +244,34 @@ export function initTinyMCEStyles() {
         }
       ],
       style_formats_merge: false,
-      toolbar: "styles | searchreplace | formatting alignment lists elements | removeformat | code | save",
-      toolbar_groups: {
-        formatting: {
-          icon: "color-picker",
+      toolbar:             "styles | searchreplace | formatting alignment lists elements | removeformat | code | save",
+      toolbar_groups:      {
+        formatting : {
+          icon:    "color-picker",
           tooltip: "Formatting",
-          items: "bold italic underline"
+          items:   "bold italic underline"
         },
-        alignment: {
-          icon: "align-left",
+        alignment : {
+          icon:    "align-left",
           tooltip: "Alignment",
-          items: "alignleft aligncenter alignright alignjustify | outdent indent"
+          items:   "alignleft aligncenter alignright alignjustify | outdent indent"
         },
-        lists: {
-          icon: "unordered-list",
+        lists : {
+          icon:    "unordered-list",
           tooltip: "Lists",
-          items: "bullist numlist"
+          items:   "bullist numlist"
         },
-        elements: {
-          icon: "duplicate",
+        elements : {
+          icon:    "duplicate",
           tooltip: "Insert Element",
-          items: "tableinsertdialog image hr | template"
+          items:   "tableinsertdialog image hr | template"
         }
       },
-      toolbar_mode: "floating",
-      quickbars_link_toolbar: false,
+      toolbar_mode:                "floating",
+      quickbars_link_toolbar:      false,
       quickbars_selection_toolbar: "styles | bold italic underline",
-      quickbars_insert_toolbar: "hr image table",
-      quickbars_table_toolbar: "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol"
+      quickbars_insert_toolbar:    "hr image table",
+      quickbars_table_toolbar:     "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol"
     }
   };
 }
@@ -281,33 +281,33 @@ export function initTinyMCEStyles() {
  */
 export function initCanvasStyles() {
   CONFIG.canvasTextStyle = new PIXI.TextStyle({
-    align: "center",
-    dropShadow: true,
-    dropShadowAngle: U.degToRad(45),
-    dropShadowBlur: 8,
-    dropShadowColor: C.Colors.BLACK,
+    align:              "center",
+    dropShadow:         true,
+    dropShadowAngle:    U.degToRad(45),
+    dropShadowBlur:     8,
+    dropShadowColor:    C.Colors.BLACK,
     dropShadowDistance: 4,
-    fill: [
+    fill:               [
       C.Colors.bWHITE,
       C.Colors.bGREY
     ],
-    fillGradientType: 1,
+    fillGradientType:  1,
     fillGradientStops: [
       0,
       0.3
     ],
-    fontFamily: "Kirsty",
-    fontSize: 32,
-    letterSpacing: 2,
-    lineHeight: 32,
-    lineJoin: "round",
-    padding: 4,
-    stroke: C.Colors.dBLACK,
+    fontFamily:      "Kirsty",
+    fontSize:        32,
+    letterSpacing:   2,
+    lineHeight:      32,
+    lineJoin:        "round",
+    padding:         4,
+    stroke:          C.Colors.dBLACK,
     strokeThickness: 3,
-    trim: true,
-    whiteSpace: "normal",
-    wordWrap: true,
-    wordWrapWidth: 0.1
+    trim:            true,
+    whiteSpace:      "normal",
+    wordWrap:        true,
+    wordWrapWidth:   0.1
   });
 }
 

@@ -736,9 +736,9 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       BladesDirector.getInstance().pushNotice_SocketCall(
         "ALL",
         {
-          title: `${this.name} Advances their Playbook!`,
-          body: `${this.name}, select a new Ability on your Character Sheet.`,
-          type: BladesNoticeType.push,
+          title:      `${this.name} Advances their Playbook!`,
+          body:       `${this.name}, select a new Ability on your Character Sheet.`,
+          type:       BladesNoticeType.push,
           cssClasses: "advancement-alert"
         }
       );
@@ -749,9 +749,9 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       BladesDirector.getInstance().pushNotice_SocketCall(
         "ALL",
         {
-          title: "You Advance your Crew Playbook!",
-          body: "Select new Upgrades and/or Abilities on your Crew Sheet.",
-          type: BladesNoticeType.push,
+          title:      "You Advance your Crew Playbook!",
+          body:       "Select new Upgrades and/or Abilities on your Crew Sheet.",
+          type:       BladesNoticeType.push,
           cssClasses: "advancement-alert crew-advancement-alert"
         }
       );
@@ -761,9 +761,9 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
           BladesDirector.getInstance().pushNotice_SocketCall(
             member.primaryUser?.id,
             {
-              title: "Your Stash Increases! <em>(Crew Advancement)</em>",
-              type: BladesNoticeType.push,
-              body: `You gain ${coinGained} Stash from Crew Advancement.`,
+              title:      "Your Stash Increases! <em>(Crew Advancement)</em>",
+              type:       BladesNoticeType.push,
+              body:       `You gain ${coinGained} Stash from Crew Advancement.`,
               cssClasses: "stash-alert"
             }
           );
@@ -782,9 +782,9 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
     BladesDirector.getInstance().pushNotice_SocketCall(
       this.primaryUser.id,
       {
-        title: `${this.name} Advances their ${U.uCase(attribute)}!`,
-        body: `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`,
-        type: BladesNoticeType.push,
+        title:      `${this.name} Advances their ${U.uCase(attribute)}!`,
+        body:       `${this.name}, add a dot to one of ${U.oxfordize(actions, true, "or")}.`,
+        type:       BladesNoticeType.push,
         cssClasses: "advancement-alert"
       }
     );
@@ -813,26 +813,26 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
     const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {
-      [Factor.tier]: {
-        name: Factor.tier,
-        display: "Tier",
-        value: this.getFactorTotal(Factor.tier),
-        max: this.getFactorTotal(Factor.tier),
-        baseVal: this.getFactorTotal(Factor.tier),
-        isActive: true,
-        isPrimary: true,
-        isDominant: false,
+      [Factor.tier] : {
+        name:         Factor.tier,
+        display:      "Tier",
+        value:        this.getFactorTotal(Factor.tier),
+        max:          this.getFactorTotal(Factor.tier),
+        baseVal:      this.getFactorTotal(Factor.tier),
+        isActive:     true,
+        isPrimary:    true,
+        isDominant:   false,
         highFavorsPC: true
       },
-      [Factor.quality]: {
-        name: Factor.quality,
-        display: "Quality",
-        value: this.getFactorTotal(Factor.quality),
-        max: this.getFactorTotal(Factor.quality),
-        baseVal: this.getFactorTotal(Factor.quality),
-        isActive: false,
-        isPrimary: false,
-        isDominant: false,
+      [Factor.quality] : {
+        name:         Factor.quality,
+        display:      "Quality",
+        value:        this.getFactorTotal(Factor.quality),
+        max:          this.getFactorTotal(Factor.quality),
+        baseVal:      this.getFactorTotal(Factor.quality),
+        isActive:     false,
+        isPrimary:    false,
+        isDominant:   false,
         highFavorsPC: true
       }
     };
@@ -1031,7 +1031,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       return arr[Math.floor(Math.random() * arr.length)];
     }
     const randomGen: Record<string, (gender?: string) => string> = {
-      name: (gen?: string) => {
+      name : (gen?: string) => {
         return [
           Math.random() <= titleChance
             ? sampleArray(Randomizers.NPC.name_title)
@@ -1048,13 +1048,13 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
         ].filter((val) => Boolean(val)).join(" ");
       },
       background: () => sampleArray(Randomizers.NPC.background, random.background.value),
-      heritage: () => sampleArray(Randomizers.NPC.heritage, random.heritage.value),
+      heritage:   () => sampleArray(Randomizers.NPC.heritage, random.heritage.value),
       profession: () => sampleArray(Randomizers.NPC.profession, random.profession.value),
-      gender: () => sampleArray(Randomizers.NPC.gender, persona.gender.value) as Gender,
+      gender:     () => sampleArray(Randomizers.NPC.gender, persona.gender.value) as Gender,
       appearance: () => sampleArray(Randomizers.NPC.appearance, persona.appearance.value),
-      goal: () => sampleArray(Randomizers.NPC.goal, persona.goal.value, secret.goal.value),
-      method: () => sampleArray(Randomizers.NPC.method, persona.method.value, secret.method.value),
-      trait: () => sampleArray(
+      goal:       () => sampleArray(Randomizers.NPC.goal, persona.goal.value, secret.goal.value),
+      method:     () => sampleArray(Randomizers.NPC.method, persona.method.value, secret.method.value),
+      trait:      () => sampleArray(
         Randomizers.NPC.trait,
         persona.trait1.value,
         persona.trait2.value,
@@ -1062,8 +1062,8 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
         secret.trait.value
       ),
       interests: () => sampleArray(Randomizers.NPC.interests, persona.interests.value, secret.interests.value),
-      quirk: () => sampleArray(Randomizers.NPC.quirk, persona.quirk.value),
-      style: (gen = "") => sampleArray([
+      quirk:     () => sampleArray(Randomizers.NPC.quirk, persona.quirk.value),
+      style:     (gen = "") => sampleArray([
         ...(gen.charAt(0).toLowerCase() !== "m" ? Randomizers.NPC.style.female : []),
         ...(gen.charAt(0).toLowerCase() !== "f" ? Randomizers.NPC.style.male : [])
       ], persona.style.value)
@@ -1089,7 +1089,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
           const randomVal = randomGen[key]();
           updateData[`system.random.${key}`] = {
             isLocked: false,
-            value: randomVal || random[key].value
+            value:    randomVal || random[key].value
           };
           break;
         }
@@ -1100,14 +1100,14 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
           const randomVal = randomGen[key]();
           updateData[`system.secret.${key}`] = {
             isLocked: false,
-            value: randomVal || secret[key as KeyOf<typeof secret>].value
+            value:    randomVal || secret[key as KeyOf<typeof secret>].value
           };
           break;
         }
         case "gender": {
           updateData[`system.persona.${key}`] = {
             isLocked: persona.gender.isLocked,
-            value: gender
+            value:    gender
           };
           break;
         }
@@ -1160,25 +1160,25 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
           if (!persona.trait1.isLocked) {
             updateData["system.persona.trait1"] = {
               isLocked: false,
-              value: trait1
+              value:    trait1
             };
           }
           if (!persona.trait2.isLocked) {
             updateData["system.persona.trait2"] = {
               isLocked: false,
-              value: trait2
+              value:    trait2
             };
           }
           if (!persona.trait3.isLocked) {
             updateData["system.persona.trait3"] = {
               isLocked: false,
-              value: trait3
+              value:    trait3
             };
           }
           if (!secret.trait.isLocked) {
             updateData["system.secret.trait"] = {
               isLocked: false,
-              value: secretTrait
+              value:    secretTrait
             };
           }
           break;
@@ -1187,7 +1187,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
           const randomVal = randomGen[key]();
           updateData[`system.persona.${key}`] = {
             isLocked: false,
-            value: randomVal || persona[key as KeyOf<typeof persona>].value
+            value:    randomVal || persona[key as KeyOf<typeof persona>].value
           };
           break;
         }

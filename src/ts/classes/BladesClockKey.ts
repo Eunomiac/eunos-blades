@@ -60,14 +60,14 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     game.items.contents
       .filter((item) =>
         BladesItem.IsType(item,
-          BladesItemType.clock_keeper,
-          BladesItemType.project,
-          BladesItemType.cohort_gang,
-          BladesItemType.cohort_expert,
-          BladesItemType.ritual,
-          BladesItemType.design,
-          BladesItemType.location,
-          BladesItemType.score
+                          BladesItemType.clock_keeper,
+                          BladesItemType.project,
+                          BladesItemType.cohort_gang,
+                          BladesItemType.cohort_expert,
+                          BladesItemType.ritual,
+                          BladesItemType.design,
+                          BladesItemType.location,
+                          BladesItemType.score
         )
       )
       .forEach(registerClockKeys);
@@ -75,8 +75,8 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     game.actors.contents
       .filter((actor) =>
         BladesActor.IsType(actor,
-          BladesActorType.pc,
-          BladesActorType.faction
+                           BladesActorType.pc,
+                           BladesActorType.faction
         )
       )
       .forEach(registerClockKeys);
@@ -93,14 +93,14 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   ) {
     // Ensure all properties of Schema are provided
     return {
-      name: "",
-      isVisible: false,
+      name:          "",
+      isVisible:     false,
       isNameVisible: false,
-      isSpotlit: false,
-      clocksData: {},
-      sceneIDs: [],
-      displayMode: ClockKeyDisplayMode.full,
-      oneKeyIndex: U.gsap.utils.random(0, 4, 1) as OneKeyImgIndex,
+      isSpotlit:     false,
+      clocksData:    {},
+      sceneIDs:      [],
+      displayMode:   ClockKeyDisplayMode.full,
+      oneKeyIndex:   U.gsap.utils.random(0, 4, 1) as OneKeyImgIndex,
       ...schemaData
     } as Schema;
   }
@@ -130,9 +130,9 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
         .map((cSchema, i) => {
           const cData = BladesClock.ParseConfigToData({
             ...BladesClock.ApplySchemaDefaults(cSchema),
-            index: i,
-            targetID: tempLink.targetID,
-            targetKey: `${tempLink.targetKeyPrefix}.clocksData` as TargetKey,
+            index:         i,
+            targetID:      tempLink.targetID,
+            targetKey:     `${tempLink.targetKeyPrefix}.clocksData` as TargetKey,
             isScopingById: true
           }) as BladesClock.Data;
           return [
@@ -146,7 +146,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
         .map((cSchema, i) => {
           const cData = BladesClock.ParseConfigToData({
             ...BladesClock.ApplySchemaDefaults(cSchema),
-            targetID: tempLink.targetID,
+            targetID:      tempLink.targetID,
             targetFlagKey: `${tempLink.targetFlagKeyPrefix}.clocksData` as TargetFlagKey,
             isScopingById: true
           }) as BladesClock.Data;
@@ -306,7 +306,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     const x = this.svgData.width / 2;
     const y = this.svgData.height / 2;
     return {
-      x, y, width: this.svgData.width, height: this.svgData.height
+      x, y, width : this.svgData.width, height : this.svgData.height
     };
   }
   get clocksDisplayPosData(): ElemPosData {
@@ -341,10 +341,10 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
 
     return {
       // Determine the center point in both x and y axes
-      x: (xLowest + xHighest) / 2,
-      y: (yLowest + yHighest) / 2,
+      x:      (xLowest + xHighest) / 2,
+      y:      (yLowest + yHighest) / 2,
       // Determine height and width of bounding box, accounting for clock size
-      width: xHighest - xLowest + size,
+      width:  xHighest - xLowest + size,
       height: yHighest - yLowest + size
     };
   }
@@ -614,9 +614,9 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     if (container$ instanceof HTMLElement || container$ instanceof jQuery) {
       const containerPosData = U.gsap.getProperty($(container$)[0]) as (property: string) => number;
       targetPosData = {
-        x: containerPosData("x"),
-        y: containerPosData("y"),
-        width: containerPosData("width"),
+        x:      containerPosData("x"),
+        y:      containerPosData("y"),
+        width:  containerPosData("width"),
         height: containerPosData("height")
       };
     } else if (isElemPosData(container$)) {
@@ -635,9 +635,9 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     switch (displayMode) {
       case ClockKeyDisplayMode.full: {
         focusPosData = {
-          x: this.svgData.width / 2,
-          y: this.svgData.height / 2,
-          width: this.svgData.width,
+          x:      this.svgData.width / 2,
+          y:      this.svgData.height / 2,
+          width:  this.svgData.width,
           height: this.svgData.height
         };
         break;
@@ -669,9 +669,9 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
         const focusClockData = this.svgData.clocks[displayMode as ClockIndex] as gsap.Point2D;
 
         focusPosData = {
-          x: focusClockData.x,
-          y: focusClockData.y,
-          width: this.svgData.clocks.size,
+          x:      focusClockData.x,
+          y:      focusClockData.y,
+          width:  this.svgData.clocks.size,
           height: this.svgData.clocks.size
         };
         break;
@@ -821,7 +821,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     sceneIDs.push(sceneID);
 
     await this.updateTarget({
-      isVisible: false,
+      isVisible : false,
       sceneIDs
     });
 
@@ -853,7 +853,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     }
 
     return {
-      width: keyData.width,
+      width:  keyData.width,
       height: keyData.height,
       path,
       clocks: keyData.clocks
@@ -892,12 +892,12 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     if (this.overlayPosition) {
       dragElem$.css({
         left: this.overlayPosition.x,
-        top: this.overlayPosition.y
+        top:  this.overlayPosition.y
       });
     }
 
     this.positionDragger = new Dragger(dragElem$, {
-      type: "top,left",
+      type : "top,left",
       onDragStart(this: Dragger) {
         $(this.target).css("background", "rgba(255, 255, 0, 0.25)");
         $(this.target).css("outlineColor", "rgba(255, 255, 0, 1)");
@@ -929,7 +929,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
 
     return U.gsap.timeline({
       callbackScope: this,
-      paused: true,
+      paused:        true,
       onStart() {
         eLog.checkLog2("BladesClockKey", `switchToMode #${randomID} - START`, {key: this, keyElems$, displayMode});
       },
@@ -961,7 +961,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     if (!this.name) {return undefined;}
     return U.gsap.effects.blurReveal(keyElems$.label$, {
       ignoreMargin: true,
-      duration: 0.75
+      duration:     0.75
     });
   }
   async fadeInName_SocketCall(displayContext: ClockDisplayContext) {
@@ -978,7 +978,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     if (!this.name) {return undefined;}
     return U.gsap.effects.blurRemove(keyElems$.label$, {
       ignoreMargin: true,
-      duration: 0.75
+      duration:     0.75
     });
   }
   async fadeOutName_SocketCall(displayContext: ClockDisplayContext) {
@@ -1008,9 +1008,9 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     // Derive clock data from config
     const cData = BladesClock.ParseConfigToData({
       ...BladesClock.ApplySchemaDefaults(clockSchema),
-      index: this.size,
-      targetID: this.targetID,
-      targetKey: `${this.targetKeyPrefix}.clocksData` as TargetKey,
+      index:         this.size,
+      targetID:      this.targetID,
+      targetKey:     `${this.targetKeyPrefix}.clocksData` as TargetKey,
       isScopingById: true
     }) as BladesClock.Data;
     // const clockData = this.parseClockConfig(clockConfig);
@@ -1055,19 +1055,19 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   ) {
 
     const namedValueMax: NamedValueMax = {
-      name: schemaData.name ?? "",
+      name:  schemaData.name ?? "",
       value: schemaData.value ?? 0,
-      max: schemaData.max ?? 8
+      max:   schemaData.max ?? 8
     };
 
     return {
       index: 0,
       color: ClockColor.white,
 
-      isVisible: !U.isInt(schemaData.index) || schemaData.index === 0,
+      isVisible:     !U.isInt(schemaData.index) || schemaData.index === 0,
       isNameVisible: false,
       isHighlighted: false,
-      isActive: !U.isInt(schemaData.index) || schemaData.index === 0,
+      isActive:      !U.isInt(schemaData.index) || schemaData.index === 0,
 
       ...schemaData,
       ...namedValueMax
@@ -1250,7 +1250,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
     // Using elem$ as a reference, locate relevant clock elements and return them in a dictionary.
     const clockElems$: Partial<ClockElems$> = {
-      clockElem$: elem$
+      clockElem$ : elem$
     };
 
     // Get elements that will be there regardless of context, throwing errors if not found.
@@ -1301,7 +1301,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
     // Construct timeline for revealing clock
     const tl = U.gsap.timeline({
-      callbackScope: this,
+      callbackScope : this,
       onComplete(this: BladesClock) {
         callback?.();
       }
@@ -1313,26 +1313,26 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     // Fade in clock elements
     tl.fromTo(fadeInElements, {
       autoAlpha: 0,
-      scale: 2
+      scale:     2
     }, {
       autoAlpha: 1,
-      scale: 1,
-      duration: 0.5,
-      stagger: 0.2,
-      ease: "power2"
+      scale:     1,
+      duration:  0.5,
+      stagger:   0.2,
+      ease:      "power2"
     });
 
     // Fade in name, if name is visible.
     if (this.name && this.isNameVisible) {
       tl.blurReveal(clockElems$.clockLabel$, {
         ignoreMargin: true,
-        duration: 0.75
+        duration:     0.75
       }, "<+0.05");
     }
     // Fade in glow, if highlighted
     if (this.isHighlighted) {
       tl.scaleUpReveal(clockElems$.glow$, {
-        scale: 3,
+        scale:    3,
         duration: 0.5
       }, "<+0.05");
     }
@@ -1371,7 +1371,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
     // Construct timeline for hiding clock
     const tl = U.gsap.timeline({
-      callbackScope: this,
+      callbackScope : this,
       onComplete(this: BladesClock) {
         callback?.();
       }
@@ -1380,24 +1380,24 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     // Fade out clock elements
     tl.to(fadeOutElements, {
       autoAlpha: 0,
-      scale: 2,
-      duration: 0.5,
-      stagger: 0.2,
-      ease: "power2"
+      scale:     2,
+      duration:  0.5,
+      stagger:   0.2,
+      ease:      "power2"
     });
 
     // Fade out name, if name visible
     if (this.name && this.isNameVisible) {
       tl.blurRemove(clockElems$.clockLabel$, {
         ignoreMargin: true,
-        duration: 0.75
+        duration:     0.75
       }, "<+0.05");
     }
 
     // Fade out glow, if highlighted
     if (this.isHighlighted) {
       tl.scaleDownRemove(clockElems$.glow$, {
-        scale: 3,
+        scale:    3,
         duration: 0.5
       }, "<+0.05");
     }
@@ -1427,9 +1427,9 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   activate_Animation(clockElems$: ClockElems$, callback?: () => void) {
     U.gsap.to(clockElems$.bg$, {autoAlpha: 1, duration: 0.5, ease: "power2"});
     U.gsap.to(clockElems$.frame$, {
-      filter: "brightness(0.5)",
-      duration: 0.5,
-      ease: "power2",
+      filter:     "brightness(0.5)",
+      duration:   0.5,
+      ease:       "power2",
       onComplete: callback
     });
   }
@@ -1448,9 +1448,9 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   deactivate_Animation(clockElems$: ClockElems$, callback?: () => void) {
     U.gsap.to(clockElems$.bg$, {autoAlpha: 0, duration: 0.5, ease: "power2"});
     U.gsap.to(clockElems$.frame$, {
-      filter: "brightness(1) blur(5px)",
-      duration: 0.5,
-      ease: "power2",
+      filter:     "brightness(1) blur(5px)",
+      duration:   0.5,
+      ease:       "power2",
       onComplete: callback
     });
   }
@@ -1469,7 +1469,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   fadeInClockName_Animation(clockElems$: ClockElems$) {
     U.gsap.effects.blurReveal(clockElems$.clockLabel$, {
       ignoreMargin: true,
-      duration: 0.75
+      duration:     0.75
     });
   }
   async fadeInClockName_SocketCall(displayContext: ClockDisplayContext) {
@@ -1491,7 +1491,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   fadeOutClockName_Animation(clockElems$: ClockElems$) {
     U.gsap.effects.blurRemove(clockElems$.clockLabel$, {
       ignoreMargin: true,
-      duration: 0.75
+      duration:     0.75
     });
   }
   async fadeOutClockName_SocketCall(displayContext: ClockDisplayContext) {
@@ -1513,7 +1513,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   highlight_Animation(clockElems$: ClockElems$) {
     U.gsap.effects.scaleUpReveal(clockElems$.glow$, {
       duration: 0.5,
-      scale: 3
+      scale:    3
     });
   }
   async highlight_SocketCall(displayContext: ClockDisplayContext) {
@@ -1531,7 +1531,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   unhighlight_Animation(clockElems$: ClockElems$) {
     U.gsap.effects.scaleDownRemove(clockElems$.glow$, {
       duration: 0.5,
-      scale: 3
+      scale:    3
     });
   }
   async unhighlight_SocketCall(displayContext: ClockDisplayContext) {
@@ -1565,7 +1565,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     for (const segmentNum of segmentNums) {
       const oneSegment = oneSegs.shift() as HTMLElement;
       U.gsap.set(oneSegment, {
-        rotation: this.getRotationOfSegment(segmentNum),
+        rotation:  this.getRotationOfSegment(segmentNum),
         autoAlpha: isReversing ? 1 : 0
       });
     }
@@ -1614,20 +1614,20 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     if (delta > 0) {
       tl.fromTo(segmentsToAnimate, {
         autoAlpha: 0,
-        scale: 2
+        scale:     2
       }, {
-        autoAlpha: 1,
-        scale: 1,
-        duration: 0.5,
-        stagger: 0.2,
-        ease: "power2",
+        autoAlpha:     1,
+        scale:         1,
+        duration:      0.5,
+        stagger:       0.2,
+        ease:          "power2",
         callbackScope: this,
         onComplete() {
           clockElems$.clockElem$.attr("data-value", endVal);
           U.gsap.to(segmentsToAnimate, {
             autoAlpha: 0,
-            duration: 0.5,
-            stagger: 0.2
+            duration:  0.5,
+            stagger:   0.2
             // onComplete() {
             //   // Return clock key to original size and focus
             //   clockFocusTimeline.reverse();
@@ -1638,13 +1638,13 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     } else {
       tl.fromTo(segmentsToAnimate, {
         autoAlpha: 1,
-        scale: 1
+        scale:     1
       }, {
         autoAlpha: 0,
-        scale: 2,
-        duration: 0.5,
-        stagger: 0.2,
-        ease: "power2"
+        scale:     2,
+        duration:  0.5,
+        stagger:   0.2,
+        ease:      "power2"
         // onComplete() {
         //   // Return clock key to original size and focus
         //   clockFocusTimeline.reverse();

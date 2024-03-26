@@ -14,12 +14,12 @@ class BladesClockKeeperSheet extends BladesItemSheet {
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["eunos-blades", "sheet", "item", "clock-keeper"],
+      classes:  ["eunos-blades", "sheet", "item", "clock-keeper"],
       template: "systems/eunos-blades/templates/items/clock_keeper-sheet.hbs",
-      width: 700,
-      height: 970,
+      width:    700,
+      height:   970,
       // submitOnChange: false,
-      tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "scene-keys"}]
+      tabs:     [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "scene-keys"}]
     });
   }
 
@@ -34,12 +34,12 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     const context = super.getData();
 
     const sheetData: BladesItemDataOfType<BladesItemType.clock_keeper> = {
-      currentScene: game.scenes.current.id,
-      targetScene: this.item.targetSceneID,
-      sceneOptions: Array.from(game.scenes),
-      sceneKeys: this.item.getSceneKeys(this.item.system.targetScene ?? game.scenes.current.id as IDString),
+      currentScene:    game.scenes.current.id,
+      targetScene:     this.item.targetSceneID,
+      sceneOptions:    Array.from(game.scenes),
+      sceneKeys:       this.item.getSceneKeys(this.item.system.targetScene ?? game.scenes.current.id as IDString),
       pcsWithProjects: BladesPC.All.filter((pc) => pc.projects.length > 0),
-      factions: Array.from(BladesFaction.All)
+      factions:        Array.from(BladesFaction.All)
     };
 
     return {...context, ...sheetData} as BladesItemSheetData;
@@ -63,7 +63,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     switch (value) {
       case ClockColor.yellow: {
         U.gsap.set(select$, {
-          color: "var(--blades-black)",
+          color:      "var(--blades-black)",
           background: "var(--blades-gold-bright)",
           textShadow: "none"
         });
@@ -71,14 +71,14 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       }
       case ClockColor.red: {
         U.gsap.set(select$, {
-          color: "var(--blades-white)",
+          color:      "var(--blades-white)",
           background: "var(--blades-red)"
         });
         break;
       }
       case ClockColor.cyan: {
         U.gsap.set(select$, {
-          color: "var(--blades-black)",
+          color:      "var(--blades-black)",
           background: "var(--blades-blue-bright)",
           textShadow: "none"
         });
@@ -86,7 +86,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       }
       case ClockColor.white: {
         U.gsap.set(select$, {
-          color: "var(--blades-black)",
+          color:      "var(--blades-black)",
           background: "var(--blades-white)",
           textShadow: "none"
         });
@@ -101,7 +101,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
 
     // *** CREATE CLOCK KEY *** ~
     html.find("[data-action=\"create-clock-key\"").on({
-      click: async (event: ClickEvent) => {
+      click : async (event: ClickEvent) => {
         event.preventDefault();
         await this.item.addClockKey();
         // Notify GM
@@ -157,7 +157,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-key-control-flipper");
         elem$.on({
-          click: async (event: ClickEvent) => {
+          click : async (event: ClickEvent) => {
             event.preventDefault();
             const clockKey = getClockKeyFromEvent(event);
 
@@ -188,7 +188,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-key-control-flipper");
         elem$.on({
-          click: async (event: ClickEvent) => {
+          click : async (event: ClickEvent) => {
             event.preventDefault();
             const clockKey = getClockKeyFromEvent(event);
             const isSpotlit = !clockKey.isSpotlit;
@@ -220,7 +220,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-key-control-flipper");
         elem$.on({
-          click: (event: ClickEvent) => {
+          click : (event: ClickEvent) => {
             event.preventDefault();
             U.gsap.effects.keyControlPanelFlip(control$, {angle: 180});
             const clockKey = getClockKeyFromEvent(event);
@@ -237,7 +237,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-key-control-flipper");
         elem$.on({
-          click: (event: ClickEvent) => {
+          click : (event: ClickEvent) => {
             event.preventDefault();
             U.gsap.effects.keyControlPanelFlip(control$, {angle: 0});
             const clockKey = getClockKeyFromEvent(event);
@@ -248,7 +248,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       });
 
     clockKeyControls$.find("[data-action=\"spawn-position-dragger\"]").on({
-      click: async (event: ClickEvent) => {
+      click : async (event: ClickEvent) => {
         event.preventDefault();
         const clockKey = getClockKeyFromEvent(event);
         clockKey.spawnPositionDragger(game.eunoblades.Director.clockKeySection$);
@@ -256,35 +256,35 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     });
 
     clockKeyControls$.find("[data-action=\"delete-clock-key\"]").on({
-      click: async (event: ClickEvent) => {
+      click : async (event: ClickEvent) => {
         event.preventDefault();
         await getClockKeyFromEvent(event).delete(game.eunoblades.ClockKeys);
       }
     });
 
     clockKeyControls$.find("[data-action=\"add-key-to-scene\"]").on({
-      click: async (event: ClickEvent) => {
+      click : async (event: ClickEvent) => {
         event.preventDefault();
         await getClockKeyFromEvent(event).addToScene(this.document.targetSceneID);
       }
     });
 
     clockKeyControls$.find("[data-action=\"remove-key-from-scene\"]").on({
-      click: async (event: ClickEvent) => {
+      click : async (event: ClickEvent) => {
         event.preventDefault();
         await getClockKeyFromEvent(event).removeFromScene(this.document.targetSceneID);
       }
     });
 
     clockKeyControls$.find("[data-action=\"add-clock-to-key\"]").on({
-      click: async (event: ClickEvent) => {
+      click : async (event: ClickEvent) => {
         event.preventDefault();
         await getClockKeyFromEvent(event).addClock();
       }
     });
 
     clockKeyControls$.find("input.clock-key-input:not([readonly])").on({
-      change: async (event: ChangeEvent) => {
+      change : async (event: ChangeEvent) => {
         event.preventDefault();
         const input$ = $(event.currentTarget);
         const inputVal = input$.val();
@@ -309,7 +309,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({
-          click: async (event: ClickEvent) => {
+          click : async (event: ClickEvent) => {
             event.preventDefault();
             const [clockKey, clock] = getClockFromEvent(event);
             const isVisible = !clock.isVisible;
@@ -339,7 +339,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({
-          click: async (event: ClickEvent) => {
+          click : async (event: ClickEvent) => {
             event.preventDefault();
             const [clockKey, clock] = getClockFromEvent(event);
             const isActive = !clock.isActive;
@@ -369,7 +369,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({
-          click: async (event: ClickEvent) => {
+          click : async (event: ClickEvent) => {
             event.preventDefault();
             const clock = getClockFromEvent(event)[1];
 
@@ -399,7 +399,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({
-          click: async (event: ClickEvent) => {
+          click : async (event: ClickEvent) => {
             event.preventDefault();
             const [clockKey, clock] = getClockFromEvent(event);
             const isHighlighted = !clock.isHighlighted;
@@ -430,7 +430,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const elem$ = $(elem as HTMLInputElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({
-          click: async (event: ClickEvent) => {
+          click : async (event: ClickEvent) => {
             event.preventDefault();
             const [clockKey, clock] = getClockFromEvent(event);
             const delta = U.pInt($(event.currentTarget).data("value"));
@@ -460,7 +460,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         }
       })
       .on({
-        change: (event: SelectChangeEvent) => {
+        change : (event: SelectChangeEvent) => {
           event.preventDefault();
           const select$ = $(event.currentTarget);
           const value = select$.data("dtype") === "number"
@@ -480,7 +480,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         const elem$ = $(elem as HTMLInputElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({
-          change: (event: ChangeEvent) => {
+          change : (event: ChangeEvent) => {
             event.preventDefault();
             const input$ = $(event.currentTarget);
             const inputVal = input$.val();
@@ -493,7 +493,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       });
 
     clockControls$.find("[data-action=\"delete-clock\"]").on({
-      click: async (event: ClickEvent) => {
+      click : async (event: ClickEvent) => {
         event.preventDefault();
         await getClockFromEvent(event)[1].delete();
       }

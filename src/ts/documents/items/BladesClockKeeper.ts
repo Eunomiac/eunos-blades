@@ -17,7 +17,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
       game.eunoblades.ClockKeeper = (await BladesClockKeeper.create({
         name: "Clock Keeper",
         type: "clock_keeper",
-        img: "systems/eunos-blades/assets/icons/misc-icons/clock-keeper.svg"
+        img:  "systems/eunos-blades/assets/icons/misc-icons/clock-keeper.svg"
       })) as BladesClockKeeper;
     } else {
       game.eunoblades.ClockKeeper = clockKeeper;
@@ -80,7 +80,7 @@ class BladesClockKeeper extends BladesItem implements BladesItemSubClass.Clock_K
       clockKeyConfig.sceneIDs = [this.targetSceneID];
     }
     const key = await BladesClockKey.Create({
-      target: this,
+      target:    this,
       targetKey: "system.clocksData" as TargetKey,
       ...clockKeyConfig
     });

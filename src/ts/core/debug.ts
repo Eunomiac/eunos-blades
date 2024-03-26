@@ -78,7 +78,7 @@ class BladesDebug {
 
     // BladesActionRoll
     const BladesActionRoll_Schema: BladesRoll.Schema = {
-      rollType: RollType.Action,
+      rollType:  RollType.Action,
       // rollSubType: RollSubType.GatherInfo,
       // rollPrompt: "Gathering Information",
       rollTrait: ActionTrait.skirmish,
@@ -87,7 +87,7 @@ class BladesDebug {
       // rollClockKey: U.getLast(game.eunoblades.ClockKeys.contents)?.id,
 
       rollPrimaryData: BladesRollPrimary.GetDataFromDoc(samplePC),
-      rollOppData: BladesRollOpposition.GetDataFromDoc(sampleFaction),
+      rollOppData:     BladesRollOpposition.GetDataFromDoc(sampleFaction),
       // rollParticipantData: {},
 
       // consequenceData: {},
@@ -95,23 +95,23 @@ class BladesDebug {
       //   consequence: {}
       // },
 
-      rollModsData: {},
+      rollModsData : {},
 
       rollPositionInitial: Position.risky,
-      rollEffectInitial: Effect.standard,
-      rollPosEffectTrade: false,
-      rollPhase: RollPhase.Collaboration,
+      rollEffectInitial:   Effect.standard,
+      rollPosEffectTrade:  false,
+      rollPhase:           RollPhase.Collaboration,
 
-      GMBoosts: {},
-      GMOppBoosts: {},
-      GMOverrides: {},
+      GMBoosts:          {},
+      GMOppBoosts:       {},
+      GMOverrides:       {},
       rollFactorToggles: {
-        source: {},
+        source:     {},
         opposition: {}
       },
 
-      userPermissions: {
-        [sampleUser.id]: RollPermissions.Primary
+      userPermissions : {
+        [sampleUser.id] : RollPermissions.Primary
       }
 
       // rollPositionFinal: Position.risky,

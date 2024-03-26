@@ -67,7 +67,7 @@ class BladesFaction extends BladesActor implements BladesActorSubClass.Faction,
 
   async addClock(): Promise<BladesClockKey> {
     return await BladesClockKey.Create({
-      target: this,
+      target:    this,
       targetKey: "system.clocksData" as TargetKey
     });
   }

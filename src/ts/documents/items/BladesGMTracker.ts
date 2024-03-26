@@ -13,7 +13,7 @@ class BladesGMTracker extends BladesItem implements BladesItemSubClass.Gm_Tracke
       game.eunoblades.Tracker = (await BladesGMTracker.create({
         name: "GM Tracker",
         type: "gm_tracker",
-        img: "systems/eunos-blades/assets/icons/misc-icons/gm-tracker.svg"
+        img:  "systems/eunos-blades/assets/icons/misc-icons/gm-tracker.svg"
       })) as BladesGMTracker;
     }
   }

@@ -8,10 +8,10 @@ import BladesFaction from "./actors/BladesFaction";
 import BladesCrew from "./actors/BladesCrew";
 
 const ActorsMap: Partial<Record<BladesActorType, typeof BladesActor>> = {
-  [BladesActorType.pc]: BladesPC,
-  [BladesActorType.npc]: BladesNPC,
+  [BladesActorType.pc]:      BladesPC,
+  [BladesActorType.npc]:     BladesNPC,
   [BladesActorType.faction]: BladesFaction,
-  [BladesActorType.crew]: BladesCrew
+  [BladesActorType.crew]:    BladesCrew
 
 };
 

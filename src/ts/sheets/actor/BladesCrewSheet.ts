@@ -8,11 +8,11 @@ class BladesCrewSheet extends BladesActorSheet {
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["eunos-blades", "sheet", "actor", "crew"],
+      classes:  ["eunos-blades", "sheet", "actor", "crew"],
       template: "systems/eunos-blades/templates/crew-sheet.hbs",
-      width: 940,
-      height: 820,
-      tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "claims"}]
+      width:    940,
+      height:   820,
+      tabs:     [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "claims"}]
     });
   }
 
@@ -28,124 +28,124 @@ class BladesCrewSheet extends BladesActorSheet {
     sheetData.preparedItems = Object.assign(
       context.preparedItems ?? {},
       {
-        abilities: activeSubItems
+        abilities : activeSubItems
           .filter((item): item is BladesItemOfType<BladesItemType.crew_ability> =>
             item.type === BladesItemType.crew_ability),
-        playbook: this.actor.playbook as BladesItemOfType<BladesItemType.crew_playbook>|undefined,
+        playbook:   this.actor.playbook as BladesItemOfType<BladesItemType.crew_playbook>|undefined,
         reputation: activeSubItems
           .find((item): item is BladesItemOfType<BladesItemType.crew_reputation> =>
             item.type === BladesItemType.crew_reputation),
-        upgrades: activeSubItems
+        upgrades : activeSubItems
           .filter((item): item is BladesItemOfType<BladesItemType.crew_upgrade> =>
             item.type === BladesItemType.crew_upgrade),
-        preferredOp: activeSubItems
+        preferredOp : activeSubItems
           .find((item): item is BladesItemOfType<BladesItemType.preferred_op> =>
             item.type === BladesItemType.preferred_op)
       }
     ) as BladesActorDataOfType<BladesActorType.crew>["preparedItems"];
 
     sheetData.preparedActors = {
-      members: this.actor.members,
+      members:  this.actor.members,
       contacts: this.actor.contacts
     };
 
     sheetData.tierData = {
-      label: "Tier",
+      label:   "Tier",
       dotline: {
-        data: this.actor.system.tier,
-        target: "system.tier.value",
-        iconEmpty: "dot-empty.svg",
+        data:           this.actor.system.tier,
+        target:         "system.tier.value",
+        iconEmpty:      "dot-empty.svg",
         iconEmptyHover: "dot-empty-hover.svg",
-        iconFull: "dot-full.svg",
-        iconFullHover: "dot-full-hover.svg"
+        iconFull:       "dot-full.svg",
+        iconFullHover:  "dot-full-hover.svg"
       }
     };
 
     sheetData.upgradeData = {
-      dotline: {
+      dotline : {
         dotlineClass: "dotline-right",
-        data: {
+        data:         {
           value: this.actor.availableUpgradePoints,
-          max: this.actor.availableUpgradePoints
+          max:   this.actor.availableUpgradePoints
         },
         dotlineLabel: "Available Upgrade Points",
-        isLocked: true,
-        iconFull: "dot-full.svg"
+        isLocked:     true,
+        iconFull:     "dot-full.svg"
       }
     };
 
     sheetData.abilityData = {
-      dotline: {
+      dotline : {
         dotlineClass: "dotline-right",
-        data: {
+        data:         {
           value: this.actor.availableAbilityPoints,
-          max: this.actor.availableAbilityPoints
+          max:   this.actor.availableAbilityPoints
         },
         dotlineLabel: "Available Ability Points",
-        isLocked: true,
-        iconFull: "dot-full.svg"
+        isLocked:     true,
+        iconFull:     "dot-full.svg"
       }
     };
 
     sheetData.cohortData = {
-      dotline: {
+      dotline : {
         dotlineClass: "dotline-right",
-        data: {
+        data:         {
           value: this.actor.availableCohortPoints,
-          max: this.actor.availableCohortPoints
+          max:   this.actor.availableCohortPoints
         },
         dotlineLabel: "Available Cohort Points",
-        isLocked: true,
-        iconFull: "dot-full.svg"
+        isLocked:     true,
+        iconFull:     "dot-full.svg"
       }
     };
 
     sheetData.repData = {
-      label: "Rep",
+      label:    "Rep",
       dotlines: [
         {
-          data: {
+          data : {
             value: Math.min(this.actor.system.rep.value, this.actor.system.rep.max - this.actor.turfCount),
-            max: this.actor.system.rep.max - this.actor.turfCount
+            max:   this.actor.system.rep.max - this.actor.turfCount
           },
-          target: "system.rep.value",
-          svgKey: "teeth.tall",
-          svgFull: "full|half|frame",
+          target:   "system.rep.value",
+          svgKey:   "teeth.tall",
+          svgFull:  "full|half|frame",
           svgEmpty: "full|half|frame"
         },
         {
-          data: {
+          data : {
             value: this.actor.turfCount,
-            max: this.actor.turfCount
+            max:   this.actor.turfCount
           },
-          target: "none",
-          svgKey: "teeth.tall",
-          svgFull: "full|half|frame",
-          svgEmpty: "full|half|frame",
+          target:       "none",
+          svgKey:       "teeth.tall",
+          svgFull:      "full|half|frame",
+          svgEmpty:     "full|half|frame",
           dotlineClass: "flex-row-reverse",
-          isLocked: true
+          isLocked:     true
         }
       ]
     };
 
     sheetData.heatData = {
-      label: "Heat",
+      label:   "Heat",
       dotline: {
-        data: this.actor.system.heat,
-        target: "system.heat.value",
-        svgKey: "teeth.tall",
-        svgFull: "full|half|frame",
+        data:     this.actor.system.heat,
+        target:   "system.heat.value",
+        svgKey:   "teeth.tall",
+        svgFull:  "full|half|frame",
         svgEmpty: "full|half|frame"
       }
     };
 
     sheetData.wantedData = {
-      label: "Wanted",
+      label:   "Wanted",
       dotline: {
-        data: this.actor.system.wanted,
-        target: "system.wanted.value",
-        svgKey: "teeth.short",
-        svgFull: "full|frame",
+        data:     this.actor.system.wanted,
+        target:   "system.wanted.value",
+        svgKey:   "teeth.short",
+        svgFull:  "full|frame",
         svgEmpty: "frame"
       }
     };

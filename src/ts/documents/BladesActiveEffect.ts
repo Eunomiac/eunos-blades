@@ -14,7 +14,7 @@ const CUSTOMFUNCS: Record<
   string,
   (actor: BladesActor, funcData: string, effect?: BladesActiveEffect, isReversing?: boolean) => Promise<void>
 > = {
-  addItem: async (actor: BladesActor, funcData: string, _, isReversing = false) => {
+  addItem : async (actor: BladesActor, funcData: string, _, isReversing = false) => {
     eLog.checkLog("activeEffects", "addItem", {actor, funcData, isReversing});
     if (actor.hasActiveSubItemOf(funcData)) {
       if (isReversing) {
@@ -25,7 +25,7 @@ const CUSTOMFUNCS: Record<
     }
     return undefined;
   },
-  addIfChargen: async (actor, funcData, _, isReversing = false) => {
+  addIfChargen : async (actor, funcData, _, isReversing = false) => {
     eLog.checkLog("activeEffects", "addIfChargen", {actor, funcData, isReversing});
     if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return; }
     const [target, qty] = funcData.split(/:/);
@@ -35,7 +35,7 @@ const CUSTOMFUNCS: Record<
     }
     await actor.update({[target]: U.pInt(getProperty(actor, target)) + U.pInt(qty)});
   },
-  upgradeIfChargen: async (actor, funcData, _, isReversing = false) => {
+  upgradeIfChargen : async (actor, funcData, _, isReversing = false) => {
     eLog.checkLog("activeEffects", "upgradeIfChargen", {actor, funcData, isReversing});
     if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return; }
     const [target, qty] = funcData.split(/:/);
@@ -45,7 +45,7 @@ const CUSTOMFUNCS: Record<
   },
   APPLYTOMEMBERS: async () => undefined,
   APPLYTOCOHORTS: async () => undefined,
-  remItem: async (actor, funcData, _, isReversing = false) => {
+  remItem:        async (actor, funcData, _, isReversing = false) => {
 
     function testString(targetString: string, testDef: string) {
       if (testDef.startsWith("rX")) {
@@ -132,7 +132,7 @@ class BladesActiveEffect extends ActiveEffect {
             // Set flag with effect's data on member, so future members can have effect applied to them.
             await effect.parent.setFlag("eunos-blades", `memberEffects.${effect.id}`, {
               appliedTo: otherMembers.map((member) => member.id),
-              effect: effect.toJSON()
+              effect:    effect.toJSON()
             });
           }
         } else if (BladesActor.IsType(effect.parent, BladesActorType.crew)) {
@@ -144,11 +144,11 @@ class BladesActiveEffect extends ActiveEffect {
           }
           // Set flag with effect's data on crew, so future members can have effect applied to them.
           await effect.parent.setFlag("eunos-blades", `memberEffects.${effect.id}`, {
-            appliedTo: effect.parent.members.map((member) => member.id),
+            appliedTo : effect.parent.members.map((member) => member.id),
             effect
           });
           // Update effect on crew-parent to only include 'APPLYTOMEMBERS' change
-          await effect.updateSource({changes: [changeKey]});
+          await effect.updateSource({changes: [changeKey] });
         }
       } else if (effect.changes.some((change) => change.key === "APPLYTOCOHORTS")
         && (
@@ -161,7 +161,7 @@ class BladesActiveEffect extends ActiveEffect {
         }
         // Set flag with effect's data on parent, so future cohorts can have effect applied to them.
         await (effect.parent as BladesActor).setFlag("eunos-blades", `cohortEffects.${effect.id}`, {
-          appliedTo: effect.parent.cohorts.map((cohort) => cohort.id),
+          appliedTo : effect.parent.cohorts.map((cohort) => cohort.id),
           effect
         });
         // Update effect on parent to only include 'APPLYTOCOHORTS' change
@@ -178,8 +178,8 @@ class BladesActiveEffect extends ActiveEffect {
         const permFuncName = key.replace(/^perm/, "");
         if (permFuncName in CUSTOMFUNCS) {
           const funcData: BladesCustomFuncData = {
-            funcName: permFuncName,
-            funcData: value,
+            funcName:    permFuncName,
+            funcData:    value,
             isReversing: false,
             effect
           };
@@ -197,10 +197,10 @@ class BladesActiveEffect extends ActiveEffect {
 
       if (changeData.key in CUSTOMFUNCS) {
         const funcData: BladesCustomFuncData = {
-          funcName: changeData.key,
-          funcData: changeData.value,
+          funcName:    changeData.key,
+          funcData:    changeData.value,
           isReversing: false,
-          effect: changeData.effect
+          effect:      changeData.effect
         };
         BladesActiveEffect.ThrottleCustomFunc(actor, funcData);
       }
@@ -211,8 +211,8 @@ class BladesActiveEffect extends ActiveEffect {
       const customEffects = effect.changes.filter((changes: EffectChangeData) => changes.mode === 0);
       customEffects.forEach(({key, value}) => {
         const funcData: BladesCustomFuncData = {
-          funcName: key,
-          funcData: value,
+          funcName:    key,
+          funcData:    value,
           isReversing: disabled,
           effect
         };
@@ -266,8 +266,8 @@ class BladesActiveEffect extends ActiveEffect {
       const customEffects = effect.changes.filter((changes: EffectChangeData) => changes.mode === 0);
       customEffects.forEach(({key, value}) => {
         const funcData: BladesCustomFuncData = {
-          funcName: key,
-          funcData: value,
+          funcName:    key,
+          funcData:    value,
           isReversing: true,
           effect
         };
@@ -302,7 +302,7 @@ class BladesActiveEffect extends ActiveEffect {
     eLog.checkLog3("activeEffect", "... Creating New FUNCQUEUE, RUNNING:");
     FUNCQUEUE[actor.id] = {
       curFunc: BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing)),
-      queue: []
+      queue:   []
     };
   }
 
@@ -335,8 +335,8 @@ class BladesActiveEffect extends ActiveEffect {
     const a = event.currentTarget;
     if (a.dataset.action === "create") {
       return owner.createEmbeddedDocuments("ActiveEffect", [{
-        name: owner.name,
-        icon: owner.img,
+        name:   owner.name,
+        icon:   owner.img,
         origin: owner.uuid
       }]);
     }

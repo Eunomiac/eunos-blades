@@ -1,16 +1,15 @@
-
 import BladesActorSheet from "./BladesActorSheet";
 import U from "../../core/utilities";
 class BladesNPCSheet extends BladesActorSheet {
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["eunos-blades", "sheet", "actor", "npc"],
+      classes:  ["eunos-blades", "sheet", "actor", "npc"],
       template: "systems/eunos-blades/templates/npc-sheet.hbs",
-      width: 500,
-      height: 400,
+      width:    500,
+      height:   400,
       // height: "auto",
-      tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "description"}]
+      tabs:     [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "description"}]
     });
   }
 
@@ -24,23 +23,23 @@ class BladesNPCSheet extends BladesActorSheet {
     context.secret = context.actor.system.secret;
 
     const rStatus: Record<string, {size: "third"|"half"|number, label: string|null}> = {
-      name: {size: 3, label: "Name"},
+      name:   {size: 3, label: "Name"},
       gender: {size: "half", label: "Gender"},
 
-      heritage: {size: "third", label: "Heritage"},
+      heritage:   {size: "third", label: "Heritage"},
       background: {size: "third", label: "Background"},
       profession: {size: "third", label: "Profession"},
 
       appearance: {size: 2, label: "Appearance"},
-      style: {size: 2, label: "Style"},
-      quirk: {size: 4, label: "Quirk"},
+      style:      {size: 2, label: "Style"},
+      quirk:      {size: 4, label: "Quirk"},
 
-      goal: {size: 2, label: "Goal"},
+      goal:   {size: 2, label: "Goal"},
       method: {size: 2, label: "Method"},
 
-      interests: {size: 4, label: "Interests"},
+      interests : {size: 4, label: "Interests"},
 
-      trait: {size: "half", label: "Trait"},
+      trait:  {size: "half", label: "Trait"},
       trait1: {size: "half", label: null},
       trait2: {size: "half", label: null},
       trait3: {size: "half", label: null}
@@ -91,14 +90,14 @@ class BladesNPCSheet extends BladesActorSheet {
           tags.push("Rival");
           this.actor.update({
             "system.status": -1,
-            "system.tags": U.unique(tags)
+            "system.tags":   U.unique(tags)
           });
         } else {
           U.remove(tags, "Rival");
           tags.push("Friend");
           this.actor.update({
             "system.status": 1,
-            "system.tags": U.unique(tags)
+            "system.tags":   U.unique(tags)
           });
         }
       })

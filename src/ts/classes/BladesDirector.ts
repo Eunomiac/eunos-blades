@@ -229,8 +229,8 @@ class BladesDirector {
     const tl = U.gsap.timeline()
       .call(() => {keySwingTimeline.seek("NEUTRAL").play();})
       .from(container$, {
-        y: -800,
-        ease: "bounce",
+        y:        -800,
+        ease:     "bounce",
         duration: 1
       }, 0)
       .to(container$, {autoAlpha: 1, duration: 0.5, ease: "power2"}, 0);
@@ -247,7 +247,7 @@ class BladesDirector {
     if (key.name && key.isNameVisible) {
       tl.blurReveal(label$, {
         ignoreMargin: true,
-        duration: 0.75
+        duration:     0.75
       }, "<+0.05");
     }
   }
@@ -276,18 +276,18 @@ class BladesDirector {
       "hoverOverTimeline",
       U.gsap.timeline({
         paused: true,
-        data: {key, imgContainer$, label$, isNameRevealed: false},
+        data:   {key, imgContainer$, label$, isNameRevealed: false},
         onStart() {
           (this.data.imgContainer$.data("keySwingTimeline") as gsap.core.Timeline)
             .tweenTo("NEUTRAL", {
               duration: 0.25,
-              ease: "back.out(1.5)"
+              ease:     "back.out(1.5)"
             });
           if (this.data.key.name && !this.data.key.isNameVisible) {
             this.data.isNameRevealed = true;
             U.gsap.effects.blurReveal(this.data.label$, {
               ignoreMargin: true,
-              duration: 0.5
+              duration:     0.5
             });
           }
         },
@@ -299,7 +299,7 @@ class BladesDirector {
             this.data.isNameRevealed = false;
             U.gsap.effects.blurRemove(this.data.label$, {
               ignoreMargin: true,
-              duration: 0.5
+              duration:     0.5
             });
           }
         }
@@ -318,13 +318,13 @@ class BladesDirector {
         "hoverOverTimeline",
         U.gsap.timeline({
           paused: true,
-          data: {clock, clockLabel$, isNameRevealed: false},
+          data:   {clock, clockLabel$, isNameRevealed: false},
           onStart() {
             if (this.data.clock.name && !this.data.clock.isNameVisible) {
               this.data.isNameRevealed = true;
               U.gsap.effects.blurReveal(this.data.clockLabel$, {
                 ignoreMargin: true,
-                duration: 0.5
+                duration:     0.5
               });
             }
           },
@@ -333,7 +333,7 @@ class BladesDirector {
               this.data.isNameRevealed = false;
               U.gsap.effects.blurRemove(this.data.clockLabel$, {
                 ignoreMargin: true,
-                duration: 0.5
+                duration:     0.5
               });
             }
           }
@@ -402,7 +402,7 @@ class BladesDirector {
     if (key.overlayPosition) {
       U.gsap.set(keyElems$.container$, {
         left: key.overlayPosition.x,
-        top: key.overlayPosition.y
+        top:  key.overlayPosition.y
       });
     }
 
@@ -431,13 +431,13 @@ class BladesDirector {
     const {container$} = key.getElements$(game.eunoblades.Director.clockKeySection$);
     U.gsap.timeline()
       .to(container$, {
-        y: -800,
-        ease: "back.in(1)",
+        y:        -800,
+        ease:     "back.in(1)",
         duration: 0.75
       })
       .to(container$, {
-        opacity: 0,
-        ease: "power2.out",
+        opacity:  0,
+        ease:     "power2.out",
         duration: 0.25
       }, 0.75)
       .call(() => {container$.remove();});
@@ -578,7 +578,7 @@ class BladesDirector {
   static async pushNotice_SocketResponse(pushID: IDString, config: BladesDirector.PushNoticeConfig) {
     const director = game.eunoblades.Director;
     const pushElem$ = $(await renderTemplate("systems/eunos-blades/templates/overlay/notices/push.hbs", {
-      id: pushID,
+      id : pushID,
       ...config
     }))
       .appendTo(director.notificationSection$)
@@ -588,17 +588,17 @@ class BladesDirector {
     U.gsap.fromTo(
       pushElem$,
       {
-        x: 200,
-        skewX: 20,
+        x:         200,
+        skewX:     20,
         autoAlpha: 0,
-        filter: "blur(10px)"
+        filter:    "blur(10px)"
       }, {
-        x: 0,
-        skewX: 0,
+        x:         0,
+        skewX:     0,
         autoAlpha: 1,
-        filter: "blur(0px)",
-        duration: 0.5,
-        ease: "back"
+        filter:    "blur(0px)",
+        duration:  0.5,
+        ease:      "back"
       });
   }
 
@@ -606,10 +606,10 @@ class BladesDirector {
     U.gsap.to(
       target,
       {
-        x: "+=200",
-        autoAlpha: 0,
-        ease: "power2",
-        duration: 0.5,
+        x:          "+=200",
+        autoAlpha:  0,
+        ease:       "power2",
+        duration:   0.5,
         onComplete: function() {
           $(target).remove();
         }
@@ -622,16 +622,16 @@ class BladesDirector {
     U.gsap.to(
       targets,
       {
-        x: "+=200",
+        x:         "+=200",
         autoAlpha: 0,
-        ease: "power2",
-        duration: 0.5,
-        stagger: {
+        ease:      "power2",
+        duration:  0.5,
+        stagger:   {
           each: 0.5,
           from: "start",
           ease: "power1.inOut"
         },
-        onComplete: function() {
+        onComplete : function() {
           targets.forEach((targ) => $(targ).remove());
         }
       });
@@ -813,7 +813,7 @@ class BladesDirector {
     }, 200); // Adjust 200ms to your preferred throttling limit
 
     this._tooltipObserver = Observer.create({
-      type: "touch,pointer",
+      type : "touch,pointer",
       // onMove: throttledOnMove,
       onClick() {
         self.clearTooltips();

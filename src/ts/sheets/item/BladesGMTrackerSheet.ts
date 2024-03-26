@@ -1,4 +1,3 @@
-
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {BladesActorType, BladesItemType, BladesPhase} from "../../core/constants";
 import BladesItemSheet from "./BladesItemSheet";
@@ -32,7 +31,7 @@ class BladesTipGenerator {
   static get Tips() {
     return {
       [BladesTipContext.DiceRoll]: [],
-      [BladesTipContext.Combat]: [
+      [BladesTipContext.Combat]:   [
         "Every combat encounter should advance the main plot, or else it's filler.",
         "Inject dialogue into combat encounters, especially from important adversaries.",
         "Combat encounters should be a challenge, but not a slog. Don't be afraid to end them early.",
@@ -41,7 +40,7 @@ class BladesTipGenerator {
         "Don't trigger combats automatically: Use alternate objectives to incite the players to fight, giving them agency.",
         "Add another layer by drawing focus to collateral effects of the combat: a fire, a hostage, a collapsing building, innocents in danger"
       ],
-      [BladesTipContext.General]: [
+      [BladesTipContext.General] : [
         "Rolling the dice always means SOMETHING happens.",
         "Jump straight to the action; don't waste time on establishing scenes or filler.",
         "Invoke elements of characters' backstories or beliefs to make any scene more personal."
@@ -65,10 +64,10 @@ class BladesGMTrackerSheet extends BladesItemSheet {
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["eunos-blades", "sheet", "item", "gm-tracker"],
+      classes:  ["eunos-blades", "sheet", "item", "gm-tracker"],
       template: "systems/eunos-blades/templates/items/gm_tracker-sheet.hbs",
-      width: 700,
-      height: 970
+      width:    700,
+      height:   970
     });
   }
 

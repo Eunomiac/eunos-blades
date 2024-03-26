@@ -12,7 +12,7 @@ class BladesProjectSheet extends BladesItemSheet {
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["eunos-blades", "sheet", "item", "project-sheet"],
+      classes:  ["eunos-blades", "sheet", "item", "project-sheet"],
       template: "systems/eunos-blades/templates/items/project-sheet.hbs"
     });
   }
@@ -58,7 +58,7 @@ class BladesProjectSheet extends BladesItemSheet {
 
     return {
       clockKey,
-      keyElems$: clockKey.getElements$(html.find(".clock-key-panel"))
+      keyElems$ : clockKey.getElements$(html.find(".clock-key-panel"))
     };
   }
 
@@ -151,7 +151,7 @@ class BladesProjectSheet extends BladesItemSheet {
     // Add listener for contextual clock name depending on display mode
     html.find("input.sheet-subtitle")
       .on({
-        change: (event: ChangeEvent) => {
+        change : (event: ChangeEvent) => {
           event.preventDefault();
           const action = $(event.currentTarget).data("action");
           eLog.checkLog3("BladesProject", "Clock Name Change", {action, value: $(event.currentTarget).val()});

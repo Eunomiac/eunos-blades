@@ -1,5 +1,5 @@
-import { AttributeTrait, ActionTrait, BladesPhase, BladesActorType, BladesItemType } from '../core/constants';
-import BladesActiveEffect from '../documents/BladesActiveEffect';
+import {AttributeTrait, ActionTrait, BladesPhase, BladesActorType, BladesItemType} from "../core/constants";
+import BladesActiveEffect from "../documents/BladesActiveEffect";
 
 declare global {
 
@@ -39,17 +39,17 @@ declare global {
           inRuleDotline?: BladesDotlineData
         }>,
         cohorts: {
-          gang: BladesItemOfType<BladesItemType.cohort_gang>[],
-          expert: BladesItemOfType<BladesItemType.cohort_expert>[]
+          gang: Array<BladesItemOfType<BladesItemType.cohort_gang>>,
+          expert: Array<BladesItemOfType<BladesItemType.cohort_expert>>
         },
         playbook?: BladesItemOfType<BladesItemType.playbook>,
-        projects: BladesItemOfType<BladesItemType.project>[]
+        projects: Array<BladesItemOfType<BladesItemType.project>>
       },
 
       preparedActors: {
         crew?: BladesActorOfType<BladesActorType.crew>,
         vice_purveyor?: BladesActorOfType<BladesActorType.npc>,
-        acquaintances: Array<BladesActor>
+        acquaintances: BladesActor[]
       },
 
       hasVicePurveyor: boolean,
@@ -70,10 +70,10 @@ declare global {
       loadData: {
         curLoad: number,
         selLoadCount: number,
-        options: BladesSelectOption<string>[],
+        options: Array<BladesSelectOption<string>>,
         selected: string
       },
-      armor: Record<string,boolean>,
+      armor: Record<string, boolean>,
 
       downtimeData?: {
         actionsList: Record<DowntimeAction, string>,
@@ -93,13 +93,13 @@ declare global {
 
     export interface Crew {
       preparedItems: {
-        abilities: BladesItemOfType<BladesItemType.crew_ability>[],
+        abilities: Array<BladesItemOfType<BladesItemType.crew_ability>>,
         playbook?: BladesItemOfType<BladesItemType.crew_playbook>,
         reputation?: BladesItemOfType<BladesItemType.crew_reputation>,
-        upgrades: BladesItemOfType<BladesItemType.crew_upgrade>[],
+        upgrades: Array<BladesItemOfType<BladesItemType.crew_upgrade>>,
         cohorts: {
-          gang: BladesItemOfType<BladesItemType.cohort_gang>[],
-          expert: BladesItemOfType<BladesItemType.cohort_expert>[]
+          gang: Array<BladesItemOfType<BladesItemType.cohort_gang>>,
+          expert: Array<BladesItemOfType<BladesItemType.cohort_expert>>
         },
         preferredOp?: BladesItemOfType<BladesItemType.preferred_op>
       }

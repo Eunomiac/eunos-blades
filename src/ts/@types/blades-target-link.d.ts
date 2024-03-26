@@ -1,4 +1,4 @@
-import { BladesActorType, Tag, District, AttributeTrait, ActionTrait, AdvancementPoint } from "../core/constants";
+import {BladesActorType, Tag, District, AttributeTrait, ActionTrait, AdvancementPoint} from "../core/constants";
 import BladesActor from "../BladesActor";
 import BladesPC from "../documents/actors/BladesPC";
 import BladesNPC from "../documents/actors/BladesNPC";
@@ -51,11 +51,11 @@ declare global {
 
       data: Data & Schema,
 
-      async delete(collection: Collection | false, waitFor?: Promise<unknown>|gsapAnim)
+      delete(collection: Collection | false, waitFor?: Promise<unknown>|gsapAnim)
 
-      async updateTarget(prop: string, val: unknown, waitFor?: Promise<unknown>|gsapAnim)
+      updateTarget(prop: string, val: unknown, waitFor?: Promise<unknown>|gsapAnim)
 
-      async updateTargetData(val: Partial<Schema>|null, waitFor?: Promise<unknown>|gsapAnim)
+      updateTargetData(val: Partial<Schema>|null, waitFor?: Promise<unknown>|gsapAnim)
 
       elem?: HTMLElement
     }

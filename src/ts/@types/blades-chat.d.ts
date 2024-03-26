@@ -1,6 +1,6 @@
 // #region IMPORTS ~
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { BladesActorType, Tag, District, AttributeTrait, ActionTrait, AdvancementPoint } from "../core/constants";
+import {BladesActorType, Tag, District, AttributeTrait, ActionTrait, AdvancementPoint} from "../core/constants";
 import BladesActor from "../BladesActor";
 import BladesPC from "../documents/actors/BladesPC";
 import BladesNPC from "../documents/actors/BladesNPC";

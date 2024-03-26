@@ -87,13 +87,13 @@ class BladesTargetLink<Schema> {
     if ("target" in partialConfig) {
       if ("targetKey" in partialConfig) {
         return {
-          target: partialConfig.target,
-          targetKey: partialConfig.targetKey,
+          target:        partialConfig.target,
+          targetKey:     partialConfig.targetKey,
           isScopingById: partialConfig.isScopingById
         };
       } else if ("targetFlagKey" in partialConfig) {
         return {
-          target: partialConfig.target,
+          target:        partialConfig.target,
           targetFlagKey: partialConfig.targetFlagKey,
           isScopingById: partialConfig.isScopingById
         };
@@ -102,13 +102,13 @@ class BladesTargetLink<Schema> {
     } else if ("targetID" in partialConfig) {
       if ("targetKey" in partialConfig) {
         return {
-          targetID: partialConfig.targetID,
-          targetKey: partialConfig.targetKey,
+          targetID:      partialConfig.targetID,
+          targetKey:     partialConfig.targetKey,
           isScopingById: partialConfig.isScopingById
         };
       } else if ("targetFlagKey" in partialConfig) {
         return {
-          targetID: partialConfig.targetID,
+          targetID:      partialConfig.targetID,
           targetFlagKey: partialConfig.targetFlagKey,
           isScopingById: partialConfig.isScopingById
         };
@@ -145,16 +145,16 @@ class BladesTargetLink<Schema> {
     // - Send through public ParseConfigToData method, so subclasses can include their own logic.
     if ("targetKey" in fullConfig) {
       return this.ParseConfigToData<Schema>({
-        id: randomID() as IDString,
+        id:        randomID() as IDString,
         ...partialSchema,
-        targetID: U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
+        targetID:  U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
         targetKey: fullConfig.targetKey
       }, parentLinkData);
     }
     return this.ParseConfigToData<Schema>({
-      id: randomID() as IDString,
+      id:            randomID() as IDString,
       ...partialSchema,
-      targetID: U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
+      targetID:      U.parseDocRefToUUID("target" in fullConfig ? fullConfig.target : fullConfig.targetID),
       targetFlagKey: fullConfig.targetFlagKey
     }, parentLinkData);
   }
@@ -225,7 +225,7 @@ class BladesTargetLink<Schema> {
     }
     // A Config object was submitted.
     return {
-      linkConfig: this.BuildLinkConfig({
+      linkConfig : this.BuildLinkConfig({
         ...{isScopingById: isScopingById ?? true},
         ...("targetID" in dataOrConfig
           ? {targetID: dataOrConfig.targetID}
@@ -336,16 +336,16 @@ class BladesTargetLink<Schema> {
   get linkData(): BladesTargetLink.Data {
     if (this.targetKey) {
       return {
-        id: this.id,
-        targetID: this.targetID,
-        targetKey: this.targetKey,
+        id:            this.id,
+        targetID:      this.targetID,
+        targetKey:     this.targetKey,
         isScopingById: this.isScopingById
       };
     }
     if (this.targetFlagKey) {
       return {
-        id: this.id,
-        targetID: this.targetID,
+        id:            this.id,
+        targetID:      this.targetID,
         targetFlagKey: this.targetFlagKey,
         isScopingById: this.isScopingById
       };

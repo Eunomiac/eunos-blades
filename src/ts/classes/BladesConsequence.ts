@@ -85,8 +85,8 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
       }
       return {
         [Position.controlled]: 1,
-        [Position.risky]: 2,
-        [Position.desperate]: 0
+        [Position.risky]:      2,
+        [Position.desperate]:  0
       }[position];
     }
 
@@ -103,11 +103,11 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
         throw new Error(`Cannot resolve consequence type value for '${cType}' without roll data that includes final effect data.`);
       }
       return {
-        [Effect.extreme]: 1,
-        [Effect.great]: 1,
+        [Effect.extreme]:  1,
+        [Effect.great]:    1,
         [Effect.standard]: 1,
-        [Effect.limited]: 2,
-        [Effect.zero]: 0
+        [Effect.limited]:  2,
+        [Effect.zero]:     0
       }[effect];
     }
 
@@ -164,7 +164,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
     if (!this.rollData) {return undefined;}
     return game.eunoblades.Rolls.get(this.rollData.id) ?? new BladesRoll({
       ...this.rollData,
-      isScopingById: false
+      isScopingById : false
     });
   }
   get position(): Position | undefined {return this.roll?.rollPositionFinal;}
@@ -247,8 +247,8 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
   // #region Constructing Resistable Consequence Schema
   get noneSchema(): BladesConsequence.Schema {
     return {
-      name: "",
-      type: ConsequenceType.None,
+      name:      "",
+      type:      ConsequenceType.None,
       primaryID: this.primaryID
     };
   }
@@ -258,22 +258,22 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
     if (!this.isResistible()) {return undefined;}
     // Expand the resistSchema into a full BladesConsequence.Schema object
     const resSchema: BladesConsequence.Schema = {
-      name: this.data.resistSchema.name,
-      type: this.data.resistSchema.type,
-      primaryID: this.primaryID,
+      name:         this.data.resistSchema.name,
+      type:         this.data.resistSchema.type,
+      primaryID:    this.primaryID,
       resistSchema: {
         name: "",
         type: ConsequenceType.None
       },
-      resistanceModes: this.resistanceModes,
-      resistWithRollNegates: true,
-      attribute: this.attribute,
-      attributeVal: this.attributeVal,
-      canResistWithArmor: this.canResistWithArmor,
-      resistWithArmorNegates: true,
-      canResistWithSpecial: this.canResistWithSpecial,
+      resistanceModes:          this.resistanceModes,
+      resistWithRollNegates:    true,
+      attribute:                this.attribute,
+      attributeVal:             this.attributeVal,
+      canResistWithArmor:       this.canResistWithArmor,
+      resistWithArmorNegates:   true,
+      canResistWithSpecial:     this.canResistWithSpecial,
       resistWithSpecialNegates: true,
-      specialFooterMsg: this.specialFooterMsg
+      specialFooterMsg:         this.specialFooterMsg
     };
     // If this consequence has already been resisted once, convert the resistSchema to a None-type schema.
     if (this.wasResisted) {
@@ -294,7 +294,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
     }
 
     const updateData = {
-      resistanceModes: this.resistanceModes,
+      resistanceModes : this.resistanceModes,
       ...this.resistSchema
     };
     updateData.resistanceModes.push(resistMode);
@@ -443,11 +443,11 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply master on-enter hover timeline to consequence container.
           $(csqContainer).data("hoverTimeline", U.gsap.effects.csqEnter(csqContainer));
           $(csqContainer).on({
-            mouseenter: function() {
+            mouseenter : function() {
               $(csqContainer).css("z-index", 10);
               $(csqContainer).data("hoverTimeline").play();
             },
-            mouseleave: function() {
+            mouseleave : function() {
               if (!(iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) || iconContainer$.data("isTogglingOff")) {
                 $(csqContainer).data("hoverTimeline").reverse().then(() => {
                   $(csqContainer).css("z-index", "");
@@ -459,7 +459,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply click timeline to icon circle
           iconContainer$.data("clickTimeline", U.gsap.effects.csqClickIcon(iconContainer$[0]));
           iconContainer$.on({
-            click: function() {
+            click : function() {
               if (iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) {
                 iconContainer$.data("isTogglingOn", false);
                 iconContainer$.data("isTogglingOff", true);
@@ -498,12 +498,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply hover timelines to right (accept) interaction pad
           rightInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterRight(csqContainer));
           rightInteractionPad$.on({
-            mouseenter: function() {
+            mouseenter : function() {
               if (iconContainer$.data("isToggled")) {
                 rightInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave: function() {
+            mouseleave : function() {
               rightInteractionPad$.data("hoverTimeline").reverse();
             }
           });
@@ -511,12 +511,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply hover timeline to left (resist/armor/special) interaction pad
           leftInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterLeft(csqContainer));
           leftInteractionPad$.on({
-            mouseenter: function() {
+            mouseenter : function() {
               if (iconContainer$.data("isToggled")) {
                 leftInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave: function() {
+            mouseleave : function() {
               leftInteractionPad$.data("hoverTimeline").reverse();
             }
           });
@@ -524,12 +524,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply hover timelines to specific left interaction pads
           resistInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, {type: "resist"}));
           resistInteractionPad$.on({
-            mouseenter: function() {
+            mouseenter : function() {
               if (iconContainer$.data("isToggled")) {
                 resistInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave: function() {
+            mouseleave : function() {
               if (iconContainer$.data("isToggled")) {
                 resistInteractionPad$.data("hoverTimeline").reverse();
               }
@@ -538,12 +538,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
 
           armorInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, {type: "armor"}));
           armorInteractionPad$.on({
-            mouseenter: function() {
+            mouseenter : function() {
               if (iconContainer$.data("isToggled")) {
                 armorInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave: function() {
+            mouseleave : function() {
               if (iconContainer$.data("isToggled")) {
                 armorInteractionPad$.data("hoverTimeline").reverse();
               }
@@ -552,12 +552,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
 
           specialInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, {type: "special"}));
           specialInteractionPad$.on({
-            mouseenter: function() {
+            mouseenter : function() {
               if (iconContainer$.data("isToggled")) {
                 specialInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave: function() {
+            mouseleave : function() {
               if (iconContainer$.data("isToggled")) {
                 specialInteractionPad$.data("hoverTimeline").reverse();
               }

@@ -10,10 +10,10 @@ import BladesScore from "./items/BladesScore";
 
 const ItemsMap: Partial<Record<BladesItemType, typeof BladesItem>> = {
   [BladesItemType.clock_keeper]: BladesClockKeeper,
-  [BladesItemType.gm_tracker]: BladesGMTracker,
-  [BladesItemType.location]: BladesLocation,
-  [BladesItemType.project]: BladesProject,
-  [BladesItemType.score]: BladesScore
+  [BladesItemType.gm_tracker]:   BladesGMTracker,
+  [BladesItemType.location]:     BladesLocation,
+  [BladesItemType.project]:      BladesProject,
+  [BladesItemType.score]:        BladesScore
 };
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function

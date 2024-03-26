@@ -1,4 +1,3 @@
-
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {BladesActorType, Playbook, BladesItemType, Tag} from "../../core/constants";
@@ -71,7 +70,7 @@ class BladesCrew extends BladesActor implements BladesActorSubClass.Crew,
     // ~ Initialize generic experience clues.
     data.system.experience = {
       playbook: {value: 0, max: 8},
-      clues: [],
+      clues:    [],
       ...data.system.experience ?? {}
     } as BladesActorSchema.Crew["experience"];
 

@@ -43,9 +43,9 @@ class BladesDialog extends Dialog {
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["eunos-blades", "sheet", "dialog"],
-      width: "auto",
-      height: "auto",
-      tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "front"}]
+      width:   "auto",
+      height:  "auto",
+      tabs:    [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "front"}]
     });
   }
 
@@ -66,30 +66,30 @@ class BladesDialog extends Dialog {
   ) {
     const app: BladesDialog = new BladesDialog({
       parent,
-      title: parent instanceof BladesRoll ? "Roll Input" : `${parent.name}: Input`,
+      title:      parent instanceof BladesRoll ? "Roll Input" : `${parent.name}: Input`,
       dialogType: BladesDialogType.Input,
-      content: "",
+      content:    "",
       prompt,
       target,
       flagTarget,
-      buttons: {
-        apply: {
-          icon: '<i class="fa-solid fa-arrow-down-to-arc"></i>',
-          label: "Apply",
+      buttons:    {
+        apply : {
+          icon:     '<i class="fa-solid fa-arrow-down-to-arc"></i>',
+          label:    "Apply",
           callback: (html: HTMLElement|JQuery<HTMLElement>) => (app as BladesDialog)
           //   .writeToRollInstance(html as JQuery<HTMLElement>)
         },
-        cancel: {
-          icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize("Cancel"),
+        cancel : {
+          icon:     '<i class="fas fa-times"></i>',
+          label:    game.i18n.localize("Cancel"),
           callback: (html: JQuery|HTMLElement) => {
             eLog.checkLog3("dialog", "Callback Scope", {this: app, html});
             return false;
           }
         }
       },
-      default: "apply"
-    }, {classes: ["eunos-blades", "sheet", "dialog", "simple-input-dialog"]});
+      default : "apply"
+    }, {classes: ["eunos-blades", "sheet", "dialog", "simple-input-dialog"] });
 
     return app._render(true, {width: app.width}).then(() => eLog.checkLog3("dialog", "Input Dialog Instance", {this: app}));
   }
@@ -107,19 +107,19 @@ class BladesDialog extends Dialog {
       title,
       docType,
       tabs,
-      tags: tags?.filter((tag): tag is BladesTag => tag !== ""),
+      tags:    tags?.filter((tag): tag is BladesTag => tag !== ""),
       content: "",
       buttons: {
-        cancel: {
-          icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize("Cancel"),
+        cancel : {
+          icon:     '<i class="fas fa-times"></i>',
+          label:    game.i18n.localize("Cancel"),
           callback: (html: JQuery|HTMLElement) => {
             eLog.checkLog3("dialog", "Callback Scope", {this: this, html});
             return false;
           }
         }
       },
-      default: "cancel"
+      default : "cancel"
     });
 
     return app.hasItems ? app.render(true, {width: app.width}) : undefined;

@@ -170,12 +170,12 @@ class BladesItem extends Item implements BladesDocument<Item>,
 
   get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
     const factorsMap: Partial<Record<BladesItemType, Factor[]>> = {
-      [BladesItemType.cohort_gang]: [Factor.quality, Factor.scale],
+      [BladesItemType.cohort_gang]:   [Factor.quality, Factor.scale],
       [BladesItemType.cohort_expert]: [Factor.quality, Factor.scale],
-      [BladesItemType.gear]: [Factor.quality],
-      [BladesItemType.project]: [Factor.quality],
-      [BladesItemType.ritual]: [Factor.magnitude],
-      [BladesItemType.design]: [Factor.quality]
+      [BladesItemType.gear]:          [Factor.quality],
+      [BladesItemType.project]:       [Factor.quality],
+      [BladesItemType.ritual]:        [Factor.magnitude],
+      [BladesItemType.design]:        [Factor.quality]
     };
     if (!factorsMap[this.type]) { return {}; }
 
@@ -185,16 +185,16 @@ class BladesItem extends Item implements BladesDocument<Item>,
     (factors ?? []).forEach((factor, i) => {
       const factorTotal = this.getFactorTotal(factor);
       factorData[factor] = {
-        name: factor,
-        value: factorTotal,
-        max: factorTotal,
-        baseVal: factorTotal,
-        display: [Factor.tier, Factor.quality].includes(factor) ? U.romanizeNum(factorTotal) : `${factorTotal}`,
-        isActive: i === 0,
-        isPrimary: i === 0,
-        isDominant: false,
+        name:         factor,
+        value:        factorTotal,
+        max:          factorTotal,
+        baseVal:      factorTotal,
+        display:      [Factor.tier, Factor.quality].includes(factor) ? U.romanizeNum(factorTotal) : `${factorTotal}`,
+        isActive:     i === 0,
+        isPrimary:    i === 0,
+        isDominant:   false,
         highFavorsPC: true,
-        cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
+        cssClasses:   `factor-gold${i === 0 ? " factor-main" : ""}`
       };
     });
 
@@ -245,9 +245,9 @@ class BladesItem extends Item implements BladesDocument<Item>,
       BladesDirector.getInstance().pushNotice_SocketCall(
         "ALL",
         {
-          title: `${this.name} ${harmVerb[newHarm - 1]}`,
-          body: harmEffect[newHarm - 1],
-          type: BladesNoticeType.push,
+          title:      `${this.name} ${harmVerb[newHarm - 1]}`,
+          body:       harmEffect[newHarm - 1],
+          type:       BladesNoticeType.push,
           cssClasses: "harm-alert"
         }
       );

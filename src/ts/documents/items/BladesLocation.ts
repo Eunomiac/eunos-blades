@@ -19,16 +19,16 @@ class BladesLocation extends BladesItem implements BladesItemSubClass.Location,
     ].forEach((factor, i) => {
       const factorTotal = this.getFactorTotal(factor);
       factorData[factor] = {
-        name: factor,
-        value: factorTotal,
-        max: factorTotal,
-        baseVal: factorTotal,
-        display: factor === Factor.tier ? U.romanizeNum(factorTotal) : `${factorTotal}`,
-        isActive: i === 0,
-        isPrimary: i === 0,
-        isDominant: false,
+        name:         factor,
+        value:        factorTotal,
+        max:          factorTotal,
+        baseVal:      factorTotal,
+        display:      factor === Factor.tier ? U.romanizeNum(factorTotal) : `${factorTotal}`,
+        isActive:     i === 0,
+        isPrimary:    i === 0,
+        isDominant:   false,
         highFavorsPC: true,
-        cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
+        cssClasses:   `factor-gold${i === 0 ? " factor-main" : ""}`
       };
     });
     return factorData;

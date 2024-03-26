@@ -48,9 +48,9 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
   },
   test(param1: unknown, operator: string, param2: unknown) {
     const stringMap = {
-      true: true,
+      true:  true,
       false: false,
-      null: null,
+      null:  null,
       undefined
     };
     if (["!", "not", "=??"].includes(String(param1))) {
@@ -94,15 +94,15 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
   },
   calc(...params: unknown[]) {
     const calcs: Record<string, (...args: Array<number|string>) => number|string> = {
-      "+": (p1, p2) => U.pInt(p1) + U.pInt(p2),
-      "-": (p1, p2) => U.pInt(p1) - U.pInt(p2),
-      "*": (p1, p2) => U.pInt(p1) * U.pInt(p2),
-      "/": (p1, p2) => U.pInt(p1) / U.pInt(p2),
-      "%": (p1, p2) => U.pInt(p1) % U.pInt(p2),
-      max: (p1, p2) => Math.max(U.pInt(p1), U.pInt(p2)),
-      min: (p1, p2) => Math.min(U.pInt(p1), U.pInt(p2)),
-      ceil: (p1) => Math.ceil(U.pFloat(p1)),
-      floor: (p1) => Math.floor(U.pFloat(p1))
+      "+":     (p1, p2) => U.pInt(p1) + U.pInt(p2),
+      "-":     (p1, p2) => U.pInt(p1) - U.pInt(p2),
+      "*":     (p1, p2) => U.pInt(p1) * U.pInt(p2),
+      "/":     (p1, p2) => U.pInt(p1) / U.pInt(p2),
+      "%":     (p1, p2) => U.pInt(p1) % U.pInt(p2),
+      "max":   (p1, p2) => Math.max(U.pInt(p1), U.pInt(p2)),
+      "min":   (p1, p2) => Math.min(U.pInt(p1), U.pInt(p2)),
+      "ceil":  (p1) => Math.ceil(U.pFloat(p1)),
+      "floor": (p1) => Math.floor(U.pFloat(p1))
     };
     const [param1, operator, param2] = typeof params[0] === "string" && params[0] in calcs
       ? [params[1], params[0]]
@@ -150,7 +150,7 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
     return args.reduce((acc, val) => Object.assign(acc, val), context);
   },
   // For loop: {{#for [from = 0, to, stepSize = 1]}}<html content, this = index>{{/for}}
-  for: (...args) => {
+  for : (...args) => {
     const options = args.pop();
     let [from, to, stepSize] = args;
     from = U.pInt(from);
@@ -179,20 +179,20 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
     eLog.hbsLog(...args, dbLevel);
   },
   // Does the name of this turf block represent a standard 'Turf' claim?
-  isTurfBlock: (name: string): boolean => U.fuzzyMatch(name, "Turf"),
+  isTurfBlock:         (name: string): boolean => U.fuzzyMatch(name, "Turf"),
   // Which other connection does this connector overlap with?
   getConnectorPartner: (index: number|string, direction: Direction): string|null => {
     index = parseInt(`${index}`, 10);
     const partners: Record<number, Record<string, number>> = {
-      1: {right: 2, bottom: 6},
-      2: {left: 1, right: 3, bottom: 7},
-      3: {left: 2, right: 4, bottom: 8},
-      4: {left: 3, right: 5, bottom: 9},
-      5: {left: 4, bottom: 10},
-      6: {top: 1, right: 7, bottom: 11},
-      7: {top: 2, left: 6, right: 8, bottom: 12},
-      8: {top: 3, left: 7, right: 9, bottom: 13},
-      9: {top: 4, left: 8, right: 10, bottom: 14},
+      1:  {right: 2, bottom: 6},
+      2:  {left: 1, right: 3, bottom: 7},
+      3:  {left: 2, right: 4, bottom: 8},
+      4:  {left: 3, right: 5, bottom: 9},
+      5:  {left: 4, bottom: 10},
+      6:  {top: 1, right: 7, bottom: 11},
+      7:  {top: 2, left: 6, right: 8, bottom: 12},
+      8:  {top: 3, left: 7, right: 9, bottom: 13},
+      9:  {top: 4, left: 8, right: 10, bottom: 14},
       10: {top: 5, left: 9, bottom: 15},
       11: {top: 6, right: 12},
       12: {top: 7, left: 11, right: 13},
@@ -206,18 +206,18 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
     return null;
   },
   // Is the value Turf side.
-  isTurfOnEdge: (index: number|string, direction: string): boolean => {
+  isTurfOnEdge : (index: number|string, direction: string): boolean => {
     index = parseInt(`${index}`, 10);
     const edges: Record<number, string[]> = {
-      1: ["top", "left"],
-      2: ["top"],
-      3: ["top"],
-      4: ["top"],
-      5: ["top", "right"],
-      6: ["left"],
-      7: [],
-      8: [],
-      9: [],
+      1:  ["top", "left"],
+      2:  ["top"],
+      3:  ["top"],
+      4:  ["top"],
+      5:  ["top", "right"],
+      6:  ["left"],
+      7:  [],
+      8:  [],
+      9:  [],
       10: ["right"],
       11: ["left", "bottom"],
       12: ["bottom"],
@@ -243,7 +243,7 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
 
     return html;
   },
-  repturf: (turfsAmount, options) => {
+  repturf : (turfsAmount, options) => {
     let html = options.fn(this);
     let turfsAmountInt = parseInt(turfsAmount, 10);
 

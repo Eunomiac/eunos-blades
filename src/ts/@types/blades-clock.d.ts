@@ -1,5 +1,5 @@
-import { ClockColor } from "../core/constants";
-import { BladesClockKey } from "../classes/BladesClockKey";
+import {ClockColor} from "../core/constants";
+import {BladesClockKey} from "../classes/BladesClockKey";
 
 declare global {
 

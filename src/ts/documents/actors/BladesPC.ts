@@ -84,29 +84,29 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     // ~ Initialize generic experience clues.
     data.system.experience = {
       playbook: {value: 0, max: 8},
-      insight: {value: 0, max: 6},
-      prowess: {value: 0, max: 6},
-      resolve: {value: 0, max: 6},
-      clues: [],
+      insight:  {value: 0, max: 6},
+      prowess:  {value: 0, max: 6},
+      resolve:  {value: 0, max: 6},
+      clues:    [],
       ...data.system.experience ?? {}
     };
 
     const pc = (await super.create(data, options)) as BladesPC;
     await BladesClockKey.Create({
-      name: "",
-      target: pc,
-      targetKey: "system.clocksData" as TargetKey,
-      isVisible: true,
+      name:          "",
+      target:        pc,
+      targetKey:     "system.clocksData" as TargetKey,
+      isVisible:     true,
       isNameVisible: false,
-      isSpotlit: false
+      isSpotlit:     false
     }, undefined, [
       {
-        color: ClockColor.white,
-        value: 0,
-        max: 4,
-        index: 0,
-        isVisible: true,
-        isActive: true,
+        color:         ClockColor.white,
+        value:         0,
+        max:           4,
+        index:         0,
+        isVisible:     true,
+        isActive:      true,
         isNameVisible: false,
         isHighlighted: false
       }
@@ -141,15 +141,15 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
           .filter((item) => BladesItem.IsType(item, BladesItemType.gear)
             && !item.hasTag(Tag.System.Archived))
           .map((item) => ({
-            _id: item.id,
-            "system.tags": [...item.tags, Tag.System.Archived],
+            "_id":                           item.id,
+            "system.tags":                 [...item.tags, Tag.System.Archived],
             "system.uses_per_score.value": 0
           })),
         ...this.activeSubItems
           .filter((item) => BladesItem.IsType(item, BladesItemType.ability)
             && item.system.uses_per_score.max)
           .map((item) => ({
-            _id: item.id,
+            "_id":                           item.id,
             "system.uses_per_score.value": 0
           }))
       ]
@@ -246,13 +246,13 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   get attributes(): Record<AttributeTrait, number> {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never; }
     return {
-      insight: Object.values(this.system.attributes.insight)
+      insight : Object.values(this.system.attributes.insight)
         .filter(({value}) => value > 0).length
           + this.system.resistance_bonus.insight,
-      prowess: Object.values(this.system.attributes.prowess)
+      prowess : Object.values(this.system.attributes.prowess)
         .filter(({value}) => value > 0).length
           + this.system.resistance_bonus.prowess,
-      resolve: Object.values(this.system.attributes.resolve)
+      resolve : Object.values(this.system.attributes.resolve)
         .filter(({value}) => value > 0).length
           + this.system.resistance_bonus.resolve
     };
@@ -465,14 +465,14 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       const harmString = U.objCompact([harmConditionOne, harmConditionTwo === "" ? null : harmConditionTwo]).join(" & ");
       if (harmString.length > 0) {
         rollModsSchemaSet.push({
-          key: `Harm-negative-${effectCat}`,
-          name: harmString,
-          section: effectCat,
-          posNeg: "negative",
+          key:         `Harm-negative-${effectCat}`,
+          name:        harmString,
+          section:     effectCat,
+          posNeg:      "negative",
           base_status: RollModStatus.ToggledOn,
-          modType: RollModType.harm,
-          value: 1,
-          tooltip: [
+          modType:     RollModType.harm,
+          value:       1,
+          tooltip:     [
             `<h1 class='sur-title'>${effectCat === RollModSection.roll ? Harm.Impaired : Harm.Weakened} (Harm)</h1>`,
             `<h1 class='red-bright'>${harmString}</h1>`,
             effectCat === RollModSection.roll
@@ -486,16 +486,16 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       .find((harmData) => /Need Help/.test(harmData.effect)) ?? {};
     if (harmCondition && harmCondition.trim() !== "") {
       rollModsSchemaSet.push({
-        key: "Push-negative-roll",
-        name: "PUSH",
-        sideString: harmCondition.trim(),
-        section: RollModSection.roll,
-        posNeg: "negative",
+        key:         "Push-negative-roll",
+        name:        "PUSH",
+        sideString:  harmCondition.trim(),
+        section:     RollModSection.roll,
+        posNeg:      "negative",
         base_status: RollModStatus.ToggledOn,
-        modType: RollModType.harm,
-        value: 0,
-        effectKeys: ["Cost-Stress2"],
-        tooltip: [
+        modType:     RollModType.harm,
+        value:       0,
+        effectKeys:  ["Cost-Stress2"],
+        tooltip:     [
           "<h1 class='sur-title'>Broken (Harm)</h1>",
           `<h1 class='red-bright'>${harmCondition.trim()}</h1>`,
           "<p>If your injuries apply to the situation at hand, you must <strong>Push</strong> to act.</p>"
@@ -512,9 +512,9 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
       BladesDirector.getInstance().pushNotice_SocketCall(
         "ALL",
         {
-          title: `${this.name} Suffers <u><strong>FATAL</strong></u> Harm: ${name}`,
-          body: `${this.name}, will you continue as a Ghost, or create a new character?`,
-          type: BladesNoticeType.push,
+          title:      `${this.name} Suffers <u><strong>FATAL</strong></u> Harm: ${name}`,
+          body:       `${this.name}, will you continue as a Ghost, or create a new character?`,
+          type:       BladesNoticeType.push,
           cssClasses: "harm-alert fatal-harm-alert"
         }
       );
@@ -537,8 +537,8 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
         BladesDirector.getInstance().pushNotice_SocketCall(
           "ALL",
           {
-            title: `${this.name} Suffers ${U.tCase(thisHarmLevel)} Harm: ${name}`,
-            type: BladesNoticeType.push,
+            title:      `${this.name} Suffers ${U.tCase(thisHarmLevel)} Harm: ${name}`,
+            type:       BladesNoticeType.push,
             cssClasses: "harm-alert"
           });
         await this.update({[`system.harm.${thisHarmLevel}.${thisHarmKey}`]: name});
@@ -549,9 +549,9 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
     BladesDirector.getInstance().pushNotice_SocketCall(
       "ALL",
       {
-        title: `${this.name} Suffers a Catastrophic, Permanent Injury!`,
-        body: `${this.name}, you're out of the action - either left for dead, or otherwise dropped from the action. You can choose to return at the beginning of the next Phase with a permanent injury, or die.`,
-        type: BladesNoticeType.push,
+        title:      `${this.name} Suffers a Catastrophic, Permanent Injury!`,
+        body:       `${this.name}, you're out of the action - either left for dead, or otherwise dropped from the action. You can choose to return at the beginning of the next Phase with a permanent injury, or die.`,
+        type:       BladesNoticeType.push,
         cssClasses: "harm-alert fatal-harm-alert"
       }
     );
@@ -584,9 +584,9 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
 
     if (newStress === this.stressMax) {
       BladesDirector.getInstance().pushNotice_SocketCall("ALL", {
-        title: `${this.name} breaks under the stress!`,
-        body: `${this.name}: Select a Trauma Condition on your sheet. You are taken out of action and will no longer participate in this score. Narrate what happens.`,
-        type: BladesNoticeType.push,
+        title:      `${this.name} breaks under the stress!`,
+        body:       `${this.name}: Select a Trauma Condition on your sheet. You are taken out of action and will no longer participate in this score. Narrate what happens.`,
+        type:       BladesNoticeType.push,
         cssClasses: "stress-alert"
       });
       await this.update({"system.stress.value": 0});
@@ -599,9 +599,9 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   async indulgeStress(deltaStress: number) {
     if (deltaStress > this.stress) {
       BladesDirector.getInstance().pushNotice_SocketCall("ALL", {
-        title: `${this.name} Overindulges!`,
-        body: `${this.name}: Select an option from the list below, and narrate how overindulging your vice led to this result: <ul><li><strong>Attract Trouble:</strong> Roll for an <strong>Entanglement</strong>.</li><li><strong>Brag About Your Exploits:</strong> +2 Heat</li><li><strong>Go AWOL</strong> Vanish for a few weeks. <em>(You will play a different character until the next Downtime Phase, at which point you will return with all Harm healed.)</em></li><li><strong>Tapped:</strong> Your current Vice Purveyor cuts you off. <em>(Until you find a new source for your vice, you will be unable to Indulge Vice during Downtime.)</em></li></ul>`,
-        type: BladesNoticeType.push,
+        title:      `${this.name} Overindulges!`,
+        body:       `${this.name}: Select an option from the list below, and narrate how overindulging your vice led to this result: <ul><li><strong>Attract Trouble:</strong> Roll for an <strong>Entanglement</strong>.</li><li><strong>Brag About Your Exploits:</strong> +2 Heat</li><li><strong>Go AWOL</strong> Vanish for a few weeks. <em>(You will play a different character until the next Downtime Phase, at which point you will return with all Harm healed.)</em></li><li><strong>Tapped:</strong> Your current Vice Purveyor cuts you off. <em>(Until you find a new source for your vice, you will be unable to Indulge Vice during Downtime.)</em></li></ul>`,
+        type:       BladesNoticeType.push,
         cssClasses: "stress-alert"
       });
     }

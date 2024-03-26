@@ -20,7 +20,7 @@ class BladesTipGenerator {
   static get Tips() {
     return {
       [BladesTipContext.DiceRoll]: [],
-      [BladesTipContext.Combat]: [
+      [BladesTipContext.Combat]:   [
         "Every combat encounter should advance the main plot, or else it's filler.",
         "Inject dialogue into combat encounters, especially from important adversaries.",
         "Combat encounters should be a challenge, but not a slog. Don't be afraid to end them early.",
@@ -29,7 +29,7 @@ class BladesTipGenerator {
         "Don't trigger combats automatically: Use alternate objectives to incite the players to fight, giving them agency.",
         "Add another layer by drawing focus to collateral effects of the combat: a fire, a hostage, a collapsing building, innocents in danger"
       ],
-      [BladesTipContext.General]: [
+      [BladesTipContext.General] : [
         "Rolling the dice always means SOMETHING happens.",
         "Jump straight to the action; don't waste time on establishing scenes or filler.",
         "Invoke elements of characters' backstories or beliefs to make any scene more personal."
@@ -51,18 +51,18 @@ class BladesScoreSheet extends BladesItemSheet {
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["eunos-blades", "sheet", "item", "score-sheet"],
-      template: "systems/eunos-blades/templates/items/score-sheet.hbs",
-      width: 900,
+      classes:        ["eunos-blades", "sheet", "item", "score-sheet"],
+      template:       "systems/eunos-blades/templates/items/score-sheet.hbs",
+      width:          900,
       submitOnChange: false,
-      height: 970
+      height:         970
     });
   }
 
   async generateRandomizerData(category?: RandomCat) {
     // Generate full set of random data.
     const randomData: Record<RandomCat, Record<string, Record<string, unknown>>> = {
-      Bargains: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Bargains
+      Bargains : Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Bargains
         .filter((bData) => !Object.values(this.document.system.randomizers.Bargains)
           .some((_bData) => _bData.name === bData.name || _bData.effect === bData.effect)), 3, true, (e, a) => a
         .filter((_e) => e.category === _e.category).length === 0))
@@ -71,7 +71,7 @@ class BladesScoreSheet extends BladesItemSheet {
           Object.assign(v, {notes: ""});
           return [k, v];
         })),
-      Obstacles: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Obstacles
+      Obstacles : Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Obstacles
         .filter((bData) => !Object.values(this.document.system.randomizers.Obstacles)
           .some((_bData) => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
         .filter((_e) => e.category === _e.category).length === 0))
@@ -80,7 +80,7 @@ class BladesScoreSheet extends BladesItemSheet {
           Object.assign(v, {notes: ""});
           return [k, v];
         })),
-      NPCs: Object.fromEntries(Object.entries(U.sample(
+      NPCs : Object.fromEntries(Object.entries(U.sample(
         Randomizers.GM.NPCs
           .filter((bData) => !Object.values(this.document.system.randomizers.NPCs)
             .some((_bData) => _bData.name === bData.name
@@ -97,7 +97,7 @@ class BladesScoreSheet extends BladesItemSheet {
           Object.assign(v, {notes: ""});
           return [k, v];
         })),
-      Scores: Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Scores
+      Scores : Object.fromEntries(Object.entries(U.sample(Randomizers.GM.Scores
         .filter((bData) => !Object.values(this.document.system.randomizers.Scores)
           .some((_bData) => _bData.name === bData.name || _bData.desc === bData.desc)), 3, true, (e, a) => a
         .filter((_e) => e.category === _e.category).length === 0))
@@ -120,10 +120,10 @@ class BladesScoreSheet extends BladesItemSheet {
 
     // Combine locked data stored in system with randomly-generated data
     const finalRandomData: Record<RandomCat, Record<string, Record<string, unknown>>> = {
-      Bargains: {},
+      Bargains:  {},
       Obstacles: {},
-      NPCs: {},
-      Scores: {}
+      NPCs:      {},
+      Scores:    {}
     };
 
     // Iterate through all randomizer categories. If system entry isLocked, use that, or use newly-generated data
@@ -153,7 +153,7 @@ class BladesScoreSheet extends BladesItemSheet {
         return Object.assign(
           pc,
           {
-            actionData: Object.fromEntries(Object.entries(pc.system.attributes)
+            actionData : Object.fromEntries(Object.entries(pc.system.attributes)
               .map(([attrName, attrData]) => {
                 return [
                   attrName,
@@ -213,7 +213,7 @@ class BladesScoreSheet extends BladesItemSheet {
     }
     const images = {...this.document.system.images};
     this.document.update({"system.-=images": null}).then(() => this.document.update({
-      "system.images": Object.fromEntries(Object.entries(Object.values(images)
+      "system.images" : Object.fromEntries(Object.entries(Object.values(images)
         .filter((_, i) => U.pInt(imageNum) !== i)))
     }));
   }
@@ -266,24 +266,24 @@ class BladesScoreSheet extends BladesItemSheet {
     super.activateListeners(html);
 
     html.find("[data-action='select-image']").on({
-      click: this._selectImage.bind(this),
+      click:       this._selectImage.bind(this),
       contextmenu: this._deselectOrDeleteImage.bind(this)
     });
     html.find("[data-action='add-image']").on({
-      click: this._addImage.bind(this)
+      click : this._addImage.bind(this)
     });
     html.find(".roll-opposition-name").on({
-      dblclick: this._selectRollOpposition.bind(this)
+      dblclick : this._selectRollOpposition.bind(this)
     });
     html.find(".toggle-lock").on({
-      click: this._toggleRandomizerLock.bind(this)
+      click : this._toggleRandomizerLock.bind(this)
     });
     html.find("[data-action='randomize'").on({
-      click: this._triggerRandomize.bind(this)
+      click : this._triggerRandomize.bind(this)
     });
 
     html.find("textarea.pc-summary-notes-body").on({
-      change: this._updateGMNotesOnPC.bind(this)
+      change : this._updateGMNotesOnPC.bind(this)
     });
   }
 

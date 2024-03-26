@@ -42,29 +42,29 @@ class BladesActorSheet extends ActorSheet {
     // Prepare additional data specific to this actor's sheet.
     const sheetData: DeepPartial<BladesActorSheetData> = {
       // Basic actor data.
-      cssClass: this.actor.type,
-      editable: this.options.editable,
-      isGM: game.eunoblades.Tracker?.system.is_spoofing_player ? false : game.user.isGM,
-      actor: this.actor,
-      system: this.actor.system,
-      gamePhase: game.eunoblades.Tracker?.phase || BladesPhase.Freeplay,
-      tierTotal: this.actor.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(this.actor.getFactorTotal(Factor.tier)) : "0",
-      rollData: this.actor.getRollData(),
+      cssClass:      this.actor.type,
+      editable:      this.options.editable,
+      isGM:          game.eunoblades.Tracker?.system.is_spoofing_player ? false : game.user.isGM,
+      actor:         this.actor,
+      system:        this.actor.system,
+      gamePhase:     game.eunoblades.Tracker?.phase || BladesPhase.Freeplay,
+      tierTotal:     this.actor.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(this.actor.getFactorTotal(Factor.tier)) : "0",
+      rollData:      this.actor.getRollData(),
       activeEffects: Array.from(this.actor.effects) as BladesActiveEffect[],
       hasFullVision: game.user.isGM
         || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
-      hasLimitedVision: game.user.isGM
+      hasLimitedVision : game.user.isGM
         || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED),
-      hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
+      hasControl : game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
     };
 
     if (BladesPC.IsType(this.actor) || BladesCrew.IsType(this.actor)) {
       // Prepare items for display on the actor sheet.
       sheetData.preparedItems = {
         abilities: [],
-        loadout: [],
-        cohorts: {
-          gang: this.actor.cohorts
+        loadout:   [],
+        cohorts:   {
+          gang : this.actor.cohorts
             .filter((item) => item.type === BladesItemType.cohort_gang)
             .map((item) => {
               // Prepare gang cohort items.
@@ -101,21 +101,21 @@ class BladesActorSheet extends ActorSheet {
               Object.assign(
                 item.system,
                 {
-                  tierTotal: item.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(item.getFactorTotal(Factor.tier)) : "0",
+                  tierTotal:      item.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(item.getFactorTotal(Factor.tier)) : "0",
                   cohortRollData: [
                     {mode: "untrained", label: "Untrained", color: "transparent", tooltip: "<p>Roll Untrained</p>"}
                   ],
-                  edgeData: Object.fromEntries(Object.values(item.system.edges ?? [])
+                  edgeData : Object.fromEntries(Object.values(item.system.edges ?? [])
                     .filter((edge) => /[A-Za-z]/.test(edge))
                     .map((edge) => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
-                  flawData: Object.fromEntries(Object.values(item.system.flaws ?? [])
+                  flawData : Object.fromEntries(Object.values(item.system.flaws ?? [])
                     .filter((flaw) => /[A-Za-z]/.test(flaw))
                     .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
                 }
               );
               return item;
             }),
-          expert: this.actor.activeSubItems
+          expert : this.actor.activeSubItems
             .filter((item): item is BladesItemOfType<BladesItemType.cohort_expert> =>
               item.type === BladesItemType.cohort_expert)
             .map((item) => {
@@ -123,14 +123,14 @@ class BladesActorSheet extends ActorSheet {
               Object.assign(
                 item.system,
                 {
-                  tierTotal: item.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(item.getFactorTotal(Factor.tier)) : "0",
+                  tierTotal:      item.getFactorTotal(Factor.tier) > 0 ? U.romanizeNum(item.getFactorTotal(Factor.tier)) : "0",
                   cohortRollData: [
                     {mode: "untrained", label: "Untrained", tooltip: "<h2>Roll Untrained</h2>"}
                   ],
-                  edgeData: Object.fromEntries(Object.values(item.system.edges ?? [])
+                  edgeData : Object.fromEntries(Object.values(item.system.edges ?? [])
                     .filter((edge) => /[A-Za-z]/.test(edge))
                     .map((edge) => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
-                  flawData: Object.fromEntries(Object.values(item.system.flaws ?? [])
+                  flawData : Object.fromEntries(Object.values(item.system.flaws ?? [])
                     .filter((flaw) => /[A-Za-z]/.test(flaw))
                     .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
                 }
@@ -138,20 +138,20 @@ class BladesActorSheet extends ActorSheet {
               return item;
             })
         },
-        projects: []
+        projects : []
       };
     }
 
     // Prepare additional data for PC and Crew actors.
     if (BladesActor.IsType(this.actor, BladesActorType.pc) || BladesActor.IsType(this.actor, BladesActorType.crew)) {
       sheetData.playbookData = {
-        dotline: {
-          data: this.actor.system.experience.playbook,
-          dotlineClass: "xp-playbook",
-          target: "system.experience.playbook.value",
-          svgKey: "teeth.tall",
-          svgFull: "full|frame",
-          svgEmpty: "full|half|frame",
+        dotline : {
+          data:          this.actor.system.experience.playbook,
+          dotlineClass:  "xp-playbook",
+          target:        "system.experience.playbook.value",
+          svgKey:        "teeth.tall",
+          svgFull:       "full|frame",
+          svgEmpty:      "full|half|frame",
           advanceButton: "advance-playbook"
         }
       };
@@ -165,11 +165,11 @@ class BladesActorSheet extends ActorSheet {
       }
 
       sheetData.coinsData = {
-        dotline: {
-          data: this.actor.system.coins,
-          target: "system.coins.value",
+        dotline : {
+          data:      this.actor.system.coins,
+          target:    "system.coins.value",
           iconEmpty: "coin-full.svg",
-          iconFull: "coin-full.svg"
+          iconFull:  "coin-full.svg"
         }
       };
     }
@@ -329,8 +329,8 @@ class BladesActorSheet extends ActorSheet {
     const elem$ = $(event.currentTarget).closest(".comp");
     const compData: BladesCompData = {
       elem$,
-      docID: elem$.data("compId"),
-      docCat: elem$.data("compCat"),
+      docID:   elem$.data("compId"),
+      docCat:  elem$.data("compCat"),
       docType: elem$.data("compType"),
       docTags: (elem$.data("compTags") ?? "").split(/\s+/g)
     };
@@ -339,13 +339,13 @@ class BladesActorSheet extends ActorSheet {
     if (compData.docID && compData.docType) {
       compData.doc = {
         Actor: this.actor.getSubActor(compData.docID),
-        Item: this.actor.getSubItem(compData.docID)
+        Item:  this.actor.getSubItem(compData.docID)
       }[compData.docType];
     }
     if (compData.docCat && compData.docType && (BladesPC.IsType(this.actor) || BladesCrew.IsType(this.actor))) {
       compData.dialogDocs = {
         Actor: this.actor.getDialogActors(compData.docCat),
-        Item: this.actor.getDialogItems(compData.docCat)
+        Item:  this.actor.getDialogItems(compData.docCat)
       }[compData.docType];
     }
 
@@ -367,11 +367,11 @@ class BladesActorSheet extends ActorSheet {
     if (addType && addType in BladesItemType) {
       await this.actor.createEmbeddedDocuments("Item", [
         {
-          name: {
-            [BladesItemType.cohort_gang]: "A Gang",
+          name : {
+            [BladesItemType.cohort_gang]:   "A Gang",
             [BladesItemType.cohort_expert]: "An Expert"
           }[addType] ?? randomID(),
-          type: addType
+          type : addType
         }
       ]);
       return;
@@ -417,7 +417,7 @@ class BladesActorSheet extends ActorSheet {
     event.preventDefault();
     const target = $(event.currentTarget).data("target");
     await this.actor.update({
-      [target]: !getProperty(this.actor, target)
+      [target] : !getProperty(this.actor, target)
     });
   }
 
@@ -451,7 +451,7 @@ class BladesActorSheet extends ActorSheet {
     const traitName = $(event.currentTarget).data("rollTrait");
     const rollType = $(event.currentTarget).data("rollType");
     const rollData: BladesRoll.Config = {
-      target: this.actor,
+      target:        this.actor,
       targetFlagKey: "rollCollab" as TargetFlagKey
     };
     if (U.lCase(traitName) in {...ActionTrait, ...AttributeTrait, ...Factor}) {
@@ -539,8 +539,8 @@ class BladesActorSheet extends ActorSheet {
     }
 
     const config: BladesRoll.Config = {
-      target: this.actor,
-      targetFlagKey: "rollCollab" as TargetFlagKey,
+      target:             this.actor,
+      targetFlagKey:      "rollCollab" as TargetFlagKey,
       rollDowntimeAction: downtimeAction
     };
     // Set necessary fields on roll construction config object, depending on downtime action
@@ -586,7 +586,7 @@ class BladesActorSheet extends ActorSheet {
     // Clear any open submenus, and add one to downtime actions used.
     await this.actor.update({
       "system.downtime_actions_open_submenu": "",
-      "system.downtime_actions.value": (this.actor.system.downtime_actions?.value ?? 0) + 1
+      "system.downtime_actions.value":        (this.actor.system.downtime_actions?.value ?? 0) + 1
     });
 
     if ("rollType" in config) {
@@ -603,16 +603,16 @@ class BladesActorSheet extends ActorSheet {
 
     if (elem$.data("isFortuneRoll")) {
       BladesFortuneRoll.New({
-        target: this.actor,
+        target:        this.actor,
         targetFlagKey: "rollCollab" as TargetFlagKey,
-        rollType: RollType.Fortune
+        rollType:      RollType.Fortune
       });
     } else {
       BladesActionRoll.New({
-        target: this.actor,
+        target:        this.actor,
         targetFlagKey: "rollCollab" as TargetFlagKey,
-        rollType: RollType.Action,
-        rollTrait: ""
+        rollType:      RollType.Action,
+        rollTrait:     ""
       });
     }
   }

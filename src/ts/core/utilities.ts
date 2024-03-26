@@ -109,22 +109,22 @@ wheelhouse|whip|whistle|whitecap|whitefish|whitewall|whitewash|widespread|wilder
 word|work|worm|wound|wren|wrench|wrist|writer|writing|yak|yam|yard|yarn|year|yoke|zebra|zephyr|zinc|zipper|zoo
 `.split("|");
 const _numberWords = {
-  ones: [
+  ones : [
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
     "twenty"
   ],
-  tens: ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"],
-  tiers: ["", "thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion"],
+  tens:        ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"],
+  tiers:       ["", "thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion"],
   bigPrefixes: ["", "un", "duo", "tre", "quattuor", "quin", "sex", "octo", "novem"],
   bigSuffixes: ["", "decillion", "vigintillion", "trigintillion", "quadragintillion", "quinquagintillion", "sexagintillion", "septuagintillion", "octogintillion", "nonagintillion", "centillion"]
 } as const;
 const _ordinals = {
-  zero: "zeroeth", one: "first", two: "second", three: "third", four: "fourth", five: "fifth", eight: "eighth", nine: "ninth", twelve: "twelfth",
-  twenty: "twentieth", thirty: "thirtieth", forty: "fortieth", fifty: "fiftieth", sixty: "sixtieth", seventy: "seventieth", eighty: "eightieth", ninety: "ninetieth"
+  zero:    "zeroeth", one:     "first", two:     "second", three:   "third", four:    "fourth", five:    "fifth", eight:   "eighth", nine:    "ninth", twelve:  "twelfth",
+  twenty:  "twentieth", thirty:  "thirtieth", forty:   "fortieth", fifty:   "fiftieth", sixty:   "sixtieth", seventy: "seventieth", eighty:  "eightieth", ninety:  "ninetieth"
 } as const;
 const _romanNumerals = {
-  grouped: [
+  grouped : [
     ["", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ"],
     ["", "Ⅹ", "ⅩⅩ", "ⅩⅩⅩ", "ⅩⅬ", "Ⅼ", "ⅬⅩ", "ⅬⅩⅩ", "ⅬⅩⅩⅩ", "ⅩⅭ"],
     ["", "Ⅽ", "ⅭⅭ", "ⅭⅭⅭ", "ⅭⅮ", "Ⅾ", "ⅮⅭ", "ⅮⅭⅭ", "ⅮⅭⅭⅭ", "ⅭⅯ"],
@@ -132,7 +132,7 @@ const _romanNumerals = {
     ["", "ↂ", "ↂↂ", "ↂↂↂ", "ↂↇ", "ↇ", "ↇↂ", "ↇↂↂ", "ↇↂↂↂ", "ↇↈ"],
     ["", "ↈ", "ↈↈ", "ↈↈↈ"]
   ],
-  ungrouped: [
+  ungrouped : [
     ["", "Ⅰ", "ⅠⅠ", "ⅠⅠⅠ", "ⅠⅤ", "Ⅴ", "ⅤⅠ", "ⅤⅠⅠ", "ⅤⅠⅠⅠ", "ⅠⅩ"],
     ["", "Ⅹ", "ⅩⅩ", "ⅩⅩⅩ", "ⅩⅬ", "Ⅼ", "ⅬⅩ", "ⅬⅩⅩ", "ⅬⅩⅩⅩ", "ⅩⅭ"],
     ["", "Ⅽ", "ⅭⅭ", "ⅭⅭⅭ", "ⅭⅮ", "Ⅾ", "ⅮⅭ", "ⅮⅭⅭ", "ⅮⅭⅭⅭ", "ⅭⅯ"],
@@ -341,7 +341,7 @@ const getKey = <T>(key: string | number | symbol, obj: Record<string | number | 
 };
 
 const FILTERS = {
-  IsInstance: ((classRef: unknown) => ((item: unknown) => typeof classRef === "function" && item instanceof classRef))
+  IsInstance : ((classRef: unknown) => ((item: unknown) => typeof classRef === "function" && item instanceof classRef))
 };
 // #endregion ▄▄▄▄▄ TYPES ▄▄▄▄▄
 
@@ -1897,7 +1897,7 @@ function waitFor(waitForTarget: unknown): Promise<void> {
 // #endregion ▄▄▄▄▄ ASYNC ▄▄▄▄▄
 
 const EventHandlers = {
-  onSelectChange: async (inst: BladesSheet, event: SelectChangeEvent) => {
+  onSelectChange : async (inst: BladesSheet, event: SelectChangeEvent) => {
     const elem = event.currentTarget;
     const {action, dtype, target, flagTarget} = elem.dataset;
 
@@ -2032,12 +2032,12 @@ function displayImageSelector(
   position: {top: number | null, left: number | null} = {top: 200, left: 200}
 ) {
   const fp = new FilePicker({
-    type: "image",
+    type:         "image",
     activeSource: "public",
-    displayMode: "tiles",
+    displayMode:  "tiles",
     callback,
-    top: position.top ?? 200 + 40,
-    left: position.left ?? 200 + 10
+    top:          position.top ?? 200 + 40,
+    left:         position.left ?? 200 + 10
   });
   return fp.browse(pathRoot);
 }

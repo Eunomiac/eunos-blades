@@ -63,7 +63,7 @@ declare global {
     export interface Location {}
     export interface Score {
       playerCharacters: Array<BladesActorOfType<BladesActorType.pc>>,
-      randomizerData: Record<RandomCat, Record<string, Record<string, any>>>,
+      randomizerData: Record<RandomCat, Record<string, Record<string, unknown>>>,
       clocks: Record<IDString, BladesClock>,
       clockKeys: Record<IDString, BladesClockKey>
     }

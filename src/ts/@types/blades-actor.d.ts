@@ -1,4 +1,4 @@
-import { BladesActorType, Tag, District, AttributeTrait, ActionTrait, AdvancementPoint } from "../core/constants";
+import {BladesActorType, Tag, District, AttributeTrait, ActionTrait, AdvancementPoint} from "../core/constants";
 import BladesActor from "../BladesActor";
 import BladesPC from "../documents/actors/BladesPC";
 import BladesNPC from "../documents/actors/BladesNPC";
@@ -45,7 +45,7 @@ declare global {
         playbook: ValueMax,
         clues: string[]
       },
-      advancement_points: Record<string,number>,
+      advancement_points: Record<string, number>,
       downtime_actions: ValueMax,
       downtime_action_bonus: number,
       downtime_action_selected_cost: "Rep"|"Coin",
@@ -245,7 +245,7 @@ declare global {
     export interface CanSubActor {
       parentActor?: BladesActor;
 
-      async clearParentActor(): Promise<void>;
+      clearParentActor(): Promise<void>;
     }
 
     export interface Advancement {
@@ -308,7 +308,6 @@ declare global {
 
     export interface NPC extends BladesActorComponent.Default,
                                  BladesActorComponent.CanSubActor { }
-
 
 
     export interface Faction extends BladesActorComponent.Default,

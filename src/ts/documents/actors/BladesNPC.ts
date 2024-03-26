@@ -29,26 +29,26 @@ class BladesNPC extends BladesActor implements BladesActorSubClass.NPC,
     const factorData = super.rollFactors;
 
     factorData[Factor.scale] = {
-      name: Factor.scale,
-      display: "Scale",
-      value: this.getFactorTotal(Factor.scale),
-      max: this.getFactorTotal(Factor.scale),
-      baseVal: this.getFactorTotal(Factor.scale),
-      cssClasses: "factor-grey",
-      isActive: false,
-      isPrimary: false,
-      isDominant: false,
+      name:         Factor.scale,
+      display:      "Scale",
+      value:        this.getFactorTotal(Factor.scale),
+      max:          this.getFactorTotal(Factor.scale),
+      baseVal:      this.getFactorTotal(Factor.scale),
+      cssClasses:   "factor-grey",
+      isActive:     false,
+      isPrimary:    false,
+      isDominant:   false,
       highFavorsPC: true
     };
     factorData[Factor.magnitude] = {
-      name: Factor.magnitude,
-      display: "Magnitude",
-      value: this.getFactorTotal(Factor.magnitude),
-      max: this.getFactorTotal(Factor.magnitude),
-      baseVal: this.getFactorTotal(Factor.magnitude),
-      isActive: false,
-      isPrimary: false,
-      isDominant: false,
+      name:         Factor.magnitude,
+      display:      "Magnitude",
+      value:        this.getFactorTotal(Factor.magnitude),
+      max:          this.getFactorTotal(Factor.magnitude),
+      baseVal:      this.getFactorTotal(Factor.magnitude),
+      isActive:     false,
+      isPrimary:    false,
+      isDominant:   false,
       highFavorsPC: true
     };
 

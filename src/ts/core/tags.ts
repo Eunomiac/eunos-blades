@@ -17,12 +17,12 @@ const _onTagifyChange = (event: Event, doc: BladesDoc, targetKey: keyof BladesDo
     const tags: BladesTag[] = JSON.parse(tagString).map(({value}: { value: BladesTag }) => value);
     doc.update({[targetKey]: tags});
   } else {
-    doc.update({[targetKey]: []});
+    doc.update({[targetKey]: [] });
   }
 };
 
 const Tags = {
-  InitListeners: (html: JQuery<HTMLElement>, doc: BladesDoc) => {
+  InitListeners : (html: JQuery<HTMLElement>, doc: BladesDoc) => {
 
     /**
      * Applies tags and Tagify functionality to a specified HTML element.
@@ -34,18 +34,18 @@ const Tags = {
       // Create tagify instance; populate dropdown list with tags
       const tagify = new Tagify<{value: string, "data-group": string}>(elem, {
         enforceWhitelist: true,
-        editTags: false,
-        whitelist: Object.entries(tags)
+        editTags:         false,
+        whitelist:        Object.entries(tags)
           .map(([dataGroup, tagList]) => tagList
             .map((tag: BladesTag) => ({
-              value: (new Handlebars.SafeString(tag)).toString(),
+              "value":        (new Handlebars.SafeString(tag)).toString(),
               "data-group": dataGroup
             })))
           .flat(),
-        dropdown: {
-          enabled: 0,
-          maxItems: 10000,
-          placeAbove: false,
+        dropdown : {
+          enabled:      0,
+          maxItems:     10000,
+          placeAbove:   false,
           appendTarget: html[0]
         }
       }) as TagifyPlus<{value: string, "data-group": string}>;
@@ -107,7 +107,7 @@ const Tags = {
         curTags
           .filter(findDataGroup)
           .map((tag: BladesTag) => ({
-            value: (new Handlebars.SafeString(tag)).toString(),
+            "value":        (new Handlebars.SafeString(tag)).toString(),
             "data-group": findDataGroup(tag) as string
           })),
         true,
@@ -121,24 +121,24 @@ const Tags = {
 
     const systemTags = {
       "System Tags": Object.values(Tag.System),
-      "Gear Tags": [
+      "Gear Tags":   [
         ...Object.values(Tag.Gear),
         ...Object.values(Tag.GearCategory)
       ],
-      "Actor Tags": [
+      "Actor Tags" : [
         ...Object.values(Tag.PC),
         ...Object.values(Tag.NPC)
       ],
-      Vices: Object.values(Vice),
-      Playbooks: Object.values(Playbook),
-      Inventions: Object.values(Tag.Invention),
+      "Vices":        Object.values(Vice),
+      "Playbooks":    Object.values(Playbook),
+      "Inventions":   Object.values(Tag.Invention),
       "Gang Types": Object.values(Tag.GangType)
     };
     const districtTags = {
-      "City Districts": Object.values(MainDistrict),
+      "City Districts":  Object.values(MainDistrict),
       "Other Districts": Object.values(OtherDistrict)
     };
-    const factionTags = {Factions: game.actors
+    const factionTags = {Factions : game.actors
       .filter((actor): actor is BladesActorOfType<BladesActorType.faction> & {name: string} =>
         actor.type === BladesActorType.faction && actor.name !== null)
       .map((faction) => faction.name)};

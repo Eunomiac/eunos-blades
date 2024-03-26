@@ -1,11 +1,11 @@
-import { BladesItemType, ClockColor, District, BladesPhase, Randomizers } from "../core/constants";
+import {BladesItemType, ClockColor, District, BladesPhase, Randomizers} from "../core/constants";
 import BladesItem from "../BladesItem";
 import BladesPC from "../documents/actors/BladesPC";
 import BladesCrew from "../documents/actors/BladesCrew";
 import BladesNPC from "../documents/actors/BladesNPC";
 import BladesFaction from "../documents/actors/BladesFaction";
-import BladesClockKeeper from '../documents/items/BladesClockKeeper.js';
-import BladesGMTracker from '../documents/items/BladesGMTracker.js';
+import BladesClockKeeper from "../documents/items/BladesClockKeeper.js";
+import BladesGMTracker from "../documents/items/BladesGMTracker.js";
 import BladesLocation from "../documents/items/BladesLocation";
 import BladesScore from "../documents/items/BladesScore";
 import BladesProject from "../documents/items/BladesProject";
@@ -71,8 +71,8 @@ declare global {
 
     export interface playbook {
       concept: string,
-      experience_clues: Record<string,string>,
-      gather_info_questions: Record<string,string>
+      experience_clues: Record<string, string>,
+      gather_info_questions: Record<string, string>
     }
 
     export interface answers { answers: Record<"a" | "b" | "c" | "d", string> }
@@ -203,7 +203,7 @@ declare global {
       oppositionSelected: string,
       isActive: boolean,
       randomizers: Record<RandomCat, Record<string, Record<string, any>>>,
-      pc_notes: Record<string,string>
+      pc_notes: Record<string, string>
     }
 
   }

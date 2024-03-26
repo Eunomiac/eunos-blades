@@ -1,4 +1,3 @@
-
 import BladesActor from "../../BladesActor";
 import BladesFaction from "../../documents/actors/BladesFaction";
 import BladesActorSheet from "./BladesActorSheet";
@@ -8,11 +7,11 @@ class BladesFactionSheet extends BladesActorSheet {
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["eunos-blades", "sheet", "actor", "faction"],
+      classes:  ["eunos-blades", "sheet", "actor", "faction"],
       template: "systems/eunos-blades/templates/faction-sheet.hbs",
-      width: 900,
-      height: "auto",
-      tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "overview"}]
+      width:    900,
+      height:   "auto",
+      tabs:     [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "overview"}]
     }) as ActorSheet.Options;
   }
 
@@ -21,19 +20,19 @@ class BladesFactionSheet extends BladesActorSheet {
     if (!BladesActor.IsType(this.actor, BladesActorType.faction)) { return context; }
 
     const sheetData: BladesActorDataOfType<BladesActorType.faction> = {
-      tierData: {
-        class: "comp-tier comp-vertical comp-teeth",
-        label: "Tier",
+      tierData : {
+        class:      "comp-tier comp-vertical comp-teeth",
+        label:      "Tier",
         labelClass: "filled-label full-width",
-        dotline: {
-          data: this.actor.system.tier,
-          target: "system.tier.value",
-          svgKey: "teeth.tall",
-          svgFull: "full|half|frame",
+        dotline:    {
+          data:     this.actor.system.tier,
+          target:   "system.tier.value",
+          svgKey:   "teeth.tall",
+          svgFull:  "full|half|frame",
           svgEmpty: "full|half|frame"
         }
       },
-      clockKeys: this.actor.clocks
+      clockKeys : this.actor.clocks
     };
 
     return {

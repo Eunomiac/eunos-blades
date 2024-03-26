@@ -1,4 +1,3 @@
-
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import "../scss/style.scss";
@@ -111,11 +110,11 @@ class GlobalGetter {
     const pc = game.actors.getName("Alistair") as BladesPC|undefined;
     if (!pc) {return; }
     const conf: BladesRoll.Config = {
-      target: pc,
-      targetFlagKey: "rollCollab" as TargetFlagKey,
-      rollType: RollType.Action,
-      rollTrait: ActionTrait.finesse,
-      rollUserID: game.users.find((user) => user.character?.name === "Alistair")?.id as IDString,
+      target:          pc,
+      targetFlagKey:   "rollCollab" as TargetFlagKey,
+      rollType:        RollType.Action,
+      rollTrait:       ActionTrait.finesse,
+      rollUserID:      game.users.find((user) => user.character?.name === "Alistair")?.id as IDString,
       rollPrimaryData: pc
     };
     BladesActionRoll.New(conf);
@@ -165,7 +164,7 @@ class GlobalGetter {
 /* DEVCODE*/Object.assign(
   globalThis,
   {
-    get: new GlobalGetter(),
+    get : new GlobalGetter(),
     // updateClaims,
     // updateContacts,
     // updateOps,
@@ -221,11 +220,11 @@ class GlobalGetter {
 Hooks.once("init", async () => {
   // Initialize Game object
   game.eunoblades = {
-    Rolls: new Collection<BladesRoll>(),
-    ClockKeys: new Collection<BladesClockKey>(),
+    Rolls:        new Collection<BladesRoll>(),
+    ClockKeys:    new Collection<BladesClockKey>(),
     Consequences: new Collection<BladesConsequence>(),
-    Director: BladesDirector.getInstance(),
-    Tooltips: new WeakMap<HTMLElement, gsap.core.Timeline>()
+    Director:     BladesDirector.getInstance(),
+    Tooltips:     new WeakMap<HTMLElement, gsap.core.Timeline>()
   } as EunoBlades.Game;
   eLog.display("Initializing Blades In the Dark System");
 
@@ -325,12 +324,12 @@ type Dice3DController = {
 Hooks.once("diceSoNiceReady", (dice3d: Dice3DController) => {
   dice3d.addSystem({id: "eunos-blades", name: "Euno's Blades"}, "preferred");
   dice3d.addDicePreset({
-    type: "d6",
-    labels: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/faces/${num}.webp`),
-    system: "eunos-blades",
-    bumpMaps: [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/bump-maps/${num}.webp`),
+    type:         "d6",
+    labels:       [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/faces/${num}.webp`),
+    system:       "eunos-blades",
+    bumpMaps:     [1, 2, 3, 4, 5, 6].map((num) => `systems/eunos-blades/assets/dice/bump-maps/${num}.webp`),
     emissiveMaps: [undefined, undefined, undefined, undefined, undefined, "systems/eunos-blades/assets/dice/emission-maps/6.webp"],
-    emissive: "#d89300"
+    emissive:     "#d89300"
   });
 });
 // #endregion ░░░░[Dice So Nice]░░░░

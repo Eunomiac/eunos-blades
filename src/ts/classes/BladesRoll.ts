@@ -88,13 +88,13 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     // Ensure all properties of Schema are provided
     if (!schemaData.name) {throw new Error("name is required for BladesRollMod.Schema");}
     return {
-      key: `${schemaData.name}-positive-roll`,
-      modType: RollModType.general,
-      section: RollModSection.roll,
-      posNeg: "positive",
+      key:         `${schemaData.name}-positive-roll`,
+      modType:     RollModType.general,
+      section:     RollModSection.roll,
+      posNeg:      "positive",
       base_status: RollModStatus.Hidden,
-      value: 1,
-      tooltip: "",
+      value:       1,
+      tooltip:     "",
       ...schemaData
     } as Schema;
   }
@@ -121,14 +121,14 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     const posNegVal = posNegString.replace(/^.*:/, "") as "positive" | "negative";
 
     return {
-      key: `${nameVal}-${posNegVal}-${catVal}`,
-      name: nameVal,
-      section: catVal,
-      posNeg: posNegVal,
+      key:         `${nameVal}-${posNegVal}-${catVal}`,
+      name:        nameVal,
+      section:     catVal,
+      posNeg:      posNegVal,
       base_status: RollModStatus.ToggledOff,
-      modType: RollModType.general,
-      tooltip: "",
-      value: 1,
+      modType:     RollModType.general,
+      tooltip:     "",
+      value:       1,
       ...Object.fromEntries(
         mStrings.map(getModParameterKeyVal)
       )
@@ -392,14 +392,14 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
         const [thisKey, thisParam] = key.split(/-/) ?? [];
         if (thisKey === "Negate") {
           const negateOperations: Record<key, () => boolean> = {
-            PushCost: () => this.rollInstance.isPushed(),
+            PushCost:       () => this.rollInstance.isPushed(),
             QualityPenalty: () => this.rollInstance.isTraitRelevant(Factor.quality)
               && (this.rollInstance.rollFactors.source[Factor.quality]?.value ?? 0)
               < (this.rollInstance.rollFactors.opposition[Factor.quality]?.value ?? 0),
-            ScalePenalty: () => this.rollInstance.isTraitRelevant(Factor.scale)
+            ScalePenalty : () => this.rollInstance.isTraitRelevant(Factor.scale)
               && (this.rollInstance.rollFactors.source[Factor.scale]?.value ?? 0)
               < (this.rollInstance.rollFactors.opposition[Factor.scale]?.value ?? 0),
-            TierPenalty: () => this.rollInstance.isTraitRelevant(Factor.tier)
+            TierPenalty : () => this.rollInstance.isTraitRelevant(Factor.tier)
               && (this.rollInstance.rollFactors.source[Factor.tier]?.value ?? 0)
               < (this.rollInstance.rollFactors.opposition[Factor.tier]?.value ?? 0)
           };
@@ -475,16 +475,16 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
 
       if (key === "Negate") {
         const negateOperations = {
-          PushCost: () => {
+          PushCost : () => {
             this.rollInstance.negatePushCost();
           },
-          QualityPenalty: () => {
+          QualityPenalty : () => {
             this.rollInstance.negateFactorPenalty(Factor.quality);
           },
-          ScalePenalty: () => {
+          ScalePenalty : () => {
             this.rollInstance.negateFactorPenalty(Factor.scale);
           },
-          TierPenalty: () => {
+          TierPenalty : () => {
             this.rollInstance.negateFactorPenalty(Factor.tier);
           }
         };
@@ -541,9 +541,9 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
       }
 
       return {
-        id: this.id,
+        id:         this.id,
         label,
-        costType: traitStr,
+        costType:   traitStr,
         costAmount: valStr ? U.pInt(valStr) : 1
       };
     });
@@ -718,12 +718,12 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
 
   static GetDataFromDoc(doc: BladesRoll.PrimaryDoc): BladesRoll.PrimaryData {
     return {
-      rollPrimaryID: doc.id,
-      rollPrimaryName: doc.name,
-      rollPrimaryType: doc.type as BladesRoll.PrimaryType,
-      rollPrimaryImg: doc.img,
+      rollPrimaryID:            doc.id,
+      rollPrimaryName:          doc.name,
+      rollPrimaryType:          doc.type as BladesRoll.PrimaryType,
+      rollPrimaryImg:           doc.img,
       rollPrimaryModsSchemaSet: doc.rollPrimaryModsSchemaSet,
-      rollFactors: doc.rollFactors
+      rollFactors:              doc.rollFactors
     };
   }
 
@@ -745,12 +745,12 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
     }
 
     return {
-      rollPrimaryID: rollPrimary.rollPrimaryID,
-      rollPrimaryName: rollPrimary.rollPrimaryName,
-      rollPrimaryType: rollPrimary.rollPrimaryType,
-      rollPrimaryImg: rollPrimary.rollPrimaryImg,
+      rollPrimaryID:            rollPrimary.rollPrimaryID,
+      rollPrimaryName:          rollPrimary.rollPrimaryName,
+      rollPrimaryType:          rollPrimary.rollPrimaryType,
+      rollPrimaryImg:           rollPrimary.rollPrimaryImg,
       rollPrimaryModsSchemaSet: rollPrimary.rollPrimaryModsSchemaSet,
-      rollFactors: rollPrimary.rollFactors
+      rollFactors:              rollPrimary.rollFactors
     };
   }
 
@@ -795,12 +795,12 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
 
   get data(): BladesRoll.PrimaryData {
     return {
-      rollPrimaryID: this.rollPrimaryID,
-      rollPrimaryName: this.rollPrimaryName,
-      rollPrimaryType: this.rollPrimaryType,
-      rollPrimaryImg: this.rollPrimaryImg,
+      rollPrimaryID:            this.rollPrimaryID,
+      rollPrimaryName:          this.rollPrimaryName,
+      rollPrimaryType:          this.rollPrimaryType,
+      rollPrimaryImg:           this.rollPrimaryImg,
       rollPrimaryModsSchemaSet: this.rollPrimaryModsSchemaSet,
-      rollFactors: this.rollFactors
+      rollFactors:              this.rollFactors
     };
   }
 
@@ -899,12 +899,12 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
     }
     if (primaryDoc && !BladesRollPrimary.IsValidData(primaryData)) {
       primaryData = {
-        rollPrimaryID: primaryDoc.rollPrimaryID,
-        rollPrimaryName: primaryDoc.rollPrimaryName,
-        rollPrimaryType: primaryDoc.rollPrimaryType,
-        rollPrimaryImg: primaryDoc.rollPrimaryImg,
+        rollPrimaryID:            primaryDoc.rollPrimaryID,
+        rollPrimaryName:          primaryDoc.rollPrimaryName,
+        rollPrimaryType:          primaryDoc.rollPrimaryType,
+        rollPrimaryImg:           primaryDoc.rollPrimaryImg,
         rollPrimaryModsSchemaSet: primaryDoc.rollPrimaryModsSchemaSet,
-        rollFactors: primaryDoc.rollFactors
+        rollFactors:              primaryDoc.rollFactors
       };
     }
     if (!BladesRollPrimary.IsValidData(primaryData) && !BladesRollPrimary.IsDoc(primaryDoc) && this.rollInstance) {
@@ -971,22 +971,22 @@ class BladesRollOpposition implements BladesRoll.OppositionData {
 
   static IsDoc(doc: unknown): doc is BladesRoll.OppositionDoc {
     return BladesActor.IsType(doc,
-      BladesActorType.npc,
-      BladesActorType.faction
+                              BladesActorType.npc,
+                              BladesActorType.faction
     ) || BladesItem.IsType(doc,
-      BladesItemType.cohort_expert,
-      BladesItemType.cohort_gang
+                           BladesItemType.cohort_expert,
+                           BladesItemType.cohort_gang
     );
   }
 
   static GetDataFromDoc(doc: BladesRoll.OppositionDoc): BladesRoll.OppositionData {
     return {
-      rollOppID: doc.id,
-      rollOppName: doc.name,
-      rollOppType: doc.type as BladesRoll.OppositionType,
-      rollOppImg: doc.img,
+      rollOppID:            doc.id,
+      rollOppName:          doc.name,
+      rollOppType:          doc.type as BladesRoll.OppositionType,
+      rollOppImg:           doc.img,
       rollOppModsSchemaSet: doc.rollOppModsSchemaSet,
-      rollFactors: doc.rollFactors
+      rollFactors:          doc.rollFactors
     };
   }
   // #endregion
@@ -1011,15 +1011,15 @@ class BladesRollOpposition implements BladesRoll.OppositionData {
 
   // #region Constructor ~
   constructor(rollInstance: BladesRoll,
-    {
-      rollOppID,
-      rollOppName,
-      rollOppSubName,
-      rollOppType,
-      rollOppImg,
-      rollOppModsSchemaSet,
-      rollFactors
-    }: Partial<BladesRoll.OppositionData> = {}) {
+              {
+                rollOppID,
+                rollOppName,
+                rollOppSubName,
+                rollOppType,
+                rollOppImg,
+                rollOppModsSchemaSet,
+                rollFactors
+              }: Partial<BladesRoll.OppositionData> = {}) {
 
     this.rollInstance = rollInstance;
 
@@ -1062,13 +1062,13 @@ class BladesRollOpposition implements BladesRoll.OppositionData {
 
   get data(): BladesRoll.OppositionData {
     return {
-      rollOppID: this.rollOppID,
-      rollOppName: this.rollOppName,
-      rollOppSubName: this.rollOppSubName,
-      rollOppType: this.rollOppType,
-      rollOppImg: this.rollOppImg,
+      rollOppID:            this.rollOppID,
+      rollOppName:          this.rollOppName,
+      rollOppSubName:       this.rollOppSubName,
+      rollOppType:          this.rollOppType,
+      rollOppImg:           this.rollOppImg,
       rollOppModsSchemaSet: this.rollOppModsSchemaSet,
-      rollFactors: this.rollFactors
+      rollFactors:          this.rollFactors
     };
   }
 
@@ -1208,13 +1208,13 @@ class BladesRollParticipant implements BladesRoll.ParticipantData {
 
   get data(): BladesRoll.ParticipantData {
     return {
-      rollParticipantID: this.rollParticipantID,
+      rollParticipantID:   this.rollParticipantID,
       rollParticipantName: this.rollParticipantName,
       rollParticipantType: this.rollParticipantType,
       rollParticipantIcon: this.rollParticipantIcon,
 
       rollParticipantModsSchemaSet: this.rollParticipantModsSchemaSet,
-      rollFactors: this.rollFactors
+      rollFactors:                  this.rollFactors
     };
   }
 
@@ -1249,7 +1249,7 @@ class BladesRollParticipant implements BladesRoll.ParticipantData {
 class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   static Debug = {
-    modWatch: false as RegExp | false,
+    modWatch : false as RegExp | false,
     watchRollMod(name: string | false) {
       if (typeof name === "string") {
         BladesRoll.Debug.modWatch = new RegExp(name, "g");
@@ -1340,16 +1340,16 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     schemaData.rollPhase ??= RollPhase.Collaboration;
     schemaData.GMBoosts = {
-      [Factor.tier]: 0,
-      [Factor.quality]: 0,
-      [Factor.scale]: 0,
+      [Factor.tier]:      0,
+      [Factor.quality]:   0,
+      [Factor.scale]:     0,
       [Factor.magnitude]: 0,
       ...schemaData.GMBoosts ?? {}
     };
     schemaData.GMOppBoosts = {
-      [Factor.tier]: 0,
-      [Factor.quality]: 0,
-      [Factor.scale]: 0,
+      [Factor.tier]:      0,
+      [Factor.quality]:   0,
+      [Factor.scale]:     0,
       [Factor.magnitude]: 0,
       ...schemaData.GMOppBoosts ?? {}
     };
@@ -1485,10 +1485,10 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     // Prepare user ID permissions object
     const userIDs: Record<RollPermissions, IDString[]> = {
-      [RollPermissions.GM]: [GMUserID],
-      [RollPermissions.Primary]: [],
+      [RollPermissions.GM]:          [GMUserID],
+      [RollPermissions.Primary]:     [],
       [RollPermissions.Participant]: [],
-      [RollPermissions.Observer]: []
+      [RollPermissions.Observer]:    []
     };
 
     // === TWO === DETERMINE PRIMARY USER(S)
@@ -1740,52 +1740,52 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     // If this is a downtime action roll, add default downtime action roll mods
     if (this.rollDowntimeAction) {
       compiledModSchemaSets.push({
-        key: "HelpFromFriend-positive-roll",
-        name: "Help From a Friend",
-        section: RollModSection.position,
+        key:         "HelpFromFriend-positive-roll",
+        name:        "Help From a Friend",
+        section:     RollModSection.position,
         base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1>Help From a Friend</h1><p>Add <strong>+1d</strong> if you enlist the help of a friend or contact.</p>"
+        posNeg:      "positive",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  [],
+        tooltip:     "<h1>Help From a Friend</h1><p>Add <strong>+1d</strong> if you enlist the help of a friend or contact.</p>"
       });
       if (this.rollDowntimeAction !== DowntimeAction.IndulgeVice) {
         compiledModSchemaSets.push({
-          key: "CanBuyResultLevel-positive-after",
-          name: "Buying Result Level",
-          section: RollModSection.after,
+          key:         "CanBuyResultLevel-positive-after",
+          name:        "Buying Result Level",
+          section:     RollModSection.after,
           base_status: RollModStatus.ForcedOn,
-          posNeg: "positive",
-          modType: RollModType.general,
-          value: 0,
-          effectKeys: [],
-          tooltip: "<h1>Buying Result Level</h1><p>After your roll, you can <strong>increase the result level</strong> by one for each <strong class=\"gold-bright\">Coin</strong> you spend.</p>"
+          posNeg:      "positive",
+          modType:     RollModType.general,
+          value:       0,
+          effectKeys:  [],
+          tooltip:     "<h1>Buying Result Level</h1><p>After your roll, you can <strong>increase the result level</strong> by one for each <strong class=\"gold-bright\">Coin</strong> you spend.</p>"
         });
       }
       if (this.rollDowntimeAction === DowntimeAction.AcquireAsset) {
         compiledModSchemaSets.push(
           {
-            key: "RepeatPurchase-positive-roll",
-            name: "Repeat Purchase",
-            section: RollModSection.roll,
+            key:         "RepeatPurchase-positive-roll",
+            name:        "Repeat Purchase",
+            section:     RollModSection.roll,
             base_status: RollModStatus.ToggledOff,
-            posNeg: "positive",
-            modType: RollModType.general,
-            value: 1,
-            effectKeys: [],
-            tooltip: "<h1>Repeat Purchase Bonus</h1><p>Add <strong>+1d</strong> if you have previously acquired this asset or service with a <strong>Acquire Asset</strong> Downtime activity.</p>"
+            posNeg:      "positive",
+            modType:     RollModType.general,
+            value:       1,
+            effectKeys:  [],
+            tooltip:     "<h1>Repeat Purchase Bonus</h1><p>Add <strong>+1d</strong> if you have previously acquired this asset or service with a <strong>Acquire Asset</strong> Downtime activity.</p>"
           },
           {
-            key: "RestrictedItem-negative-after",
-            name: "Restricted",
-            section: RollModSection.after,
+            key:         "RestrictedItem-negative-after",
+            name:        "Restricted",
+            section:     RollModSection.after,
             base_status: RollModStatus.Hidden,
-            posNeg: "negative",
-            modType: RollModType.general,
-            value: 0,
-            effectKeys: ["Cost-Heat2"],
-            tooltip: "<h1>Restricted</h1><p>Whether contraband goods or dangerous materials, this <strong>Acquire Asset</strong> Downtime activity will add <strong class=\"red-bright\">+2 Heat</strong> to your crew.</p>"
+            posNeg:      "negative",
+            modType:     RollModType.general,
+            value:       0,
+            effectKeys:  ["Cost-Heat2"],
+            tooltip:     "<h1>Restricted</h1><p>Whether contraband goods or dangerous materials, this <strong>Acquire Asset</strong> Downtime activity will add <strong class=\"red-bright\">+2 Heat</strong> to your crew.</p>"
           }
         );
       }
@@ -1797,7 +1797,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   get rollModsDataSet(): Record<IDString, BladesRollMod.Data> {
     const {linkData} = this;
     const modLinkConfig = {
-      targetID: linkData.targetID,
+      targetID:      linkData.targetID,
       isScopingById: true,
       ...("targetKey" in linkData
         ? {targetKey: `${this.targetKeyPrefix}.rollModsData` as TargetKey}
@@ -2078,8 +2078,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       .map((actor) => ({value: actor.id, display: actor.name}));
     return {
       Assist: nonPrimaryPCs,
-      Setup: nonPrimaryPCs,
-      Group: nonPrimaryPCs
+      Setup:  nonPrimaryPCs,
+      Group:  nonPrimaryPCs
     };
   }
 
@@ -2122,18 +2122,18 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     if (BladesActor.IsType(this.rollPrimaryDoc, BladesActorType.pc)) {
       if (isAction(this.rollTrait)) {
         return {
-          name: this.rollTrait,
-          value: this.rollTraitValOverride ?? this.rollPrimaryDoc.actions[this.rollTrait],
-          max: this.rollTraitValOverride ?? this.rollPrimaryDoc.actions[this.rollTrait],
+          name:      this.rollTrait,
+          value:     this.rollTraitValOverride ?? this.rollPrimaryDoc.actions[this.rollTrait],
+          max:       this.rollTraitValOverride ?? this.rollPrimaryDoc.actions[this.rollTrait],
           pcTooltip: this.rollPrimaryDoc.rollTraitPCTooltipActions,
           gmTooltip: C.ActionTooltipsGM[this.rollTrait]
         };
       }
       if (isAttribute(this.rollTrait)) {
         return {
-          name: this.rollTrait,
-          value: this.rollTraitValOverride ?? this.rollPrimaryDoc.attributes[this.rollTrait],
-          max: this.rollTraitValOverride ?? this.rollPrimaryDoc.attributes[this.rollTrait],
+          name:      this.rollTrait,
+          value:     this.rollTraitValOverride ?? this.rollPrimaryDoc.attributes[this.rollTrait],
+          max:       this.rollTraitValOverride ?? this.rollPrimaryDoc.attributes[this.rollTrait],
           pcTooltip: this.rollPrimaryDoc.rollTraitPCTooltipAttributes,
           gmTooltip: C.AttributeTooltips[this.rollTrait]
         };
@@ -2141,16 +2141,16 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     }
     if (U.isInt(this.rollTrait)) {
       return {
-        name: `+${this.rollTraitValOverride ?? this.rollTrait}`,
+        name:  `+${this.rollTraitValOverride ?? this.rollTrait}`,
         value: this.rollTraitValOverride ?? this.rollTrait,
-        max: this.rollTraitValOverride ?? this.rollTrait
+        max:   this.rollTraitValOverride ?? this.rollTrait
       };
     }
     if (isFactor(this.rollTrait)) {
       return {
-        name: U.tCase(this.rollTrait),
+        name:  U.tCase(this.rollTrait),
         value: this.rollTraitValOverride ?? this.rollPrimary.rollFactors[this.rollTrait]?.value ?? 0,
-        max: this.rollTraitValOverride ?? this.rollPrimary.rollFactors[this.rollTrait]?.max ?? 10
+        max:   this.rollTraitValOverride ?? this.rollPrimary.rollFactors[this.rollTrait]?.max ?? 10
       };
     }
     throw new Error(`[get rollTraitData] Invalid rollTrait: '${this.rollTrait}'`);
@@ -2161,14 +2161,14 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       if (isAction(this.rollTrait)) {
         return Object.values(ActionTrait)
           .map((action) => ({
-            name: U.uCase(action),
+            name:  U.uCase(action),
             value: action
           }));
       }
       if (isAttribute(this.rollTrait)) {
         return Object.values(AttributeTrait)
           .map((attribute) => ({
-            name: U.uCase(attribute),
+            name:  U.uCase(attribute),
             value: attribute
           }));
       }
@@ -2176,7 +2176,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     if (U.isInt(this.rollTrait)) {
       return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         .map((num) => ({
-          name: `+${num}`,
+          name:  `+${num}`,
           value: num
         }));
     }
@@ -2326,53 +2326,53 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
 
     const defaultFactors: Record<Factor, BladesRoll.FactorData> = {
-      [Factor.tier]: {
-        name: "Tier",
-        value: 0,
-        max: 0,
-        baseVal: 0,
-        display: "?",
-        isActive: false,
-        isPrimary: true,
-        isDominant: false,
+      [Factor.tier] : {
+        name:         "Tier",
+        value:        0,
+        max:          0,
+        baseVal:      0,
+        display:      "?",
+        isActive:     false,
+        isPrimary:    true,
+        isDominant:   false,
         highFavorsPC: true,
-        cssClasses: "factor-gold"
+        cssClasses:   "factor-gold"
       },
-      [Factor.quality]: {
-        name: "Quality",
-        value: 0,
-        max: 0,
-        baseVal: 0,
-        display: "?",
-        isActive: false,
-        isPrimary: false,
-        isDominant: false,
+      [Factor.quality] : {
+        name:         "Quality",
+        value:        0,
+        max:          0,
+        baseVal:      0,
+        display:      "?",
+        isActive:     false,
+        isPrimary:    false,
+        isDominant:   false,
         highFavorsPC: true,
-        cssClasses: "factor-gold"
+        cssClasses:   "factor-gold"
       },
-      [Factor.scale]: {
-        name: "Scale",
-        value: 0,
-        max: 0,
-        baseVal: 0,
-        display: "?",
-        isActive: false,
-        isPrimary: false,
-        isDominant: false,
+      [Factor.scale] : {
+        name:         "Scale",
+        value:        0,
+        max:          0,
+        baseVal:      0,
+        display:      "?",
+        isActive:     false,
+        isPrimary:    false,
+        isDominant:   false,
         highFavorsPC: true,
-        cssClasses: "factor-gold"
+        cssClasses:   "factor-gold"
       },
-      [Factor.magnitude]: {
-        name: "Magnitude",
-        value: 0,
-        max: 0,
-        baseVal: 0,
-        display: "?",
-        isActive: false,
-        isPrimary: false,
-        isDominant: false,
+      [Factor.magnitude] : {
+        name:         "Magnitude",
+        value:        0,
+        max:          0,
+        baseVal:      0,
+        display:      "?",
+        isActive:     false,
+        isPrimary:    false,
+        isDominant:   false,
         highFavorsPC: true,
-        cssClasses: "factor-gold"
+        cssClasses:   "factor-gold"
       }
     };
 
@@ -2400,7 +2400,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       : {};
 
     return {
-      source: Object.fromEntries(
+      source : Object.fromEntries(
         (Object.entries(mergedSourceFactors) as Array<[Factor, BladesRoll.FactorData]>)
           .map(([factor, factorData]) => {
             factorData.value +=
@@ -2414,7 +2414,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
             return [factor, factorData];
           })
       ) as Record<Factor, BladesRoll.FactorData>,
-      opposition: Object.fromEntries(
+      opposition : Object.fromEntries(
         (Object.entries(mergedOppFactors) as Array<[Factor, BladesRoll.FactorData]>)
           .map(([factor, factorData]) => {
             factorData.value += this.data.GMOppBoosts[factor] ?? 0;
@@ -2450,22 +2450,22 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         .find((mod) => BladesRoll.Debug.modWatch && BladesRoll.Debug.modWatch.exec(mod.name));
       if (rollMod) {
         initReport[`${reportLabel} : ${rollMod.status}`] = {
-          inst: rollMod,
-          data: {...rollMod.data},
+          inst:       rollMod,
+          data:       {...rollMod.data},
           sourceName: rollMod.sourceName,
-          status: {
-            ALL: rollMod.status,
+          status:     {
+            ALL:  rollMod.status,
             base: rollMod.baseStatus,
             held: rollMod.heldStatus,
             user: rollMod.userStatus
           },
-          is: {
-            active: rollMod.isActive,
-            visible: rollMod.isVisible,
-            conditional: rollMod.isConditional,
+          is : {
+            active:          rollMod.isActive,
+            visible:         rollMod.isVisible,
+            conditional:     rollMod.isConditional,
             inInactiveBlock: rollMod.isInInactiveBlock,
-            isPush: rollMod.isPush,
-            isBasicPush: rollMod.isBasicPush
+            isPush:          rollMod.isPush,
+            isBasicPush:     rollMod.isBasicPush
           }
         };
       } else {
@@ -2859,29 +2859,29 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     const baseData = {
       ...this.data,
       cssClass: "roll-collab",
-      isGM: this.isGM,
-      system: this.rollPrimaryDoc?.system,
+      isGM:     this.isGM,
+      system:   this.rollPrimaryDoc?.system,
 
       rollMods,
       rollPrimary,
       rollTraitData,
       rollTraitOptions,
 
-      diceTotal: finalDicePool,
+      diceTotal : finalDicePool,
 
-      rollOpposition: this.rollOpposition,
-      rollParticipants: this.rollParticipants,
-      rollParticipantOptions: this.rollParticipantSelectOptions,
-      rollEffects: Object.values(Effect),
-      rollTraitValOverride: this.rollTraitValOverride,
+      rollOpposition:             this.rollOpposition,
+      rollParticipants:           this.rollParticipants,
+      rollParticipantOptions:     this.rollParticipantSelectOptions,
+      rollEffects:                Object.values(Effect),
+      rollTraitValOverride:       this.rollTraitValOverride,
       rollFactorPenaltiesNegated: this.rollFactorPenaltiesNegated,
 
 
-      posRollMods: Object.fromEntries(Object.values(RollModSection)
+      posRollMods : Object.fromEntries(Object.values(RollModSection)
         .map((cat) => [cat, this.getRollMods(cat, "positive")])) as Record<RollModSection, BladesRollMod[]>,
-      negRollMods: Object.fromEntries(Object.values(RollModSection)
+      negRollMods : Object.fromEntries(Object.values(RollModSection)
         .map((cat) => [cat, this.getRollMods(cat, "negative")])) as Record<RollModSection, BladesRollMod[]>,
-      hasInactiveConditionals: this.calculateHasInactiveConditionalsData(),
+      hasInactiveConditionals : this.calculateHasInactiveConditionalsData(),
 
       rollFactors,
       ...this.calculateOddsHTML(finalDicePool, rollResultDelta)
@@ -2923,33 +2923,33 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     return {
       ...baseData,
-      rollPrimary: this.rollPrimary,
+      rollPrimary:       this.rollPrimary,
       rollPositionFinal,
       rollEffectFinal,
       rollResultFinal,
-      rollPositions: Object.values(Position),
-      rollEffects: Object.values(Effect),
+      rollPositions:     Object.values(Position),
+      rollEffects:       Object.values(Effect),
       rollResultDelta,
       isAffectingResult: rollResultDelta !== 0
         || this.getVisibleRollMods(RollModSection.result).length > 0
         || (this.isGM && this.getRollMods(RollModSection.result).length > 0),
-      isAffectingAfter: this.getVisibleRollMods(RollModSection.after).length > 0
+      isAffectingAfter : this.getVisibleRollMods(RollModSection.after).length > 0
         || (this.isGM && this.getRollMods(RollModSection.after).length > 0),
       ...GMBoostsData,
       ...positionEffectTradeData,
       rollClockKey,
       totalStressCost: stressCostDataSet.reduce((acc, [_label, amount]) => acc + amount, 0),
-      totalArmorCost: armorCostDataSet.length,
-      stressCosts: stressCostDataSet.length > 0
+      totalArmorCost:  armorCostDataSet.length,
+      stressCosts:     stressCostDataSet.length > 0
         ? Object.fromEntries(stressCostDataSet)
         : undefined,
-      armorCosts: armorCostDataSet.length > 0
+      armorCosts : armorCostDataSet.length > 0
         ? Object.fromEntries(armorCostDataSet)
         : undefined,
       specArmorCost: specialArmorCostDataSet[0],
       userPermission,
-      editable: userPermission === RollPermissions.Primary || userPermission === RollPermissions.GM,
-      gamePhase: game.eunoblades.Tracker.phase
+      editable:      userPermission === RollPermissions.Primary || userPermission === RollPermissions.GM,
+      gamePhase:     game.eunoblades.Tracker.phase
     };
   }
   // type BladesSelectOption<displayType, valueType = string> = {
@@ -2980,18 +2980,18 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   protected calculateGMBoostsData(data: BladesRoll.Data) {
     return {
-      GMBoosts: {
-        Dice: data.GMBoosts.Dice ?? 0,
-        [Factor.tier]: data.GMBoosts[Factor.tier] ?? 0,
-        [Factor.quality]: data.GMBoosts[Factor.quality] ?? 0,
-        [Factor.scale]: data.GMBoosts[Factor.scale] ?? 0,
+      GMBoosts : {
+        Dice:               data.GMBoosts.Dice ?? 0,
+        [Factor.tier]:      data.GMBoosts[Factor.tier] ?? 0,
+        [Factor.quality]:   data.GMBoosts[Factor.quality] ?? 0,
+        [Factor.scale]:     data.GMBoosts[Factor.scale] ?? 0,
         [Factor.magnitude]: data.GMBoosts[Factor.magnitude] ?? 0,
-        Result: data.GMBoosts.Result ?? 0
+        Result:             data.GMBoosts.Result ?? 0
       },
-      GMOppBoosts: {
-        [Factor.tier]: data.GMOppBoosts[Factor.tier] ?? 0,
-        [Factor.quality]: data.GMOppBoosts[Factor.quality] ?? 0,
-        [Factor.scale]: data.GMOppBoosts[Factor.scale] ?? 0,
+      GMOppBoosts : {
+        [Factor.tier]:      data.GMOppBoosts[Factor.tier] ?? 0,
+        [Factor.quality]:   data.GMOppBoosts[Factor.quality] ?? 0,
+        [Factor.scale]:     data.GMOppBoosts[Factor.scale] ?? 0,
         [Factor.magnitude]: data.GMOppBoosts[Factor.magnitude] ?? 0
       }
     };
@@ -3018,10 +3018,10 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     rollResultDelta: number
   ): {oddsHTMLStart: string, oddsHTMLStop: string} {
     const oddsColors = {
-      crit: "var(--blades-gold)",
+      crit:    "var(--blades-gold)",
       success: "var(--blades-white-bright)",
       partial: "var(--blades-grey)",
-      fail: "var(--blades-black-dark)"
+      fail:    "var(--blades-black-dark)"
     };
     const odds = {...C.DiceOddsStandard[diceTotal]};
 
@@ -3047,11 +3047,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     });
 
     return {
-      oddsHTMLStart: [
+      oddsHTMLStart : [
         "<div class=\"roll-odds-section-container\">",
         ...resultElements
       ].join("\n"),
-      oddsHTMLStop: "</div>"
+      oddsHTMLStop : "</div>"
     };
   }
 
@@ -3106,11 +3106,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     }
 
     return {
-      oddsHTMLStart: [
+      oddsHTMLStart : [
         "<div class=\"roll-odds-section-container\">",
         ...resultElements
       ].join("\n"),
-      oddsHTMLStop: "</div>"
+      oddsHTMLStop : "</div>"
     };
   }
 
@@ -3172,14 +3172,14 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     const isCritical = dieVals.filter((val) => val === 6).length >= 2;
 
     const diceData: BladesRoll.DieData[] = dieVals.map((val, i) => ({
-      value: val,
+      value:    val,
       dieClass: BladesRoll.GetDieClass(this.rollType, this.rollResult, val, i),
       dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, val, i, false, isCritical)
     }));
 
     if (ghostNum) {
       diceData.push({
-        value: ghostNum,
+        value:    ghostNum,
         dieClass: "blades-die-ghost",
         dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, ghostNum, diceData.length, true, false)
       });
@@ -3255,19 +3255,19 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     this.closeRollCollab_SocketCall();
 
-    eLog.checkLog3("rollCollab", "[resolveRoll()] Before Evaluation", {roll: this, rollData: {...this.data}});
+    eLog.checkLog3("rollCollab", "[resolveRoll()] Before Evaluation", {roll: this, rollData: {...this.data} });
 
     await this.roll.evaluate({async: true});
 
     return await this.updateTargetData({
       ...this.data,
       rollPositionFinal: this.rollPositionFinal,
-      rollEffectFinal: this.rollEffectFinal,
-      rollResult: this.rollResult,
-      rollTraitVerb: this.rollTraitVerb,
+      rollEffectFinal:   this.rollEffectFinal,
+      rollResult:        this.rollResult,
+      rollTraitVerb:     this.rollTraitVerb,
       rollTraitPastVerb: this.rollTraitPastVerb,
-      finalDiceData: this.finalDiceData,
-      rollPhase: this.isApplyingConsequences
+      finalDiceData:     this.finalDiceData,
+      rollPhase:         this.isApplyingConsequences
         ? RollPhase.AwaitingConsequences
         : RollPhase.Complete
     });
@@ -3282,9 +3282,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     await BladesChat.create({
       speaker: this.getSpeaker(BladesChat.getSpeaker()),
       content: await renderTemplate(this.chatTemplate, this.data),
-      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flags: {
-        "eunos-blades": {rollData: this.data}
+      type:    CONST.CHAT_MESSAGE_TYPES.ROLL,
+      flags:   {
+        "eunos-blades" : {rollData: this.data}
       }
     }) as BladesChat;
   }
@@ -3339,7 +3339,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       this._elem$ = $(`<div id="${this.id}" class="app window-app ${C.SYSTEM_ID} sheet roll-collab${game.user.isGM ? " gm-roll-collab" : ""}"></div>`).appendTo("body");
       this._elem$.css({
         left: `${this.overlayPosition.x}px`,
-        top: `${this.overlayPosition.y}px`
+        top:  `${this.overlayPosition.y}px`
       });
     }
     return this._elem$;
@@ -3527,7 +3527,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     // Otherwise, first toggle targeted factor to new value
     factorToggleData[thisSource][thisFactor] = {
       ...factorToggleData[thisSource][thisFactor] ?? {display: ""},
-      [thisToggle]: value
+      [thisToggle] : value
     };
 
     // Then perform specific logic depending on toggle targeted:
@@ -3543,7 +3543,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
               if (factorToggleData[thisSource][factor]?.[thisToggle] === true) {
                 factorToggleData[thisSource][factor] = {
                   ...factorToggleData[thisSource][factor],
-                  [thisToggle]: false
+                  [thisToggle] : false
                 } as BladesRoll.FactorFlagData;
               }
             });
@@ -3556,7 +3556,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
           const otherSource = thisSource === "source" ? "opposition" : "source";
           factorToggleData[otherSource][thisFactor] = {
             ...factorToggleData[otherSource][thisFactor] ?? {display: ""},
-            isActive: value
+            isActive : value
           };
         }
         break;
@@ -3630,7 +3630,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     }
     this._positionDragger?.kill();
     return (this._positionDragger = new Dragger(this._elem$, {
-      type: "top,left",
+      type:    "top,left",
       trigger: ".window-header.dragger",
       onDragStart(this: Dragger) {
         U.gsap.to(this.target, {opacity: 0.25, duration: 0.25, ease: "power2"});
@@ -3719,7 +3719,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     // Player-Toggleable Roll Mods
     this.elem$.find("[data-action='player-toggle-mod']").on({
-      click: this._onPlayerToggleRollMod.bind(this)
+      click : this._onPlayerToggleRollMod.bind(this)
     });
 
     // Player Select Elements
@@ -3729,7 +3729,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     // Player Position/Effect Trading
     this.elem$.find("[data-action='player-trade']").on({
-      click: async (event) => {
+      click : async (event) => {
         await this.updateTarget("rollPosEffectTrade", U.lCase(`${$(event.currentTarget).data("value")}`) === "false");
         socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
       }
@@ -3737,7 +3737,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     // Player-Initiated Roll Resolution
     this.elem$.find("[data-action='player-roll']").on({
-      click: this._onClickToRoll.bind(this)
+      click : this._onClickToRoll.bind(this)
     });
 
     if (!game.user.isGM) {return;}
@@ -3761,32 +3761,32 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
      * Handles setting of rollMod status via GM pop-out controls
      */
     this.elem$.find(".controls-toggle").on({
-      click: (event) => {
+      click : (event) => {
         event.preventDefault();
         $(event.currentTarget).parents(".controls-panel").toggleClass("active");
       }
     });
     this.elem$.find("[data-action=\"gm-set\"]").on({
-      click: this._gmControlSet.bind(this)
+      click : this._gmControlSet.bind(this)
     });
     /**
      * Handles setting of baseline rollPosition via GM button line
      */
     this.elem$.find("[data-action=\"gm-set-position\"]").on({
-      click: this._gmControlSetPosition.bind(this)
+      click : this._gmControlSetPosition.bind(this)
     });
     /**
      * Handles setting of baseline rollEffect via GM button line
      */
     this.elem$.find("[data-action=\"gm-set-effect\"]").on({
-      click: this._gmControlSetEffect.bind(this)
+      click : this._gmControlSetEffect.bind(this)
     });
     /**
      * Handles setting values via GM number line (e.g. roll factor boosts/modifications).
      * Handles resetting value associated with GM number line on a right-click.
      */
     this.elem$.find("[data-action=\"gm-set-target\"]").on({
-      click: this._gmControlSetTargetToValue.bind(this),
+      click:       this._gmControlSetTargetToValue.bind(this),
       contextmenu: this._gmControlResetTarget.bind(this)
     });
     /**
@@ -3794,13 +3794,13 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
      * Handles resetting value associated with GM number line on a right-click.
      */
     this.elem$.find("[data-action=\"gm-cycle-target\"]").on({
-      click: this._gmControlCycleTarget.bind(this)
+      click : this._gmControlCycleTarget.bind(this)
     });
     /**
      * Handles setting of Factor toggles: isActive, isPrimary, highFavorsPC, isDominant
      */
     this.elem$.find("[data-action=\"gm-toggle-factor\"]").on({
-      click: this._gmControlToggleFactor.bind(this)
+      click : this._gmControlToggleFactor.bind(this)
     });
 
     this.elem$
@@ -3928,86 +3928,86 @@ class BladesActionRoll extends BladesRoll {
 
     return {
       rollPositionInitial: Position.risky,
-      rollEffectInitial: Effect.standard,
-      rollPosEffectTrade: false,
-      GMBoosts: {
-        [Factor.tier]: 0,
-        [Factor.quality]: 0,
-        [Factor.scale]: 0,
+      rollEffectInitial:   Effect.standard,
+      rollPosEffectTrade:  false,
+      GMBoosts:            {
+        [Factor.tier]:      0,
+        [Factor.quality]:   0,
+        [Factor.scale]:     0,
         [Factor.magnitude]: 0
       },
-      GMOppBoosts: {
-        [Factor.tier]: 0,
-        [Factor.quality]: 0,
-        [Factor.scale]: 0,
+      GMOppBoosts : {
+        [Factor.tier]:      0,
+        [Factor.quality]:   0,
+        [Factor.scale]:     0,
         [Factor.magnitude]: 0
       },
-      GMOverrides: {},
+      GMOverrides:       {},
       rollFactorToggles: {
-        source: {
-          [Factor.tier]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
+        source : {
+          [Factor.tier] : {
+            display:      "",
+            isActive:     false,
+            isPrimary:    false,
+            isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.quality]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
+          [Factor.quality] : {
+            display:      "",
+            isActive:     false,
+            isPrimary:    false,
+            isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.scale]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
+          [Factor.scale] : {
+            display:      "",
+            isActive:     false,
+            isPrimary:    false,
+            isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.magnitude]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
+          [Factor.magnitude] : {
+            display:      "",
+            isActive:     false,
+            isPrimary:    false,
+            isDominant:   false,
             highFavorsPC: true
           }
         },
-        opposition: {
-          [Factor.tier]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
+        opposition : {
+          [Factor.tier] : {
+            display:      "",
+            isActive:     false,
+            isPrimary:    false,
+            isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.quality]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
+          [Factor.quality] : {
+            display:      "",
+            isActive:     false,
+            isPrimary:    false,
+            isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.scale]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
+          [Factor.scale] : {
+            display:      "",
+            isActive:     false,
+            isPrimary:    false,
+            isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.magnitude]: {
-            display: "",
-            isActive: false,
-            isPrimary: false,
-            isDominant: false,
+          [Factor.magnitude] : {
+            display:      "",
+            isActive:     false,
+            isPrimary:    false,
+            isDominant:   false,
             highFavorsPC: true
           }
         }
       },
       ...fullSchema as Partial<BladesRoll.Schema>,
       rollPrimaryData: rollPrimary.data,
-      rollOppData: fullSchema.rollOppData instanceof BladesRollOpposition
+      rollOppData:     fullSchema.rollOppData instanceof BladesRollOpposition
         ? fullSchema.rollOppData.data
         : fullSchema.rollOppData
     } as Schema;
@@ -4016,87 +4016,87 @@ class BladesActionRoll extends BladesRoll {
   static override get DefaultRollModSchemaSet(): BladesRollMod.Schema[] {
     return [
       {
-        key: "Push-positive-roll",
-        name: "PUSH",
-        section: RollModSection.roll,
+        key:         "Push-positive-roll",
+        name:        "PUSH",
+        section:     RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: ["ForceOff-Bargain", "Cost-Stress2"],
-        tooltip: "<h1>Push for +1d</h1><p>For <strong class='red-bright'>2 Stress</strong>, add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also accept a <strong class='red-bright'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
+        posNeg:      "positive",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  ["ForceOff-Bargain", "Cost-Stress2"],
+        tooltip:     "<h1>Push for +1d</h1><p>For <strong class='red-bright'>2 Stress</strong>, add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also accept a <strong class='red-bright'>Devil's Bargain</strong> to increase your dice pool: It's one or the other.)</em></p>"
       },
       {
-        key: "Bargain-positive-roll",
-        name: "Bargain",
-        section: RollModSection.roll,
+        key:         "Bargain-positive-roll",
+        name:        "Bargain",
+        section:     RollModSection.roll,
         base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1 class='red-bright'>Devil's Bargain</h1><p>The GM has offered you a <strong class='red-bright'>Devil's Bargain</strong>.</p><p><strong class='red-bright'>Accept the terms</strong> to add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also <strong>Push for +1d</strong> to increase your dice pool: It's one or the other.)</em></p>"
+        posNeg:      "positive",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  [],
+        tooltip:     "<h1 class='red-bright'>Devil's Bargain</h1><p>The GM has offered you a <strong class='red-bright'>Devil's Bargain</strong>.</p><p><strong class='red-bright'>Accept the terms</strong> to add <strong class='gold-bright'>1 die</strong> to your pool.</p><p><em>(You <strong>cannot</strong> also <strong>Push for +1d</strong> to increase your dice pool: It's one or the other.)</em></p>"
       },
       {
-        key: "Assist-positive-roll",
-        name: "Assist",
-        section: RollModSection.roll,
+        key:         "Assist-positive-roll",
+        name:        "Assist",
+        section:     RollModSection.roll,
         base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.teamwork,
-        value: 1,
-        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Assists</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> is <strong>Assisting</strong> your efforts, adding <strong class='gold-bright'>1 die</strong> to your pool.</p>"
+        posNeg:      "positive",
+        modType:     RollModType.teamwork,
+        value:       1,
+        tooltip:     "<h1 class='gold-bright'>%DOC_NAME% Assists</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> is <strong>Assisting</strong> your efforts, adding <strong class='gold-bright'>1 die</strong> to your pool.</p>"
       },
       {
-        key: "Setup-positive-position",
-        name: "Setup",
-        section: RollModSection.position,
+        key:         "Setup-positive-position",
+        name:        "Setup",
+        section:     RollModSection.position,
         base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.teamwork,
-        value: 1,
-        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Position</strong> by one level.</p>"
+        posNeg:      "positive",
+        modType:     RollModType.teamwork,
+        value:       1,
+        tooltip:     "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Position</strong> by one level.</p>"
       },
       {
-        key: "Push-positive-effect",
-        name: "PUSH",
-        section: RollModSection.effect,
+        key:         "Push-positive-effect",
+        name:        "PUSH",
+        section:     RollModSection.effect,
         base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: ["Cost-Stress2"],
-        tooltip: "<h1>Push for Effect</h1><p>For <strong class='red-bright'>2 Stress</strong>, increase your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+        posNeg:      "positive",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  ["Cost-Stress2"],
+        tooltip:     "<h1>Push for Effect</h1><p>For <strong class='red-bright'>2 Stress</strong>, increase your <strong class='gold-bright'>Effect</strong> by one level.</p>"
       },
       {
-        key: "Setup-positive-effect",
-        name: "Setup",
-        section: RollModSection.effect,
+        key:         "Setup-positive-effect",
+        name:        "Setup",
+        section:     RollModSection.effect,
         base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.teamwork,
-        value: 1,
-        tooltip: "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+        posNeg:      "positive",
+        modType:     RollModType.teamwork,
+        value:       1,
+        tooltip:     "<h1 class='gold-bright'>%DOC_NAME% Sets You Up</h1><p><strong class='gold-bright'>%DOC_NAME%</strong> has set you up for success with a preceding <strong>Setup</strong> action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
       },
       {
-        key: "Potency-positive-effect",
-        name: "Potency",
-        section: RollModSection.effect,
+        key:         "Potency-positive-effect",
+        name:        "Potency",
+        section:     RollModSection.effect,
         base_status: RollModStatus.Hidden,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        tooltip: "<h1>Potency</h1><p>By circumstance or advantage, you have <strong>Potency</strong> in this action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
+        posNeg:      "positive",
+        modType:     RollModType.general,
+        value:       1,
+        tooltip:     "<h1>Potency</h1><p>By circumstance or advantage, you have <strong>Potency</strong> in this action, increasing your <strong class='gold-bright'>Effect</strong> by one level.</p>"
       },
       {
-        key: "Potency-negative-effect",
-        name: "Potency",
-        section: RollModSection.effect,
+        key:         "Potency-negative-effect",
+        name:        "Potency",
+        section:     RollModSection.effect,
         base_status: RollModStatus.Hidden,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        tooltip: "<h1 class='red-bright'>Potency</h1><p>By circumstance or advantage, <strong class='red-bright'>@OPPOSITION_NAME@</strong> has <strong>Potency</strong> against you, reducing your <strong class='red-bright'>Effect</strong> by one level."
+        posNeg:      "negative",
+        modType:     RollModType.general,
+        value:       1,
+        tooltip:     "<h1 class='red-bright'>Potency</h1><p>By circumstance or advantage, <strong class='red-bright'>@OPPOSITION_NAME@</strong> has <strong>Potency</strong> against you, reducing your <strong class='red-bright'>Effect</strong> by one level."
       }
     ];
   }
@@ -4141,28 +4141,28 @@ class BladesActionRoll extends BladesRoll {
     // Add additional conditional roll mods based on effects of previous consequences.
     if (this.rollPrimary.isWorsePosition) {
       rollModSchemaSets.push({
-        key: "WorsePosition-negative-position",
-        name: "Worse Position",
-        section: RollModSection.position,
+        key:         "WorsePosition-negative-position",
+        name:        "Worse Position",
+        section:     RollModSection.position,
         base_status: RollModStatus.ForcedOn,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1>Worse Position</h1><p>A <strong class='red-bright'>Consequence</strong> on a previous roll has worsened your <strong>Position</strong>.</p>"
+        posNeg:      "negative",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  [],
+        tooltip:     "<h1>Worse Position</h1><p>A <strong class='red-bright'>Consequence</strong> on a previous roll has worsened your <strong>Position</strong>.</p>"
       });
     }
     if (this.acceptedConsequences.some((csq) => csq.type === ConsequenceType.ReducedEffect)) {
       rollModSchemaSets.push({
-        key: "ReducedEffect-negative-effect",
-        name: "Reduced Effect",
-        section: RollModSection.effect,
+        key:         "ReducedEffect-negative-effect",
+        name:        "Reduced Effect",
+        section:     RollModSection.effect,
         base_status: RollModStatus.ForcedOn,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1>Reduced Effect</h1><p>A <strong class='red-bright'>Consequence</strong> has worsened your <strong>Effect</strong>.</p>"
+        posNeg:      "negative",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  [],
+        tooltip:     "<h1>Reduced Effect</h1><p>A <strong class='red-bright'>Consequence</strong> has worsened your <strong>Effect</strong>.</p>"
       });
     }
 
@@ -4454,70 +4454,70 @@ class BladesEngagementRoll extends BladesFortuneRoll {
   static override get DefaultRollModSchemaSet(): BladesRollMod.Schema[] {
     return [
       {
-        key: "BoldPlan-positive-roll",
-        name: "Bold Plan",
-        section: RollModSection.roll,
+        key:         "BoldPlan-positive-roll",
+        name:        "Bold Plan",
+        section:     RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1></h1><p></p>"
+        posNeg:      "positive",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  [],
+        tooltip:     "<h1></h1><p></p>"
       },
       {
-        key: "ComplexPlan-negative-roll",
-        name: "Complex Plan",
-        section: RollModSection.roll,
+        key:         "ComplexPlan-negative-roll",
+        name:        "Complex Plan",
+        section:     RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1></h1><p></p>"
+        posNeg:      "negative",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  [],
+        tooltip:     "<h1></h1><p></p>"
       },
       {
-        key: "ExploitWeakness-positive-roll",
-        name: "Exploiting a Weakness",
-        section: RollModSection.roll,
+        key:         "ExploitWeakness-positive-roll",
+        name:        "Exploiting a Weakness",
+        section:     RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1></h1><p></p>"
+        posNeg:      "positive",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  [],
+        tooltip:     "<h1></h1><p></p>"
       },
       {
-        key: "WellDefended-negative-roll",
-        name: "Well-Defended",
-        section: RollModSection.roll,
+        key:         "WellDefended-negative-roll",
+        name:        "Well-Defended",
+        section:     RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1></h1><p></p>"
+        posNeg:      "negative",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  [],
+        tooltip:     "<h1></h1><p></p>"
       },
       {
-        key: "HelpFromFriend-positive-roll",
-        name: "Help From a Friend",
-        section: RollModSection.position,
+        key:         "HelpFromFriend-positive-roll",
+        name:        "Help From a Friend",
+        section:     RollModSection.position,
         base_status: RollModStatus.ToggledOff,
-        posNeg: "positive",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1>Help From a Friend</h1><p>Add <strong>+1d</strong> if you enlist the help of a friend or contact.</p>"
+        posNeg:      "positive",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  [],
+        tooltip:     "<h1>Help From a Friend</h1><p>Add <strong>+1d</strong> if you enlist the help of a friend or contact.</p>"
       },
       {
-        key: "EnemyInterference-negative-roll",
-        name: "Enemy Interference",
-        section: RollModSection.roll,
+        key:         "EnemyInterference-negative-roll",
+        name:        "Enemy Interference",
+        section:     RollModSection.roll,
         base_status: RollModStatus.ToggledOff,
-        posNeg: "negative",
-        modType: RollModType.general,
-        value: 1,
-        effectKeys: [],
-        tooltip: "<h1></h1><p></p>"
+        posNeg:      "negative",
+        modType:     RollModType.general,
+        value:       1,
+        effectKeys:  [],
+        tooltip:     "<h1></h1><p></p>"
       }
     ];
   }

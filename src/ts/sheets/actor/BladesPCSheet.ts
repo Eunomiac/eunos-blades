@@ -10,11 +10,11 @@ class BladesPCSheet extends BladesActorSheet {
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["eunos-blades", "sheet", "actor", "pc"],
+      classes:  ["eunos-blades", "sheet", "actor", "pc"],
       template: "systems/eunos-blades/templates/actor-sheet.hbs",
-      width: 775,
-      height: 775,
-      tabs: [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "abilities"}]
+      width:    775,
+      height:   775,
+      tabs:     [{navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "abilities"}]
     });
   }
 
@@ -29,48 +29,48 @@ class BladesPCSheet extends BladesActorSheet {
     sheetData.preparedItems = Object.assign(
       context.preparedItems ?? {},
       {
-        abilities: activeSubItems
+        abilities : activeSubItems
           .filter((item): item is BladesItemOfType<BladesItemType.ability> => item.type === BladesItemType.ability)
           .map((item) => {
             // ~ Assign dotlines to abilities with usage data
             if (item.system.uses_per_score.max) {
               Object.assign(item, {
-                inRuleDotline: {
-                  data: item.system.uses_per_score,
-                  dotlineLabel: "Uses",
-                  target: "item.system.uses_per_score.value",
-                  iconEmpty: "dot-empty.svg",
+                inRuleDotline : {
+                  data:           item.system.uses_per_score,
+                  dotlineLabel:   "Uses",
+                  target:         "item.system.uses_per_score.value",
+                  iconEmpty:      "dot-empty.svg",
                   iconEmptyHover: "dot-empty-hover.svg",
-                  iconFull: "dot-full.svg",
-                  iconFullHover: "dot-full-hover.svg"
+                  iconFull:       "dot-full.svg",
+                  iconFullHover:  "dot-full-hover.svg"
                 }
               });
             }
             return item;
           }),
         background: activeSubItems.find((item) => item.type === BladesItemType.background),
-        heritage: activeSubItems.find((item) => item.type === BladesItemType.heritage),
-        vice: activeSubItems.find((item) => item.type === BladesItemType.vice),
-        loadout: activeSubItems
+        heritage:   activeSubItems.find((item) => item.type === BladesItemType.heritage),
+        vice:       activeSubItems.find((item) => item.type === BladesItemType.vice),
+        loadout:    activeSubItems
           .filter((item): item is BladesItemOfType<BladesItemType.gear> => item.type === BladesItemType.gear)
           .map((item) => {
           // Assign load and usage data to gear
             if (item.system.load) {
               Object.assign(item, {
-                numberCircle: item.system.load,
+                numberCircle:      item.system.load,
                 numberCircleClass: "item-load"
               });
             }
             if (item.system.uses_per_score.max) {
               Object.assign(item, {
-                inRuleDotline: {
-                  data: item.system.uses_per_score,
-                  dotlineLabel: "Uses",
-                  target: "item.system.uses_per_score.value",
-                  iconEmpty: "dot-empty.svg",
+                inRuleDotline : {
+                  data:           item.system.uses_per_score,
+                  dotlineLabel:   "Uses",
+                  target:         "item.system.uses_per_score.value",
+                  iconEmpty:      "dot-empty.svg",
                   iconEmptyHover: "dot-empty-hover.svg",
-                  iconFull: "dot-full.svg",
-                  iconFullHover: "dot-full-hover.svg"
+                  iconFull:       "dot-full.svg",
+                  iconFullHover:  "dot-full-hover.svg"
                 }
               });
             }
@@ -78,16 +78,16 @@ class BladesPCSheet extends BladesActorSheet {
           }),
         playbook: this.actor.playbook,
         projects: activeSubItems.filter((item) => item.type === BladesItemType.project),
-        cohorts: context.preparedItems?.cohorts
+        cohorts:  context.preparedItems?.cohorts
       }
     ) as BladesActorDataOfType<BladesActorType.pc>["preparedItems"];
 
     sheetData.preparedActors = {
-      crew: activeSubActors
+      crew : activeSubActors
         .find((actor): actor is BladesActorOfType<BladesActorType.crew> => actor.type === BladesActorType.crew),
-      vice_purveyor: activeSubActors
+      vice_purveyor : activeSubActors
         .find((actor): actor is BladesActorOfType<BladesActorType.npc> => actor.hasTag(Tag.NPC.VicePurveyor)),
-      acquaintances: activeSubActors
+      acquaintances : activeSubActors
         .filter((actor): actor is BladesActorOfType<BladesActorType.npc> => actor.hasTag(Tag.NPC.Acquaintance))
     };
 
@@ -97,67 +97,67 @@ class BladesPCSheet extends BladesActorSheet {
     sheetData.healing_clock = this.actor.healingClock;
 
     sheetData.stashData = {
-      label: "Stash:",
+      label:   "Stash:",
       dotline: {
-        data: this.actor.system.stash,
-        target: "system.stash.value",
-        iconEmpty: "coin-empty.svg",
-        iconEmptyHover: "coin-empty-hover.svg",
-        iconFull: "coin-full.svg",
-        iconFullHover: "coin-full-hover.svg",
-        altIconFull: "coin-ten.svg",
+        data:             this.actor.system.stash,
+        target:           "system.stash.value",
+        iconEmpty:        "coin-empty.svg",
+        iconEmptyHover:   "coin-empty-hover.svg",
+        iconFull:         "coin-full.svg",
+        iconFullHover:    "coin-full-hover.svg",
+        altIconFull:      "coin-ten.svg",
         altIconFullHover: "coin-ten-hover.svg",
-        altIconStep: 10
+        altIconStep:      10
       }
     };
 
     sheetData.stressData = {
-      label: this.actor.system.stress.name,
+      label:   this.actor.system.stress.name,
       dotline: {
-        data: this.actor.system.stress,
+        data:         this.actor.system.stress,
         dotlineClass: this.actor.system.stress.max >= 13 ? "narrow-stress" : "",
-        target: "system.stress.value",
-        svgKey: "teeth.tall",
-        svgFull: "full|half|frame",
-        svgEmpty: "full|half|frame"
+        target:       "system.stress.value",
+        svgKey:       "teeth.tall",
+        svgFull:      "full|half|frame",
+        svgEmpty:     "full|half|frame"
       }
     };
 
     if (BladesActor.IsType(this.actor, BladesActorType.pc)) {
       sheetData.traumaData = {
-        label: this.actor.system.trauma.name,
+        label:   this.actor.system.trauma.name,
         dotline: {
-          data: {value: this.actor.trauma, max: this.actor.system.trauma.max},
-          svgKey: "teeth.short",
-          svgFull: "full|frame",
+          data:     {value: this.actor.trauma, max: this.actor.system.trauma.max},
+          svgKey:   "teeth.short",
+          svgFull:  "full|frame",
           svgEmpty: "frame",
           isLocked: true
         },
-        compContainer: {
-          class: "comp-trauma-conditions comp-vertical full-width",
+        compContainer : {
+          class:  "comp-trauma-conditions comp-vertical full-width",
           blocks: [
             this.actor.traumaList.slice(0, Math.ceil(this.actor.traumaList.length / 2))
               .map((tName) => ({
-                checkLabel: tName,
+                checkLabel:   tName,
                 checkClasses: {
-                  active: "comp-toggle-red",
+                  active:   "comp-toggle-red",
                   inactive: "comp-toggle-grey"
                 },
-                checkTarget: `system.trauma.checked.${tName}`,
-                checkValue: this.actor.system.trauma.checked[tName] ?? false,
-                tooltip: C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
+                checkTarget:  `system.trauma.checked.${tName}`,
+                checkValue:   this.actor.system.trauma.checked[tName] ?? false,
+                tooltip:      C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
                 tooltipClass: "tooltip-trauma"
               })),
             this.actor.traumaList.slice(Math.ceil(this.actor.traumaList.length / 2))
               .map((tName) => ({
-                checkLabel: tName,
+                checkLabel:   tName,
                 checkClasses: {
-                  active: "comp-toggle-red",
+                  active:   "comp-toggle-red",
                   inactive: "comp-toggle-grey"
                 },
-                checkTarget: `system.trauma.checked.${tName}`,
-                checkValue: this.actor.system.trauma.checked[tName] ?? false,
-                tooltip: C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
+                checkTarget:  `system.trauma.checked.${tName}`,
+                checkValue:   this.actor.system.trauma.checked[tName] ?? false,
+                tooltip:      C.TraumaTooltips[tName as KeyOf<typeof C.TraumaTooltips>],
                 tooltipClass: "tooltip-trauma"
               }))
           ]
@@ -166,24 +166,24 @@ class BladesPCSheet extends BladesActorSheet {
     }
 
     sheetData.abilityData = {
-      dotline: {
+      dotline : {
         dotlineClass: "dotline-right dotline-glow",
-        data: {
+        data:         {
           value: this.actor.getAvailableAdvancements("Ability"),
-          max: this.actor.getAvailableAdvancements("Ability")
+          max:   this.actor.getAvailableAdvancements("Ability")
         },
         dotlineLabel: "Available Abilities",
-        isLocked: true,
-        iconFull: "dot-full.svg"
+        isLocked:     true,
+        iconFull:     "dot-full.svg"
       }
     };
 
     sheetData.loadData = {
-      curLoad: this.actor.currentLoad,
+      curLoad:      this.actor.currentLoad,
       selLoadCount: this.actor.system.loadout.levels[
         U.lCase(this.actor.system.loadout.selected as Loadout)
       ],
-      options: C.Loadout.selections as Array<BladesSelectOption<string, string>>,
+      options:  C.Loadout.selections as Array<BladesSelectOption<string, string>>,
       selected: this.actor.system.loadout.selected ?? ""
     };
 
@@ -210,8 +210,8 @@ class BladesPCSheet extends BladesActorSheet {
       for (const [action, actionData] of actionEntries) {
         sheetData.attributeData[attribute].actions[action] = {
           tooltip: C.ActionTooltips[action],
-          value: actionData.value,
-          max: game.eunoblades.Tracker.phase === BladesPhase.CharGen
+          value:   actionData.value,
+          max:     game.eunoblades.Tracker.phase === BladesPhase.CharGen
             ? 2
             : this.actor.system.attributes[attribute][action].max
         };
@@ -220,12 +220,12 @@ class BladesPCSheet extends BladesActorSheet {
 
     if (game.eunoblades.Tracker?.phase === BladesPhase.Downtime) {
       const actionsList: Partial<Record<DowntimeAction, string>> = {
-        [DowntimeAction.AcquireAsset]: "Acquire Asset",
-        [DowntimeAction.IndulgeVice]: "Indulge Vice",
+        [DowntimeAction.AcquireAsset]:    "Acquire Asset",
+        [DowntimeAction.IndulgeVice]:     "Indulge Vice",
         [DowntimeAction.LongTermProject]: "Project",
-        [DowntimeAction.Recover]: "Recover",
-        [DowntimeAction.ReduceHeat]: "Reduce Heat",
-        [DowntimeAction.Train]: "Train"
+        [DowntimeAction.Recover]:         "Recover",
+        [DowntimeAction.ReduceHeat]:      "Reduce Heat",
+        [DowntimeAction.Train]:           "Train"
       };
 
       // Get PCs, NPCs capable of rolling for the Recover action
@@ -255,7 +255,7 @@ class BladesPCSheet extends BladesActorSheet {
           actionsSubmenuData = [
             {
               actionSubData: "NewProject",
-              display: "New Project"
+              display:       "New Project"
             }
           ];
           // ... and add one for each Project on the PC.
@@ -267,17 +267,17 @@ class BladesPCSheet extends BladesActorSheet {
             if (hDoc.id === this.actor.id) {
               actionsSubmenuData?.unshift({
                 actionSubData: this.actor.id,
-                display: "Heal Self"
+                display:       "Heal Self"
               });
             } else if (BladesPC.IsType(hDoc)) {
               actionsSubmenuData?.push({
                 actionSubData: hDoc.id,
-                display: U.uCase(hDoc.name)
+                display:       U.uCase(hDoc.name)
               });
             } else if (BladesNPC.IsType(hDoc)) {
               actionsSubmenuData?.push({
                 actionSubData: hDoc.id,
-                display: hDoc.name
+                display:       hDoc.name
               });
             } /* NEED CHECK FOR COHORT HEALERS TOO */
           });
@@ -290,19 +290,19 @@ class BladesPCSheet extends BladesActorSheet {
           actionsSubmenuData = [
             {
               actionSubData: `playbook:${crewTrainingUpgrades.includes("playbook") ? 2 : 1}`,
-              display: `${crewTrainingUpgrades.includes("playbook") ? 2 : 1} Playbook XP`
+              display:       `${crewTrainingUpgrades.includes("playbook") ? 2 : 1} Playbook XP`
             },
             {
               actionSubData: `insight:${crewTrainingUpgrades.includes(AttributeTrait.insight) ? 2 : 1}`,
-              display: `${crewTrainingUpgrades.includes(AttributeTrait.insight) ? 2 : 1} Insight XP`
+              display:       `${crewTrainingUpgrades.includes(AttributeTrait.insight) ? 2 : 1} Insight XP`
             },
             {
               actionSubData: `prowess:${crewTrainingUpgrades.includes(AttributeTrait.prowess) ? 2 : 1}`,
-              display: `${crewTrainingUpgrades.includes(AttributeTrait.prowess) ? 2 : 1} Prowess XP`
+              display:       `${crewTrainingUpgrades.includes(AttributeTrait.prowess) ? 2 : 1} Prowess XP`
             },
             {
               actionSubData: `resolve:${crewTrainingUpgrades.includes(AttributeTrait.resolve) ? 2 : 1}`,
-              display: `${crewTrainingUpgrades.includes(AttributeTrait.resolve) ? 2 : 1} Resolve XP`
+              display:       `${crewTrainingUpgrades.includes(AttributeTrait.resolve) ? 2 : 1} Resolve XP`
             }
           ];
           break;
@@ -311,7 +311,7 @@ class BladesPCSheet extends BladesActorSheet {
       }
 
       const actionsTooltips = {
-        [DowntimeAction.AcquireAsset]: `<h1>Acquire an Asset</h1>
+        [DowntimeAction.AcquireAsset] : `<h1>Acquire an Asset</h1>
         <p>Roll your <strong class='gold-bright'>Tier</strong> to acquire temporary use of an asset or service.</p>
         <p>The <strong>Quality</strong> of the acquired asset depends on the result of your roll:</p>
         <ul>
@@ -320,10 +320,10 @@ class BladesPCSheet extends BladesActorSheet {
         <li><b>Partial Success</b> &mdash; <strong class='gold-bright'>Tier</strong></li>
         <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='gold-bright'>Tier</strong> <strong>− 1</strong></li>
         </ul>`,
-        [DowntimeAction.IndulgeVice]: `<h1>Indulge Your Vice</h1>
+        [DowntimeAction.IndulgeVice] : `<h1>Indulge Your Vice</h1>
         <p>Roll your <strong class='red-bright'>lowest</strong> <strong>Attribute</strong>. Clear <strong>Stress</strong> equal to the <strong>highest</strong> die result.</p>
         <p><strong class="red-bright">Warning:</strong> If you clear more <strong>Stress</strong> than you have, you will <strong class="red-bright">overindulge</strong>.</p>`,
-        [DowntimeAction.LongTermProject]: `<h1>Work on a Long-Term Project</h1>
+        [DowntimeAction.LongTermProject] : `<h1>Work on a Long-Term Project</h1>
         <p>Work to <strong>advance the clock</strong> of one of your existing <strong>Long-Term Projects</strong>, or begin a new one.</p>
         <p>Roll the <strong>Action</strong> most appropriate to the work you are doing. The results of your roll determine how far you will <strong>advance the clock</strong>:</p>
         <ul>
@@ -332,7 +332,7 @@ class BladesPCSheet extends BladesActorSheet {
         <li><b>Partial Success</b> &mdash; <b>Two</b> Segments</li>
         <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='red-bright'>One</strong> Segment</li>
         </ul>`,
-        [DowntimeAction.Recover]: `<h1>Recover from Harm</h1>
+        [DowntimeAction.Recover] : `<h1>Recover from Harm</h1>
         <p>Make a <strong>healing treatment roll</strong> using the appropriate trait of the character healing you:</p>
         <ul>
         <li><strong>A PC with 'Physicker'</strong> &mdash; <strong>Tinker</strong>. <em>(You can heal yourself this way, but suffer <strong class="red-bright">2 Stress</strong> for doing so.)</em></li>
@@ -346,7 +346,7 @@ class BladesPCSheet extends BladesActorSheet {
         <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='red-bright'>One</strong> Segment</li>
         </ul>
         <p>When your <strong>healing clock</strong> is filled, reduce each Harm by one level of severity.</p>`,
-        [DowntimeAction.ReduceHeat]: `<h1>Reduce Heat</h1>
+        [DowntimeAction.ReduceHeat] : `<h1>Reduce Heat</h1>
         <p>Work to <strong>reduce the Heat</strong> on your Crew.</p>
         <p>Roll the <strong>Action</strong> most appropriate to the measures you are taking. The results of your roll determine how much <strong class="red-bright">Heat</strong> you clear:</p>
         <ul>
@@ -355,7 +355,7 @@ class BladesPCSheet extends BladesActorSheet {
         <li><b>Partial Success</b> &mdash; <b>Two</b> Heat</li>
         <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='red-bright'>One</strong> Heat</li>
         </ul>`,
-        [DowntimeAction.Train]: `<h1>Train</h1>
+        [DowntimeAction.Train] : `<h1>Train</h1>
         <p>Select an <strong>Experience Track</strong> <em>(i.e. Insight, Prowess, Resolve, or your Playbook)</em>. Gain <strong>1 XP</strong> in that track, or <strong>2 XP</strong> if your Crew has the corresponding <strong>Training Upgrade</strong>.</p>`
       };
 
@@ -388,15 +388,15 @@ class BladesPCSheet extends BladesActorSheet {
         canPayRep,
         isDisplayingCosts,
         isDisplayingActions,
-        dotline: {
+        dotline : {
           dotlineClass: "dotline-right dotline-glow",
-          data: {
+          data:         {
             value: actionsRemaining,
-            max: actionsRemaining
+            max:   actionsRemaining
           },
           dotlineLabel: "Actions Remaining",
-          isLocked: true,
-          iconFull: "dot-full.svg"
+          isLocked:     true,
+          iconFull:     "dot-full.svg"
         }
       };
     }

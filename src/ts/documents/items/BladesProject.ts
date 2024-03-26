@@ -29,22 +29,22 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
 
     if (!project._clockKey) {
       project._clockKey = await BladesClockKey.Create({
-        name: project.name,
-        target: project,
-        targetKey: "system.clocksData" as TargetKey,
+        name:          project.name,
+        target:        project,
+        targetKey:     "system.clocksData" as TargetKey,
         isNameVisible: false,
-        isSpotlit: false,
-        isVisible: true,
-        displayMode: ClockKeyDisplayMode.clocks
+        isSpotlit:     false,
+        isVisible:     true,
+        displayMode:   ClockKeyDisplayMode.clocks
         // oneKeyIndex: U.gsap.utils.random(0, 4, 1) as OneKeyImgIndex
       }, undefined, [{
-        name: "",
-        index: 0,
-        color: ClockColor.yellow,
-        value: 0,
-        max: 8,
-        isVisible: true,
-        isActive: true,
+        name:          "",
+        index:         0,
+        color:         ClockColor.yellow,
+        value:         0,
+        max:           8,
+        isVisible:     true,
+        isActive:      true,
         isNameVisible: false,
         isHighlighted: false
       }]);
@@ -114,16 +114,16 @@ class BladesProject extends BladesItem implements BladesItemSubClass.Project,
     ].forEach((factor, i) => {
       const factorTotal = this.getFactorTotal(factor);
       factorData[factor] = {
-        name: factor,
-        value: factorTotal,
-        max: factorTotal,
-        baseVal: factorTotal,
-        display: factor === Factor.tier ? U.romanizeNum(factorTotal) : `${factorTotal}`,
-        isActive: i === 0,
-        isPrimary: i === 0,
-        isDominant: false,
+        name:         factor,
+        value:        factorTotal,
+        max:          factorTotal,
+        baseVal:      factorTotal,
+        display:      factor === Factor.tier ? U.romanizeNum(factorTotal) : `${factorTotal}`,
+        isActive:     i === 0,
+        isPrimary:    i === 0,
+        isDominant:   false,
         highFavorsPC: true,
-        cssClasses: `factor-gold${i === 0 ? " factor-main" : ""}`
+        cssClasses:   `factor-gold${i === 0 ? " factor-main" : ""}`
       };
     });
     return factorData;
