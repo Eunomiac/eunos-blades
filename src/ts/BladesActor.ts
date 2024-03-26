@@ -813,7 +813,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
 
   get rollFactors(): Partial<Record<Factor, BladesRoll.FactorData>> {
     const factorData: Partial<Record<Factor, BladesRoll.FactorData>> = {
-      [Factor.tier] : {
+      [Factor.tier]: {
         name:         Factor.tier,
         display:      "Tier",
         value:        this.getFactorTotal(Factor.tier),
@@ -824,7 +824,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
         isDominant:   false,
         highFavorsPC: true
       },
-      [Factor.quality] : {
+      [Factor.quality]: {
         name:         Factor.quality,
         display:      "Quality",
         value:        this.getFactorTotal(Factor.quality),
@@ -1031,7 +1031,7 @@ class BladesActor extends Actor implements BladesDocument<Actor> {
       return arr[Math.floor(Math.random() * arr.length)];
     }
     const randomGen: Record<string, (gender?: string) => string> = {
-      name : (gen?: string) => {
+      name: (gen?: string) => {
         return [
           Math.random() <= titleChance
             ? sampleArray(Randomizers.NPC.name_title)

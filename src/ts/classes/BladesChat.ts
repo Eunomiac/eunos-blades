@@ -104,19 +104,19 @@ class BladesChat extends ChatMessage {
           Record<IDString, BladesConsequence>
         >
       > = {
-        [Position.controlled] : {
+        [Position.controlled]: {
           [RollResult.critical]: {},
           [RollResult.success]:  {},
           [RollResult.partial]:  {},
           [RollResult.fail]:     {}
         },
-        [Position.risky] : {
+        [Position.risky]: {
           [RollResult.critical]: {},
           [RollResult.success]:  {},
           [RollResult.partial]:  {},
           [RollResult.fail]:     {}
         },
-        [Position.desperate] : {
+        [Position.desperate]: {
           [RollResult.critical]: {},
           [RollResult.success]:  {},
           [RollResult.partial]:  {},
@@ -171,7 +171,7 @@ class BladesChat extends ChatMessage {
     if (!rollData) { return undefined; }
     return game.eunoblades.Rolls.get(rollData.id ?? "") ?? new BladesRoll({
       ...rollData,
-      isScopingById : false
+      isScopingById: false
     });
   }
 

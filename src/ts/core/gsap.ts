@@ -42,8 +42,8 @@ export type gsapEffect = {
 
 export const gsapEffects: Record<string, gsapEffect> = {
   // #region CLOCK KEYS
-  keyDrop : {
-    effect : (clockKey, config) => {
+  keyDrop: {
+    effect: (clockKey, config) => {
       const [keyContainer] = $(clockKey as HTMLElement).closest(".clock-key-container");
       return U.gsap.timeline({
         onComplete() {
@@ -53,7 +53,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
         }
       })
         .fromTo(keyContainer, {
-          y : config.yShift
+          y: config.yShift
         }, {
           y:         0,
           autoAlpha: 1,
@@ -61,14 +61,14 @@ export const gsapEffects: Record<string, gsapEffect> = {
           duration:  config.duration
         });
     },
-    defaults : {
+    defaults: {
       duration: 1,
       yShift:   -800
     },
-    extendTimeline : true
+    extendTimeline: true
   },
-  keyPull : {
-    effect : (clockKey, config) => {
+  keyPull: {
+    effect: (clockKey, config) => {
       const [keyContainer] = $(clockKey as HTMLElement).closest(".clock-key-container");
       return U.gsap.timeline({
         onComplete() {
@@ -88,17 +88,17 @@ export const gsapEffects: Record<string, gsapEffect> = {
           duration: 0.25 * config.duration
         }, 0.75 * config.duration);
     },
-    defaults : {
+    defaults: {
       yDelta:   -800,
       duration: 1,
       ease:     "back.in(1)"
     },
-    extendTimeline : true
+    extendTimeline: true
   },
-  keyControlPanelFlip : {
-    effect : (target, config) => {
+  keyControlPanelFlip: {
+    effect: (target, config) => {
       return U.gsap.timeline({
-        delay : config.delay as number,
+        delay: config.delay as number,
         onStart() {
           if (target) {
             const target$ = $(target as HTMLElement);
@@ -108,7 +108,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
             if (nextSibling$.length) {
               U.gsap.effects.keyControlPanelFlip(nextSibling$[0], {
                 ...config,
-                delay : 0.15
+                delay: 0.15
               });
             }
           }
@@ -120,17 +120,17 @@ export const gsapEffects: Record<string, gsapEffect> = {
           ease:     "back.inOut(2)"
         });
     },
-    defaults : {
+    defaults: {
       angle: 180,
       delay: 0
     },
-    extendTimeline : true
+    extendTimeline: true
   },
   // #endregion
 
   // #region CHAT CONSEQUENCE EFFECTS
-  csqEnter : {
-    effect : (csqContainer, config) => {
+  csqEnter: {
+    effect: (csqContainer, config) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
       // ELog.checkLog3("gsap", "gsapEffects.consequenceEnter -> THIS", {this: this, csqRoot});
       const csqIconCircle = csqRoot(".consequence-icon-circle.base-consequence");
@@ -154,7 +154,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       // Crossfade base/accept type lines
       if (csqBaseTypeElem.length > 0) {
         tl.fromTo(csqBaseTypeElem, {
-          opacity : 1
+          opacity: 1
         }, {
           opacity:  0,
           duration: 0.25,
@@ -163,7 +163,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       }
       if (csqAcceptTypeElem.length > 0) {
         tl.fromTo(csqAcceptTypeElem, {
-          opacity : 0
+          opacity: 0
         }, {
           opacity:  1,
           duration: 0.25,
@@ -174,7 +174,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       // Crossfade base/accept name lines
       if (csqBaseNameElem.length > 0) {
         tl.fromTo(csqBaseNameElem, {
-          opacity : 1
+          opacity: 1
         }, {
           opacity:  0,
           duration: 0.25,
@@ -183,7 +183,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       }
       if (csqAcceptNameElem.length > 0) {
         tl.fromTo(csqAcceptNameElem, {
-          opacity : 0
+          opacity: 0
         }, {
           opacity:  1,
           duration: 0.25,
@@ -194,7 +194,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       // Brighten the entire container slightly
       if (csqContainer) {
         tl.fromTo(csqContainer, {
-          filter : "brightness(1)"
+          filter: "brightness(1)"
         }, {
           filter:   `brightness(${config.brightness})`,
           duration: config.duration / 3,
@@ -219,7 +219,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       return tl;
     },
-    defaults : {
+    defaults: {
       brightness:   1.5,
       duration:     0.5,
       scale:        1.5,
@@ -228,8 +228,8 @@ export const gsapEffects: Record<string, gsapEffect> = {
       easeStrength: 1.5
     }
   },
-  csqClickIcon : {
-    effect : (csqIconContainer, config) => {
+  csqClickIcon: {
+    effect: (csqIconContainer, config) => {
       const csqContainer = $(csqIconContainer as HTMLElement).closest(".comp.consequence-display-container");
       const csqRoot = U.gsap.utils.selector(csqContainer[0]);
       const iconRoot = U.gsap.utils.selector(csqIconContainer);
@@ -246,7 +246,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
         onComplete: function() {
           $(csqInteractionPads).css("pointerEvents", "auto");
         },
-        onReverseComplete : function() {
+        onReverseComplete: function() {
           $(csqInteractionPads).css("pointerEvents", "none");
         }
       });
@@ -267,7 +267,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       // Fade out the base consequence icon circle
       if (csqIconCircleBase.length > 0) {
         tl.fromTo(csqIconCircleBase, {
-          opacity : 1
+          opacity: 1
         }, {
           opacity:  0,
           duration: 0.25,
@@ -278,7 +278,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       // Fade in the accept consequence icon circle, enlarging the stroke
       if (csqIconCircleAccept.length > 0) {
         tl.fromTo(csqIconCircleAccept, {
-          opacity : 0
+          opacity: 0
         }, {
           opacity:  1,
           duration: 0.15,
@@ -313,7 +313,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       return tl;
     },
-    defaults : {
+    defaults: {
       duration:     0.5,
       scale:        1.5,
       stagger:      0.05,
@@ -321,8 +321,8 @@ export const gsapEffects: Record<string, gsapEffect> = {
       easeStrength: 1.5
     }
   },
-  csqEnterRight : {
-    effect : (csqContainer) => {
+  csqEnterRight: {
+    effect: (csqContainer) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
       const typeLine = csqRoot(".consequence-type-container .consequence-type.accept-consequence");
       const typeLineBg = csqRoot(".consequence-type-container .consequence-type-bg.accept-consequence");
@@ -338,7 +338,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       if (typeLine.length > 0) {
         tl.fromTo(typeLine,
                   {
-                    color : C.Colors.RED
+                    color: C.Colors.RED
                   },
                   {
                     color:    C.Colors.WHITE,
@@ -414,10 +414,10 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       return tl;
     },
-    defaults : {}
+    defaults: {}
   },
-  csqEnterLeft : {
-    effect : (csqContainer) => {
+  csqEnterLeft: {
+    effect: (csqContainer) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
       const typeLine = csqRoot(".consequence-type-container .consequence-type.accept-consequence");
       const nameLine = csqRoot(".consequence-name-container .consequence-name.accept-consequence");
@@ -459,7 +459,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       if (acceptButton.length > 0) {
         tl.fromTo(acceptButton,
                   {
-                    opacity : 1
+                    opacity: 1
                   },
                   {
                     opacity:  0,
@@ -470,10 +470,10 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       return tl;
     },
-    defaults : {}
+    defaults: {}
   },
-  csqEnterSubLeft : {
-    effect : (csqContainer, config) => {
+  csqEnterSubLeft: {
+    effect: (csqContainer, config) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
 
       const iconCircle = csqRoot(`.consequence-icon-circle.${config.type}-consequence`);
@@ -488,7 +488,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       // Fade in icon circle
       if (iconCircle.length > 0) {
         tl.fromTo(iconCircle, {
-          opacity : 0
+          opacity: 0
         }, {
           opacity:  1,
           duration: 0.5,
@@ -499,7 +499,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       // Fade in typeLine
       if (typeLine.length > 0) {
         tl.fromTo(typeLine, {
-          opacity : 0
+          opacity: 0
         }, {
           opacity:  1,
           duration: 0.5,
@@ -510,7 +510,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       // Slide out nameLine from left
       if (nameLine.length > 0) {
         tl.fromTo(nameLine, {
-          scaleX : 0
+          scaleX: 0
         }, {
           scaleX:   1,
           duration: 0.5,
@@ -602,13 +602,13 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       return tl;
     },
-    defaults : {}
+    defaults: {}
   },
   // #endregion
 
   // #region CHARACTER SHEET EFFECTS
-  fillCoins : {
-    effect : (targets, config) => {
+  fillCoins: {
+    effect: (targets, config) => {
       // Targets will be all coins from zero to where fill currently is
       // Some will already be full, others not.
       // Stagger in timeline
@@ -629,19 +629,19 @@ export const gsapEffects: Record<string, gsapEffect> = {
                        }
       );
     },
-    defaults : {
+    defaults: {
       duration: 1,
       scale:    1,
       filter:   "saturate(1) brightness(2)",
       ease:     "power2.in"
     },
-    extendTimeline : true
+    extendTimeline: true
   },
   // #endregion
 
   // #region GENERAL: 'blurRemove', 'hoverTooltip', 'textJitter'
-  blurRemove : {
-    effect : (targets, config) => U.gsap.timeline({stagger: config.stagger})
+  blurRemove: {
+    effect: (targets, config) => U.gsap.timeline({stagger: config.stagger})
       .to(
         targets,
         {
@@ -659,7 +659,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
             : function(i, target) {
               return U.get(target, "height") as number * -1;
             },
-          marginRight : config.ignoreMargin
+          marginRight: config.ignoreMargin
             ? undefined
             : function(i, target) {
               return U.get(target, "width") as number * -1;
@@ -679,7 +679,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
         },
         config.duration / 2
       ),
-    defaults : {
+    defaults: {
       ignoreMargin: false,
       skewX:        -20,
       duration:     0.5,
@@ -688,10 +688,10 @@ export const gsapEffects: Record<string, gsapEffect> = {
       blur:         10,
       stagger:      0
     },
-    extendTimeline : true
+    extendTimeline: true
   },
-  blurReveal : {
-    effect : (targets, config) => U.gsap.timeline()
+  blurReveal: {
+    effect: (targets, config) => U.gsap.timeline()
       .fromTo(
         targets,
         {
@@ -701,7 +701,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
             : function(i, target) {
               return U.get(target, "height") as number * -1;
             },
-          marginRight : config.ignoreMargin
+          marginRight: config.ignoreMargin
             ? undefined
             : function(i, target) {
               return U.get(target, "width") as number * -1;
@@ -721,7 +721,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       .fromTo(
         targets,
         {
-          autoAlpha : 0
+          autoAlpha: 0
         }, {
           autoAlpha: 1,
           duration:  config.duration / 2,
@@ -732,7 +732,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       .fromTo(
         targets,
         {
-          skewX : config.skewX
+          skewX: config.skewX
         },
         {
           skewX:    0,
@@ -741,7 +741,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
         },
         config.duration / 2
       ),
-    defaults : {
+    defaults: {
       ignoreMargin: false,
       skewX:        -20,
       duration:     0.5,
@@ -749,10 +749,10 @@ export const gsapEffects: Record<string, gsapEffect> = {
       scale:        1.5,
       blur:         10
     },
-    extendTimeline : true
+    extendTimeline: true
   },
-  scaleUpReveal : {
-    effect : (target, config) => {
+  scaleUpReveal: {
+    effect: (target, config) => {
       const tl = U.gsap.timeline()
         .fromTo(target, {
           autoAlpha: 0,
@@ -766,15 +766,15 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       return tl;
     },
-    defaults : {
+    defaults: {
       scale:    1,
       duration: 0.5,
       ease:     "power2"
     },
-    extendTimeline : true
+    extendTimeline: true
   },
-  scaleDownRemove : {
-    effect : (target, config) => {
+  scaleDownRemove: {
+    effect: (target, config) => {
       const tl = U.gsap.timeline()
         .to(target, {
           autoAlpha: 0,
@@ -785,15 +785,15 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       return tl;
     },
-    defaults : {
+    defaults: {
       scale:    1,
       duration: 0.5,
       ease:     "power2"
     },
-    extendTimeline : true
+    extendTimeline: true
   },
-  blurRevealTooltip : {
-    effect : (target, config) => {
+  blurRevealTooltip: {
+    effect: (target, config) => {
       if (!target) { throw new Error(`blurRevealTooltip effect: tooltip element is ${target === null ? "null" : typeof target}`); }
       const tooltip$: JQuery<HTMLElement> = $(target as HTMLElement);
 
@@ -821,17 +821,17 @@ export const gsapEffects: Record<string, gsapEffect> = {
           }
         );
     },
-    defaults : {
+    defaults: {
       scale:             1.5,
       blurStrength:      15,
       ease:              "back.out",
       duration:          0.25,
       onReverseComplete: undefined
     },
-    extendTimeline : true
+    extendTimeline: true
   },
-  textJitter : {
-    effect : (target, config) => {
+  textJitter: {
+    effect: (target, config) => {
       const [targetElem] = $(target as HTMLElement);
       if (!targetElem) { throw new Error("textJitter effect: target not found"); }
 
@@ -844,7 +844,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
           ease:      "none"
         })
         .fromTo(split.chars, {
-          y : -config.yAmp
+          y: -config.yAmp
         }, {
           y:        config.yAmp,
           duration: config.duration,
@@ -857,7 +857,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
           } as gsap.StaggerVars
         }, 0)
         .fromTo(split.chars, {
-          rotateZ : -config.rotateAmp
+          rotateZ: -config.rotateAmp
         }, {
           rotateZ:  config.rotateAmp,
           duration: config.duration,
@@ -870,13 +870,13 @@ export const gsapEffects: Record<string, gsapEffect> = {
           } as gsap.StaggerVars
         }, 0);
     },
-    defaults : {
+    defaults: {
       yAmp:      2,
       rotateAmp: 2,
       duration:  1,
       stagger:   0.05
     },
-    extendTimeline : true
+    extendTimeline: true
   }
   // #endregion
 };
@@ -887,7 +887,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
 export function Initialize() {
   if (gsapPlugins.length) {
     U.gsap.config({
-      nullTargetWarn : true
+      nullTargetWarn: true
     });
     U.gsap.registerPlugin(...gsapPlugins);
     Object.assign(
@@ -949,10 +949,10 @@ export function ApplyTooltipAnimations(html: JQuery<HTMLElement>) {
 
 
     $(el).on({
-      mouseenter : function() {
+      mouseenter: function() {
         game.eunoblades.Director.displayTooltip(tooltipElem);
       },
-      mouseleave : function() {
+      mouseleave: function() {
         game.eunoblades.Director.clearTooltip(tooltipID);
       }
     });

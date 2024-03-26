@@ -306,7 +306,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     const x = this.svgData.width / 2;
     const y = this.svgData.height / 2;
     return {
-      x, y, width : this.svgData.width, height : this.svgData.height
+      x, y, width: this.svgData.width, height: this.svgData.height
     };
   }
   get clocksDisplayPosData(): ElemPosData {
@@ -821,7 +821,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     sceneIDs.push(sceneID);
 
     await this.updateTarget({
-      isVisible : false,
+      isVisible: false,
       sceneIDs
     });
 
@@ -897,7 +897,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     }
 
     this.positionDragger = new Dragger(dragElem$, {
-      type : "top,left",
+      type: "top,left",
       onDragStart(this: Dragger) {
         $(this.target).css("background", "rgba(255, 255, 0, 0.25)");
         $(this.target).css("outlineColor", "rgba(255, 255, 0, 1)");
@@ -1250,7 +1250,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
     // Using elem$ as a reference, locate relevant clock elements and return them in a dictionary.
     const clockElems$: Partial<ClockElems$> = {
-      clockElem$ : elem$
+      clockElem$: elem$
     };
 
     // Get elements that will be there regardless of context, throwing errors if not found.
@@ -1301,7 +1301,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
     // Construct timeline for revealing clock
     const tl = U.gsap.timeline({
-      callbackScope : this,
+      callbackScope: this,
       onComplete(this: BladesClock) {
         callback?.();
       }
@@ -1371,7 +1371,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
     // Construct timeline for hiding clock
     const tl = U.gsap.timeline({
-      callbackScope : this,
+      callbackScope: this,
       onComplete(this: BladesClock) {
         callback?.();
       }

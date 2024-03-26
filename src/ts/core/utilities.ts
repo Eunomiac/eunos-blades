@@ -109,7 +109,7 @@ wheelhouse|whip|whistle|whitecap|whitefish|whitewall|whitewash|widespread|wilder
 word|work|worm|wound|wren|wrench|wrist|writer|writing|yak|yam|yard|yarn|year|yoke|zebra|zephyr|zinc|zipper|zoo
 `.split("|");
 const _numberWords = {
-  ones : [
+  ones: [
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
     "twenty"
@@ -124,7 +124,7 @@ const _ordinals = {
   twenty:  "twentieth", thirty:  "thirtieth", forty:   "fortieth", fifty:   "fiftieth", sixty:   "sixtieth", seventy: "seventieth", eighty:  "eightieth", ninety:  "ninetieth"
 } as const;
 const _romanNumerals = {
-  grouped : [
+  grouped: [
     ["", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ"],
     ["", "Ⅹ", "ⅩⅩ", "ⅩⅩⅩ", "ⅩⅬ", "Ⅼ", "ⅬⅩ", "ⅬⅩⅩ", "ⅬⅩⅩⅩ", "ⅩⅭ"],
     ["", "Ⅽ", "ⅭⅭ", "ⅭⅭⅭ", "ⅭⅮ", "Ⅾ", "ⅮⅭ", "ⅮⅭⅭ", "ⅮⅭⅭⅭ", "ⅭⅯ"],
@@ -132,7 +132,7 @@ const _romanNumerals = {
     ["", "ↂ", "ↂↂ", "ↂↂↂ", "ↂↇ", "ↇ", "ↇↂ", "ↇↂↂ", "ↇↂↂↂ", "ↇↈ"],
     ["", "ↈ", "ↈↈ", "ↈↈↈ"]
   ],
-  ungrouped : [
+  ungrouped: [
     ["", "Ⅰ", "ⅠⅠ", "ⅠⅠⅠ", "ⅠⅤ", "Ⅴ", "ⅤⅠ", "ⅤⅠⅠ", "ⅤⅠⅠⅠ", "ⅠⅩ"],
     ["", "Ⅹ", "ⅩⅩ", "ⅩⅩⅩ", "ⅩⅬ", "Ⅼ", "ⅬⅩ", "ⅬⅩⅩ", "ⅬⅩⅩⅩ", "ⅩⅭ"],
     ["", "Ⅽ", "ⅭⅭ", "ⅭⅭⅭ", "ⅭⅮ", "Ⅾ", "ⅮⅭ", "ⅮⅭⅭ", "ⅮⅭⅭⅭ", "ⅭⅯ"],
@@ -341,7 +341,7 @@ const getKey = <T>(key: string | number | symbol, obj: Record<string | number | 
 };
 
 const FILTERS = {
-  IsInstance : ((classRef: unknown) => ((item: unknown) => typeof classRef === "function" && item instanceof classRef))
+  IsInstance: ((classRef: unknown) => ((item: unknown) => typeof classRef === "function" && item instanceof classRef))
 };
 // #endregion ▄▄▄▄▄ TYPES ▄▄▄▄▄
 
@@ -1897,7 +1897,7 @@ function waitFor(waitForTarget: unknown): Promise<void> {
 // #endregion ▄▄▄▄▄ ASYNC ▄▄▄▄▄
 
 const EventHandlers = {
-  onSelectChange : async (inst: BladesSheet, event: SelectChangeEvent) => {
+  onSelectChange: async (inst: BladesSheet, event: SelectChangeEvent) => {
     const elem = event.currentTarget;
     const {action, dtype, target, flagTarget} = elem.dataset;
 

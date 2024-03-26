@@ -73,13 +73,13 @@ class BladesDialog extends Dialog {
       target,
       flagTarget,
       buttons:    {
-        apply : {
+        apply: {
           icon:     '<i class="fa-solid fa-arrow-down-to-arc"></i>',
           label:    "Apply",
           callback: (html: HTMLElement|JQuery<HTMLElement>) => (app as BladesDialog)
           //   .writeToRollInstance(html as JQuery<HTMLElement>)
         },
-        cancel : {
+        cancel: {
           icon:     '<i class="fas fa-times"></i>',
           label:    game.i18n.localize("Cancel"),
           callback: (html: JQuery|HTMLElement) => {
@@ -88,7 +88,7 @@ class BladesDialog extends Dialog {
           }
         }
       },
-      default : "apply"
+      default: "apply"
     }, {classes: ["eunos-blades", "sheet", "dialog", "simple-input-dialog"] });
 
     return app._render(true, {width: app.width}).then(() => eLog.checkLog3("dialog", "Input Dialog Instance", {this: app}));
@@ -110,7 +110,7 @@ class BladesDialog extends Dialog {
       tags:    tags?.filter((tag): tag is BladesTag => tag !== ""),
       content: "",
       buttons: {
-        cancel : {
+        cancel: {
           icon:     '<i class="fas fa-times"></i>',
           label:    game.i18n.localize("Cancel"),
           callback: (html: JQuery|HTMLElement) => {
@@ -119,7 +119,7 @@ class BladesDialog extends Dialog {
           }
         }
       },
-      default : "cancel"
+      default: "cancel"
     });
 
     return app.hasItems ? app.render(true, {width: app.width}) : undefined;

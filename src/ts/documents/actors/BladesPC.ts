@@ -246,13 +246,13 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   get attributes(): Record<AttributeTrait, number> {
     if (!BladesActor.IsType(this, BladesActorType.pc)) { return undefined as never; }
     return {
-      insight : Object.values(this.system.attributes.insight)
+      insight: Object.values(this.system.attributes.insight)
         .filter(({value}) => value > 0).length
           + this.system.resistance_bonus.insight,
-      prowess : Object.values(this.system.attributes.prowess)
+      prowess: Object.values(this.system.attributes.prowess)
         .filter(({value}) => value > 0).length
           + this.system.resistance_bonus.prowess,
-      resolve : Object.values(this.system.attributes.resolve)
+      resolve: Object.values(this.system.attributes.resolve)
         .filter(({value}) => value > 0).length
           + this.system.resistance_bonus.resolve
     };

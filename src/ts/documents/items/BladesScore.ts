@@ -39,7 +39,7 @@ class BladesScore extends BladesItem implements BladesItemSubClass.Score,
 
     const tierTotal = this.getFactorTotal(Factor.tier);
     return {
-      [Factor.tier] : {
+      [Factor.tier]: {
         name:         "Tier",
         value:        tierTotal,
         max:          tierTotal,

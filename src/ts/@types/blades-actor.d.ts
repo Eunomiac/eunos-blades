@@ -220,7 +220,7 @@ declare global {
 
       getSubActor(actorRef: ActorRef): BladesActor | undefined;
       addSubActor(actorRef: ActorRef): Promise<void>;
-      updateSubActor(actorRef: ActorRef, updateData: DeepPartial<SubActorData & Record<string, any>>): Promise<BladesActor | undefined>;
+      updateSubActor(actorRef: ActorRef, updateData: DeepPartial<SubActorData & Record<string, unknown>>): Promise<BladesActor | undefined>;
       remSubActor(actorRef: ActorRef): Promise<void>;
 
       hasSubActorOf(actorRef: ActorRef): boolean;

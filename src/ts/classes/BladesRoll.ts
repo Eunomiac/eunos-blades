@@ -396,10 +396,10 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
             QualityPenalty: () => this.rollInstance.isTraitRelevant(Factor.quality)
               && (this.rollInstance.rollFactors.source[Factor.quality]?.value ?? 0)
               < (this.rollInstance.rollFactors.opposition[Factor.quality]?.value ?? 0),
-            ScalePenalty : () => this.rollInstance.isTraitRelevant(Factor.scale)
+            ScalePenalty: () => this.rollInstance.isTraitRelevant(Factor.scale)
               && (this.rollInstance.rollFactors.source[Factor.scale]?.value ?? 0)
               < (this.rollInstance.rollFactors.opposition[Factor.scale]?.value ?? 0),
-            TierPenalty : () => this.rollInstance.isTraitRelevant(Factor.tier)
+            TierPenalty: () => this.rollInstance.isTraitRelevant(Factor.tier)
               && (this.rollInstance.rollFactors.source[Factor.tier]?.value ?? 0)
               < (this.rollInstance.rollFactors.opposition[Factor.tier]?.value ?? 0)
           };
@@ -475,16 +475,16 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
 
       if (key === "Negate") {
         const negateOperations = {
-          PushCost : () => {
+          PushCost: () => {
             this.rollInstance.negatePushCost();
           },
-          QualityPenalty : () => {
+          QualityPenalty: () => {
             this.rollInstance.negateFactorPenalty(Factor.quality);
           },
-          ScalePenalty : () => {
+          ScalePenalty: () => {
             this.rollInstance.negateFactorPenalty(Factor.scale);
           },
-          TierPenalty : () => {
+          TierPenalty: () => {
             this.rollInstance.negateFactorPenalty(Factor.tier);
           }
         };
@@ -1249,7 +1249,7 @@ class BladesRollParticipant implements BladesRoll.ParticipantData {
 class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   static Debug = {
-    modWatch : false as RegExp | false,
+    modWatch: false as RegExp | false,
     watchRollMod(name: string | false) {
       if (typeof name === "string") {
         BladesRoll.Debug.modWatch = new RegExp(name, "g");
@@ -2326,7 +2326,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
 
     const defaultFactors: Record<Factor, BladesRoll.FactorData> = {
-      [Factor.tier] : {
+      [Factor.tier]: {
         name:         "Tier",
         value:        0,
         max:          0,
@@ -2338,7 +2338,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         highFavorsPC: true,
         cssClasses:   "factor-gold"
       },
-      [Factor.quality] : {
+      [Factor.quality]: {
         name:         "Quality",
         value:        0,
         max:          0,
@@ -2350,7 +2350,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         highFavorsPC: true,
         cssClasses:   "factor-gold"
       },
-      [Factor.scale] : {
+      [Factor.scale]: {
         name:         "Scale",
         value:        0,
         max:          0,
@@ -2362,7 +2362,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         highFavorsPC: true,
         cssClasses:   "factor-gold"
       },
-      [Factor.magnitude] : {
+      [Factor.magnitude]: {
         name:         "Magnitude",
         value:        0,
         max:          0,
@@ -2400,7 +2400,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       : {};
 
     return {
-      source : Object.fromEntries(
+      source: Object.fromEntries(
         (Object.entries(mergedSourceFactors) as Array<[Factor, BladesRoll.FactorData]>)
           .map(([factor, factorData]) => {
             factorData.value +=
@@ -2414,7 +2414,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
             return [factor, factorData];
           })
       ) as Record<Factor, BladesRoll.FactorData>,
-      opposition : Object.fromEntries(
+      opposition: Object.fromEntries(
         (Object.entries(mergedOppFactors) as Array<[Factor, BladesRoll.FactorData]>)
           .map(([factor, factorData]) => {
             factorData.value += this.data.GMOppBoosts[factor] ?? 0;
@@ -2459,7 +2459,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
             held: rollMod.heldStatus,
             user: rollMod.userStatus
           },
-          is : {
+          is: {
             active:          rollMod.isActive,
             visible:         rollMod.isVisible,
             conditional:     rollMod.isConditional,
@@ -2867,7 +2867,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       rollTraitData,
       rollTraitOptions,
 
-      diceTotal : finalDicePool,
+      diceTotal: finalDicePool,
 
       rollOpposition:             this.rollOpposition,
       rollParticipants:           this.rollParticipants,
@@ -2877,11 +2877,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       rollFactorPenaltiesNegated: this.rollFactorPenaltiesNegated,
 
 
-      posRollMods : Object.fromEntries(Object.values(RollModSection)
+      posRollMods: Object.fromEntries(Object.values(RollModSection)
         .map((cat) => [cat, this.getRollMods(cat, "positive")])) as Record<RollModSection, BladesRollMod[]>,
-      negRollMods : Object.fromEntries(Object.values(RollModSection)
+      negRollMods: Object.fromEntries(Object.values(RollModSection)
         .map((cat) => [cat, this.getRollMods(cat, "negative")])) as Record<RollModSection, BladesRollMod[]>,
-      hasInactiveConditionals : this.calculateHasInactiveConditionalsData(),
+      hasInactiveConditionals: this.calculateHasInactiveConditionalsData(),
 
       rollFactors,
       ...this.calculateOddsHTML(finalDicePool, rollResultDelta)
@@ -2933,7 +2933,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       isAffectingResult: rollResultDelta !== 0
         || this.getVisibleRollMods(RollModSection.result).length > 0
         || (this.isGM && this.getRollMods(RollModSection.result).length > 0),
-      isAffectingAfter : this.getVisibleRollMods(RollModSection.after).length > 0
+      isAffectingAfter: this.getVisibleRollMods(RollModSection.after).length > 0
         || (this.isGM && this.getRollMods(RollModSection.after).length > 0),
       ...GMBoostsData,
       ...positionEffectTradeData,
@@ -2943,7 +2943,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       stressCosts:     stressCostDataSet.length > 0
         ? Object.fromEntries(stressCostDataSet)
         : undefined,
-      armorCosts : armorCostDataSet.length > 0
+      armorCosts: armorCostDataSet.length > 0
         ? Object.fromEntries(armorCostDataSet)
         : undefined,
       specArmorCost: specialArmorCostDataSet[0],
@@ -2980,7 +2980,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   protected calculateGMBoostsData(data: BladesRoll.Data) {
     return {
-      GMBoosts : {
+      GMBoosts: {
         Dice:               data.GMBoosts.Dice ?? 0,
         [Factor.tier]:      data.GMBoosts[Factor.tier] ?? 0,
         [Factor.quality]:   data.GMBoosts[Factor.quality] ?? 0,
@@ -2988,7 +2988,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         [Factor.magnitude]: data.GMBoosts[Factor.magnitude] ?? 0,
         Result:             data.GMBoosts.Result ?? 0
       },
-      GMOppBoosts : {
+      GMOppBoosts: {
         [Factor.tier]:      data.GMOppBoosts[Factor.tier] ?? 0,
         [Factor.quality]:   data.GMOppBoosts[Factor.quality] ?? 0,
         [Factor.scale]:     data.GMOppBoosts[Factor.scale] ?? 0,
@@ -3047,11 +3047,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     });
 
     return {
-      oddsHTMLStart : [
+      oddsHTMLStart: [
         "<div class=\"roll-odds-section-container\">",
         ...resultElements
       ].join("\n"),
-      oddsHTMLStop : "</div>"
+      oddsHTMLStop: "</div>"
     };
   }
 
@@ -3106,11 +3106,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     }
 
     return {
-      oddsHTMLStart : [
+      oddsHTMLStart: [
         "<div class=\"roll-odds-section-container\">",
         ...resultElements
       ].join("\n"),
-      oddsHTMLStop : "</div>"
+      oddsHTMLStop: "</div>"
     };
   }
 
@@ -3284,7 +3284,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       content: await renderTemplate(this.chatTemplate, this.data),
       type:    CONST.CHAT_MESSAGE_TYPES.ROLL,
       flags:   {
-        "eunos-blades" : {rollData: this.data}
+        "eunos-blades": {rollData: this.data}
       }
     }) as BladesChat;
   }
@@ -3527,7 +3527,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     // Otherwise, first toggle targeted factor to new value
     factorToggleData[thisSource][thisFactor] = {
       ...factorToggleData[thisSource][thisFactor] ?? {display: ""},
-      [thisToggle] : value
+      [thisToggle]: value
     };
 
     // Then perform specific logic depending on toggle targeted:
@@ -3543,7 +3543,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
               if (factorToggleData[thisSource][factor]?.[thisToggle] === true) {
                 factorToggleData[thisSource][factor] = {
                   ...factorToggleData[thisSource][factor],
-                  [thisToggle] : false
+                  [thisToggle]: false
                 } as BladesRoll.FactorFlagData;
               }
             });
@@ -3556,7 +3556,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
           const otherSource = thisSource === "source" ? "opposition" : "source";
           factorToggleData[otherSource][thisFactor] = {
             ...factorToggleData[otherSource][thisFactor] ?? {display: ""},
-            isActive : value
+            isActive: value
           };
         }
         break;
@@ -3719,7 +3719,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     // Player-Toggleable Roll Mods
     this.elem$.find("[data-action='player-toggle-mod']").on({
-      click : this._onPlayerToggleRollMod.bind(this)
+      click: this._onPlayerToggleRollMod.bind(this)
     });
 
     // Player Select Elements
@@ -3729,7 +3729,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     // Player Position/Effect Trading
     this.elem$.find("[data-action='player-trade']").on({
-      click : async (event) => {
+      click: async (event) => {
         await this.updateTarget("rollPosEffectTrade", U.lCase(`${$(event.currentTarget).data("value")}`) === "false");
         socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
       }
@@ -3737,7 +3737,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     // Player-Initiated Roll Resolution
     this.elem$.find("[data-action='player-roll']").on({
-      click : this._onClickToRoll.bind(this)
+      click: this._onClickToRoll.bind(this)
     });
 
     if (!game.user.isGM) {return;}
@@ -3761,25 +3761,25 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
      * Handles setting of rollMod status via GM pop-out controls
      */
     this.elem$.find(".controls-toggle").on({
-      click : (event) => {
+      click: (event) => {
         event.preventDefault();
         $(event.currentTarget).parents(".controls-panel").toggleClass("active");
       }
     });
     this.elem$.find("[data-action=\"gm-set\"]").on({
-      click : this._gmControlSet.bind(this)
+      click: this._gmControlSet.bind(this)
     });
     /**
      * Handles setting of baseline rollPosition via GM button line
      */
     this.elem$.find("[data-action=\"gm-set-position\"]").on({
-      click : this._gmControlSetPosition.bind(this)
+      click: this._gmControlSetPosition.bind(this)
     });
     /**
      * Handles setting of baseline rollEffect via GM button line
      */
     this.elem$.find("[data-action=\"gm-set-effect\"]").on({
-      click : this._gmControlSetEffect.bind(this)
+      click: this._gmControlSetEffect.bind(this)
     });
     /**
      * Handles setting values via GM number line (e.g. roll factor boosts/modifications).
@@ -3794,13 +3794,13 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
      * Handles resetting value associated with GM number line on a right-click.
      */
     this.elem$.find("[data-action=\"gm-cycle-target\"]").on({
-      click : this._gmControlCycleTarget.bind(this)
+      click: this._gmControlCycleTarget.bind(this)
     });
     /**
      * Handles setting of Factor toggles: isActive, isPrimary, highFavorsPC, isDominant
      */
     this.elem$.find("[data-action=\"gm-toggle-factor\"]").on({
-      click : this._gmControlToggleFactor.bind(this)
+      click: this._gmControlToggleFactor.bind(this)
     });
 
     this.elem$
@@ -3936,7 +3936,7 @@ class BladesActionRoll extends BladesRoll {
         [Factor.scale]:     0,
         [Factor.magnitude]: 0
       },
-      GMOppBoosts : {
+      GMOppBoosts: {
         [Factor.tier]:      0,
         [Factor.quality]:   0,
         [Factor.scale]:     0,
@@ -3944,29 +3944,29 @@ class BladesActionRoll extends BladesRoll {
       },
       GMOverrides:       {},
       rollFactorToggles: {
-        source : {
-          [Factor.tier] : {
+        source: {
+          [Factor.tier]: {
             display:      "",
             isActive:     false,
             isPrimary:    false,
             isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.quality] : {
+          [Factor.quality]: {
             display:      "",
             isActive:     false,
             isPrimary:    false,
             isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.scale] : {
+          [Factor.scale]: {
             display:      "",
             isActive:     false,
             isPrimary:    false,
             isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.magnitude] : {
+          [Factor.magnitude]: {
             display:      "",
             isActive:     false,
             isPrimary:    false,
@@ -3974,29 +3974,29 @@ class BladesActionRoll extends BladesRoll {
             highFavorsPC: true
           }
         },
-        opposition : {
-          [Factor.tier] : {
+        opposition: {
+          [Factor.tier]: {
             display:      "",
             isActive:     false,
             isPrimary:    false,
             isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.quality] : {
+          [Factor.quality]: {
             display:      "",
             isActive:     false,
             isPrimary:    false,
             isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.scale] : {
+          [Factor.scale]: {
             display:      "",
             isActive:     false,
             isPrimary:    false,
             isDominant:   false,
             highFavorsPC: true
           },
-          [Factor.magnitude] : {
+          [Factor.magnitude]: {
             display:      "",
             isActive:     false,
             isPrimary:    false,

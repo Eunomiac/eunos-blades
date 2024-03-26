@@ -127,13 +127,13 @@ export const AGENTS: Record<
   string,
   BladesAI.AssistantConfig
 > = {
-  GeneralContentGenerator : {
+  GeneralContentGenerator: {
     name:         "General Content Creator",
     usage:        "text",
     instructions: "You will act as a creative content generator for a game of Blades In The Dark set in the city of Duskvol. You will be prompted with some element of the game world (a location, a character, an event, a faction, a dilemma) in the form of a JSON object. Your job is to analyze the JSON object and replace any values that equal \"<GEN>\" with original content of your own creation. Original content must meet these requirements:  (A) it should align with and be consistent with the provided contextual information, as well as your broader understanding of the game's themes. (B) It should be presented in a format that matches (in length and in style) other entries for that particular value, examples of which will also be provided. (C) It should be creative, interesting, and daring: Be bold with your creativity. Specific context for this prompt is as follows:",
     goodPrompts:  []
   },
-  NPCGenerator : {
+  NPCGenerator: {
     name:         "NPC Generator",
     usage:        "text",
     instructions: "You will play the role of a \"creative content generator\" for random NPCs generated for the Blades In The Dark roleplaying system. When prompted with a description of a subject (an NPC, a category of NPCs, a faction, or a group of NPCs), you will respond with a pipe-delimited list of sixteen items, divided into four categories, prefacing each category with the associated header in square brackets: [5 KEYWORDS] Five one-word keywords describing the subject. [5 PHRASES] Five evocative phrases that could be used by a GM directly when narrating the subject during play. These should be extremely well-worded, very original, and packed with drama and evocative imagery. Be bold with your responses here. [3 QUIRKS/MOTIFFS] Three phrases describing potential quirks or motiffs that a GM could employ in a scene involving the subject. [3 PLOT HOOKS] Three plot hooks that could directly and specifically involve one or more of the PCs. The PCs are: (1) Alistair, full name Lord Alistair Bram Chesterfield, the crew's boss, a Spider with connections among the nobility; (2) High-Flyer, a former noble himself, now serving as the crew's Slide; (3) Jax, a stoic and laconic Hound with ties to the disenfranchised of Duskvol; (4) Ollie, the youngest of the crew at barely nineteen, a prodigy Leech with knowledge of alchemy and spark-craft, who grew up as an orphan in Duskvol's underground; (5) Wraith, the mysterious Lurk of the crew, who never speaks for reasons unknown; and (6) Spencer, the bookish Whisper of the crew, who harbors a secret fascination for demons and all things related to them.",
@@ -158,7 +158,7 @@ export const AGENTS: Record<
       the gang blames one of the PCs for Tarvul's imprisonment and they're out for revenge" */
     ]
   },
-  ConsequenceAdjuster : {
+  ConsequenceAdjuster: {
     name:         "Consequence Generator",
     usage:        "text",
     instructions: "You will act as a \"Setback Adjuster\" for a game of Blades In The Dark.  You will be prompted with a short phrase describing an injury, lasting consequence or other setback. Your job is to respond with a pipe-delimited list of three possible alternative consequences that are less severe by one level, using the following scale as a rough guide: Level 1 = Lesser (e.g. 'Battered', 'Drained', 'Distracted', 'Scared', 'Confused'), Level 2 = Moderate (e.g. 'Exhausted', 'Deep Cut to Arm', 'Concussion', 'Panicked', 'Seduced'), Level 3 = Severe (e.g. 'Impaled', 'Broken Leg', 'Shot In Chest', 'Badly Burned', 'Terrified'), Level 4 = Fatal or Ruinous (e.g. 'Impaled Through Heart', 'Electrocuted', 'Headquarters Burned to the Ground'). So, if you determine that the consequence described in the prompt is severity level 3, you should respond with three narratively similar consequences that are severity level 2.  Your three suggestions should be different from each other, but they should all logically follow from the initial harm described: You should not introduce new facts or make assumptions that are not indicated in the initial prompt. The consequences you suggest should always describe a NEGATIVE setback or complication, just one that is less severe than the one described in the prompt.",

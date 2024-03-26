@@ -5,70 +5,70 @@ const LOGGERCONFIG = {
   fullName:             "eLogger",
   aliases:              ["dbLog"],
   stackTraceExclusions: {
-    handlebars : [/scripts\/handlebars/] // From internal Handlebars module
+    handlebars: [/scripts\/handlebars/] // From internal Handlebars module
   }
 };
 
 
 const STYLES = {
-  base : {
+  base: {
     "background":     C.Colors.BLACK,
     "color":          C.Colors.dGOLD,
     "font-family":  "Pragmata Pro",
     "padding":        "0 25px",
     "margin-right": "25px"
   },
-  log0 : {
+  log0: {
     "background":  C.Colors.dGOLD,
     "color":       C.Colors.dBLACK,
     "font-size":  "16px"
   },
-  log1 : {
+  log1: {
     "background":  C.Colors.dBLACK,
     "color":       C.Colors.bGOLD,
     "font-size":  "16px"
   },
-  log2 : {
+  log2: {
     "background":  C.Colors.dBLACK,
     "color":       C.Colors.dGOLD,
     "font-size":  "16px"
   },
-  log3 : {
-    "font-size" : "14px"
+  log3: {
+    "font-size": "14px"
   },
-  log4 : {
-    "font-size" : "12px"
+  log4: {
+    "font-size": "12px"
   },
-  log5 : {
+  log5: {
     "background":  C.Colors.dGREY,
     "color":       C.Colors.bGREY,
     "font-size":  "10px"
   },
-  display : {
+  display: {
     "color":         C.Colors.bGOLD,
     "font-family": "Kirsty",
     "font-size":   "16px",
     "margin-left": "-100px",
     "padding":       "0 100px"
   },
-  warn : {
+  warn: {
     "color":         C.Colors.dBLACK,
     "background":    C.Colors.dGOLD,
     "font-weight": 500
   },
-  error : {
+  error: {
     "color":         C.Colors.bRED,
     "background":    C.Colors.ddRED,
     "font-weight": 500
   },
-  handlebars : {
+  handlebars: {
     "background":     C.Colors.GREY,
     "color":          C.Colors.BLUE,
     "font-family":  "Pragmata Pro",
     "padding":        "0",
     "margin-right": "25px"
   },
-  stack : {
+  stack: {
     "color":         C.Colors.GOLD,
     "font-weight": 100,
     "font-size":   "10px",

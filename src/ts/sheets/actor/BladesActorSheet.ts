@@ -53,9 +53,9 @@ class BladesActorSheet extends ActorSheet {
       activeEffects: Array.from(this.actor.effects) as BladesActiveEffect[],
       hasFullVision: game.user.isGM
         || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER),
-      hasLimitedVision : game.user.isGM
+      hasLimitedVision: game.user.isGM
         || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED),
-      hasControl : game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
+      hasControl: game.user.isGM || this.actor.testUserPermission(game.user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
     };
 
     if (BladesPC.IsType(this.actor) || BladesCrew.IsType(this.actor)) {
@@ -64,7 +64,7 @@ class BladesActorSheet extends ActorSheet {
         abilities: [],
         loadout:   [],
         cohorts:   {
-          gang : this.actor.cohorts
+          gang: this.actor.cohorts
             .filter((item) => item.type === BladesItemType.cohort_gang)
             .map((item) => {
               // Prepare gang cohort items.
@@ -105,17 +105,17 @@ class BladesActorSheet extends ActorSheet {
                   cohortRollData: [
                     {mode: "untrained", label: "Untrained", color: "transparent", tooltip: "<p>Roll Untrained</p>"}
                   ],
-                  edgeData : Object.fromEntries(Object.values(item.system.edges ?? [])
+                  edgeData: Object.fromEntries(Object.values(item.system.edges ?? [])
                     .filter((edge) => /[A-Za-z]/.test(edge))
                     .map((edge) => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
-                  flawData : Object.fromEntries(Object.values(item.system.flaws ?? [])
+                  flawData: Object.fromEntries(Object.values(item.system.flaws ?? [])
                     .filter((flaw) => /[A-Za-z]/.test(flaw))
                     .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
                 }
               );
               return item;
             }),
-          expert : this.actor.activeSubItems
+          expert: this.actor.activeSubItems
             .filter((item): item is BladesItemOfType<BladesItemType.cohort_expert> =>
               item.type === BladesItemType.cohort_expert)
             .map((item) => {
@@ -127,10 +127,10 @@ class BladesActorSheet extends ActorSheet {
                   cohortRollData: [
                     {mode: "untrained", label: "Untrained", tooltip: "<h2>Roll Untrained</h2>"}
                   ],
-                  edgeData : Object.fromEntries(Object.values(item.system.edges ?? [])
+                  edgeData: Object.fromEntries(Object.values(item.system.edges ?? [])
                     .filter((edge) => /[A-Za-z]/.test(edge))
                     .map((edge) => [edge.trim(), C.EdgeTooltips[edge as KeyOf<typeof C["EdgeTooltips"]>]])),
-                  flawData : Object.fromEntries(Object.values(item.system.flaws ?? [])
+                  flawData: Object.fromEntries(Object.values(item.system.flaws ?? [])
                     .filter((flaw) => /[A-Za-z]/.test(flaw))
                     .map((flaw) => [flaw.trim(), C.FlawTooltips[flaw as KeyOf<typeof C["FlawTooltips"]>]]))
                 }
@@ -138,14 +138,14 @@ class BladesActorSheet extends ActorSheet {
               return item;
             })
         },
-        projects : []
+        projects: []
       };
     }
 
     // Prepare additional data for PC and Crew actors.
     if (BladesActor.IsType(this.actor, BladesActorType.pc) || BladesActor.IsType(this.actor, BladesActorType.crew)) {
       sheetData.playbookData = {
-        dotline : {
+        dotline: {
           data:          this.actor.system.experience.playbook,
           dotlineClass:  "xp-playbook",
           target:        "system.experience.playbook.value",
@@ -165,7 +165,7 @@ class BladesActorSheet extends ActorSheet {
       }
 
       sheetData.coinsData = {
-        dotline : {
+        dotline: {
           data:      this.actor.system.coins,
           target:    "system.coins.value",
           iconEmpty: "coin-full.svg",
@@ -367,11 +367,11 @@ class BladesActorSheet extends ActorSheet {
     if (addType && addType in BladesItemType) {
       await this.actor.createEmbeddedDocuments("Item", [
         {
-          name : {
+          name: {
             [BladesItemType.cohort_gang]:   "A Gang",
             [BladesItemType.cohort_expert]: "An Expert"
           }[addType] ?? randomID(),
-          type : addType
+          type: addType
         }
       ]);
       return;
@@ -417,7 +417,7 @@ class BladesActorSheet extends ActorSheet {
     event.preventDefault();
     const target = $(event.currentTarget).data("target");
     await this.actor.update({
-      [target] : !getProperty(this.actor, target)
+      [target]: !getProperty(this.actor, target)
     });
   }
 

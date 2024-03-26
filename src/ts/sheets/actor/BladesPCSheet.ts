@@ -29,13 +29,13 @@ class BladesPCSheet extends BladesActorSheet {
     sheetData.preparedItems = Object.assign(
       context.preparedItems ?? {},
       {
-        abilities : activeSubItems
+        abilities: activeSubItems
           .filter((item): item is BladesItemOfType<BladesItemType.ability> => item.type === BladesItemType.ability)
           .map((item) => {
             // ~ Assign dotlines to abilities with usage data
             if (item.system.uses_per_score.max) {
               Object.assign(item, {
-                inRuleDotline : {
+                inRuleDotline: {
                   data:           item.system.uses_per_score,
                   dotlineLabel:   "Uses",
                   target:         "item.system.uses_per_score.value",
@@ -63,7 +63,7 @@ class BladesPCSheet extends BladesActorSheet {
             }
             if (item.system.uses_per_score.max) {
               Object.assign(item, {
-                inRuleDotline : {
+                inRuleDotline: {
                   data:           item.system.uses_per_score,
                   dotlineLabel:   "Uses",
                   target:         "item.system.uses_per_score.value",
@@ -83,11 +83,11 @@ class BladesPCSheet extends BladesActorSheet {
     ) as BladesActorDataOfType<BladesActorType.pc>["preparedItems"];
 
     sheetData.preparedActors = {
-      crew : activeSubActors
+      crew: activeSubActors
         .find((actor): actor is BladesActorOfType<BladesActorType.crew> => actor.type === BladesActorType.crew),
-      vice_purveyor : activeSubActors
+      vice_purveyor: activeSubActors
         .find((actor): actor is BladesActorOfType<BladesActorType.npc> => actor.hasTag(Tag.NPC.VicePurveyor)),
-      acquaintances : activeSubActors
+      acquaintances: activeSubActors
         .filter((actor): actor is BladesActorOfType<BladesActorType.npc> => actor.hasTag(Tag.NPC.Acquaintance))
     };
 
@@ -133,7 +133,7 @@ class BladesPCSheet extends BladesActorSheet {
           svgEmpty: "frame",
           isLocked: true
         },
-        compContainer : {
+        compContainer: {
           class:  "comp-trauma-conditions comp-vertical full-width",
           blocks: [
             this.actor.traumaList.slice(0, Math.ceil(this.actor.traumaList.length / 2))
@@ -166,7 +166,7 @@ class BladesPCSheet extends BladesActorSheet {
     }
 
     sheetData.abilityData = {
-      dotline : {
+      dotline: {
         dotlineClass: "dotline-right dotline-glow",
         data:         {
           value: this.actor.getAvailableAdvancements("Ability"),
@@ -311,7 +311,7 @@ class BladesPCSheet extends BladesActorSheet {
       }
 
       const actionsTooltips = {
-        [DowntimeAction.AcquireAsset] : `<h1>Acquire an Asset</h1>
+        [DowntimeAction.AcquireAsset]: `<h1>Acquire an Asset</h1>
         <p>Roll your <strong class='gold-bright'>Tier</strong> to acquire temporary use of an asset or service.</p>
         <p>The <strong>Quality</strong> of the acquired asset depends on the result of your roll:</p>
         <ul>
@@ -320,10 +320,10 @@ class BladesPCSheet extends BladesActorSheet {
         <li><b>Partial Success</b> &mdash; <strong class='gold-bright'>Tier</strong></li>
         <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='gold-bright'>Tier</strong> <strong>− 1</strong></li>
         </ul>`,
-        [DowntimeAction.IndulgeVice] : `<h1>Indulge Your Vice</h1>
+        [DowntimeAction.IndulgeVice]: `<h1>Indulge Your Vice</h1>
         <p>Roll your <strong class='red-bright'>lowest</strong> <strong>Attribute</strong>. Clear <strong>Stress</strong> equal to the <strong>highest</strong> die result.</p>
         <p><strong class="red-bright">Warning:</strong> If you clear more <strong>Stress</strong> than you have, you will <strong class="red-bright">overindulge</strong>.</p>`,
-        [DowntimeAction.LongTermProject] : `<h1>Work on a Long-Term Project</h1>
+        [DowntimeAction.LongTermProject]: `<h1>Work on a Long-Term Project</h1>
         <p>Work to <strong>advance the clock</strong> of one of your existing <strong>Long-Term Projects</strong>, or begin a new one.</p>
         <p>Roll the <strong>Action</strong> most appropriate to the work you are doing. The results of your roll determine how far you will <strong>advance the clock</strong>:</p>
         <ul>
@@ -332,7 +332,7 @@ class BladesPCSheet extends BladesActorSheet {
         <li><b>Partial Success</b> &mdash; <b>Two</b> Segments</li>
         <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='red-bright'>One</strong> Segment</li>
         </ul>`,
-        [DowntimeAction.Recover] : `<h1>Recover from Harm</h1>
+        [DowntimeAction.Recover]: `<h1>Recover from Harm</h1>
         <p>Make a <strong>healing treatment roll</strong> using the appropriate trait of the character healing you:</p>
         <ul>
         <li><strong>A PC with 'Physicker'</strong> &mdash; <strong>Tinker</strong>. <em>(You can heal yourself this way, but suffer <strong class="red-bright">2 Stress</strong> for doing so.)</em></li>
@@ -346,7 +346,7 @@ class BladesPCSheet extends BladesActorSheet {
         <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='red-bright'>One</strong> Segment</li>
         </ul>
         <p>When your <strong>healing clock</strong> is filled, reduce each Harm by one level of severity.</p>`,
-        [DowntimeAction.ReduceHeat] : `<h1>Reduce Heat</h1>
+        [DowntimeAction.ReduceHeat]: `<h1>Reduce Heat</h1>
         <p>Work to <strong>reduce the Heat</strong> on your Crew.</p>
         <p>Roll the <strong>Action</strong> most appropriate to the measures you are taking. The results of your roll determine how much <strong class="red-bright">Heat</strong> you clear:</p>
         <ul>
@@ -355,7 +355,7 @@ class BladesPCSheet extends BladesActorSheet {
         <li><b>Partial Success</b> &mdash; <b>Two</b> Heat</li>
         <li><strong class='red-bright'>Fail</strong> &mdash; <strong class='red-bright'>One</strong> Heat</li>
         </ul>`,
-        [DowntimeAction.Train] : `<h1>Train</h1>
+        [DowntimeAction.Train]: `<h1>Train</h1>
         <p>Select an <strong>Experience Track</strong> <em>(i.e. Insight, Prowess, Resolve, or your Playbook)</em>. Gain <strong>1 XP</strong> in that track, or <strong>2 XP</strong> if your Crew has the corresponding <strong>Training Upgrade</strong>.</p>`
       };
 
@@ -388,7 +388,7 @@ class BladesPCSheet extends BladesActorSheet {
         canPayRep,
         isDisplayingCosts,
         isDisplayingActions,
-        dotline : {
+        dotline: {
           dotlineClass: "dotline-right dotline-glow",
           data:         {
             value: actionsRemaining,

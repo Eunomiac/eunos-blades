@@ -22,7 +22,7 @@ const _onTagifyChange = (event: Event, doc: BladesDoc, targetKey: keyof BladesDo
 };
 
 const Tags = {
-  InitListeners : (html: JQuery<HTMLElement>, doc: BladesDoc) => {
+  InitListeners: (html: JQuery<HTMLElement>, doc: BladesDoc) => {
 
     /**
      * Applies tags and Tagify functionality to a specified HTML element.
@@ -42,7 +42,7 @@ const Tags = {
               "data-group": dataGroup
             })))
           .flat(),
-        dropdown : {
+        dropdown: {
           enabled:      0,
           maxItems:     10000,
           placeAbove:   false,
@@ -125,7 +125,7 @@ const Tags = {
         ...Object.values(Tag.Gear),
         ...Object.values(Tag.GearCategory)
       ],
-      "Actor Tags" : [
+      "Actor Tags": [
         ...Object.values(Tag.PC),
         ...Object.values(Tag.NPC)
       ],
@@ -138,7 +138,7 @@ const Tags = {
       "City Districts":  Object.values(MainDistrict),
       "Other Districts": Object.values(OtherDistrict)
     };
-    const factionTags = {Factions : game.actors
+    const factionTags = {Factions: game.actors
       .filter((actor): actor is BladesActorOfType<BladesActorType.faction> & {name: string} =>
         actor.type === BladesActorType.faction && actor.name !== null)
       .map((faction) => faction.name)};

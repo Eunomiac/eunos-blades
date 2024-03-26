@@ -150,7 +150,7 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
     return args.reduce((acc, val) => Object.assign(acc, val), context);
   },
   // For loop: {{#for [from = 0, to, stepSize = 1]}}<html content, this = index>{{/for}}
-  for : (...args) => {
+  for: (...args) => {
     const options = args.pop();
     let [from, to, stepSize] = args;
     from = U.pInt(from);
@@ -206,7 +206,7 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
     return null;
   },
   // Is the value Turf side.
-  isTurfOnEdge : (index: number|string, direction: string): boolean => {
+  isTurfOnEdge: (index: number|string, direction: string): boolean => {
     index = parseInt(`${index}`, 10);
     const edges: Record<number, string[]> = {
       1:  ["top", "left"],
@@ -243,7 +243,7 @@ const handlebarHelpers: Record<string, Handlebars.HelperDelegate> = {
 
     return html;
   },
-  repturf : (turfsAmount, options) => {
+  repturf: (turfsAmount, options) => {
     let html = options.fn(this);
     let turfsAmountInt = parseInt(turfsAmount, 10);
 

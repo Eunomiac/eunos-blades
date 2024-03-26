@@ -164,7 +164,7 @@ class GlobalGetter {
 /* DEVCODE*/Object.assign(
   globalThis,
   {
-    get : new GlobalGetter(),
+    get: new GlobalGetter(),
     // updateClaims,
     // updateContacts,
     // updateOps,

@@ -37,7 +37,7 @@ class BladesNPCSheet extends BladesActorSheet {
       goal:   {size: 2, label: "Goal"},
       method: {size: 2, label: "Method"},
 
-      interests : {size: 4, label: "Interests"},
+      interests: {size: 4, label: "Interests"},
 
       trait:  {size: "half", label: "Trait"},
       trait1: {size: "half", label: null},

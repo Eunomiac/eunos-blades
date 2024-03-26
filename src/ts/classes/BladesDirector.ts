@@ -578,7 +578,7 @@ class BladesDirector {
   static async pushNotice_SocketResponse(pushID: IDString, config: BladesDirector.PushNoticeConfig) {
     const director = game.eunoblades.Director;
     const pushElem$ = $(await renderTemplate("systems/eunos-blades/templates/overlay/notices/push.hbs", {
-      id : pushID,
+      id: pushID,
       ...config
     }))
       .appendTo(director.notificationSection$)
@@ -631,7 +631,7 @@ class BladesDirector {
           from: "start",
           ease: "power1.inOut"
         },
-        onComplete : function() {
+        onComplete: function() {
           targets.forEach((targ) => $(targ).remove());
         }
       });
@@ -813,7 +813,7 @@ class BladesDirector {
     }, 200); // Adjust 200ms to your preferred throttling limit
 
     this._tooltipObserver = Observer.create({
-      type : "touch,pointer",
+      type: "touch,pointer",
       // onMove: throttledOnMove,
       onClick() {
         self.clearTooltips();

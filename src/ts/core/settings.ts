@@ -175,7 +175,7 @@ const registerSettings = function() {
         speech: "tts-1-hd",
         image:  "gpt-4-vision-preview"
       },
-      fileID : ""
+      fileID: ""
     }
   });
   // #endregion
@@ -246,22 +246,22 @@ export function initTinyMCEStyles() {
       style_formats_merge: false,
       toolbar:             "styles | searchreplace | formatting alignment lists elements | removeformat | code | save",
       toolbar_groups:      {
-        formatting : {
+        formatting: {
           icon:    "color-picker",
           tooltip: "Formatting",
           items:   "bold italic underline"
         },
-        alignment : {
+        alignment: {
           icon:    "align-left",
           tooltip: "Alignment",
           items:   "alignleft aligncenter alignright alignjustify | outdent indent"
         },
-        lists : {
+        lists: {
           icon:    "unordered-list",
           tooltip: "Lists",
           items:   "bullist numlist"
         },
-        elements : {
+        elements: {
           icon:    "duplicate",
           tooltip: "Insert Element",
           items:   "tableinsertdialog image hr | template"

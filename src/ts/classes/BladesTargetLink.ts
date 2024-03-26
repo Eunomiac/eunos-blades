@@ -225,7 +225,7 @@ class BladesTargetLink<Schema> {
     }
     // A Config object was submitted.
     return {
-      linkConfig : this.BuildLinkConfig({
+      linkConfig: this.BuildLinkConfig({
         ...{isScopingById: isScopingById ?? true},
         ...("targetID" in dataOrConfig
           ? {targetID: dataOrConfig.targetID}

@@ -20,7 +20,7 @@ class BladesFactionSheet extends BladesActorSheet {
     if (!BladesActor.IsType(this.actor, BladesActorType.faction)) { return context; }
 
     const sheetData: BladesActorDataOfType<BladesActorType.faction> = {
-      tierData : {
+      tierData: {
         class:      "comp-tier comp-vertical comp-teeth",
         label:      "Tier",
         labelClass: "filled-label full-width",
@@ -32,7 +32,7 @@ class BladesFactionSheet extends BladesActorSheet {
           svgEmpty: "full|half|frame"
         }
       },
-      clockKeys : this.actor.clocks
+      clockKeys: this.actor.clocks
     };
 
     return {

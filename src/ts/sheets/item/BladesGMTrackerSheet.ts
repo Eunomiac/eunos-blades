@@ -40,7 +40,7 @@ class BladesTipGenerator {
         "Don't trigger combats automatically: Use alternate objectives to incite the players to fight, giving them agency.",
         "Add another layer by drawing focus to collateral effects of the combat: a fire, a hostage, a collapsing building, innocents in danger"
       ],
-      [BladesTipContext.General] : [
+      [BladesTipContext.General]: [
         "Rolling the dice always means SOMETHING happens.",
         "Jump straight to the action; don't waste time on establishing scenes or filler.",
         "Invoke elements of characters' backstories or beliefs to make any scene more personal."

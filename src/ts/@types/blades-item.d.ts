@@ -202,7 +202,7 @@ declare global {
       oppositions: Record<string, BladesRoll.OppositionData>,
       oppositionSelected: string,
       isActive: boolean,
-      randomizers: Record<RandomCat, Record<string, Record<string, any>>>,
+      randomizers: Record<RandomCat, Record<string, Record<string, unknown>>>,
       pc_notes: Record<string, string>
     }
 

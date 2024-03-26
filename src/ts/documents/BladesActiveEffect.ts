@@ -14,7 +14,7 @@ const CUSTOMFUNCS: Record<
   string,
   (actor: BladesActor, funcData: string, effect?: BladesActiveEffect, isReversing?: boolean) => Promise<void>
 > = {
-  addItem : async (actor: BladesActor, funcData: string, _, isReversing = false) => {
+  addItem: async (actor: BladesActor, funcData: string, _, isReversing = false) => {
     eLog.checkLog("activeEffects", "addItem", {actor, funcData, isReversing});
     if (actor.hasActiveSubItemOf(funcData)) {
       if (isReversing) {
@@ -25,7 +25,7 @@ const CUSTOMFUNCS: Record<
     }
     return undefined;
   },
-  addIfChargen : async (actor, funcData, _, isReversing = false) => {
+  addIfChargen: async (actor, funcData, _, isReversing = false) => {
     eLog.checkLog("activeEffects", "addIfChargen", {actor, funcData, isReversing});
     if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return; }
     const [target, qty] = funcData.split(/:/);
@@ -35,7 +35,7 @@ const CUSTOMFUNCS: Record<
     }
     await actor.update({[target]: U.pInt(getProperty(actor, target)) + U.pInt(qty)});
   },
-  upgradeIfChargen : async (actor, funcData, _, isReversing = false) => {
+  upgradeIfChargen: async (actor, funcData, _, isReversing = false) => {
     eLog.checkLog("activeEffects", "upgradeIfChargen", {actor, funcData, isReversing});
     if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return; }
     const [target, qty] = funcData.split(/:/);
@@ -144,7 +144,7 @@ class BladesActiveEffect extends ActiveEffect {
           }
           // Set flag with effect's data on crew, so future members can have effect applied to them.
           await effect.parent.setFlag("eunos-blades", `memberEffects.${effect.id}`, {
-            appliedTo : effect.parent.members.map((member) => member.id),
+            appliedTo: effect.parent.members.map((member) => member.id),
             effect
           });
           // Update effect on crew-parent to only include 'APPLYTOMEMBERS' change
@@ -161,7 +161,7 @@ class BladesActiveEffect extends ActiveEffect {
         }
         // Set flag with effect's data on parent, so future cohorts can have effect applied to them.
         await (effect.parent as BladesActor).setFlag("eunos-blades", `cohortEffects.${effect.id}`, {
-          appliedTo : effect.parent.cohorts.map((cohort) => cohort.id),
+          appliedTo: effect.parent.cohorts.map((cohort) => cohort.id),
           effect
         });
         // Update effect on parent to only include 'APPLYTOCOHORTS' change

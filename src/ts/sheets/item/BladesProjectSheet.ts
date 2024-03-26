@@ -58,7 +58,7 @@ class BladesProjectSheet extends BladesItemSheet {
 
     return {
       clockKey,
-      keyElems$ : clockKey.getElements$(html.find(".clock-key-panel"))
+      keyElems$: clockKey.getElements$(html.find(".clock-key-panel"))
     };
   }
 
@@ -151,7 +151,7 @@ class BladesProjectSheet extends BladesItemSheet {
     // Add listener for contextual clock name depending on display mode
     html.find("input.sheet-subtitle")
       .on({
-        change : (event: ChangeEvent) => {
+        change: (event: ChangeEvent) => {
           event.preventDefault();
           const action = $(event.currentTarget).data("action");
           eLog.checkLog3("BladesProject", "Clock Name Change", {action, value: $(event.currentTarget).val()});

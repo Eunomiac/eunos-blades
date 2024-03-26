@@ -28,17 +28,17 @@ class BladesCrewSheet extends BladesActorSheet {
     sheetData.preparedItems = Object.assign(
       context.preparedItems ?? {},
       {
-        abilities : activeSubItems
+        abilities: activeSubItems
           .filter((item): item is BladesItemOfType<BladesItemType.crew_ability> =>
             item.type === BladesItemType.crew_ability),
         playbook:   this.actor.playbook as BladesItemOfType<BladesItemType.crew_playbook>|undefined,
         reputation: activeSubItems
           .find((item): item is BladesItemOfType<BladesItemType.crew_reputation> =>
             item.type === BladesItemType.crew_reputation),
-        upgrades : activeSubItems
+        upgrades: activeSubItems
           .filter((item): item is BladesItemOfType<BladesItemType.crew_upgrade> =>
             item.type === BladesItemType.crew_upgrade),
-        preferredOp : activeSubItems
+        preferredOp: activeSubItems
           .find((item): item is BladesItemOfType<BladesItemType.preferred_op> =>
             item.type === BladesItemType.preferred_op)
       }
@@ -62,7 +62,7 @@ class BladesCrewSheet extends BladesActorSheet {
     };
 
     sheetData.upgradeData = {
-      dotline : {
+      dotline: {
         dotlineClass: "dotline-right",
         data:         {
           value: this.actor.availableUpgradePoints,
@@ -75,7 +75,7 @@ class BladesCrewSheet extends BladesActorSheet {
     };
 
     sheetData.abilityData = {
-      dotline : {
+      dotline: {
         dotlineClass: "dotline-right",
         data:         {
           value: this.actor.availableAbilityPoints,
@@ -88,7 +88,7 @@ class BladesCrewSheet extends BladesActorSheet {
     };
 
     sheetData.cohortData = {
-      dotline : {
+      dotline: {
         dotlineClass: "dotline-right",
         data:         {
           value: this.actor.availableCohortPoints,
@@ -104,7 +104,7 @@ class BladesCrewSheet extends BladesActorSheet {
       label:    "Rep",
       dotlines: [
         {
-          data : {
+          data: {
             value: Math.min(this.actor.system.rep.value, this.actor.system.rep.max - this.actor.turfCount),
             max:   this.actor.system.rep.max - this.actor.turfCount
           },
@@ -114,7 +114,7 @@ class BladesCrewSheet extends BladesActorSheet {
           svgEmpty: "full|half|frame"
         },
         {
-          data : {
+          data: {
             value: this.actor.turfCount,
             max:   this.actor.turfCount
           },

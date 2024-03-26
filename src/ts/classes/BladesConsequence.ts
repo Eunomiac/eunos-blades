@@ -164,7 +164,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
     if (!this.rollData) {return undefined;}
     return game.eunoblades.Rolls.get(this.rollData.id) ?? new BladesRoll({
       ...this.rollData,
-      isScopingById : false
+      isScopingById: false
     });
   }
   get position(): Position | undefined {return this.roll?.rollPositionFinal;}
@@ -294,7 +294,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
     }
 
     const updateData = {
-      resistanceModes : this.resistanceModes,
+      resistanceModes: this.resistanceModes,
       ...this.resistSchema
     };
     updateData.resistanceModes.push(resistMode);
@@ -443,11 +443,11 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply master on-enter hover timeline to consequence container.
           $(csqContainer).data("hoverTimeline", U.gsap.effects.csqEnter(csqContainer));
           $(csqContainer).on({
-            mouseenter : function() {
+            mouseenter: function() {
               $(csqContainer).css("z-index", 10);
               $(csqContainer).data("hoverTimeline").play();
             },
-            mouseleave : function() {
+            mouseleave: function() {
               if (!(iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) || iconContainer$.data("isTogglingOff")) {
                 $(csqContainer).data("hoverTimeline").reverse().then(() => {
                   $(csqContainer).css("z-index", "");
@@ -459,7 +459,7 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply click timeline to icon circle
           iconContainer$.data("clickTimeline", U.gsap.effects.csqClickIcon(iconContainer$[0]));
           iconContainer$.on({
-            click : function() {
+            click: function() {
               if (iconContainer$.data("isToggled") || iconContainer$.data("isTogglingOn")) {
                 iconContainer$.data("isTogglingOn", false);
                 iconContainer$.data("isTogglingOff", true);
@@ -498,12 +498,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply hover timelines to right (accept) interaction pad
           rightInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterRight(csqContainer));
           rightInteractionPad$.on({
-            mouseenter : function() {
+            mouseenter: function() {
               if (iconContainer$.data("isToggled")) {
                 rightInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave : function() {
+            mouseleave: function() {
               rightInteractionPad$.data("hoverTimeline").reverse();
             }
           });
@@ -511,12 +511,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply hover timeline to left (resist/armor/special) interaction pad
           leftInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterLeft(csqContainer));
           leftInteractionPad$.on({
-            mouseenter : function() {
+            mouseenter: function() {
               if (iconContainer$.data("isToggled")) {
                 leftInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave : function() {
+            mouseleave: function() {
               leftInteractionPad$.data("hoverTimeline").reverse();
             }
           });
@@ -524,12 +524,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
           // Apply hover timelines to specific left interaction pads
           resistInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, {type: "resist"}));
           resistInteractionPad$.on({
-            mouseenter : function() {
+            mouseenter: function() {
               if (iconContainer$.data("isToggled")) {
                 resistInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave : function() {
+            mouseleave: function() {
               if (iconContainer$.data("isToggled")) {
                 resistInteractionPad$.data("hoverTimeline").reverse();
               }
@@ -538,12 +538,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
 
           armorInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, {type: "armor"}));
           armorInteractionPad$.on({
-            mouseenter : function() {
+            mouseenter: function() {
               if (iconContainer$.data("isToggled")) {
                 armorInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave : function() {
+            mouseleave: function() {
               if (iconContainer$.data("isToggled")) {
                 armorInteractionPad$.data("hoverTimeline").reverse();
               }
@@ -552,12 +552,12 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
 
           specialInteractionPad$.data("hoverTimeline", U.gsap.effects.csqEnterSubLeft(csqContainer, {type: "special"}));
           specialInteractionPad$.on({
-            mouseenter : function() {
+            mouseenter: function() {
               if (iconContainer$.data("isToggled")) {
                 specialInteractionPad$.data("hoverTimeline").play();
               }
             },
-            mouseleave : function() {
+            mouseleave: function() {
               if (iconContainer$.data("isToggled")) {
                 specialInteractionPad$.data("hoverTimeline").reverse();
               }
