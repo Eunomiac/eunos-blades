@@ -150,3 +150,34 @@
     clip-path: unquote($clip-path);
   }
 }
+
+@mixin scaleNesting($nestingClass, $headerSizes, $entrySizes, $colors, $paddingSizes, $marginLeft) {
+  $selector: "&"; // Start with the current selector
+  $base-padding: nth($paddingSizes, 1);
+
+  @for $i from 1 through length($headerSizes) {
+
+    #{$selector} {
+
+      @if $i > 1 {
+        margin-left: $marginLeft;
+      }
+      // Apply styles using sizes from the lists
+      .entry-name {
+        font-size: nth($entrySizes, $i);
+      }
+
+      .folder-header {
+        padding: $base-padding nth($paddingSizes, $i) $base-padding $base-padding;
+        background: nth($colors, $i);
+        h3 {
+          font-size: nth($headerSizes, $i);
+        }
+      }
+    }
+
+    // Update the selector for the next iteration
+    // This moves the targeting down one level of nesting for each iteration
+    $selector: "#{$selector} .#{$nestingClass}"; // Further nesting
+  }
+}

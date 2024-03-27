@@ -9,13 +9,26 @@ $isCompactLayout: true;
 
 // #region ████████ Original: Original Foundry Variables ████████ ~
   // #region ====== Colors ====== ~
-  --color-text-light-highlight: #f0f0e0;
-  --color-text-light-heading: #c9c7b8;
-  --color-text-light-primary: #b5b3a4;
-  --color-text-dark-primary: #191813;
-  --color-text-dark-secondary: #4b4a44;
-  --color-text-dark-header: #23221d;
-  --color-text-dark-inactive: #7a7971;
+
+  /* Dark-Theme Colors, Sorted in Descending Order by Brightness:
+
+  var(--blades-white-bright)
+  var(--blades-white)
+  var(--blades-grey-bright)
+  var(--blades-grey)
+  var(--blades-grey-dark)
+  var(--blades-black)
+  var(--blades-black-dark)
+
+  */
+
+  // --color-text-light-highlight: #f0f0e0;
+  // --color-text-light-heading: #c9c7b8;
+  // --color-text-light-primary: #b5b3a4;
+  // --color-text-dark-primary: #191813;
+  // --color-text-dark-secondary: #4b4a44;
+  // --color-text-dark-header: #23221d;
+  // --color-text-dark-inactive: #7a7971;
   // --color-text-hyperlink: #ff6400;
   --color-text-light-0: #fff;
   --color-text-light-1: #eee;
@@ -41,17 +54,17 @@ $isCompactLayout: true;
   // --color-shadow-primary: #ff0000;
   // --color-shadow-highlight: #ff6400;
   --color-shadow-dark: #000;
-  --color-underline-inactive: #7a7971;
-  --color-underline-active: #44191A;
+  // --color-underline-inactive: #7a7971;
+  // --color-underline-active: #44191A;
   // --color-underline-header: #782e22;
-  --color-border-light-highlight: #f0f0e0;
-  --color-border-light-primary: #b5b3a4;
-  --color-border-light-secondary: #c9c7b8;
-  --color-border-light-tertiary: #7a7971;
-  --color-border-dark: #000;
-  --color-border-dark-primary: #191813;
-  --color-border-dark-secondary: #23221d;
-  --color-border-dark-tertiary: #4b4a44;
+  // --color-border-light-highlight: #f0f0e0;
+  // --color-border-light-primary: #b5b3a4;
+  // --color-border-light-secondary: #c9c7b8;
+  // --color-border-light-tertiary: #7a7971;
+  // --color-border-dark: #000;
+  // --color-border-dark-primary: #191813;
+  // --color-border-dark-secondary: #23221d;
+  // --color-border-dark-tertiary: #4b4a44;
   // --color-border-highlight: #ff6400;
   // --color-border-highlight-alt: #ff0000;
   --color-bg-btn-minor-inactive: #c9c7b8;
@@ -69,12 +82,19 @@ $isCompactLayout: true;
   --z-index-canvas: 0;
   --z-index-app: 30;
   --z-index-ui: 60;
-  --z-index-window: 100;
+  --z-index-window: 1000;
   // #endregion ___ Z-Indices ___
   // #region ====== Layout ====== ~
   --sidebar-width: 300px;
   --sidebar-header-height: 32px;
-  --sidebar-item-height: 48px;
+  // --sidebar-item-height: 48px;
+  // --sidebar-tab-height: 32px;
+  --sidebar-tab-width: 24px;
+
+  // --sidebar-header-height: 24px !important;
+  --sidebar-tab-height: 24px !important;
+  --sidebar-item-height: 28px !important;
+
   --hotbar-height: 52px;
   --hotbar-width: 578px;
   --macro-size: 50px;
@@ -108,12 +128,33 @@ $isCompactLayout: true;
 // #region ████████ Overrides: Foundry Variable Overrides ████████
   // Comment out any changed vars in 'Original' section, to keep track.
   // #region ====== Colors ======
+  // --color-text-light-highlight: var(--blades-black-dark); // #f0f0e0
+  // --color-text-light-heading: var(--blades-black); // #c9c7b8
+  --color-text-light-primary: var(--blades-grey-dark); // #b5b3a4
+  --color-text-dark-primary: var(--blades-white); // #191813
+  --color-text-dark-secondary: var(--blades-grey); // #4b4a44
+  --color-text-dark-header: var(--blades-white); // #23221d
+  --color-text-dark-inactive: var(--blades-grey-bright); // #7a7971
   --color-text-hyperlink: var(--blades-gold-bright); // #ff6400;
   --color-shadow-primary: var(--blades-white); // #ff0000;
   --color-shadow-highlight: var(--blades-gold-bright); // #ff6400;
+  --color-underline-inactive: var(--blades-grey-bright); // #7a7971;
+  --color-underline-active: var(--blades-gold-bright); // #44191A;
+
+  // --color-border-light-highlight: var(--blades-black-dark); // #f0f0e0
+  --color-border-light-primary: var(--blades-black-dark); // #b5b3a4
+  --color-border-light-secondary: var(--blades-grey-dark); // #c9c7b8
+  --color-border-light-tertiary: var(--blades-grey); // #7a7971
+  --color-border-dark: var(--blades-white); // #000
+  --color-border-dark-primary: var(--blades-white); // #191813
+  --color-border-dark-secondary: var(--blades-white); // #23221d
+  --color-border-dark-tertiary: var(--blades-grey-bright); // #4b4a44
   --color-underline-header: var(--blades-grey); // #782e22;
   --color-border-highlight: var(--blades-gold-bright); // #ff6400;
   --color-border-highlight-alt: var(--blades-gold); // #ff0000;
+
+  --color-bg-btn-minor-inactive: var(--blades-grey-dark); // #c9c7b8;
+  --color-bg-btn-minor-active: var(--blades-grey); // #b5b3a4;
   // #endregion ___ Colors ___
 // #endregion ▄▄▄▄▄ Overrides ▄▄▄▄▄
 
@@ -136,11 +177,27 @@ $isCompactLayout: true;
 // #region ████████ Colors: System Color Settings ████████ ~
   // #region ░░░░░░░ Blades Colors & Fades ░░░░░░░ ~
   --blades-white-bright-nums: 255, 255, 255;
-  --blades-white-nums: 200, 200, 200;
+  --blades-white-nums: 200, 200, 200; // 212 // 200
+  --blades-grey-bright-nums: 170, 170, 170; // 170 // 170
+  --blades-grey-nums: 119, 119, 119; // 128 // 119
+  --blades-grey-dark-nums: 68, 68, 68; // 85 // 68
+  --blades-black-nums: 32, 32, 32; // 42 // 32
+  --blades-black-dark-nums: 0, 0, 0;
+
+  --blades-white-bright-nums: 255, 255, 255;
+  --blades-white-nums: 212, 212, 212;
   --blades-grey-bright-nums: 170, 170, 170;
-  --blades-grey-nums: 119, 119, 119;
-  --blades-grey-dark-nums: 68, 68, 68;
-  --blades-black-nums: 32, 32, 32;
+  --blades-grey-nums: 128, 128, 128;
+  --blades-grey-dark-nums: 85, 85, 85;
+  --blades-black-nums: 42, 42, 42;
+  --blades-black-dark-nums: 0, 0, 0;
+
+  --blades-white-bright-nums: 255, 255, 255;
+  --blades-white-nums: 200, 200, 200;       // From 212, 212, 212
+  --blades-grey-bright-nums: 158, 158, 158; // From 170, 170, 170
+  --blades-grey-nums: 116, 116, 116;        // From 128, 128, 128
+  --blades-grey-dark-nums: 73, 73, 73;      // From 85, 85, 85
+  --blades-black-nums: 30, 30, 30;          // From 42, 42, 42
   --blades-black-dark-nums: 0, 0, 0;
 
   --blades-gold-bright-nums: 206,180, 71; // 175,149, 37; // 255, 231, 92;
@@ -275,7 +332,7 @@ $isCompactLayout: true;
   --color-text-lightest: var(--blades-white-bright-nums);
   --color-text-darker: var(--blades-grey-bright-nums);
   --color-shadow-primary: var(--blades-white-bright-nums);
-  --color-text-dark-primary: var(--blades-white-nums);
+  // --color-text-dark-primary: var(--blades-white-nums);
   --color-bg-option: var(--blades-black-nums);
   // #endregion ░░░░[Numerically-Defined Colors (for Emu Stylesheet)]░░░░
 

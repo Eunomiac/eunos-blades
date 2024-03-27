@@ -1,4 +1,13 @@
 & {
+
+  &,
+  * {
+    --font-heading: var(--font-emphasis);
+    --font-weight-heading: normal;
+    --text-shadow-heading: none;
+    --line-height-heading: 1.2;
+  }
+
   row-gap: 0px;
   overflow: visible;
   background: linear-gradient(to left, var(--blades-black) 0%, transparent 100%);

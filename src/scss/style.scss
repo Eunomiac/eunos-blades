@@ -30,7 +30,8 @@
 }
 
 :root {
-  // @import './core/globals';
+  @import './core/vars';
+  @import './core/globals';
   // @import './core/components';
 
   &,
@@ -76,17 +77,7 @@
       @import './components/clocks-overlay';
     }
 
-    #sidebar {
-      // border: none;
-      // background: transparent;
-      // top: 0px;
-      // bottom: 0px;
-      // height: 100%;
-
-      // #sidebar-tabs { background: var(--blades-black-dark); }
-
-      @import "./components/push-notifications";
-    }
+    #sidebar { @import './core/sidebar'; }
 
     #interface,
     #controls,
@@ -101,58 +92,38 @@
         --font-heading: "Fjalla One";
         --font-weight-heading: normal;
         --text-shadow-heading: none;
-        --line-height-heading: 1.2;
+        --line-height-heading: 1;
+
+        li.folder {
+          > .folder-header {
+            padding: 0px 3px;
+            align-items: center;
+            line-height: var(--line-height-heading);
+            font-family: var(--font-heading);
+            font-weight: var(--font-weight-heading);
+            text-shadow: var(--text-shadow-heading);
+          }
+        }
       }
 
       .control-tools .scene-control:hover {
-        height: calc(var(--blades-spacer-button-lg) - 2px);
-        width: calc(var(--blades-spacer-button-lg) - 2px);
+        // height: calc(var(--blades-spacer-button-lg) - 2px);
+        // width: calc(var(--blades-spacer-button-lg) - 2px);
       }
 
-      #chat {
-        // @import './core/reset';
-        // @import './core/globals';
+      #chat { @import './chat/chat'; }
 
-        // #chat-form { display: none }
-        // #chat-controls {
-        //   opacity: 0 !important;
-        //   transition: 0.5s;
+      &:not(#interface) {
+        opacity: 0.5;
+        transition: 0.25s;
 
-        //   &:hover {
-        //     opacity: 1 !important;
-        //   }
-        // }
-        &,
-        * {
-          --font-heading: var(--font-emphasis);
-          --font-weight-heading: normal;
-          --text-shadow-heading: none;
-          --line-height-heading: 1.2;
+        &:hover {
+          opacity: 1
         }
-
-        @import './chat/chat';
-      }
-
-    }
-
-    #interface {
-      @import "./components/lightning-border-overlay";
-    }
-
-    #controls,
-    #navigation,
-    #hotbar,
-    #players {
-      opacity: 0.5;
-      transition: 0.25s;
-
-      &:hover {
-        opacity: 1
       }
     }
 
     .app.window-app {
-      @import './core/reset';
       @import './core/globals';
 
       // General App Window Styles
@@ -227,6 +198,7 @@
 
       &.sheet {
 
+        @import './core/reset';
         @import './sheets/sheets';
 
         &.actor {

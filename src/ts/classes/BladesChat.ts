@@ -27,8 +27,7 @@ class BladesChat extends ChatMessage {
 
     Hooks.on("renderChatMessage", (msg: BladesChat, html: JQuery<HTMLElement>) => {
       ApplyTooltipAnimations(html);
-      const {rollData} = msg.flagData;
-      if (rollData) {
+      if (msg.flagData?.rollData) {
         BladesConsequence.ApplyChatListeners(msg);
       }
       html.addClass("display-ok");

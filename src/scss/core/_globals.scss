@@ -63,6 +63,35 @@
     padding: 0.1rem 0.2rem;
   }
 
+  button {
+    color: var(--color-text-dark-primary);
+    background: var(--color-border-light-secondary);
+    border-color: var(--color-border-light-primary);
+    border-style: outset;
+    border-radius: 3px;
+  }
+
+  input[type="text"], input[type="number"], input[type="password"], input[type="date"], input[type="time"], input[type="search"] {
+    background: var(--blades-black-dark-fade);
+  }
+  input[type="range"] + .range-value {
+    background: var(--blades-black-dark-fade-strong);
+  }
+
+  input[type="checkbox"] {
+    filter: brightness(var(--checkbox-brightness, 0.9)) invert(1);
+
+    &:checked {
+      --checkbox-brightness: 1.2;
+      box-shadow: -1px -1px 1px var(--blades-white-bright), 0px 0px 1px var(--blades-black-dark);
+    }
+  }
+
+  select {
+    color: var(--color-text-dark-primary);
+    background: var(--blades-black-dark-fade);
+  }
+
   i.fa-duotone[style] {
 
     /* Your code here */

@@ -2,13 +2,14 @@
 TO RUN DEVELOPMENT SERVER:
 
 - Open TWO Powershell7 windows (as Administrator)
-  - cd 'D:\Users\Ryan\Documents\Projects\.CODING\FoundryVTT\FoundryDevData\Data\systems\eunos-blades'
-  - npx vite build
-- When build process completes, run (in the same window):
-  - node 'D:/LTSC Programs/FoundryVTT/Foundry Virtual Tabletop/resources/app/main.js' --dataPath='D:\Users\Ryan\Documents\Projects\!Roleplaying\!!!FOUNDRY'
 
-- In second Powershell7 window:
-  - npx vite serve
+  FIRST WINDOW:
+    - cd 'D:\Users\Ryan\Documents\Projects\.CODING\FoundryVTT\FoundryDevData\Data\systems\eunos-blades'
+    - npx vite build
+    - node 'D:/LTSC Programs/FoundryVTT/Foundry Virtual Tabletop/resources/app/main.js' --dataPath='D:\Users\Ryan\Documents\Projects\!Roleplaying\!!!FOUNDRY'
+
+  THEN, IN SECOND WINDOW:
+    - npx vite serve
 -->
 
 

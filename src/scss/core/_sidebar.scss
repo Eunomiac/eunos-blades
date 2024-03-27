@@ -1,0 +1,131 @@
+& {
+  border: none;
+
+  @import "../components/push-notifications";
+
+  .directory {
+    .directory-header {
+      .header-actions {
+        line-height: var(--line-height-heading);
+
+        button {
+          height: calc(var(--sidebar-header-height) - (2 * 2px));
+          line-height: var(--line-height-heading);
+          margin: 2px 4px;
+          font-family: var(--font-heading);
+        }
+      }
+      .header-search {
+        input[type="search"] {
+          background: var(--blades-black-dark-fade);
+          border: 1px solid var(--color-border-light-tertiary);
+        }
+      }
+    }
+
+    .directory-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+
+      .directory-item {
+        @include scaleNesting(
+          "subdirectory",
+          (18px, 16px, 14px),
+          (18px, 18px, 18px),
+          (
+            var(--blades-white-bright),
+            var(--blades-white),
+            var(--blades-grey-bright)
+          ),
+          (4px, 4px, 4px),
+          10px
+        );
+      }
+
+      .directory-item {
+        gap: 1px;
+
+        border: none;
+
+        &:nth-child(even) {
+          background-color: var(--blades-black-dark-fade-strong);
+        }
+
+        .entry-name {
+          font-family: var(--font-heading);
+        }
+
+        .folder-header {
+          padding: 4px;
+          background: var(--blades-white);
+
+          &.context {
+            background: var(--blades-gold-bright) !important;
+          }
+          h3 {
+            font-family: var(--font-emphasis);
+            line-height: 1;
+            color: var(--blades-black);
+          }
+
+          a {
+            color: var(--color-text-light-highlight);
+            filter: invert(0.8);
+          }
+        }
+
+        &.folder {
+
+
+
+          &:not(.collapsed) {
+            > .subdirectory {
+              display: flex;
+              flex-direction: column;
+              gap: 1px;
+            }
+          }
+        }
+
+        .subdirectory {
+          border: none;
+          margin-bottom: 5px;
+
+          > .directory-item.folder {
+            > .folder-header {
+              background: var(--blades-grey-bright);
+            }
+
+            &:nth-child(even) {
+              > .folder-header {
+                background: var(--blades-grey);
+              }
+            }
+          }
+        }
+      }
+
+      > .directory-item.folder {
+
+        > .folder-header {
+          background: var(--blades-white);
+          h3 {
+            color: var(--blades-black-dark);
+          }
+
+          a {
+            color: var(--color-text-light-highlight);
+            filter: invert(0.8);
+          }
+        }
+
+        &:nth-child(even) {
+          > .folder-header {
+            background: var(--blades-grey-bright);
+          }
+        }
+      }
+    }
+  }
+}

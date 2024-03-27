@@ -8,12 +8,29 @@ import BladesClockKeeper from "./items/BladesClockKeeper";
 import BladesGMTracker from "./items/BladesGMTracker";
 import BladesScore from "./items/BladesScore";
 
-const ItemsMap: Partial<Record<BladesItemType, typeof BladesItem>> = {
-  [BladesItemType.clock_keeper]: BladesClockKeeper,
-  [BladesItemType.gm_tracker]:   BladesGMTracker,
-  [BladesItemType.location]:     BladesLocation,
-  [BladesItemType.project]:      BladesProject,
-  [BladesItemType.score]:        BladesScore
+const ItemsMap: Record<BladesItemType, typeof BladesItem> = {
+  [BladesItemType.ability]:         BladesItem,
+  [BladesItemType.background]:      BladesItem,
+  [BladesItemType.clock_keeper]:    BladesClockKeeper,
+  [BladesItemType.cohort_gang]:     BladesItem,
+  [BladesItemType.cohort_expert]:   BladesItem,
+  [BladesItemType.crew_ability]:    BladesItem,
+  [BladesItemType.crew_reputation]: BladesItem,
+  [BladesItemType.crew_playbook]:   BladesItem,
+  [BladesItemType.crew_upgrade]:    BladesItem,
+  [BladesItemType.feature]:         BladesItem,
+  [BladesItemType.gm_tracker]:      BladesGMTracker,
+  [BladesItemType.heritage]:        BladesItem,
+  [BladesItemType.gear]:            BladesItem,
+  [BladesItemType.playbook]:        BladesItem,
+  [BladesItemType.preferred_op]:    BladesItem,
+  [BladesItemType.stricture]:       BladesItem,
+  [BladesItemType.vice]:            BladesItem,
+  [BladesItemType.project]:         BladesProject,
+  [BladesItemType.ritual]:          BladesItem,
+  [BladesItemType.design]:          BladesItem,
+  [BladesItemType.location]:        BladesLocation,
+  [BladesItemType.score]:           BladesScore
 };
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
