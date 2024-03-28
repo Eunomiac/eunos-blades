@@ -1,3 +1,30 @@
+<!--
+  *** RUNNING DEVELOPMENT SERVER ***
+
+  Open TWO POWERSHELL WINDOWS (ADMINISTRATOR)
+
+    First Window:
+      - cd 'D:\Users\Ryan\Documents\Projects\.CODING\FoundryVTT\FoundryDevData\Data\systems\eunos-blades'
+      - npx vite build
+      - node 'D:/LTSC Programs/FoundryVTT/Foundry Virtual Tabletop/resources/app/main.js' --dataPath='D:\Users\Ryan\Documents\Projects\!Roleplaying\!!!FOUNDRY'
+
+    Second Window:
+      - npx vite serve
+
+ *** PREPARING TO DISTRIBUTE ***
+
+  1) CTRL-SHIFT-P > Tasks: Run Task > COPY: City of Knives to Root
+                  > Tasks: Run Task > Build fonts.scss
+
+  2) Open POWERSHELL WINDOW (ADMINISTRATOR)
+    - cd 'D:\Users\Ryan\Documents\Projects\.CODING\FoundryVTT\FoundryDevData\Data\systems\eunos-blades'
+    - npx vite build
+
+  3) Zip 'city-of-knives' and 'dist' folders into archive.
+
+  4) Edit archive. Rename 'dist' folder to 'eunos-blades'.
+-->
+
 # Euno's "Blades In The Dark" for Foundry VTT
 
 | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades)  | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) |
