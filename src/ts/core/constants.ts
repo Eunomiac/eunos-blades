@@ -426,6 +426,7 @@ const C = {
   SYSTEM_NAME:      "Euno's Blades",
   SYSTEM_FULL_NAME: "Euno's Blades In The Dark",
   TEMPLATE_ROOT:    "systems/eunos-blades/templates",
+  GM_PORTRAIT:      "systems/eunos-blades/assets/portraits/gm-chat.png",
   AI_MODELS:        {
     baseContext: [
       "babbage-002",

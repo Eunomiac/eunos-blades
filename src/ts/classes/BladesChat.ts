@@ -4,6 +4,7 @@ import {ApplyTooltipAnimations} from "../core/gsap";
 import C, {RollType, Position, Effect, RollResult} from "../core/constants";
 import U from "../core/utilities";
 
+import {BladesActor} from "../documents/BladesActorProxy";
 import BladesRoll from "./BladesRoll";
 import BladesConsequence from "./BladesConsequence";
 import {ChatMessageData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
@@ -11,13 +12,27 @@ import {ChatMessageDataConstructorData} from "@league-of-foundry-developers/foun
 /* eslint-enable @typescript-eslint/no-unused-vars */
 // #endregion
 
+enum BladesChatType {
+  Roll = "Roll",
+  Chat = "Chat",
+  Whisper = "Whisper"
+}
+
 namespace BladesChat {
-  export interface Data extends ChatMessageDataConstructorData { }
+  export interface Data extends ChatMessageDataConstructorData {
+    bladesRoll?: BladesRoll
+  }
 
   export interface Flags {
     template: string,
     rollData?: BladesRoll.Data,
     resistRollData?: BladesRoll.Data
+  }
+
+  export interface Context extends Data {
+    speakerName?: string,
+    speakerPortrait?: string,
+    blockClasses?: string
   }
 }
 
@@ -27,13 +42,17 @@ class BladesChat extends ChatMessage {
 
     Hooks.on("renderChatMessage", (msg: BladesChat, html: JQuery<HTMLElement>) => {
       ApplyTooltipAnimations(html);
-      if (msg.flagData?.rollData) {
+      if (msg.isBladesRoll) {
+        html.addClass("blades-chat-message");
+        html.addClass("blades-roll-message");
         BladesConsequence.ApplyChatListeners(msg);
       }
       html.addClass("display-ok");
     });
 
     return loadTemplates([
+      "systems/eunos-blades/templates/chat/blades-message.hbs",
+
       "systems/eunos-blades/templates/chat/roll-result/action.hbs",
       "systems/eunos-blades/templates/chat/roll-result/action-clock.hbs",
       "systems/eunos-blades/templates/chat/roll-result/action-acquireasset.hbs",
@@ -53,26 +72,104 @@ class BladesChat extends ChatMessage {
     ]);
   }
 
-  // static async ConstructRollOutput(rollInst: BladesRoll): Promise<BladesChat> {
+  static get template() { return "systems/eunos-blades/templates/chat/blades-message.hbs"; }
 
-  //   const rollData = {
-  //     ...rollInst.data,
-  //     rollTraitVerb: rollInst.rollTraitVerb ?? "",
-  //     rollTraitPastVerb: rollInst.rollTraitPastVerb ?? rollInst.rollTraitVerb ?? ""
-  //   };
+  static override async create(data: BladesChat.Data, options: DocumentModificationContext = {}) {
+    if (data.bladesRoll) {
+      ({data, options} = await BladesChat.ConstructBladesRollData(
+        data as BladesChat.Data & {bladesRoll: BladesRoll},
+        options
+      ));
+    } else {
+      ({data, options} = await BladesChat.ConstructBladesChatMessageData(
+        data,
+        options
+      ));
+    }
+    return super.create<typeof BladesChat>(data, options) as Promise<BladesChat|undefined>;
+  }
 
-  //   return await BladesChat.create({
-  //     speaker: rollInst.getSpeaker(BladesChat.getSpeaker()),
-  //     content: await renderTemplate(rollInst.template, rollData),
-  //     type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-  //     flags: {
-  //       "eunos-blades": {
-  //         template: rollInst.template,
-  //         rollData
-  //       }
-  //     }
-  //   }) as BladesChat;
-  // }
+  static async ConstructBladesRollData(data: BladesChat.Data & {bladesRoll: BladesRoll}, options: DocumentModificationContext = {}) {
+    const {bladesRoll, ...baseChatData} = data;
+    const msgData = {
+      speaker: bladesRoll.getSpeaker(BladesChat.getSpeaker()),
+      content: await renderTemplate(bladesRoll.chatTemplate, bladesRoll.data),
+      type:    CONST.CHAT_MESSAGE_TYPES.ROLL,
+      flags:   {
+        "eunos-blades": {
+          template: bladesRoll.chatTemplate,
+          rollData: bladesRoll.data
+        }
+      }
+    };
+    return {data: {
+      ...baseChatData,
+      ...msgData
+    }, options};
+  }
+
+  static async ConstructBladesChatMessageData(
+    data: BladesChat.Data,
+    options: DocumentModificationContext = {}
+  ) {
+
+    function getUser(cData: BladesChat.Data): User|undefined {
+      if (typeof cData.user === "string") {
+        return game.users.get(cData.user);
+      } else if (cData.user instanceof User) {
+        return cData.user;
+      }
+      return undefined;
+    }
+
+    const context: BladesChat.Context = {
+      ...data
+    };
+    const blockClasses: string[] = [];
+    const user: User|undefined = getUser(data);
+
+    if (data.type === CONST.CHAT_MESSAGE_TYPES.OOC) {
+      blockClasses.push("blades-ooc-message");
+      if (user) {
+        context.speakerName = user.name ?? undefined;
+        if (user.isGM) {
+          blockClasses.push("blades-gm-message");
+          context.speakerPortrait = C.GM_PORTRAIT;
+        } else if (user.character) {
+          context.speakerPortrait = user.character.img;
+        }
+      }
+    } else {
+      blockClasses.push("blades-ic-message");
+      let speakingChar: BladesActor|undefined;
+      if (data.speaker?.actor) {
+        if (typeof data.speaker.actor === "string") {
+          speakingChar = game.actors.get(data.speaker.actor);
+        } else if (data.speaker.actor instanceof BladesActor) {
+          speakingChar = data.speaker.actor;
+        }
+      }
+      if (!speakingChar) {
+        if (user?.isGM) {
+          blockClasses.push("blades-gm-message");
+          context.speakerName = "The Gamemaster";
+          context.speakerPortrait = C.GM_PORTRAIT;
+        } else if (user?.character) {
+          speakingChar = user.character;
+        }
+      }
+      if (speakingChar && !context.speakerPortrait) {
+        context.speakerName = speakingChar.name;
+        context.speakerPortrait = speakingChar.img;
+      }
+    }
+
+    context.blockClasses = blockClasses.join(" ");
+
+    data.content = await renderTemplate(BladesChat.template, context);
+
+    return {data, options};
+  }
 
   static IsNewestRollResult(rollInst: BladesRoll): boolean {
     const lastRollResultID = $("#chat-log .chat-message .blades-roll:not(.inline-roll)")
@@ -82,11 +179,36 @@ class BladesChat extends ChatMessage {
       && lastRollResultID === rollInst.id;
   }
 
+  get whisperTargets(): User[] {
+    return this.whisper.map((userID: IDString) => game.users.get(userID)).filter(Boolean) as User[];
+  }
+
+  get isWhisper() { return this.type === CONST.CHAT_MESSAGE_TYPES.WHISPER; }
+  get isWhisperToGM() { return this.whisperTargets.some((user) => user.isGM); }
+  get isWhisperFromGM() { return this.isWhisper && this.user?.isGM; }
+
+  get isBladesRoll(): boolean { return this.flagData && "rollData" in this.flagData; }
+  get isOtherRoll() { return !this.isBladesRoll && this.type === CONST.CHAT_MESSAGE_TYPES.ROLL; }
+  get isEmote() { return this.type === CONST.CHAT_MESSAGE_TYPES.EMOTE; }
+  get isOOC() { return this.type === CONST.CHAT_MESSAGE_TYPES.OOC; }
+  get isIC() { return this.type === CONST.CHAT_MESSAGE_TYPES.IC; }
+
+
   get flagData() {
-    return this.flags["eunos-blades"];
+    return this.flags?.["eunos-blades"] ?? {};
   }
 
   get rollData() { return this.flagData.rollData; }
+
+  get parentRoll(): BladesRoll|undefined {
+    if (!this.isBladesRoll) { return undefined; }
+    const {rollData} = this.flagData;
+    if (!rollData) { return undefined; }
+    return game.eunoblades.Rolls.get(rollData.id ?? "") ?? new BladesRoll({
+      ...rollData,
+      isScopingById: false
+    });
+  }
 
   async setFlagVal(scope: KeyOf<BladesChat.Flags>, key: string, val: unknown) {
     return await this.setFlag(C.SYSTEM_ID, `${scope}.${key}`, val);
@@ -162,53 +284,66 @@ class BladesChat extends ChatMessage {
   }
   get elem(): HTMLElement|undefined { return this.elem$[0]; }
 
-  get isRollResult(): boolean { return this.flagData && "rollData" in this.flagData; }
-
-  get parentRoll(): BladesRoll|undefined {
-    if (!this.isRollResult) { return undefined; }
-    const {rollData} = this.flagData;
-    if (!rollData) { return undefined; }
-    return game.eunoblades.Rolls.get(rollData.id ?? "") ?? new BladesRoll({
-      ...rollData,
-      isScopingById: false
-    });
-  }
-
   get roll$(): JQuery<HTMLElement>|undefined {
     return this.parentRoll ? this.elem$.find(`#${this.parentRoll.id}`) : undefined;
   }
 
   async regenerateFromFlags() {
-    if (this.isRollResult) {
+    if (this.isBladesRoll) {
       await this.update({content: await renderTemplate(this.flagData.template, this)});
     }
   }
 
-  override async render(force: boolean) {
-    await super.render(force);
-    await this.activateListeners();
+  override render(force: boolean): Promise<void>|void {
+    super.render(force);
+    return this.activateListeners();
   }
 
   async activateListeners() {
     if (!this.elem$) { eLog.error("BladesChat", `No BladesChat.elem found for id ${this.id}.`); return; }
     ApplyTooltipAnimations(this.elem$);
     BladesConsequence.ApplyChatListeners(this);
-    if (this.parentRoll) {
-      this.elem$.addClass(`${this.parentRoll.rollType.toLowerCase()}-roll`);
+    if (this.isBladesRoll) {
+      const {parentRoll} = this;
+      if (!parentRoll) { throw new Error(`BladesChat.activateListeners: No parentRoll found for id ${this.id}.`); }
+      this.elem$.addClass(`${parentRoll.rollType.toLowerCase()}-roll`);
 
-      if (this.parentRoll.rollType === RollType.Action && this.rollConsequences.some((csq) => !csq.isAccepted)) {
+      if (parentRoll.rollType === RollType.Action && this.rollConsequences.some((csq) => !csq.isAccepted)) {
         this.elem$.addClass("unresolved-action-roll");
       } else {
         this.elem$.removeClass("unresolved-action-roll");
       }
 
-      if (BladesChat.IsNewestRollResult(this.parentRoll)) {
+      if (BladesChat.IsNewestRollResult(parentRoll)) {
         $("#chat-log .chat-message").removeClass("active-chat-roll");
         this.elem$.addClass("active-chat-roll");
       } else {
         this.elem$.removeClass("active-chat-roll");
       }
     }
+
+    if (this.isWhisper) {
+      if (this.isWhisperToGM) {
+        this.elem$.addClass("blades-whisper-to-gm");
+      } else if (this.isWhisperFromGM) {
+        this.elem$.addClass("blades-whisper-from-gm");
+      } else {
+        this.elem$.addClass("blades-player-whisper");
+      }
+    }
+
+    if (this.isEmote) {
+      this.elem$.addClass("blades-emote");
+    }
+
+    if (this.isIC) {
+      this.elem$.addClass("blades-ic");
+    }
+
+    if (this.isOOC) {
+      this.elem$.addClass("blades-ooc");
+    }
+
     U.gsap.to(this.elem$, {autoAlpha: 1, duration: 0.15, ease: "none"});
   }
 }
@@ -217,6 +352,7 @@ class BladesChat extends ChatMessage {
 interface BladesChat {
   get id(): IDString;
   content?: string;
+  whisper: IDString[];
   flags: {
     "eunos-blades": BladesChat.Flags
   };

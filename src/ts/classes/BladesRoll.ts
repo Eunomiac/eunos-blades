@@ -3279,14 +3279,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   async outputRollToChat() {
-    await BladesChat.create({
-      speaker: this.getSpeaker(BladesChat.getSpeaker()),
-      content: await renderTemplate(this.chatTemplate, this.data),
-      type:    CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flags:   {
-        "eunos-blades": {rollData: this.data}
-      }
-    }) as BladesChat;
+    await BladesChat.create({bladesRoll: this});
   }
 
   async resolveRoll() {
