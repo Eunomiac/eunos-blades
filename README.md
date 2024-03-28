@@ -11,8 +11,7 @@ TO RUN DEVELOPMENT SERVER:
   THEN, IN SECOND WINDOW:
     - npx vite serve
 -->
-D:\Users\Ryan\Documents\Projects\!Roleplaying\!!!FOUNDRY\Data\worlds
-New-Item -ItemType SymbolicLink -Path "city-of-knives" -Target "D:\Users\Ryan\Documents\Projects\!Roleplaying\!!!FOUNDRY\Data\worlds\city-of-knives"
+
 # Euno's "Blades In The Dark" for Foundry VTT
 
 | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades)  | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) |
