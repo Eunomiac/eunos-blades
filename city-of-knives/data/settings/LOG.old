@@ -1,0 +1,27 @@
+2024/03/28-02:39:45.241 3fc Recovering log #1649
+2024/03/28-02:39:45.241 3fc Level-0 table #1651: started
+2024/03/28-02:39:45.273 3fc Level-0 table #1651: 6570 bytes OK
+2024/03/28-02:39:45.400 3fc Delete type=0 #1649
+2024/03/28-02:39:45.400 3fc Delete type=3 #1647
+2024/03/28-02:51:24.609 2714 Level-0 table #1654: started
+2024/03/28-02:51:24.630 2714 Level-0 table #1654: 3394 bytes OK
+2024/03/28-02:51:24.709 2714 Delete type=0 #1652
+2024/03/28-02:51:24.785 2714 Manual compaction at level-0 from '!settings!1cqmUu85m7A0Iace' @ 72057594037927935 : 1 .. '!settings!zpRF87CnhqqK19Vo' @ 0 : 0; will stop at '!settings!eP7Pg5FjtuhpFa4h' @ 1153 : 1
+2024/03/28-02:51:24.785 2714 Compacting 4@0 + 1@1 files
+2024/03/28-02:51:24.801 2714 Generated table #1655@0: 6 keys, 3330 bytes
+2024/03/28-02:51:24.801 2714 Compacted 4@0 + 1@1 files => 3330 bytes
+2024/03/28-02:51:24.819 2714 compacted to: files[ 0 1 1 0 0 0 0 ]
+2024/03/28-02:51:24.819 2714 Delete type=2 #1643
+2024/03/28-02:51:24.819 2714 Delete type=2 #1645
+2024/03/28-02:51:24.820 2714 Delete type=2 #1648
+2024/03/28-02:51:24.820 2714 Delete type=2 #1651
+2024/03/28-02:51:24.821 2714 Delete type=2 #1654
+2024/03/28-02:51:24.978 2714 Manual compaction at level-0 from '!settings!eP7Pg5FjtuhpFa4h' @ 1153 : 1 .. '!settings!zpRF87CnhqqK19Vo' @ 0 : 0; will stop at (end)
+2024/03/28-02:51:25.085 2714 Manual compaction at level-1 from '!settings!1cqmUu85m7A0Iace' @ 72057594037927935 : 1 .. '!settings!zpRF87CnhqqK19Vo' @ 0 : 0; will stop at '!settings!eP7Pg5FjtuhpFa4h' @ 1170 : 1
+2024/03/28-02:51:25.085 2714 Compacting 1@1 + 1@2 files
+2024/03/28-02:51:25.113 2714 Generated table #1656@1: 68 keys, 16411 bytes
+2024/03/28-02:51:25.113 2714 Compacted 1@1 + 1@2 files => 16411 bytes
+2024/03/28-02:51:25.125 2714 compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/03/28-02:51:25.125 2714 Delete type=2 #1628
+2024/03/28-02:51:25.125 2714 Delete type=2 #1655
+2024/03/28-02:51:25.349 2714 Manual compaction at level-1 from '!settings!eP7Pg5FjtuhpFa4h' @ 1170 : 1 .. '!settings!zpRF87CnhqqK19Vo' @ 0 : 0; will stop at (end)
