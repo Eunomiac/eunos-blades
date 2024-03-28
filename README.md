@@ -11,8 +11,8 @@ TO RUN DEVELOPMENT SERVER:
   THEN, IN SECOND WINDOW:
     - npx vite serve
 -->
-
-
+D:\Users\Ryan\Documents\Projects\!Roleplaying\!!!FOUNDRY\Data\worlds
+New-Item -ItemType SymbolicLink -Path "city-of-knives" -Target "D:\Users\Ryan\Documents\Projects\!Roleplaying\!!!FOUNDRY\Data\worlds\city-of-knives"
 # Euno's "Blades In The Dark" for Foundry VTT
 
 | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades)  | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Eunomiac_eunos-blades&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Eunomiac_eunos-blades) |
@@ -21,7 +21,7 @@ TO RUN DEVELOPMENT SERVER:
 c
 Welcome to Eunomiac's system implementation for "Blades in the Dark" by [Evil Hat Productions](https://evilhat.com/) for the [Foundry Virtual Tabletop](https://foundryvtt.com/) platform. This project aims to bring the intricate and exciting world of "Blades in the Dark" to your virtual tabletop with full-featured character sheets, collaborative tools for GMs and players, and more.
 
-## THE GAME
+## THE GAMEc
 > *Blades in the Dark is a game about a group of daring scoundrels building a criminal enterprise on the haunted streets of an industrial-fantasy city. There are heists, chases, escapes, dangerous bargains, bloody skirmishes, deceptions, betrayals, victories, and deaths.*
 >
 > *We play to find out if the fledgling crew can thrive amidst the teeming threats of rival gangs, powerful noble families, vengeful ghosts, the Bluecoats of the City Watch, and the siren song of the scoundrels’ own vices.*
