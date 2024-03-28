@@ -1,0 +1,68 @@
+{{eLog "DialogConsequence Context" this}}
+<div class="{{cssClass}} dialog-content dialog-consequence">
+  <section class="tab-content flex-vertical consequence-section">
+    <h1 class="consequence-header-controlled full-width">Controlled Position</h1>
+    {{> "systems/eunos-blades/templates/parts/dialog-consequence-block.hbs"
+      rollPosition="controlled"
+      rollResult="partial"
+      consequenceData=consequenceData.controlled.partial
+      consequenceTypeOptions=consequenceTypeOptions.controlled.partial
+      consequenceTypeOptionsAll=consequenceTypeOptionsAll
+      consequenceAttributeOptions=consequenceAttributeOptions
+    }}
+    {{> "systems/eunos-blades/templates/parts/dialog-consequence-block.hbs"
+      rollPosition="controlled"
+      rollResult="fail"
+      consequenceData=consequenceData.controlled.fail
+      consequenceTypeOptions=consequenceTypeOptions.controlled.fail
+      consequenceTypeOptionsAll=consequenceTypeOptionsAll
+      consequenceAttributeOptions=consequenceAttributeOptions
+    }}
+
+    <h1 class="consequence-header-risky full-width">Risky Position</h1>
+    {{> "systems/eunos-blades/templates/parts/dialog-consequence-block.hbs"
+      rollPosition="risky"
+      rollResult="partial"
+      consequenceData=consequenceData.risky.partial
+      consequenceTypeOptions=consequenceTypeOptions.risky.partial
+      consequenceTypeOptionsAll=consequenceTypeOptionsAll
+      consequenceAttributeOptions=consequenceAttributeOptions
+    }}
+    {{> "systems/eunos-blades/templates/parts/dialog-consequence-block.hbs"
+      rollPosition="risky"
+      rollResult="fail"
+      consequenceData=consequenceData.risky.fail
+      consequenceTypeOptions=consequenceTypeOptions.risky.fail
+      consequenceTypeOptionsAll=consequenceTypeOptionsAll
+      consequenceAttributeOptions=consequenceAttributeOptions
+    }}
+
+    <h1 class="consequence-header-desperate full-width">Desperate Position</h1>
+    {{> "systems/eunos-blades/templates/parts/dialog-consequence-block.hbs"
+      rollPosition="desperate"
+      rollResult="partial"
+      consequenceData=consequenceData.desperate.partial
+      consequenceTypeOptions=consequenceTypeOptions.desperate.partial
+      consequenceTypeOptionsAll=consequenceTypeOptionsAll
+      consequenceAttributeOptions=consequenceAttributeOptions
+    }}
+    {{> "systems/eunos-blades/templates/parts/dialog-consequence-block.hbs"
+      rollPosition="desperate"
+      rollResult="fail"
+      consequenceData=consequenceData.desperate.fail
+      consequenceTypeOptions=consequenceTypeOptions.desperate.fail
+      consequenceTypeOptionsAll=consequenceTypeOptionsAll
+      consequenceAttributeOptions=consequenceAttributeOptions
+    }}
+
+  </section>
+</div>
+
+<div class="dialog-buttons flex-horizontal">
+  {{#each buttons as |bData bName|}}
+  <button class="dialog-button {{bName}} {{~#if (test ../default "==" bName)}} default{{/if}}" data-button="{{bName}}">
+    {{{bData.icon}}}
+    {{{bData.label}}}
+  </button>
+  {{/each}}
+</div>

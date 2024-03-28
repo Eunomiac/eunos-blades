@@ -1,0 +1,18 @@
+{{eLog "CHAT MESSAGE CONTEXT" this}}
+
+<div class="blades-message-content {{blockClasses}}">
+
+  {{!-- Roll Primary Portrait --}}
+  <div class="chat-message-speaker-portrait-wrapper">
+    <div class="chat-message-speaker-portrait">
+      <img class="portrait-image" src="{{speakerPortrait}}" />
+      <div class="chat-message-speaker-portrait-overlay"></div>
+    </div>
+  </div>
+
+  {{!-- Message Content --}}
+  <div class="blades-message-content">
+    {{{content}}}
+  </div>
+
+</div>

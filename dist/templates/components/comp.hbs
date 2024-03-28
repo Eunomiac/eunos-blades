@@ -1,0 +1,116 @@
+<div class="{{#if class}}{{class}} {{/if}}{{#if tooltip}}tooltip-trigger {{/if}}comp" data-comp-type="{{docType}}" {{~#if (test cat "||" type)}}
+  data-comp-cat="{{#if cat}}{{cat}}{{else}}{{type}}{{/if}}" {{/if}} {{~#if cat}} data-comp-cat="{{cat}}" {{else}}{{#if
+  type}} data-comp-cat="{{type}}" {{/if}}{{/if}} {{~#if _id}} data-comp-id="{{_id}}" {{else}}{{#if id}}
+  data-comp-id="{{id}}" {{/if}}{{/if}}>
+
+  {{~#unless compContainer}}
+
+  {{~#if label}}
+  {{~#if (test id "||" _id)}}
+  <label class="comp-label {{#if labelClass}}{{labelClass}} {{/if}}{{~#if tooltip}} tooltip-scaling-elem{{/if}} shadowed">
+    {{~#if (test (test cat "||" type) "&&" addButton)}}
+    <a class="comp-control comp-add">{{label}}</a>
+    {{else}}
+    {{label}}
+    {{/if~}}
+    {{~#if (test id "||" _id)}}
+    {{#if remButton}}
+    <a class="comp-control comp-delete comp-button">
+      <i class="fa-sharp fa-solid fa-xmark"></i>
+    </a>
+    {{/if}}
+    {{#if remFullButton}}
+    <a class="comp-control comp-delete-full comp-button">
+      <i class="fa-sharp fa-solid fa-xmark"></i>
+    </a>
+    {{/if}}
+  </label>
+  {{/if}}
+  </label>
+  {{~else}}
+  <label
+    class="comp-label {{~#if addButton}} comp-prompt{{/if}}{{~#if labelClass}} {{labelClass}}{{else}} shadowed{{/if}}{{#if tooltip}} tooltip-scaling-elem{{/if}}">
+    {{~#if addButton}}
+    <a class="comp-control comp-add">
+      <span class="sur-title">Select Your</span>
+      <span class="main-title">{{label}}</span>
+    </a>
+    {{else}}
+    {{label}}
+    {{/if~}}
+  </label>
+  {{/if~}}
+
+  {{else}}
+  <label class="comp-label">
+
+    {{~#if (test id "||" _id)}}
+    {{#if remButton}}
+    <a class="comp-control comp-delete comp-button">
+      <i class="fa-sharp fa-solid fa-xmark"></i>
+    </a>
+    {{/if}}
+    {{#if remFullButton}}
+    <a class="comp-control comp-delete-full comp-button">
+      <i class="fa-sharp fa-solid fa-xmark"></i>
+    </a>
+    {{/if}}
+    {{/if}}
+  </label>
+  {{/if~}}
+
+  <div class="comp-body">
+    {{#if (test system "&&" system.bgImg)}}<img class="comp-img{{#if tooltip}} tooltip-scaling-elem{{/if}}" src="{{system.bgImg}}" />
+    {{else}}{{#if img}}<img class="comp-img{{#if tooltip}} tooltip-scaling-elem{{/if}}" src="{{img}}" />{{/if}}{{/if}}
+    {{#if name}}<div class="comp-title shadowed{{#if tooltip}} tooltip-scaling-elem{{/if}}">{{name}}</div>{{/if}}
+    {{#if (test system "&&" system.rules)}}<div class="comp-body-text shadowed">{{{system.rules}}}
+      {{#if inRuleDotline}}
+      <p></p>
+      {{> "systems/eunos-blades/templates/components/dotline.hbs" inRuleDotline}}
+      {{/if}}
+    </div>{{/if}}
+    {{#if dotline}}
+    {{> "systems/eunos-blades/templates/components/dotline.hbs" dotline}}
+    {{/if}}
+    {{#if dotlines}}
+    {{#each dotlines}}
+    {{> "systems/eunos-blades/templates/components/dotline.hbs" }}
+    {{/each}}
+    {{/if}}
+    {{#if checkTarget}}
+    <label
+      class="comp-control comp-toggle {{#if checkValue}}{{checkClasses.active}}{{else}}{{checkClasses.inactive}}{{/if}}"
+      data-target="{{checkTarget}}">{{checkLabel}}</label>
+    {{/if}}
+
+    {{#if numberCircle}}
+    <div class="number-circle {{~#if numberCircleClass}} {{numberCircleClass}}{{/if}}">{{numberCircle}}</div>
+    {{/if}}
+    {{#each numberCircles as |value circleClass|}}
+    <div class="number-circle {{~#if circleClass}} {{circleClass}}{{/if}}">{{value}}</div>
+    {{/each}}
+  </div>
+
+  {{#if tooltip}}
+  <div class="tooltip {{tooltipClass}}">
+    {{{tooltip}}}
+  </div>
+  {{/if}}
+
+
+
+  {{else}}
+
+  <div class="{{#if compContainer.class}}{{compContainer.class}} {{/if}}comp-cont">
+    {{#each compContainer.blocks as |cells|}}
+    <div class="comp-cont-block flex-horizontal">
+      {{#each cells as |cell|}}
+      {{> "systems/eunos-blades/templates/components/comp.hbs" cell}}
+      {{/each}}
+    </div>
+    {{/each}}
+  </div>
+
+  {{/unless}}
+
+</div>

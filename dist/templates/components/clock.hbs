@@ -1,0 +1,74 @@
+{{eLog (concat "Clock Context of " id) this}}
+
+<div class="clock-container">
+
+  <div id="{{id}}" class="clock" data-id="{{id}}" data-name="{{name}}" data-index="{{index}}" data-color="{{color}}" data-max="{{max}}" data-value="{{value}}" data-is-active="{{isActive}}" data-is-visible="{{isVisible}}" {{~#if targetID}} data-target-id="{{targetID}}"{{/if}} {{~#if targetKey}} data-target-key="{{targetKey}}"{{/if}} data-is-highlighted="{{isHighlighted}}" data-is-name-visible="{{isNameVisible}}">
+
+    <!-- Background -->
+    <image class="clock-bg" src="systems/eunos-blades/assets/clocks/clock-bg.webp" />
+
+    <!-- Frame -->
+    <image class="clock-frame" src="systems/eunos-blades/assets/clocks/clock-{{max}}-frame.webp" />
+
+    <!-- Fill -->
+    <div class="clock-fill">
+
+      {{#if (test "#" "in" color)}} {{!-- If color is a hex value: Render SVG circle filled with that color. --}}
+        <svg viewBox="0 0 400 400">
+          <circle cx="200" cy="200" r="200" fill="{{color}}" />
+        </svg>
+      {{else}} {{!-- Otherwise, assume color is a valid path to an image and render that instead  --}}
+        <img class="clock-fill-img" src="systems/eunos-blades/assets/clocks/clock-fill-{{color}}.webp" />
+      {{/if}}
+    </div>
+
+    <!-- Glow -->
+    {{#unless (test "#" "in" color)}} {{!-- Don't render the glow if 'color' is a hex value --}}
+      <div class="clock-glow clock-glow-{{color}}"></div>
+    {{/unless}}
+
+    <!-- Cover -->
+    <div class="clock-cover">
+      <svg viewBox="0 0 400 400">
+        <circle cx="200" cy="200" r="200" fill="var(--blades-grey)" />
+      </svg>
+    </div>
+
+    {{!-- Single Segments for Animation --}}
+    {{#if (test "#" "in" color)}} {{!-- If color is a hex value: Render SVG circle filled with that color. --}}
+    <div class="clock-one-segment">
+      <svg viewBox="0 0 400 400">
+        <circle cx="200" cy="200" r="200" fill="{{color}}" />
+      </svg>
+    </div>
+    <div class="clock-one-segment">
+      <svg viewBox="0 0 400 400">
+        <circle cx="200" cy="200" r="200" fill="{{color}}" />
+      </svg>
+    </div>
+    <div class="clock-one-segment">
+      <svg viewBox="0 0 400 400">
+        <circle cx="200" cy="200" r="200" fill="{{color}}" />
+      </svg>
+    </div>
+    {{else}} {{!-- Otherwise, assume color is a valid path to an image and render that instead  --}}
+    <div class="clock-one-segment">
+      <img class="clock-fill-img" src="systems/eunos-blades/assets/clocks/clock-fill-{{color}}.webp" />
+    </div>
+    <div class="clock-one-segment">
+      <img class="clock-fill-img" src="systems/eunos-blades/assets/clocks/clock-fill-{{color}}.webp" />
+    </div>
+    <div class="clock-one-segment">
+      <img class="clock-fill-img" src="systems/eunos-blades/assets/clocks/clock-fill-{{color}}.webp" />
+    </div>
+    {{/if}}
+
+
+    <!-- Label -->
+
+    <label class="clock-label">{{#unless (test parentKey.size "==" 1)}}{{name}}{{/unless}}</label>
+
+
+  </div>
+
+</div>

@@ -139,13 +139,6 @@
         }
       }
 
-      .control-tools .scene-control:hover {
-        // height: calc(var(--blades-spacer-button-lg) - 2px);
-        // width: calc(var(--blades-spacer-button-lg) - 2px);
-      }
-
-
-
       &:not(#interface) {
         opacity: 0.5;
         transition: 0.25s;

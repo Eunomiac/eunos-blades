@@ -1,0 +1,157 @@
+
+
+
+    {{eLog "DialogConsequence.Block Context" this}}
+    <div class="consequence-section consequence-section-{{rollPosition}} full-width">
+
+      <h2 class="consequence-subheader-{{rollPosition}}-{{rollResult}}">On {{case "title" rollResult}}</h2>
+
+      {{#each consequenceData as |cData|}}
+        <div class="roll-consequence-row flex-vertical full-width" data-csq-id="{{cData.id}}">
+          <div class="comp consequence-display-container roll-consequence-entry-row full-width flex-horizontal">
+            {{!-- Icon --}}
+            <div class="consequence-icon-container">
+              {{#if cData.icon}}
+              <div class="consequence-icon-circle">
+                <img class="consequence-icon-img" src="systems/eunos-blades/assets/icons/consequence-icons/base-{{ cData.icon}}.svg" />
+              </div>
+              {{/if}}
+            </div>
+            {{!-- Type --}}
+            {{> "systems/eunos-blades/templates/components/select.hbs"
+              cssClass="roll-consequence-type-select"
+              dataAction="gm-select"
+              dataFlagTarget=(concat "rollCollab.consequenceData." ../rollPosition "." ../rollResult "." cData.id ".type")
+              dataDType="String"
+              dataDocType=false
+              selected=cData.type
+              options=../consequenceTypeOptions
+            }}
+            {{!-- Attribute --}}
+            {{> "systems/eunos-blades/templates/components/select.hbs"
+              cssClass="roll-consequence-attribute-select"
+              dataAction="gm-select"
+              dataFlagTarget=(concat "rollCollab.consequenceData." ../rollPosition "." ../rollResult "." cData.id ".attribute")
+              dataDType="String"
+              dataDocType=false
+              selected=cData.attribute
+              options=../consequenceAttributeOptions
+            }}
+            {{!-- Blank Options Trigger --}}
+            {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+              blockClass="blank-option-button"
+              buttonClass="fa-duotone fa-credit-card-blank"
+              action=(concat "blank-option-" ../rollPosition "-" ../rollResult "-" cData.id)
+            }}
+            {{!-- AI Trigger --}}
+            {{#unless cData.resistNegates}}
+            {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+              blockClass="ai-query-button"
+              buttonClass="fa-solid fa-brain-circuit"
+              tooltip="<b>Query AI</b><br>Query OpenAI for suggestions on resisted versions of this consequence."
+              action=(concat "ai-query-" ../rollPosition "-" ../rollResult "-" cData.id)
+            }}
+            {{/unless}}
+            {{!-- Armor Toggle --}}
+            {{#if cData.isDisplayingArmorToggle}}
+              {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
+                isToggled=cData.canArmor
+                blockClass="armor-toggle"
+                dataAction=(concat "toggle-armor-" ../rollPosition "-" ../rollResult "-" cData.id)
+                activeClass="fa-sharp fa-solid fa-shield"
+                inactiveClass="fa-sharp fa-regular fa-shield"
+              }}
+              {{#if cData.canArmor}}
+                {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
+                  isToggled=cData.armorNegates
+                  blockClass="armor-negate-toggle"
+                  dataAction=(concat "negate-toggle-armor-" ../rollPosition "-" ../rollResult "-" cData.id)
+                  activeClass="fa-sharp fa-solid fa-shield"
+                  inactiveClass="fa-sharp fa-regular fa-shield"
+                }}
+              {{/if}}
+            {{/if}}
+            {{!-- Special Armor Toggle --}}
+            {{#if cData.isDisplayingSpecialArmorToggle}}
+              {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
+                isToggled=cData.canSpecialArmor
+                blockClass="special-armor-toggle"
+                dataAction=(concat "toggle-special-" ../rollPosition "-" ../rollResult "-" cData.id)
+                activeClass="fa-sharp fa-duotone fa-shield-quartered"
+                inactiveClass="fa-sharp fa-regular fa-shield-quartered"
+              }}
+              {{#if cData.canSpecialArmor}}
+                {{> "systems/eunos-blades/templates/components/toggle-icon.hbs"
+                  isToggled=cData.specialArmorNegates
+                  blockClass="special-armor-negate-toggle"
+                  dataAction=(concat "negate-toggle-special-armor-" ../rollPosition "-" ../rollResult "-" cData.id)
+                  activeClass="fa-sharp fa-duotone fa-shield-quartered"
+                  inactiveClass="fa-sharp fa-regular fa-shield-quartered"
+                }}
+                {{!-- Special Armor Footer Message --}}
+                <input class="shadowed consequence-footer" type="text" value="{{cData.name}}" data-action="gm-update-dialog" data-flag-target="rollCollab.consequenceData.{{../rollPosition}}.{{../rollResult}}.{{cData.id}}.specialFooterMsg" />
+              {{/if}}
+            {{/if}}
+            {{!-- Name --}}
+            <input class="shadowed consequence-name" type="text" value="{{cData.name}}" data-action="gm-update-dialog" data-flag-target="rollCollab.consequenceData.{{../rollPosition}}.{{../rollResult}}.{{cData.id}}.name" />
+          </div>
+          {{!-- AI Options --}}
+          <div class="flex-vertical consequence-resist-options-container full-width">
+            {{#if cData.resistTo}}
+              <div class="flex-horizontal consequence-resist-option" data-csq-id="{{cData.resistTo.id}}">
+                {{!-- Selected Resist Option --}}
+                {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+                  blockClass="resist-select-button"
+                  buttonClass="fa-solid fa-star gold-bright"
+                  tooltip="<b>Selected AI Suggestion</b><br>Click to Deselect"
+                  action=(concat "gm-select-toggle-" ../rollPosition "-" ../rollResult "-" cData.id "-" cData.resistTo.id)
+                }}
+                {{!-- Type --}}
+                {{> "systems/eunos-blades/templates/components/select.hbs"
+                  cssClass="roll-consequence-type-select"
+                  dataAction="gm-select"
+                  dataFlagTarget=(concat "rollCollab.consequenceData." ../rollPosition "." ../rollResult "." cData.id ".resistOptions." cData.resistTo.id ".type")
+                  dataDType="String"
+                  dataDocType=false
+                  selected=cData.resistTo.type
+                  options=../consequenceTypeOptionsAll }}
+                {{!-- Name --}}
+                {{#if (test cData.resistTo.type "==" "None")}}
+                <input class="shadowed consequence-name consequence-name-none" type="text" value="" readonly />
+                {{else}}
+                <input class="shadowed consequence-name" type="text" value="{{cData.resistTo.name}}" data-action="gm-update-dialog" data-flag-target="rollCollab.consequenceData.{{../rollPosition}}.{{../rollResult}}.{{cData.id}}.resistOptions.{{cData.resistTo.id}}.name" />
+                {{/if}}
+              </div>
+            {{else}}
+              {{#each cData.resistOptions as |rData|}}
+              <div class="flex-horizontal consequence-resist-option" data-csq-id="{{rData.id}}">
+                {{!-- Select Resist Option --}}
+                {{> "systems/eunos-blades/templates/components/button-icon.hbs"
+                  blockClass="resist-select-button"
+                  buttonClass="fa-regular fa-star grey"
+                  tooltip="<b>AI Suggestion</b><br>Click to Select."
+                  action=(concat "gm-select-toggle-" ../../rollPosition "-" ../../rollResult "-" cData.id "-" rData.id)
+                }}
+                {{!-- Type --}}
+                {{> "systems/eunos-blades/templates/components/select.hbs"
+                  cssClass="roll-consequence-type-select"
+                  dataAction="gm-select"
+                  dataFlagTarget=(concat "rollCollab.consequenceData." ../../rollPosition "." ../../rollResult "." cData.id ".resistOptions." rData.id ".type")
+                  dataDType="String"
+                  dataDocType=false
+                  selected=rData.type
+                  options=../../consequenceTypeOptionsAll }}
+                {{!-- Name --}}
+                {{#if (test rData.type "==" "None")}}
+                <input class="shadowed consequence-name consequence-name-none" type="text" value="" readonly />
+                {{else}}
+                <input class="shadowed consequence-name" type="text" value="{{rData.name}}" data-action="gm-update-dialog" data-flag-target="rollCollab.consequenceData.{{../../rollPosition}}.{{../../rollResult}}.{{cData.id}}.resistOptions.{{rData.id}}.name" />
+                {{/if}}
+              </div>
+              {{/unless}}
+              {{/each}}
+            {{/if}}
+          </div>
+        </div>
+      {{/each}}
+    </div>

@@ -1,0 +1,14 @@
+
+<div class="{{cssClass}} dialog-content">
+  <p class="dialog-prompt">{{prompt}}</p>
+  <textarea class="shadowed" {{~#if target}} data-target="{{target}}"{{/if}}{{#if flagTarget}} data-flag-target="{{flagTarget}}"{{/if}} spellcheck="false"></textarea>
+</div>
+
+<div class="dialog-buttons">
+  {{#each buttons as |bData bName|}}
+  <button class="dialog-button {{bName}} {{~#if (test ../default "==" bName)}} default{{/if}}" data-button="{{bName}}">
+    {{{bData.icon}}}
+    {{{bData.label}}}
+  </button>
+  {{/each}}
+</div>

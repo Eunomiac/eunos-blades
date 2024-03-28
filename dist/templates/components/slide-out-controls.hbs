@@ -1,0 +1,110 @@
+<style>
+
+  .roll-mod-container {
+    position: relative;
+    pointer-events: auto;
+  }
+
+  .roll-mod-container .roll-mod-controls-panel {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    translate: 0 -50%;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    transform-origin: 100% 50%;
+    overflow: hidden;
+    width: 0;
+    max-width: 0;
+    transition: max-width 0.5s ease;
+  }
+
+  .roll-mod-container:hover .roll-mod-controls-panel {
+    max-width: 200px;
+  }
+
+  .roll-mod-controls-container .roll-mod-controls-panel .roll-mod-control {
+    display: block;
+    transition: 0.25s;
+    transform-origin: 50% 50%;
+  }
+
+  .roll-mod-controls-container .roll-mod-controls-panel .roll-mod-control:hover {
+    transform: scale(1.1);
+    filter: brightness(1.25);
+  }
+
+  .roll-mod-controls-container .roll-mod-controls-panel .roll-mod-control i.fa-duotone {
+    --fa-primary-color: var(--blades-grey);
+    --fa-primary-opacity: 1;
+    --fa-secondary-color: var(--fa-primary-color);
+    --fa-secondary-opacity: 0.4;
+  }
+
+  .roll-mod-controls-container .roll-mod-controls-panel .roll-mod-control[data-target-status="Hidden"][data-value="false"] i.fa-duotone {
+    --fa-primary-opacity: 0.4;
+    --fa-secondary-color: var(--blades-white);
+    --fa-secondary-opacity: 1;
+  }
+  .roll-mod-controls-container .roll-mod-controls-panel .roll-mod-control[data-target-status="Hidden"][data-value="true"] i.fa-duotone {
+    --fa-primary-color: var(--blades-white);
+  }
+
+  .roll-mod-controls-container .roll-mod-controls-panel .roll-mod-control[data-target-status="ForcedOff"][data-value="false"] i.fa-duotone {
+    --fa-secondary-opacity: 0;
+  }
+  .roll-mod-controls-container .roll-mod-controls-panel .roll-mod-control[data-target-status="ForcedOff"][data-value="true"] i.fa-duotone {
+    --fa-primary-color: var(--blades-red);
+    --fa-secondary-color: var(--blades-red-bright);
+    --fa-secondary-opacity: 1;
+  }
+
+  .roll-mod-controls-container .roll-mod-controls-panel .roll-mod-control[data-target-status="ForcedOn"][data-value="true"] i.fa-duotone {
+    --fa-primary-color: var(--blades-gold);
+    --fa-secondary-color: var(--blades-gold-bright);
+    --fa-secondary-opacity: 1;
+  }
+
+</style>
+
+<div class="roll-mod-controls-container">
+  <div class="roll-mod-controls-panel">
+    <a class="roll-mod-control" data-action="gm-toggle-mod" data-target-status="Hidden" data-value="{{test status "==" "Hidden"}}">
+      <i class="fa-duotone fa-eye-low-vision"></i>
+    </a>
+    <a class="roll-mod-control" data-action="gm-toggle-mod" data-target-status="ForcedOff" data-value="{{test status "==" "ForcedOff"}}">
+      <i class="fa-duotone fa-ban"></i>
+    </a>
+    <a class="roll-mod-control" data-action="gm-toggle-mod" data-target-status="ForcedOn" data-value="{{test status "==" "ForcedOn"}}">
+      <i class="fa-duotone fa-lock{{~#unless (test status "==" "ForcedOn")}}-open{{/unless}}"></i>
+    </a>
+    <a class="roll-mod-control" data-action="gm-reset-mod">
+      <i class="fa-duotone fa-arrow-rotate-left"></i>
+    </a>
+  </div>
+</div>
+
+{{!--         STATUS ACTIVE                               STATUS INACTIVE
+Hidden =        "fa-eye-low-vision"                         "fa-eye-low-vision"
+Forced Off =    "fa-ban"                                    "fa-ban" (with --fa-secondary-opacity: 0)
+Forced On =     "fa-lock"                                   "fa-lock-open"
+Toggled Off =   "fa-toggle-large-off"
+Toggled On =    "fa-toggle-large-on"
+Reset = "fa-arrow-rotate-left"
+
+{{!-- Duotone Icon Styling --}}
+
+{{!-- Render duotone style icons at larger sizes (2x your base type size is a good starting point). --}}
+
+  <i class="fa-duotone fa-battery-full" style="
+    --fa-primary-color: limegreen;  {{!-- Color of main (opaque) layer. --}}
+    --fa-primary-opacity: 1;          {{!-- Opacity of main layer (default: opaque) --}}
+    --fa-secondary-color: dimgray;    {{!-- Color of secondary layer. --}}
+    --fa-secondary-opacity: 0.4;      {{!-- Opacity of secondary layer (default: 0.4) --}}
+  "></i>
+
+{{!-- Create classes that contain settings for above properties, creating themes --}}
+</div> --}}

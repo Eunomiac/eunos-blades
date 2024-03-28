@@ -36,6 +36,11 @@ class BladesDirector {
   // #endregion
 
   public static async Initialize() {
+    // If user is GM, add "user-gm" class to body
+    if (game.user.isGM) {
+      $("body").addClass("user-gm");
+    }
+
     // Define hook that re-renders overlay on scene change.
     Hooks.on("renderApplication", async () => {
       game.eunoblades.Director.initClockKeySection(true);

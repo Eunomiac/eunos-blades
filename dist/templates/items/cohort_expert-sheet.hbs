@@ -1,0 +1,138 @@
+{{eLog "COHORT GANG SHEET" this}}
+<form class="{{cssClass}}" autocomplete="off">
+
+  {{!-- Tags --}}
+  {{#if isGM}}
+  <input type="text" class="comp-tags tags-gm" />
+  {{/if}}
+
+  {{!-- Sheet Container --}}
+  <div class="sheet-root">
+
+    {{!-- Header --}}
+    <section class="sheet-top">
+      <img class="sheet-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+      <input class="sheet-title shadowed" type="text" name="name" value="{{item.name}}" />
+      <div class="sheet-subtitle cohort-type-line">{{subtitle}}</div>
+      {{> "systems/eunos-blades/templates/parts/tier-block.hbs" }}
+    </section>
+
+    {{!-- Types --}}
+    {{#if isGM}}
+    <section class="cohort-types full-width flex-horizontal">
+      {{#each system.subtypes as |subtype|}}
+        <input class="shadowed cohort-type-input" type="text" value="{{subtype}}" name="system.subtypes.{{calc @index "+" 1}}" />
+      {{/each}}
+      <input class="shadowed cohort-type-input" type="text" value="" name="system.subtypes.{{calc (count system.subtypes) "+" 1}}" />
+    </section>
+    {{/if}}
+
+    {{!-- Edges & Flaws --}}
+    {{#if isGM}}
+    <section class="cohort-edges full-width flex-horizontal">
+      {{#each edgeData as |edgeTooltip edgeName|}}
+      <div class="tooltip-container cohort-edge-tooltip-container tooltip-trigger">
+      <input class="shadowed cohort-edge-input" type="text" value="{{edgeName}}" name="system.edges.{{calc @index "+" 1}}" />
+      <div class="tooltip">{{{edgeTooltip}}}</div>
+      </div>
+      {{/each}}
+      <input class="shadowed cohort-edge-input" type="text" value="" name="system.edges.{{calc (count system.edges) "+" 1}}" />
+    </section>
+    <section class="cohort-flaws full-width flex-horizontal">
+      {{#each flawData as |flawTooltip flawName|}}
+      <div class="tooltip-container cohort-edge-tooltip-container tooltip-trigger">
+      <input class="shadowed cohort-flaw-input" type="text" value="{{flawName}}" name="system.flaws.{{calc @index "+" 1}}" />
+      <div class="tooltip">{{{flawTooltip}}}</div>
+      </div>
+      {{/each}}
+      <input class="shadowed cohort-flaw-input" type="text" value="" name="system.flaws.{{calc (count system.flaws) "+" 1}}" />
+    </section>
+    {{/if}}
+
+    {{!-- Harm --}}
+    <section class="cohort-harm full-width flex-horizontal">
+      <label class="filled-label">Harm</label>
+      <div class="flex-horizontal harm-level harm-level-0 {{~#if (test system.harm.value "==" 0)}} active{{/if}}"
+        data-harm-click="0">
+        <div class="flex-vertical">
+          <span class="harm-label shadowed">Healthy</span>
+          <span class="harm-effect shadowed">(no effect)</span>
+        </div>
+      </div>
+      <div class="flex-horizontal harm-level harm-level-1 {{~#if (test system.harm.value "==" 1)}} active{{/if}}"
+        data-harm-click="1" data-dtype="Number">
+        <span class="harm-number shadowed">1</span>
+        <div class="flex-vertical">
+          <span class="harm-label shadowed">Weakened</span>
+          <span class="harm-effect shadowed">Reduced Effect</span>
+        </div>
+      </div>
+      <div class="flex-horizontal harm-level harm-level-2 {{~#if (test system.harm.value "==" 2)}} active{{/if}}"
+        data-harm-click="2" data-dtype="Number">
+        <span class="harm-number shadowed">2</span>
+        <div class="flex-vertical">
+          <span class="harm-label shadowed">Impaired</span>
+          <span class="harm-effect shadowed">Reduced Effect, -1d</span>
+        </div>
+      </div>
+      <div class="flex-horizontal harm-level harm-level-3 {{~#if (test system.harm.value "==" 3)}} active{{/if}}"
+        data-harm-click="3" data-dtype="Number">
+        <span class="harm-number shadowed">3</span>
+        <div class="flex-vertical">
+          <span class="harm-label shadowed">Broken</span>
+          <span class="harm-effect shadowed">Can't Act</span>
+        </div>
+      </div>
+      <div class="flex-horizontal harm-level harm-level-4 {{~#if (test system.harm.value "==" 4)}} active{{/if}}"
+        data-harm-click="4" data-dtype="Number">
+        <span class="harm-number shadowed">4</span>
+        <div class="flex-vertical">
+          <span class="harm-label shadowed">Dead</span>
+          <span class="harm-effect shadowed">Replace: {{#if item.parent}}{{calc item.parent.system.tier.value "+"
+            2}}{{else}}Tier + 2{{/if}} Coin</span>
+        </div>
+      </div>
+    </section>
+
+    {{!--Main Body --}}
+    <section class="tab-content nav-group flex-vertical">
+      <div class="tab flex-vertical">
+        <label class="tab-label">
+          <span class="tab-title">Description</span>
+        </label>
+        {{editor system.description target="system.description" button=true owner=owner editable=owner}}
+
+        {{#if (test isGM "||" system.rules)}}
+        <label class="tab-label">
+          <span class="tab-title">Rules</span>
+        </label>
+        {{editor system.rules target="system.rules" button=true owner=owner editable=isGM}}
+        {{/if}}
+
+        {{#if (test isGM "||" system.notes)}}
+        <label class="tab-label">
+          <span class="tab-title">Notes</span>
+        </label>
+        {{editor system.notes target="system.notes" button=true owner=owner editable=isGM}}
+        {{/if}}
+
+        {{#if isGM}}
+        <label class="tab-label">
+          <span class="tab-title">GM Notes</span>
+        </label>
+        {{editor system.gm_notes target="system.gm_notes" button=true owner=owner editable=isGM}}
+        {{/if}}
+
+        {{#if isGM}}
+        <label class="comp tab-label">
+          <a class="comp-control comp-button comp-add effect-control" data-action="create" title="Create Effect">
+            <i class="fa-sharp fa-solid fa-square-plus"></i>
+          </a>
+          <span class="tab-title">Active Effects</span>
+        </label>
+        {{> "systems/eunos-blades/templates/parts/active-effects.hbs"}}
+        {{/if}}
+      </div>
+    </section>
+  </div>
+</form>
