@@ -1,7 +1,7 @@
 {
   "id": "eunos-blades",
   "title": "Euno's Blades in the Dark",
-  "description": "Blades in the dark game system, modified for personal use by Eunomiac.",
+  "description": "Welcome to Eunomiac's system implementation of BLADES IN THE DARK by Evil Hat Productions for Foundry Virtual Tabletop. This project aims to bring the intricate and exciting world of \"Blades in the Dark\" to your virtual tabletop with full-featured character sheets, cinematic multimedia, collaborative tools for GMs and players, and more. WARNING: This is a live, in-progress build that is broken and incomplete. Features may fail or cause system crashes; assets and HTML elements may be completely absent or hopelessly corrupt; the game might not even start in the first place. Only use it with the world file provided.",
   "version": "0.1",
   "compatibility": {
     "minimum": "11",
@@ -10,9 +10,6 @@
   },
 	"socket": true,
 	"authors": [
-		{
-			"name": "megastruktur"
-		},
 		{
 			"name": "Eunomiac",
 			"url": "https://github.com/Eunomiac",
@@ -30,14 +27,57 @@
     "fonts.css"
   ],
 	"relationships": {
-		"requires": [{
-			"id": "socketlib",
-			"type": "module",
-			"manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-socketlib/master/module.json",
-			"compatibility": {
-				"verified": "1.0.12"
-			}
-		}]
+		"requires": [
+      {
+        "id": "_dev-mode",
+        "type": "module"
+      },
+      {
+        "id": "pause-text",
+        "type": "module"
+      },
+      {
+        "id": "colored-folder-contents",
+        "type": "module"
+      },
+      {
+        "id": "dice-so-nice",
+        "type": "module"
+      },
+      {
+        "id": "fxmaster",
+        "type": "module"
+      },
+      {
+        "id": "keybind-lib",
+        "type": "module"
+      },
+      {
+        "id": "lib-wrapper",
+        "type": "module"
+      },
+      {
+        "id": "scene-transitions",
+        "type": "module"
+      },
+      {
+        "id": "sequencer",
+        "type": "module"
+      },
+      {
+        "id": "socketlib",
+        "type": "module"
+      },
+      {
+        "id": "tidy-ui_game-settings",
+        "type": "module"
+      },
+      {
+        "id": "city-of-knives",
+        "type": "world",
+        "manifest": "https://raw.githubusercontent.com/Eunomiac/eunos-blades/master/city-of-knives/world.json"
+      }
+    ]
 	},
   "flags": {
     "hotReload": {
@@ -158,7 +198,7 @@
       "path": "lang/en.json"
     }
   ],
-  "url": "",
-  "manifest": "",
-  "download": ""
+  "url": "https://github.com/Eunomiac/eunos-blades",
+  "manifest": "https://raw.githubusercontent.com/Eunomiac/eunos-blades/master/dist/system.json",
+  "download": "https://github.com/Eunomiac/eunos-blades"
 }

@@ -1,7 +1,7 @@
 {
 	"name": "eunos-blades",
 	"version": "0.1.0",
-	"description": "An implementation of Kult: Divinity Lost (4th Edition), based on the original Kult 4E Foundry system by Tom LaPorta.",
+	"description": "Welcome to Eunomiac's system implementation of BLADES IN THE DARK by Evil Hat Productions for Foundry Virtual Tabletop. This project aims to bring the intricate and exciting world of \"Blades in the Dark\" to your virtual tabletop with full-featured character sheets, cinematic multimedia, collaborative tools for GMs and players, and more. WARNING: This is a live, in-progress build that is broken and incomplete. Features may fail or cause system crashes; assets and HTML elements may be completely absent or hopelessly corrupt; the game might not even start in the first place. Only use it with the world file provided.",
 	"scripts": {
 		"type-check": "tsc --noEmit"
 	},
@@ -10,7 +10,7 @@
 		"last 3 versions"
 	],
 	"author": "Eunomiac",
-	"license": "",
+	"license": "MIT",
 	"private": true,
 	"devDependencies": {
 		"@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
@@ -63,6 +63,6 @@
 		"socket.io-client": "^4.6.1"
 	},
 	"repository": {
-		"url": ""
+		"url": "https://github.com/Eunomiac/eunos-blades"
 	}
 }
