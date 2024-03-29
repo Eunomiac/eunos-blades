@@ -3,8 +3,7 @@
 // Utility imports
 @import './core/functions';
 @import './core/mixins';
-
-
+@import './core/colors';
 
 :root,
 * {
@@ -51,6 +50,8 @@
     }
 
     #pause {
+      background: none;
+
       img.fa-spin {
         top: unset;
         bottom: -200px;
@@ -58,9 +59,12 @@
 
       figcaption {
         text-shadow: 1px 1px 3px #000, 1px 1px 3px #000, 1px 1px 3px #000, 0px 0px 5px #000;
-        font-family: var(--font-emphasis), serif !important;
-        line-height: 2rem;
-        padding: 0 25%;
+        font-family: "Historical FellType", serif;
+        line-height: 1.5rem;
+        padding: 0 35%;
+        text-wrap: balance;
+        transform-origin: 50% 50%;
+        scale: 1.35;
       }
     }
 

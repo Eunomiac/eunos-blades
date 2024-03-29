@@ -1,3 +1,5 @@
+
+
 // #region ENUMS ~
 export enum BladesPermissions {
   NONE = CONST.DOCUMENT_PERMISSION_LEVELS.NONE,
@@ -427,6 +429,7 @@ const C = {
   SYSTEM_FULL_NAME: "Euno's Blades In The Dark",
   TEMPLATE_ROOT:    "systems/eunos-blades/templates",
   GM_PORTRAIT:      "systems/eunos-blades/assets/portraits/gm-chat.png",
+  // SCSS_STYLES:      Colors,
   AI_MODELS:        {
     baseContext: [
       "babbage-002",
@@ -443,6 +446,24 @@ const C = {
   AI_FILE_IDS:                  {
     BladesPDF: "file-n72HTTNwt051piPbswQ8isUa"
   },
+  Rumors: [
+    "Crows' boss? Vanished. Streets are a battleground now. Blood's cheap as ever in the Foot.",
+    "Purest leviathan blood yet's hit Crow's Foot. Is it cursed? Pro'lly... but aren't we all?",
+    "A blue specter stalks these rooftops. A dead Crow's scorned ghost seeking payback, I wager...",
+    "The Sashes and Lampblacks are quiet, like before a storm. I heard they're uniting. Somethin's got 'em scared.",
+    "Found a sealed tunnel under Crow's Foot. Ancient relics for the taking, mayhaps? Or death waitin' to get ya?",
+    "Crow's Foot gots a new shadow I hear, one who deals with the livin' and dead alike.",
+    "The Iruvian Consulate's dark secret is they made a pact with a demon for power? I mean... who hasn't?",
+    "Heard it from a hunter who was there: a beast in the Void Sea, bigger than any leviathan, drivin' sailors mad.",
+    "Rail Jacks found a ghost train, its screamin' passengers beggin' for release. How long you think they been out there?",
+    "His huge fancy manor just gone! Poof! Just a misty hole left! Dimmer Sisters' doing, hunting some dusty tome.",
+    "Another ship lost to the Void, chasing a cursed whirlpool's heart. Bad omens on the winds these nights.",
+    "Red Sashes and Lampblacks, all quiet like, digging for the dead under Crow's Foot. For a ghost fight club.",
+    "A vengeful lover's wailing ghost haunts the Foot. She hunts the Crows' chief, I hear...",
+    "Scurlock's lost some spark-craft gadget. It opens death-doors to tickle ghosts, who knows? Wait, do you know?",
+    "Silkshore's peddlin' future-sight dreams ripped from a spirit's mind, potent, dark and dire.",
+    "Charhollow's gang war? Demonic blood? Something unnatural taking lives? They say it's all about a stolen book."
+  ],
   ClockKeySquareSize:    100,
   DowntimeActionDisplay: {
     [DowntimeAction.AcquireAsset]:    "Acquire an Asset",
@@ -553,110 +574,6 @@ const C = {
       [RollResult.fail]:     "You fail from a desperate position!"
     }
   },
-
-  Colors: {/* IMPORT FROM CSS via css-loader */
-    bWHITE: "rgba(255, 255, 255, 1)",
-    WHITE:  "rgba(200, 200, 200, 1)",
-    bGREY:  "rgba(170, 170, 170, 1)",
-    GREY:   "rgba(119, 119, 119, 1)",
-    dGREY:  "rgba(68, 68, 68, 1)",
-    BLACK:  "rgba(32, 32, 32, 1)",
-    dBLACK: "rgba(0, 0, 0, 1)",
-
-    bGOLD:  "rgba(255,216, 44, 1)",
-    GOLD:   "rgba(215,175,  0, 1)",
-    dGOLD:  "rgba(165,134,  0, 1)",
-    ddGOLD: "rgba(103, 83,  0, 1)",
-
-    bRED:  "rgba(255, 0, 0, 1)",
-    RED:   "rgba(200, 0, 0, 1)",
-    dRED:  "rgba(150,  0,  0, 1)",
-    ddRED: "rgba(50,  0,  0, 1)",
-
-    bBLUE:  "rgba(   0,224,224, 1)",
-    BLUE:   "rgba(52,213,213, 1)",
-    dBLUE:  "rgba(0,118,118, 1)",
-    ddBLUE: "rgba(0, 77, 77, 1)"
-  },
-  // ClockKeyPositions: {
-  //   elemSquareSize: 100,
-  //   0: {
-  //     keyDimensions: {width: 0, height: 0},
-  //     keyCenter: {x: 0, y: 0},
-  //     clocksCenter: {x: 0, y: 0},
-  //     clocksCenterDimensions: {width: 0, height: 0},
-  //     clocks: {}
-  //   },
-  //   1: {
-  //     keyDimensions: {width: 230, height: 836},
-  //     keyCenter: {x: 115, y: 418},
-  //     clocksCenter: {x: 111.011, y: 108.5},
-  //     clocksCenterDimensions: {width: 169, height: 169},
-  //     clocks: {
-  //       0: {x: 111.011, y: 108.5, size: 169}
-  //     }
-  //   },
-  //   2: {
-  //     keyDimensions: {width: 202, height: 625},
-  //     keyCenter: {x: 101, y: 312},
-  //     clocksCenter: {x: 101, y: 189},
-  //     clocksCenterDimensions: {width: 110, height: 290},
-  //     clocks: {
-  //       0: {x: 101, y: 99, size: 108},
-  //       1: {x: 101, y: 279, size: 108}
-  //     }
-  //   },
-  //   3: {
-  //     keyDimensions: {width: 280, height: 915},
-  //     keyCenter: {x: 140, y: 457},
-  //     clocksCenter: {x: 140, y: 169},
-  //     clocksCenterDimensions: {width: 242, height: 222},
-  //     clocks: {
-  //       0: {x: 140, y: 99, size: 108},
-  //       1: {x: 74, y: 211, size: 108},
-  //       2: {x: 206, y: 211, size: 108}
-  //     }
-  //   },
-  //   4: {
-  //     keyDimensions: {width: 376, height: 1140},
-  //     keyCenter: {x: 188, y: 570},
-  //     clocksCenter: {x: 188, y: 185},
-  //     clocksCenterDimensions: {width: 284, height: 282},
-  //     clocks: {
-  //       0: {x: 188, y: 99, size: 108}, // yTop = 45
-  //       1: {x: 101, y: 185, size: 108},
-  //       2: {x: 275, y: 185, size: 108},
-  //       3: {x: 188, y: 273, size: 108} // yBottom = 327
-  //     }
-  //   },
-  //   5: {
-  //     keyDimensions: {width: 376, height: 1140},
-  //     keyCenter: {x: 188, y: 570},
-  //     clocksCenter: {x: 188, y: 185},
-  //     clocksCenterDimensions: {width: 284, height: 384},
-  //     clocks: {
-  //       0: {x: 188, y: 99, size: 108}, // yTop = 45
-  //       1: {x: 101, y: 185, size: 108},
-  //       2: {x: 275, y: 185, size: 108},
-  //       3: {x: 188, y: 273, size: 108},
-  //       4: {x: 188, y: 452, size: 108} // yBottom = 506
-  //     }
-  //   },
-  //   6: {
-  //     keyDimensions: {width: 376, height: 1140},
-  //     keyCenter: {x: 188, y: 570},
-  //     clocksCenter: {x: 188, y: 391},
-  //     clocksCenterDimensions: {width: 284, height: 692},
-  //     clocks: {
-  //       0: {x: 188, y: 99, size: 108}, // yTop = 45
-  //       1: {x: 101, y: 185, size: 108},
-  //       2: {x: 275, y: 185, size: 108},
-  //       3: {x: 188, y: 273, size: 108},
-  //       4: {x: 188, y: 452, size: 108},
-  //       5: {x: 188, y: 683, size: 108} // yBottom = 737
-  //     }
-  //   }
-  // },
   Loadout: {
     selections: [
       {value: "Light", display: "Light"},

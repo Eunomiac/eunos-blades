@@ -50,6 +50,19 @@ class BladesDirector {
       }
     });
 
+    // Refresh the settings for the pause-text module
+    if (game.modules?.has("pause-text") && game.modules?.get("pause-text")?.active) {
+      const pauseSettings = game.settings.get("pause-text", "allSettings") as {allText: string};
+      const rumors = C.Rumors
+        .map((rumor: string) => `${rumor}`)
+        .join("\n");
+      if (rumors !== pauseSettings.allText) {
+        console.log("Refreshing Pause Text");
+        pauseSettings.allText = rumors;
+        game.settings.set("pause-text", "allSettings", pauseSettings);
+      }
+    }
+
     // game.eunoblades.Director.renderOverlay_SocketResponse();
 
     // Return asynchronous template loading.

@@ -33,6 +33,13 @@ import "./blades-target-link";
 
 declare module "gsap/all";
 
+// Declaration for the virtual module "virtual:colors"
+declare module "virtual:colors" {
+  export const Colors: {
+    [key: string]: string;
+  };
+}
+
 declare global {
 
   namespace foundry {

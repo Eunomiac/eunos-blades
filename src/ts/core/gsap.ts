@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./utilities";
 import C, {ClockDisplayContext} from "./constants";
+import {getColor} from "./helpers";
 import BladesClockKey, {BladesClock} from "../classes/BladesClockKey";
 import {gsap, Flip, TextPlugin, Draggable as Dragger, MotionPathPlugin, Observer, CustomEase} from "../libraries";
 
@@ -206,11 +207,11 @@ export const gsapEffects: Record<string, gsapEffect> = {
       if (csqIconCircle.length > 0) {
         tl.fromTo(csqIconCircle, {
           scale:        0.75,
-          outlineColor: C.Colors.dBLACK,
+          outlineColor: getColor("black", "dark"),
           outlineWidth: 0
         }, {
           scale:        0.85,
-          outlineColor: C.Colors.GREY,
+          outlineColor: getColor("grey"),
           outlineWidth: 1,
           duration:     0.55,
           ease:         "sine.out"
@@ -338,10 +339,10 @@ export const gsapEffects: Record<string, gsapEffect> = {
       if (typeLine.length > 0) {
         tl.fromTo(typeLine,
                   {
-                    color: C.Colors.RED
+                    color: getColor("red")
                   },
                   {
-                    color:    C.Colors.WHITE,
+                    color:    getColor("white"),
                     duration: 0.5,
                     ease:     "sine.inOut"
                   }, 0);
@@ -352,12 +353,12 @@ export const gsapEffects: Record<string, gsapEffect> = {
         tl.fromTo(typeLineBg, {
           x:      5,
           scaleX: 0,
-          color:  C.Colors.RED,
+          color:  getColor("red"),
           skewX:  0
         }, {
           scaleX:   1,
           skewX:    -45,
-          color:    C.Colors.RED,
+          color:    getColor("red"),
           duration: 0.5,
           ease:     "back.out"
         }, 0);
@@ -367,13 +368,13 @@ export const gsapEffects: Record<string, gsapEffect> = {
       if (buttonBg.length > 0) {
         tl.fromTo(buttonBg, {
           scaleX: 0,
-          color:  C.Colors.RED,
+          color:  getColor("red"),
           skewX:  0
         }, {
           x:        0,
           scaleX:   1,
           skewX:    -45,
-          color:    C.Colors.RED,
+          color:    getColor("red"),
           duration: 0.25,
           ease:     "back.out"
         }, 0);
@@ -383,12 +384,12 @@ export const gsapEffects: Record<string, gsapEffect> = {
       if (buttonIcon.length > 0) {
         tl.fromTo(buttonIcon,
                   {
-                    color:   C.Colors.GREY,
+                    color:   getColor("grey"),
                     opacity: 0.75,
                     scale:   1
                   },
                   {
-                    color:    C.Colors.dBLACK,
+                    color:    getColor("black", "dark"),
                     scale:    1.25,
                     opacity:  1,
                     duration: 0.5,
@@ -400,12 +401,12 @@ export const gsapEffects: Record<string, gsapEffect> = {
       if (buttonLabel.length > 0) {
         tl.fromTo(buttonLabel,
                   {
-                    color:      C.Colors.GREY,
+                    color:      getColor("grey"),
                     fontWeight: 400,
                     scale:      1
                   },
                   {
-                    color:      C.Colors.dBLACK,
+                    color:      getColor("black", "dark"),
                     fontWeight: 800,
                     duration:   0.75,
                     ease:       "sine"
@@ -570,12 +571,12 @@ export const gsapEffects: Record<string, gsapEffect> = {
         if (buttonIcon.length > 0) {
           tl.fromTo(buttonIcon,
                     {
-                      color:   C.Colors.GREY,
+                      color:   getColor("grey"),
                       opacity: 0.75,
                       scale:   1
                     },
                     {
-                      color:    C.Colors.dBLACK,
+                      color:    getColor("black", "dark"),
                       scale:    1.25,
                       opacity:  1,
                       duration: 0.5,
@@ -587,12 +588,12 @@ export const gsapEffects: Record<string, gsapEffect> = {
         if (buttonLabel.length > 0) {
           tl.fromTo(buttonLabel,
                     {
-                      color:      C.Colors.GREY,
+                      color:      getColor("grey"),
                       fontWeight: 400,
                       scale:      1
                     },
                     {
-                      color:      C.Colors.dBLACK,
+                      color:      getColor("black", "dark"),
                       fontWeight: 800,
                       duration:   0.75,
                       ease:       "sine"

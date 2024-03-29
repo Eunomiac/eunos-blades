@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./utilities";
 import C from "./constants";
+import {getColor} from "./helpers";
 import {UploadBladesPDF} from "./ai";
 /* eslint-enable @typescript-eslint/no-unused-vars */
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
@@ -285,11 +286,11 @@ export function initCanvasStyles() {
     dropShadow:         true,
     dropShadowAngle:    U.degToRad(45),
     dropShadowBlur:     8,
-    dropShadowColor:    C.Colors.BLACK,
+    dropShadowColor:    getColor("black"),
     dropShadowDistance: 4,
     fill:               [
-      C.Colors.bWHITE,
-      C.Colors.bGREY
+      getColor("white", "bright"),
+      getColor("grey", "bright")
     ],
     fillGradientType:  1,
     fillGradientStops: [
@@ -302,7 +303,7 @@ export function initCanvasStyles() {
     lineHeight:      32,
     lineJoin:        "round",
     padding:         4,
-    stroke:          C.Colors.dBLACK,
+    stroke:          getColor("black", "dark"),
     strokeThickness: 3,
     trim:            true,
     whiteSpace:      "normal",
@@ -315,7 +316,7 @@ export function initDOMStyles() {
   // Create a full-screen background gradient that resembles the gradient described in CONFIG-canvasTextStyles
   // This will serve as a fallback background when the canvas has been disabled or is not available
   $("body.vtt.game.system-eunos-blades")
-    .append(`<div id="backsplash" style="height: 100%; width: 100%; position: absolute; z-index: -1; background: linear-gradient(35deg, ${C.Colors.GREY}, ${C.Colors.BLACK});"></div>`);
+    .append(`<div id="backsplash" style="height: 100%; width: 100%; position: absolute; z-index: -1; background: linear-gradient(35deg, ${getColor("grey")}, ${getColor("black")});"></div>`);
 
   // Append lightning-barrier background to #sidebar
   $("#interface")

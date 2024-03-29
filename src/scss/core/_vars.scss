@@ -175,144 +175,6 @@ $isCompactLayout: true;
 // #endregion ▄▄▄▄▄ Pixels to Rem ▄▄▄▄▄
 
 // #region ████████ Colors: System Color Settings ████████ ~
-  // #region ░░░░░░░ Blades Colors & Fades ░░░░░░░ ~
-  --blades-white-bright-nums: 255, 255, 255;
-  --blades-white-nums: 200, 200, 200; // 212 // 200
-  --blades-grey-bright-nums: 170, 170, 170; // 170 // 170
-  --blades-grey-nums: 119, 119, 119; // 128 // 119
-  --blades-grey-dark-nums: 68, 68, 68; // 85 // 68
-  --blades-black-nums: 32, 32, 32; // 42 // 32
-  --blades-black-dark-nums: 0, 0, 0;
-
-  --blades-white-bright-nums: 255, 255, 255;
-  --blades-white-nums: 212, 212, 212;
-  --blades-grey-bright-nums: 170, 170, 170;
-  --blades-grey-nums: 128, 128, 128;
-  --blades-grey-dark-nums: 85, 85, 85;
-  --blades-black-nums: 42, 42, 42;
-  --blades-black-dark-nums: 0, 0, 0;
-
-  --blades-white-bright-nums: 255, 255, 255;
-  --blades-white-nums: 200, 200, 200;       // From 212, 212, 212
-  --blades-grey-bright-nums: 158, 158, 158; // From 170, 170, 170
-  --blades-grey-nums: 116, 116, 116;        // From 128, 128, 128
-  --blades-grey-dark-nums: 73, 73, 73;      // From 85, 85, 85
-  --blades-black-nums: 30, 30, 30;          // From 42, 42, 42
-  --blades-black-dark-nums: 0, 0, 0;
-
-  --blades-gold-bright-nums: 206,180, 71; // 175,149, 37; // 255, 231, 92;
-  --blades-gold-nums: 143,118, 11; // 255, 215, 0;
-  --blades-gold-dark-nums: 105, 86,  0; // 184, 156, 0;
-  --blades-gold-darkest-nums: 64, 52,  0; // 55, 53, 0;
-
-  --blades-red-bright-nums: 255, 0, 0;
-  --blades-red-nums: 200, 0, 0; // 255,  0,  0;
-  --blades-red-dark-nums: 150,  0,  0;
-  --blades-red-darkest-nums: 50,  0,  0;
-  --blades-red-black-nums: 25,  0,  0;
-
-  --blades-green-bright-nums: 20, 220, 60;
-  --blades-green-nums: 0, 204, 0;
-  --blades-green-dark-nums: 0, 122, 0;
-  --blades-green-darkest-nums: 0, 60, 0;
-
-  --blades-blue-bright-nums: 198, 255, 255;
-  --blades-blue-nums: 150, 255, 255;
-  --blades-blue-dark-nums: 40, 120, 120;
-  --blades-blue-darkest-nums: 25, 49, 49;
-
-  /*
-  NEW COLOR PALETTE OVERRIDE
-
-  == GOLD ==
-  http://paletton.com/#uid=11n0u0kNTr2qtG1K2DKRbkEVqcT
-
-  shade 0 = #D7AF00 = rgb(215,175,  0) = rgba(215,175,  0,1) = rgb0(0.843,0.686,0)
-  shade 1 = #FFD82C = rgb(255,216, 44) = rgba(255,216, 44,1) = rgb0(1,0.847,0.173)
-  shade 2 = #FFCF00 = rgb(255,207,  0) = rgba(255,207,  0,1) = rgb0(1,0.812,0)
-  shade 3 = #A58600 = rgb(165,134,  0) = rgba(165,134,  0,1) = rgb0(0.647,0.525,0)
-  shade 4 = #675300 = rgb(103, 83,  0) = rgba(103, 83,  0,1) = rgb0(0.404,0.325,0)'
-
-  == RED ==
-  http://paletton.com/#uid=1000u0kTixTijNOwGQpTXmEXg9Y
-  shade 0 = #FF0000 = rgb(255,  0,  0) = rgba(255,  0,  0,1) = rgb0(1,0,0)
-  shade 1 = #FF6D6D = rgb(255,109,109) = rgba(255,109,109,1) = rgb0(1,0.427,0.427)
-  shade 2 = #FF0000 = rgb(255,  0,  0) = rgba(255,  0,  0,1) = rgb0(1,0,0)
-  shade 3 = #B40000 = rgb(180,  0,  0) = rgba(180,  0,  0,1) = rgb0(0.706,0,0)
-  shade 4 = #4F0000 = rgb( 79,  0,  0) = rgba( 79,  0,  0,1) = rgb0(0.31,0,0)
-
-  == BLUE ==
-  http://paletton.com/#uid=13i0u0kTixTodNREARdTRoAV1g4
-  shade 0 = #009F9F = rgb(  0,159,159) = rgba(  0,159,159,1) = rgb0(0,0.624,0.624)
-  shade 1 = #34D5D5 = rgb( 52,213,213) = rgba( 52,213,213,1) = rgb0(0.204,0.835,0.835)
-  shade 2 = #00E0E0 = rgb(  0,224,224) = rgba(  0,224,224,1) = rgb0(0,0.878,0.878)
-  shade 3 = #007676 = rgb(  0,118,118) = rgba(  0,118,118,1) = rgb0(0,0.463,0.463)
-  shade 4 = #004D4D = rgb(  0, 77, 77) = rgba(  0, 77, 77,1) = rgb0(0,0.302,0.302)
-  */
-
-  --blades-gold-bright-nums: 255,216, 44;
-  --blades-gold-nums: 215,175,  0; // 255,207,  0
-  --blades-gold-dark-nums: 165,134,  0;
-  --blades-gold-darkest-nums: 103, 83,  0;
-
-  /* --blades-red-bright-nums: 255,109,109;
-  --blades-red-nums: 255,  0,  0;
-  --blades-red-dark-nums: 180,  0,  0;
-  --blades-red-darkest-nums: 79,  0,  0; */
-
-  --blades-blue-bright-nums:   0,224,224;
-  --blades-blue-nums:  52,213,213; //   0,159,159
-  --blades-blue-dark-nums:   0,118,118;
-  --blades-blue-darkest-nums: 0, 77, 77;
-  /* END OVERRIDE */
-
-  --blades-white-bright: rgba(var(--blades-white-bright-nums), 1);
-  --blades-white: rgba(var(--blades-white-nums), 1);
-  --blades-grey-bright: rgba(var(--blades-grey-bright-nums), 1);
-  --blades-grey: rgba(var(--blades-grey-nums), 1);
-  --blades-grey-dark: rgba(var(--blades-grey-dark-nums), 1);
-  --blades-black: rgba(var(--blades-black-nums), 1);
-  --blades-black-dark: rgba(var(--blades-black-dark-nums), 1);
-
-  --blades-gold-brightest: rgba(var(--blades-gold-brightest-nums), 1);
-  --blades-gold-bright: rgba(var(--blades-gold-bright-nums), 1);
-  --blades-gold: rgba(var(--blades-gold-nums), 1);
-  --blades-gold-dark: rgba(var(--blades-gold-dark-nums), 1);
-  --blades-gold-darkest: rgba(var(--blades-gold-darkest-nums), 1);
-
-  --blades-red-bright: rgba(var(--blades-red-bright-nums), 1);
-  --blades-red: rgba(var(--blades-red-nums), 1);
-  --blades-red-dark: rgba(var(--blades-red-dark-nums), 1);
-  --blades-red-darkest: rgba(var(--blades-red-darkest-nums), 1);
-  --blades-red-black: rgba(var(--blades-red-black-nums), 1);
-
-  --blades-green-bright: rgba(var(--blades-green-bright-nums), 1);
-  --blades-green: rgba(var(--blades-green-nums), 1);
-  --blades-green-dark: rgba(var(--blades-green-dark-nums), 1);
-  --blades-green-darkest: rgba(var(--blades-green-darkest-nums), 1);
-
-  --blades-blue-bright: rgba(var(--blades-blue-bright-nums), 1);
-  --blades-blue: rgba(var(--blades-blue-nums), 1);
-  --blades-blue-dark: rgba(var(--blades-blue-dark-nums), 1);
-  --blades-blue-darkest: rgba(var(--blades-blue-darkest-nums), 1);
-
-  --blades-white-fade: rgba(var(--blades-white-nums), 0.5);
-  --blades-white-fade-strong: rgba(var(--blades-white-nums), 0.25);
-  --blades-white-bright-fade: rgba(var(--blades-white-bright-nums), 0.5);
-  --blades-white-bright-fade-strong: rgba(var(--blades-white-bright-nums), 0.25);
-
-  --blades-black-fade: rgba(var(--blades-black-nums), 0.5);
-  --blades-black-fade-strong: rgba(var(--blades-black-nums), 0.25);
-  --blades-black-dark-fade: rgba(var(--blades-black-dark-nums), 0.5);
-  --blades-black-dark-fade-strong: rgba(var(--blades-black-dark-nums), 0.25);
-
-  --blades-red-dark-fade: rgba(var(--blades-red-dark-nums), 0.5);
-  --blades-green-dark-fade: rgba(var(--blades-green-dark-nums), 0.5);
-  --blades-blue-dark-fade: rgba(var(--blades-blue-dark-nums), 0.5);
-  --blades-red-dark-fade-strong: rgba(var(--blades-red-dark-nums), 0.25);
-  --blades-green-dark-fade-strong: rgba(var(--blades-green-dark-nums), 0.25);
-  --blades-blue-dark-fade-strong: rgba(var(--blades-blue-dark-nums), 0.25);
-  // #endregion ░░░░[Blades Colors & Fades]░░░░
   // #region ░░░░░░░ Numerically-Defined Colors (for Emu Stylesheet) ░░░░░░░ ~
   --color-primary: var(--blades-white-nums);
   --color-background: var(--blades-black-nums);
@@ -525,3 +387,14 @@ $isCompactLayout: true;
   // #endregion ▄▄▄▄▄ LAYOUT ▄▄▄▄▄
 // #endregion 🟩🟩🟩 PRIMARY STYLES 🟩🟩🟩
 }
+
+// $theme-colors: (
+//   'someColor': #000,
+//   'anotherColor': #FFF,
+// );
+
+// :export {
+//   @each $key, $value in $theme-colors {
+//     #{unquote($key)}: $value;
+//   }
+// }

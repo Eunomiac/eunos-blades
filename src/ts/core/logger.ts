@@ -1,5 +1,6 @@
 import U from "./utilities";
 import C from "./constants";
+import {getColor} from "./helpers";
 
 const LOGGERCONFIG = {
   fullName:             "eLogger",
@@ -12,25 +13,25 @@ const LOGGERCONFIG = {
 
 const STYLES = {
   base: {
-    "background":     C.Colors.BLACK,
-    "color":          C.Colors.dGOLD,
+    "background":     getColor("black"),
+    "color":          getColor("gold", "dark"),
     "font-family":  "Pragmata Pro",
     "padding":        "0 25px",
     "margin-right": "25px"
   },
   log0: {
-    "background":  C.Colors.dGOLD,
-    "color":       C.Colors.dBLACK,
+    "background":  getColor("gold", "dark"),
+    "color":       getColor("black", "dark"),
     "font-size":  "16px"
   },
   log1: {
-    "background":  C.Colors.dBLACK,
-    "color":       C.Colors.bGOLD,
+    "background":  getColor("black", "dark"),
+    "color":       getColor("gold", "bright"),
     "font-size":  "16px"
   },
   log2: {
-    "background":  C.Colors.dBLACK,
-    "color":       C.Colors.dGOLD,
+    "background":  getColor("black", "dark"),
+    "color":       getColor("gold", "dark"),
     "font-size":  "16px"
   },
   log3: {
@@ -40,36 +41,36 @@ const STYLES = {
     "font-size": "12px"
   },
   log5: {
-    "background":  C.Colors.dGREY,
-    "color":       C.Colors.bGREY,
+    "background":  getColor("grey", "dark"),
+    "color":       getColor("grey", "bright"),
     "font-size":  "10px"
   },
   display: {
-    "color":         C.Colors.bGOLD,
+    "color":         getColor("gold", "bright"),
     "font-family": "Kirsty",
     "font-size":   "16px",
     "margin-left": "-100px",
     "padding":       "0 100px"
   },
   warn: {
-    "color":         C.Colors.dBLACK,
-    "background":    C.Colors.dGOLD,
+    "color":         getColor("black", "dark"),
+    "background":    getColor("gold", "dark"),
     "font-weight": 500
   },
   error: {
-    "color":         C.Colors.bRED,
-    "background":    C.Colors.ddRED,
+    "color":         getColor("red", "bright"),
+    "background":    getColor("red", "darkest"),
     "font-weight": 500
   },
   handlebars: {
-    "background":     C.Colors.GREY,
-    "color":          C.Colors.BLUE,
+    "background":     getColor("grey"),
+    "color":          getColor("blue"),
     "font-family":  "Pragmata Pro",
     "padding":        "0",
     "margin-right": "25px"
   },
   stack: {
-    "color":         C.Colors.GOLD,
+    "color":         getColor("gold"),
     "font-weight": 100,
     "font-size":   "10px",
     "font-family": "Pragmata Pro"
@@ -147,7 +148,7 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
     });
   }
   if (stackTrace) {
-    console.group("%cSTACK TRACE", `color: ${C.Colors.dGOLD}; font-family: "Pragmata Pro"; font-size: 12px; background: ${C.Colors.BLACK}; font-weight: bold; padding: 0 10px;`);
+    console.group("%cSTACK TRACE", `color: ${getColor("gold", "dark")}; font-family: "Pragmata Pro"; font-size: 12px; background: ${getColor("black")}; font-weight: bold; padding: 0 10px;`);
     console.log(`%c${stackTrace}`, Object.entries(STYLES.stack).map(([prop, val]) => `${prop}: ${val};`).join(" "));
     console.groupEnd();
   }

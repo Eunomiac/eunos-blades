@@ -1,8 +1,69 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./utilities";
+// @ts-expect-error: TypeScript doesn't know how to handle SCSS modules
+import {ColorNums} from "virtual:colors";
 /* eslint-enable @typescript-eslint/no-unused-vars */
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
+
+// #region PARSING CSS COLORS~
+type cssHue = "white"|"grey"|"black"|"gold"|"red"|"green"|"blue";
+type cssBrightness = "brightest"|"bright"|"normal"|"dark"|"darkest"|"black";
+
+
+const cssFullShifts: Partial<Record<cssHue, Partial<Record<cssBrightness, [cssHue, cssBrightness]>>>> = {
+  // Maps missing brightness values to other hue/brightness combinations
+  white: {
+    dark:      ["grey", "bright"],
+    darkest:   ["grey", "normal"]
+  },
+  grey: {
+    brightest: ["white", "normal"],
+    darkest:   ["black", "normal"]
+  },
+  black: {
+    brightest: ["grey", "normal"],
+    bright:    ["grey", "dark"]
+  }
+};
+
+export function getColor(
+  hue: cssHue,
+  brightness: cssBrightness = "normal",
+  opacity: number = 1
+) {
+  const originals = {hue, brightness};
+  let rgbVals: number[] = [];
+  const cNums = ColorNums as Record<cssHue, Partial<Record<cssBrightness, [number, number, number]>>>;
+  if (!cNums[hue]) {
+    throw new Error(`Unrecognized color: "${hue}"`);
+  }
+  const hueData = cNums[hue];
+  if (!hueData[brightness]) {
+    const cssBrightnessShifts: Partial<Record<cssBrightness, cssBrightness[]>> = {
+      brightest: ["bright"],
+      darkest:   ["dark"],
+      black:     ["darkest", "dark"]
+    };
+    if (cssFullShifts[hue]?.[brightness]) {
+      ([hue, brightness] = cssFullShifts[hue]?.[brightness] as [cssHue, cssBrightness]);
+    } else if (brightness in cssBrightnessShifts) {
+      const brightVals = cssBrightnessShifts[brightness] as cssBrightness[];
+      while (!cNums[hue]?.[brightness] && brightVals.length) {
+        brightness = brightVals.shift() as cssBrightness;
+        if (!cNums[hue]?.[brightness] && cssFullShifts[hue]?.[brightness]) {
+          ([hue, brightness] = cssFullShifts[hue]?.[brightness] as [cssHue, cssBrightness]);
+        }
+      }
+    }
+  }
+  rgbVals = cNums[hue]?.[brightness] as [number, number, number];
+  if (!rgbVals?.length) {
+    throw new Error(`Unable to parse color "${originals.hue}-${originals.brightness}" (${hue}-${brightness})`);
+  }
+  return `rgba(${rgbVals.join(", ")}, ${opacity})`;
+}
+// #endregion
 
 // #region ░░░░░░░[Templates]░░░░ Preload Partials, Components & Overlay Templates ░░░░░░░ ~
 /**
@@ -267,11 +328,6 @@ handlebarHelpers.eLog3 = function(...args) { handlebarHelpers.eLog(...[3, ...arg
 handlebarHelpers.eLog4 = function(...args) { handlebarHelpers.eLog(...[4, ...args.slice(0, 7)]); };
 handlebarHelpers.eLog5 = function(...args) { handlebarHelpers.eLog(...[5, ...args.slice(0, 7)]); };
 
-Object.assign(handlebarHelpers);
-
-/**
- *
- */
 export function registerHandlebarHelpers() {
   Object.entries(handlebarHelpers).forEach(([name, func]) => Handlebars.registerHelper(name, func));
 }

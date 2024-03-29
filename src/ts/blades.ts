@@ -16,7 +16,7 @@ import C, {
   RollResult
 } from "./core/constants";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initDOMStyles} from "./core/settings";
-import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "./core/helpers";
+import {registerHandlebarHelpers, preloadHandlebarsTemplates, getColor} from "./core/helpers";
 import BladesChat from "./classes/BladesChat";
 import U from "./core/utilities";
 import logger from "./core/logger";
@@ -171,6 +171,7 @@ class GlobalGetter {
     // updateFactions,
     // updateDescriptions,
     // updateRollMods,
+    getColor,
     BladesScene,
     BladesDirector,
     BladesActor,
