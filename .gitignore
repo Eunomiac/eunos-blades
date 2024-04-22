@@ -1,0 +1,47 @@
+# Unnecessary
+.EXAMPLES&REFERENCE/
+traceResolution.txt
+\!archive/
+public/packs/
+dist/index.html
+dist/index.js
+eunos-blades/
+
+# IDE
+# dist/
+
+.idea/
+.vs/
+.vscode/
+.status-reports/
+*.cpuprofile
+*.log
+*.code-workspace
+*.tmp
+tsdocs/
+*.temp
+*.js.map
+.yarn/
+# .gitignore
+.npmignore
+.eslintignore
+*prettier*
+stylelint.config.js
+# .github/
+.live-css.config.js
+module_staging_1/
+.scannerwork/
+# .sonarlintignore
+.eslintcache
+*.ps1
+*ProcessID.txt
+.cursorignore
+.gitattributes
+.stylelintignore
+# sonar-project.properties
+
+# Node Modules
+node_modules/
+npm-debug.log
+.dev-refs/
+eunos-blades.zip
