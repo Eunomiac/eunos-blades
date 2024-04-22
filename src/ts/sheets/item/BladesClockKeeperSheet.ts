@@ -194,14 +194,14 @@ class BladesClockKeeperSheet extends BladesItemSheet {
             const isSpotlit = !clockKey.isSpotlit;
             clockKey.updateTarget("isSpotlit", isSpotlit);
 
-            // If clockKey is on display (in scene & visible), sent out animation socket calls
-            if (clockKey.isInScene() && clockKey.isVisible) {
-              if (isSpotlit) {
-                // clockKey.unspotlight_SocketCall(ClockDisplayContext.overlay);
-              } else {
-                // clockKey.spotlight_SocketCall(ClockDisplayContext.overlay);
-              }
-            }
+            /* If clockKey is on display (in scene & visible), sent out animation socket calls
+            // if (clockKey.isInScene() && clockKey.isVisible) {
+            //   if (isSpotlit) {
+            //     // clockKey.unspotlight_SocketCall(ClockDisplayContext.overlay);
+            //   } else {
+            //     // clockKey.spotlight_SocketCall(ClockDisplayContext.overlay);
+            //   }
+            // } */
 
             // Toggle class names on icon
             control$.find("[data-action=\"toggle-spotlight\"] i")
