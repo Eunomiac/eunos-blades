@@ -3,7 +3,7 @@
 import U from "../core/utilities";
 import C, {BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag} from "../core/constants";
 import {BladesActor, BladesPC, BladesCrew} from "../documents/BladesActorProxy";
-import {BladesItem, BladesGMTracker} from "../documents/BladesItemProxy";
+import {BladesItem, BladesGMTracker, BladesProject} from "../documents/BladesItemProxy";
 import {ApplyTooltipAnimations, Dragger} from "../core/gsap";
 import BladesConsequence from "./BladesConsequence";
 import BladesClockKey from "./BladesClockKey";
