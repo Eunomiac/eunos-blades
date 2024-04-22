@@ -20,21 +20,21 @@
     transform: var(--text-transform-default);
   }
 
-  *:not(i):not(button) {
-    color: inherit;
-    font: {
-      family: inherit;
-      size: inherit;
-      weight: inherit;
-      style: inherit;
-      variant: inherit;
-    }
-    line-height: inherit;
-    text: {
-      shadow: inherit;
-      transform: inherit;
-    }
-  }
+  // *:not(i):not(button) {
+  //   color: inherit;
+  //   font: {
+  //     family: inherit;
+  //     size: inherit;
+  //     weight: inherit;
+  //     style: inherit;
+  //     variant: inherit;
+  //   }
+  //   line-height: inherit;
+  //   text: {
+  //     shadow: inherit;
+  //     transform: inherit;
+  //   }
+  // }
 
   b, strong { font-weight: bold !important; color: var(--blades-white-bright) !important}
   i:not([class]), em { font-style: italic  !important }

@@ -1,5 +1,26 @@
-2024/03/28-09:59:48.996 1e0c Recovering log #1658
-2024/03/28-09:59:48.996 1e0c Level-0 table #1660: started
-2024/03/28-09:59:49.379 1e0c Level-0 table #1660: 1149 bytes OK
-2024/03/28-09:59:49.903 1e0c Delete type=0 #1658
-2024/03/28-09:59:49.903 1e0c Delete type=3 #1657
+2024/04/22-00:34:22.888 74a0 Recovering log #1664
+2024/04/22-00:34:22.888 74a0 Level-0 table #1666: started
+2024/04/22-00:34:22.920 74a0 Level-0 table #1666: 4126 bytes OK
+2024/04/22-00:34:22.979 74a0 Delete type=0 #1664
+2024/04/22-00:34:22.980 74a0 Delete type=3 #1662
+2024/04/22-04:35:43.344 11f0 Level-0 table #1669: started
+2024/04/22-04:35:43.363 11f0 Level-0 table #1669: 3481 bytes OK
+2024/04/22-04:35:43.387 11f0 Delete type=0 #1667
+2024/04/22-04:35:43.442 11f0 Manual compaction at level-0 from '!settings!1cqmUu85m7A0Iace' @ 72057594037927935 : 1 .. '!settings!zpRF87CnhqqK19Vo' @ 0 : 0; will stop at '!settings!eP7Pg5FjtuhpFa4h' @ 1174 : 1
+2024/04/22-04:35:43.442 11f0 Compacting 4@0 + 0@1 files
+2024/04/22-04:35:43.471 11f0 Generated table #1670@0: 4 keys, 3390 bytes
+2024/04/22-04:35:43.472 11f0 Compacted 4@0 + 0@1 files => 3390 bytes
+2024/04/22-04:35:43.503 11f0 compacted to: files[ 0 1 1 0 0 0 0 ]
+2024/04/22-04:35:43.503 11f0 Delete type=2 #1660
+2024/04/22-04:35:43.503 11f0 Delete type=2 #1663
+2024/04/22-04:35:43.503 11f0 Delete type=2 #1666
+2024/04/22-04:35:43.503 11f0 Delete type=2 #1669
+2024/04/22-04:35:43.533 11f0 Manual compaction at level-0 from '!settings!eP7Pg5FjtuhpFa4h' @ 1174 : 1 .. '!settings!zpRF87CnhqqK19Vo' @ 0 : 0; will stop at (end)
+2024/04/22-04:35:43.646 11f0 Manual compaction at level-1 from '!settings!1cqmUu85m7A0Iace' @ 72057594037927935 : 1 .. '!settings!zpRF87CnhqqK19Vo' @ 0 : 0; will stop at '!settings!xvQ9YEis7go8Mk9H' @ 1188 : 1
+2024/04/22-04:35:43.646 11f0 Compacting 1@1 + 1@2 files
+2024/04/22-04:35:43.673 11f0 Generated table #1671@1: 68 keys, 17497 bytes
+2024/04/22-04:35:43.673 11f0 Compacted 1@1 + 1@2 files => 17497 bytes
+2024/04/22-04:35:43.687 11f0 compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/04/22-04:35:43.687 11f0 Delete type=2 #1656
+2024/04/22-04:35:43.687 11f0 Delete type=2 #1670
+2024/04/22-04:35:43.726 11f0 Manual compaction at level-1 from '!settings!xvQ9YEis7go8Mk9H' @ 1188 : 1 .. '!settings!zpRF87CnhqqK19Vo' @ 0 : 0; will stop at (end)

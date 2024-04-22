@@ -1,0 +1,1 @@
+This directory contains systems which define game frameworks for use in Foundry VTT. Each system has its own uniquely named subdirectory containing a system.json manifest file.

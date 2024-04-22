@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./utilities";
-import C, {ClockDisplayContext} from "./constants";
 import {getColor} from "./helpers";
-import BladesClockKey, {BladesClock} from "../classes/BladesClockKey";
+
 import {gsap, Flip, TextPlugin, Draggable as Dragger, MotionPathPlugin, Observer, CustomEase} from "../libraries";
 
 const gsapPlugins: gsap.RegisterablePlugins[] = [
@@ -29,7 +28,7 @@ const gsapPlugins: gsap.RegisterablePlugins[] = [
 
 export type gsapConfig = gsap.TweenVars & {
   duration: number,
-  targets: Record<string, JQuery<HTMLElement> | Array<JQuery<HTMLElement>>>
+  targets: Record<string, JQuery | JQuery[]>
 }
 
 export type gsapEffect = {
@@ -40,6 +39,10 @@ export type gsapEffect = {
   defaults: gsap.TweenVars,
   extendTimeline?: boolean
 }
+
+
+
+
 
 export const gsapEffects: Record<string, gsapEffect> = {
   // #region CLOCK KEYS
@@ -133,14 +136,11 @@ export const gsapEffects: Record<string, gsapEffect> = {
   csqEnter: {
     effect: (csqContainer, config) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
-      // ELog.checkLog3("gsap", "gsapEffects.consequenceEnter -> THIS", {this: this, csqRoot});
       const csqIconCircle = csqRoot(".consequence-icon-circle.base-consequence");
-      // const csqBaseElems = csqRoot(".base-consequence:not(.consequence-icon-circle)");
       const csqBaseTypeElem = csqRoot(".consequence-type.base-consequence");
       const csqAcceptTypeElem = csqRoot(".consequence-type.accept-consequence");
       const csqBaseNameElem = csqRoot(".consequence-name.base-consequence");
       const csqAcceptNameElem = csqRoot(".consequence-name.accept-consequence");
-      // const csqAcceptElems = csqRoot(".accept-consequence:not(.consequence-icon-circle):not(.consequence-button-container)");
 
       const tl = U.gsap.timeline({paused: true, defaults: {} });
 
@@ -243,11 +243,11 @@ export const gsapEffects: Record<string, gsapEffect> = {
       const csqButtonContainers = iconRoot(".consequence-button-container");
 
       const tl = U.gsap.timeline({
-        paused:     true,
-        onComplete: function() {
+        paused: true,
+        onComplete() {
           $(csqInteractionPads).css("pointerEvents", "auto");
         },
-        onReverseComplete: function() {
+        onReverseComplete() {
           $(csqInteractionPads).css("pointerEvents", "none");
         }
       });
@@ -657,12 +657,12 @@ export const gsapEffects: Record<string, gsapEffect> = {
           x:            config.x,
           marginBottom: config.ignoreMargin
             ? undefined
-            : function(i, target) {
+            : function(_i, target) {
               return U.get(target, "height") as number * -1;
             },
           marginRight: config.ignoreMargin
             ? undefined
-            : function(i, target) {
+            : function(_i, target) {
               return U.get(target, "width") as number * -1;
             },
           scale:    config.scale,
@@ -699,12 +699,12 @@ export const gsapEffects: Record<string, gsapEffect> = {
           x:            config.x,
           marginBottom: config.ignoreMargin
             ? undefined
-            : function(i, target) {
+            : function(_i, target) {
               return U.get(target, "height") as number * -1;
             },
           marginRight: config.ignoreMargin
             ? undefined
-            : function(i, target) {
+            : function(_i, target) {
               return U.get(target, "width") as number * -1;
             },
           scale:  config.scale,
@@ -753,20 +753,16 @@ export const gsapEffects: Record<string, gsapEffect> = {
     extendTimeline: true
   },
   scaleUpReveal: {
-    effect: (target, config) => {
-      const tl = U.gsap.timeline()
-        .fromTo(target, {
-          autoAlpha: 0,
-          scale:     0.5 * (config.scale as number)
-        }, {
-          autoAlpha: 1,
-          scale:     config.scale,
-          duration:  config.duration,
-          ease:      config.ease
-        });
-
-      return tl;
-    },
+    effect: (target, config) => U.gsap.timeline()
+      .fromTo(target, {
+        autoAlpha: 0,
+        scale:     0.5 * (config.scale as number)
+      }, {
+        autoAlpha: 1,
+        scale:     config.scale,
+        duration:  config.duration,
+        ease:      config.ease
+      }),
     defaults: {
       scale:    1,
       duration: 0.5,
@@ -775,17 +771,13 @@ export const gsapEffects: Record<string, gsapEffect> = {
     extendTimeline: true
   },
   scaleDownRemove: {
-    effect: (target, config) => {
-      const tl = U.gsap.timeline()
-        .to(target, {
-          autoAlpha: 0,
-          scale:     0.5 * (config.scale as number),
-          duration:  config.duration,
-          ease:      config.ease
-        });
-
-      return tl;
-    },
+    effect: (target, config) => U.gsap.timeline()
+      .to(target, {
+        autoAlpha: 0,
+        scale:     0.5 * (config.scale as number),
+        duration:  config.duration,
+        ease:      config.ease
+      }),
     defaults: {
       scale:    1,
       duration: 0.5,
@@ -796,38 +788,57 @@ export const gsapEffects: Record<string, gsapEffect> = {
   blurRevealTooltip: {
     effect: (target, config) => {
       if (!target) { throw new Error(`blurRevealTooltip effect: tooltip element is ${target === null ? "null" : typeof target}`); }
-      const tooltip$: JQuery<HTMLElement> = $(target as HTMLElement);
+      const tooltip$: JQuery = $(target as HTMLElement);
+
+      const xPStart: gsap.TweenVars = {xPercent: -50, yPercent: -50};
+      const xPEnd: gsap.TweenVars = {xPercent: -50, yPercent: -50};
+
+      switch (config.tooltipDirection) {
+        case "top":
+          xPStart.yPercent = -120;
+          xPEnd.yPercent = -100;
+          break;
+        case "right":
+          xPStart.xPercent = 5;
+          xPEnd.xPercent = 15;
+          break;
+        case "bottom":
+          xPStart.yPercent = 0;
+          xPEnd.yPercent = 20;
+          break;
+        case "left":
+          xPStart.xPercent = -80;
+          xPEnd.xPercent = -100;
+          break;
+        default:
+          throw new Error(`blurRevealTooltip effect: tooltipDirection '${config.tooltipDirection}' is not valid`);
+      }
 
       return U.gsap.timeline({
         paused:            true,
+        delay:             0.25,
         onReverseComplete: config.onReverseComplete
       })
         .fromTo(
           tooltip$,
           {
-            filter:    `blur(${config.blurStrength}px)`,
             autoAlpha: 0,
-            xPercent:  50,
-            yPercent:  -200,
-            scale:     config.scale
+            ...xPStart
           },
           {
-            filter:    "blur(0px)",
             autoAlpha: 1,
-            xPercent:  -50,
-            yPercent:  -100,
-            scale:     1,
-            ease:      config.ease,
+            ...xPEnd,
             duration:  config.duration
           }
         );
     },
     defaults: {
-      scale:             1.5,
-      blurStrength:      15,
-      ease:              "back.out",
+      scale:             1.25,
+      blurStrength:      5,
+      ease:              "power3.inOut",
       duration:          0.25,
-      onReverseComplete: undefined
+      onReverseComplete: undefined,
+      tooltipDirection:  "top"
     },
     extendTimeline: true
   },
@@ -916,7 +927,7 @@ export function Initialize() {
  * Applies listeners to '.tooltip-trigger' elements in the document.
  * @param {JQuery<HTMLElement>} html The document to be searched.
  */
-export function ApplyTooltipAnimations(html: JQuery<HTMLElement>) {
+export function ApplyTooltipAnimations(html: JQuery) {
 
   html.find(".tooltip-trigger").each((_, el) => {
     const tooltipElem = $(el).find(".tooltip")[0] ?? $(el).next(".tooltip")[0];
@@ -950,10 +961,10 @@ export function ApplyTooltipAnimations(html: JQuery<HTMLElement>) {
 
 
     $(el).on({
-      mouseenter: function() {
+      mouseenter() {
         game.eunoblades.Director.displayTooltip(tooltipElem);
       },
-      mouseleave: function() {
+      mouseleave() {
         game.eunoblades.Director.clearTooltip(tooltipID);
       }
     });

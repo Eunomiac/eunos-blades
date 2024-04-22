@@ -1,12 +1,8 @@
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities";
-import C, {ClockKey_SVGDATA, BladesPhase, BladesNoticeType, BladesActorType, BladesItemType, ClockKeyUpdateAction, ClockKeyDisplayMode, ClockDisplayContext} from "../core/constants";
-// import U from "../core/utilities";
-import {BladesActor} from "../documents/BladesActorProxy";
-import {BladesItem} from "../documents/BladesItemProxy";
+import C, {ClockKey_SVGDATA, BladesPhase, BladesNoticeType, ClockKeyDisplayMode} from "../core/constants";
 import BladesClockKey, {BladesClock, ClockKeyElems$} from "./BladesClockKey";
-
-import {gsapEffects, gsapEffect, gsapConfig} from "../core/gsap";
 
 namespace BladesDirector {
   export interface PushNoticeConfig {
@@ -63,7 +59,6 @@ class BladesDirector {
       }
     }
 
-    // game.eunoblades.Director.renderOverlay_SocketResponse();
 
     // Return asynchronous template loading.
     return loadTemplates([
@@ -79,6 +74,8 @@ class BladesDirector {
       "systems/eunos-blades/templates/overlay/notices/push.hbs"
     ]);
   }
+
+
 
   // #region   >>  Sockets ~
   public static InitSockets() {
@@ -104,7 +101,7 @@ class BladesDirector {
 
   // #region  >> Overlay Elements$ ~
   public _overlayContainer?: HTMLElement;
-  public _overlayContainer$?: JQuery<HTMLElement>;
+  public _overlayContainer$?: JQuery;
   public get overlayContainer(): HTMLElement {
     if (!this._overlayContainer) {
       [this._overlayContainer] = $("#blades-overlay");
@@ -115,46 +112,46 @@ class BladesDirector {
     }
     return this._overlayContainer;
   }
-  public get overlayContainer$(): JQuery<HTMLElement> {
+  public get overlayContainer$(): JQuery {
     if (!this._overlayContainer$) {
       this._overlayContainer$ = $(this.overlayContainer);
     }
     return this._overlayContainer$;
   }
 
-  public get clockKeySection$(): JQuery<HTMLElement> {
+  public get clockKeySection$(): JQuery {
     return this.overlayContainer$.find(".overlay-section-clock-keys");
   }
 
-  public get locationSection$(): JQuery<HTMLElement> {
+  public get locationSection$(): JQuery {
     return this.overlayContainer$.find(".overlay-section-location");
   }
 
-  public get scorePanelSection$(): JQuery<HTMLElement> {
+  public get scorePanelSection$(): JQuery {
     return this.overlayContainer$.find(".overlay-section-score-panel");
   }
 
-  public get npcSection$(): JQuery<HTMLElement> {
+  public get npcSection$(): JQuery {
     return this.overlayContainer$.find(".overlay-section-npcs");
   }
 
-  public get playerSection$(): JQuery<HTMLElement> {
+  public get playerSection$(): JQuery {
     return this.overlayContainer$.find(".overlay-section-players");
   }
 
-  public get crewSection$(): JQuery<HTMLElement> {
+  public get crewSection$(): JQuery {
     return this.overlayContainer$.find(".overlay-section-crew");
   }
 
-  public get notificationSection$(): JQuery<HTMLElement> {
+  public get notificationSection$(): JQuery {
     return this.overlayContainer$.find(".overlay-section-notifications");
   }
 
-  public get transitionSection$(): JQuery<HTMLElement> {
+  public get transitionSection$(): JQuery {
     return this.overlayContainer$.find(".overlay-section-transitions");
   }
 
-  public get tooltipSection$(): JQuery<HTMLElement> {
+  public get tooltipSection$(): JQuery {
     return this.overlayContainer$.find(".overlay-section-tooltips");
   }
 
@@ -569,6 +566,14 @@ class BladesDirector {
   }
   // #endregion
 
+  private _isNoticeForUser(user: User, target: string) {
+    return game.user.isGM || [
+      user.id,
+      user.name,
+      user.character?.id,
+      user.character?.name
+    ].includes(target);
+  }
   public pushNotice_SocketCall(targets: string[] | string, config: BladesDirector.PushNoticeConfig) {
     const pushID = randomID();
     if (typeof targets === "string") {
@@ -577,13 +582,8 @@ class BladesDirector {
       } else if (targets === "GM") {
         return socketlib.system.executeForAllGMs("pushNotice_SocketCall", pushID, config);
       } else {
-        targets = game.users.filter((user) =>
-          user.id === targets
-          || user.name === targets
-          || user.character?.id === targets
-          || user.character?.name === targets
-          || game.user.isGM
-        ).map((user) => user.id as string);
+        targets = game.users.filter(this._isNoticeForUser.bind(this))
+          .map((user) => user.id as string);
       }
     }
     if (targets.length > 0) {
@@ -628,7 +628,7 @@ class BladesDirector {
         autoAlpha:  0,
         ease:       "power2",
         duration:   0.5,
-        onComplete: function() {
+        onComplete() {
           $(target).remove();
         }
       });
@@ -649,7 +649,7 @@ class BladesDirector {
           from: "start",
           ease: "power1.inOut"
         },
-        onComplete: function() {
+        onComplete() {
           targets.forEach((targ) => $(targ).remove());
         }
       });
@@ -670,22 +670,22 @@ class BladesDirector {
       Object.values(BladesPhase),
       Object.values(BladesPhase).indexOf(phase ?? game.eunoblades.Tracker?.phase ?? BladesPhase.Freeplay) + 1
     );
-
+    console.log(`NEXT PHASE TRIGGERED: ${nextPhase}`);
   }
   // - As with notifications: placeholder animation until something more final can be coded.
   // #endregion
 
   // #region TOOLTIPS ~
   _tooltipObserver?: Observer;
-  _tooltipElems: Map<string, JQuery<HTMLElement>> = new Map<string, JQuery<HTMLElement>>();
+  _tooltipElems: Map<string, JQuery> = new Map<string, JQuery>();
   _displayedTooltipID?: string;
 
   /**
    * Adjusts the tooltip's position to ensure it remains within its parent container using jQuery methods.
-   * @param tooltip - The tooltip element, which can be either an HTMLElement or a JQuery<HTMLElement>.
+   * @param tooltip - The tooltip element, which can be either an HTMLElement or a JQuery.
    */
-  adjustTooltipPosition(
-    tooltip$: JQuery<HTMLElement>
+  getTooltipPosition(
+    tooltip$: JQuery
   ) {
 
     // Validate tooltip position style
@@ -697,31 +697,37 @@ class BladesDirector {
     const tooltipRect = tooltip$[0].getBoundingClientRect();
     const containerRect = this.tooltipSection$[0].getBoundingClientRect();
 
-    // Initial position of the tooltip
-    const currentTop = tooltip$.position().top;
-    const currentLeft = tooltip$.position().left;
+    // Preferred sides, in order of priority:
+    const preferredSides: Direction[] = [
+      "top",
+      "right",
+      "left",
+      "bottom"
+    ];
 
-    // Check for right overflow and adjust left position if necessary
-    if (tooltipRect.right > containerRect.right) {
-      const xShift = containerRect.right - tooltipRect.right;
-      tooltip$.css("left", `${currentLeft + xShift}px`);
-    }
-    // Check for left overflow and adjust left position if necessary
-    else if (tooltipRect.left < containerRect.left) {
-      const xShift = containerRect.left - tooltipRect.left;
-      tooltip$.css("left", `${currentLeft + xShift}px`);
-    }
-
-    // Check for bottom overflow and adjust top position if necessary
-    if (tooltipRect.bottom > containerRect.bottom) {
-      const yShift = containerRect.bottom - tooltipRect.bottom;
-      tooltip$.css("top", `${currentTop + yShift}px`);
-    }
-    // Check for top overflow and adjust top position if necessary
-    else if (tooltipRect.top < containerRect.top) {
-      const yShift = containerRect.top - tooltipRect.top;
-      tooltip$.css("top", `${currentTop + yShift}px`);
-    }
+    return preferredSides.find((pSide) => {
+      if (["top", "left"].includes(pSide)) {
+        console.log(`Checking ${pSide} Side.  tooltipRect.${pSide} = ${tooltipRect[pSide]}; containerRect.${pSide} = ${containerRect[pSide]};`, {
+          tooltipRect,
+          containerRect
+        });
+        if (tooltipRect[pSide] >= (containerRect[pSide] + 250)) {
+          console.log(`${pSide} Side is VALID.`);
+          return pSide;
+        }
+        return false;
+      } else {
+        console.log(`Checking ${pSide} Side.  tooltipRect.${pSide} = ${tooltipRect[pSide]}; containerRect.${pSide} = ${containerRect[pSide]};`, {
+          tooltipRect,
+          containerRect
+        });
+        if (tooltipRect[pSide] < (containerRect[pSide] - 250)) {
+          console.log(`${pSide} Side is VALID.`);
+          return pSide;
+        }
+      }
+      return false;
+    });
   }
 
   displayTooltip(tooltip: HTMLElement) {
@@ -740,7 +746,6 @@ class BladesDirector {
         true
       ));
       // Adjust the tooltip's position so it does not overflow the tooltip container
-      this.adjustTooltipPosition(ttClone$);
 
       // Generate the reveal timeline and attach it to the cloned tooltip element.
       const revealTimeline = U.gsap.effects.blurRevealTooltip(
@@ -760,7 +765,8 @@ class BladesDirector {
               }
               $(this).remove(); // Remove the element from the DOM
             });
-          }
+          },
+          tooltipDirection: this.getTooltipPosition(ttClone$)
         }
       );
       ttClone$.data("revealTimeline", revealTimeline);
@@ -822,7 +828,7 @@ class BladesDirector {
     };
 
     // Throttled onMove callback
-    const throttledOnMove = throttle((obs: Observer) => {
+    throttle((obs: Observer) => {
       // Calculate the absolute magnitude of velocity independent of direction
       const magnitudeOfVelocity = Math.sqrt((obs.velocityX ** 2) + (obs.velocityY ** 2));
       if (magnitudeOfVelocity >= C.MIN_MOUSE_MOVEMENT_THRESHOLD) {

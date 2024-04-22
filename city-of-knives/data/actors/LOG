@@ -1,5 +1,29 @@
-2024/03/28-09:59:43.575 309c Recovering log #1435
-2024/03/28-09:59:44.054 309c Level-0 table #1437: started
-2024/03/28-09:59:44.135 309c Level-0 table #1437: 154112 bytes OK
-2024/03/28-09:59:44.555 309c Delete type=0 #1435
-2024/03/28-09:59:44.585 309c Delete type=3 #1434
+2024/04/22-00:34:21.995 74a0 Recovering log #1440
+2024/04/22-00:34:22.055 74a0 Delete type=0 #1440
+2024/04/22-00:34:22.055 74a0 Delete type=3 #1439
+2024/04/22-00:48:16.797 11f0 Compacting 1@0 + 1@1 files
+2024/04/22-00:48:16.874 11f0 Generated table #1443@0: 191 keys, 251476 bytes
+2024/04/22-00:48:16.874 11f0 Compacted 1@0 + 1@1 files => 251476 bytes
+2024/04/22-00:48:16.921 11f0 compacted to: files[ 0 1 0 0 0 0 0 ]
+2024/04/22-00:48:16.921 11f0 Delete type=2 #1433
+2024/04/22-00:48:16.930 11f0 Delete type=2 #1437
+2024/04/22-04:20:35.327 11f0 Level-0 table #1445: started
+2024/04/22-04:20:35.369 11f0 Level-0 table #1445: 573756 bytes OK
+2024/04/22-04:20:35.395 11f0 Delete type=0 #1442
+2024/04/22-04:33:18.316 11f0 Compacting 1@0 + 1@1 files
+2024/04/22-04:33:18.363 11f0 Generated table #1446@0: 194 keys, 255354 bytes
+2024/04/22-04:33:18.363 11f0 Compacted 1@0 + 1@1 files => 255354 bytes
+2024/04/22-04:33:18.379 11f0 compacted to: files[ 0 1 0 0 0 0 0 ]
+2024/04/22-04:33:18.379 11f0 Delete type=2 #1443
+2024/04/22-04:33:18.380 11f0 Delete type=2 #1445
+2024/04/22-04:35:42.669 11f0 Level-0 table #1448: started
+2024/04/22-04:35:42.697 11f0 Level-0 table #1448: 162985 bytes OK
+2024/04/22-04:35:42.713 11f0 Delete type=0 #1444
+2024/04/22-04:35:42.770 11f0 Manual compaction at level-0 from '!actors!030kuO5azYHroAoh' @ 72057594037927935 : 1 .. '!actors.items.effects!s6GCJznxB7vivTao.xpYa9K74NN1BjMtt.Y0lcVzHVRuuBb36K' @ 0 : 0; will stop at '!actors!s6GCJznxB7vivTao' @ 13529 : 1
+2024/04/22-04:35:42.770 11f0 Compacting 1@0 + 1@1 files
+2024/04/22-04:35:42.798 11f0 Generated table #1449@0: 194 keys, 255396 bytes
+2024/04/22-04:35:42.799 11f0 Compacted 1@0 + 1@1 files => 255396 bytes
+2024/04/22-04:35:42.813 11f0 compacted to: files[ 0 1 0 0 0 0 0 ]
+2024/04/22-04:35:42.813 11f0 Delete type=2 #1446
+2024/04/22-04:35:42.813 11f0 Delete type=2 #1448
+2024/04/22-04:35:42.886 11f0 Manual compaction at level-0 from '!actors!s6GCJznxB7vivTao' @ 13529 : 1 .. '!actors.items.effects!s6GCJznxB7vivTao.xpYa9K74NN1BjMtt.Y0lcVzHVRuuBb36K' @ 0 : 0; will stop at (end)

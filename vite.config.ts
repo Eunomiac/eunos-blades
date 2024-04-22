@@ -29,14 +29,13 @@ function scssVariablesToJsPlugin(): Plugin {
         const filePath = "src/scss/core/_colors.scss"; // Path to your SCSS variables file
         // console.log(`Processing SCSS file: ${filePath}`);
         const scssVariables: string = fs.readFileSync(filePath, "utf-8");
-        const regex: RegExp = /--blades-([a-z]+-)+nums:\s*(\d+),\s*(\d+),\s*(\d+)\s*;/g;
+        const regex = /--blades-([a-z]+-)+nums:\s*(\d+),\s*(\d+),\s*(\d+)\s*;/g;
         let match: RegExpExecArray | null;
 
         type brightness = "brightest"|"bright"|"normal"|"dark"|"darkest"|"black";
         const colorDefs: Record<string, Partial<Record<brightness, number[]>>> = {};
 
         while ((match = regex.exec(scssVariables)) !== null) {
-          // console.log(`Found match: ${match[0]}`);
           const varName: string = match[0]
             .split(":")[0].trim()
             .replace(/^--blades-/, "")
@@ -45,72 +44,11 @@ function scssVariablesToJsPlugin(): Plugin {
           let [hue, brightness] = varName.split(/_/);
           brightness ??= "normal";
           colorDefs[hue] ??= {};
-          colorDefs[hue][brightness] = [parseInt(match[2]), parseInt(match[3]), parseInt(match[4])];
+          colorDefs[hue][brightness] = [parseInt(match[2], 10), parseInt(match[3], 10), parseInt(match[4], 10)];
         }
-
-        // if (jsVariables.length > 0) {
-        //   console.log("Generated JS variables:\n", `export const ColorNums = ${JSON.stringify(colorDefs, null, 2)};`);
-        // } else {
-        //   console.log("No matching SCSS variables found.");
-        // }
 
         return {
           code: `export const ColorNums = ${JSON.stringify(colorDefs, null, 2)};\n`,
-          map: null
-        };
-      }
-      return null; // Other modules are loaded normally
-    }
-  };
-}
-
-function old_scssVariablesToJsPlugin(): Plugin {
-  return {
-    name: "scss-variables-to-js",
-    // This function will tell Vite that "virtual:colors" is a virtual module
-    resolveId(source) {
-      if (source === "virtual:colors") {
-        return source; // Recognize "virtual:colors" as a module ID
-      }
-      return null; // Other imports are handled normally
-    },
-    // This function will load the content for our virtual module
-    load(id) {
-      if (id === "virtual:colors") {
-        const filePath = "src/scss/core/_colors.scss"; // Path to your SCSS variables file
-        console.log(`Processing SCSS file: ${filePath}`);
-        const scssVariables: string = fs.readFileSync(filePath, "utf-8");
-        const regex: RegExp = /--blades-([a-z]+-)+nums:\s*(\d+),\s*(\d+),\s*(\d+)\s*;/g;
-        let match: RegExpExecArray | null;
-        let jsVariables: string = "export const Colors = {\n";
-
-        while ((match = regex.exec(scssVariables)) !== null) {
-          console.log(`Found match: ${match[0]}`);
-          const jsKey: string = match[0]
-            .split(":")[0]
-            .trim()
-            .replace("--", "")
-            .replace(/-/g, "_")
-            .toUpperCase();
-
-          console.log(`Converted to JS variable name: ${jsKey}`);
-
-          const rgbaValue: string = `rgba(${match[2]}, ${match[3]}, ${match[4]}, 1)`;
-          console.log(`Constructed RGBA value: ${rgbaValue}`);
-
-          jsVariables += `  ${jsKey}: "${rgbaValue}",\n`;
-        }
-
-        jsVariables += "};\n";
-
-        if (jsVariables.length > 0) {
-          console.log("Generated JS variables:\n", jsVariables);
-        } else {
-          console.log("No matching SCSS variables found.");
-        }
-
-        return {
-          code: jsVariables,
           map: null
         };
       }

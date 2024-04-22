@@ -462,7 +462,12 @@ const C = {
     "A vengeful lover's wailing ghost haunts the Foot. She hunts the Crows' chief, I hear...",
     "Scurlock's lost some spark-craft gadget. It opens death-doors to tickle ghosts, who knows? Wait, do you know?",
     "Silkshore's peddlin' future-sight dreams ripped from a spirit's mind, potent, dark and dire.",
-    "Charhollow's gang war? Demonic blood? Something unnatural taking lives? They say it's all about a stolen book."
+    "Charhollow's gang war? Demonic blood? Something unnatural taking lives? They say it's all about a stolen book.",
+    "Heard a whisper atop Six Towers... chattin' with a ghost 'bout a vault's secrets. Powers beyond reckonin', they say...",
+    "Leviathan ship back, crew gone, hold filled with whisperin' artifacts... Night's got new horrors now.",
+    "Shadows in Crow's Foot move on their own... Gang boss made a dark deal, power for sacrifices. Streets are hungry tonight.",
+    "Fight club in the Docks, a front for those cult loonies. Winners get to 'ascend'... or so they disappear.",
+    "New spirit-drug in Nightmarket, made from ghost essence. Shows ya visions, future glimpses... or drives ya mad."
   ],
   ClockKeySquareSize:    100,
   DowntimeActionDisplay: {

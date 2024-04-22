@@ -1,9 +1,9 @@
 // #region IMPORTS ~
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities";
-import C, {BladesActorType, BladesItemType, BladesPhase, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag} from "../core/constants";
+import C, {BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag} from "../core/constants";
 import {BladesActor, BladesPC, BladesCrew} from "../documents/BladesActorProxy";
-import {BladesItem, BladesGMTracker, BladesProject} from "../documents/BladesItemProxy";
+import {BladesItem, BladesGMTracker} from "../documents/BladesItemProxy";
 import {ApplyTooltipAnimations, Dragger} from "../core/gsap";
 import BladesConsequence from "./BladesConsequence";
 import BladesClockKey from "./BladesClockKey";
@@ -117,7 +117,7 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
       throw new Error(`RollMod Missing Category: '${mStrings.join("@")}'`);
     }
 
-    const posNegString = (U.pullElement(mStrings, (v) => typeof v === "string" && /^p/i.test(v)) || "posNeg:positive");
+    const posNegString = (U.pullElement(mStrings, (v) => typeof v === "string" && /^p/i.test(v)) ?? "posNeg:positive");
     const posNegVal = posNegString.replace(/^.*:/, "") as "positive" | "negative";
 
     return {
@@ -197,9 +197,7 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
 
     return roll_mods
       .filter((elem) => Boolean(elem && typeof elem === "string"))
-      .map((modString) => {
-        return this.getSchemaFromStrings((modString as string).split(/@/));
-      });
+      .map((modString) => this.getSchemaFromStrings((modString as string).split(/@/)));
   }
 
   public isRerendering = false;
@@ -308,6 +306,19 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     return Boolean(typesApply && traitsApply);
   }
 
+  private _doAutoTypesApply() {
+    if (this.autoRollTypes.includes(this.rollInstance.rollType)) {
+      return true;
+    }
+    if (this.rollInstance.rollSubType && this.autoRollTypes.includes(this.rollInstance.rollSubType)) {
+      return true;
+    }
+    if (this.rollInstance.rollDowntimeAction && this.autoRollTypes.includes(this.rollInstance.rollDowntimeAction)) {
+      return true;
+    }
+    return false;
+  }
+
   /**
    * Sets the conditional status of the roll mod instance.
    * @returns {boolean} - Returns false if the status is ForcedOn or ToggledOff, true if the status is Hidden.
@@ -317,11 +328,8 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     if (!this.isConditional) {return false;}
 
     // If any auto-Types apply, set status to ForcedOn and return false
-    if (
-      this.autoRollTypes.includes(this.rollInstance.rollType)
-      || (this.rollInstance.rollSubType && this.autoRollTypes.includes(this.rollInstance.rollSubType))
-      || (this.rollInstance.rollDowntimeAction && this.autoRollTypes.includes(this.rollInstance.rollDowntimeAction))
-    ) {
+
+    if (this._doAutoTypesApply()) {
       this.heldStatus = RollModStatus.ForcedOn;
       return false;
     }
@@ -1466,7 +1474,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
 
   static GetUserPermissions(config: BladesRoll.Config): Record<IDString, RollPermissions> {
-    if (!config.rollPrimaryData) {
+    const rollPrimaryData: BladesRoll.PrimaryData = BladesRollPrimary.BuildData(config);
+    if (!rollPrimaryData) {
       throw new Error("[BladesRoll.GetUserPermissions()] Missing rollPrimaryData.");
     }
 
@@ -1494,7 +1503,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     // === TWO === DETERMINE PRIMARY USER(S)
 
     // Check RollPrimaryDoc to determine how to assign primary users
-    const {rollPrimaryDoc} = (new BladesRollPrimary(config.rollPrimaryData));
+    const {rollPrimaryDoc} = (new BladesRollPrimary(rollPrimaryData));
     if (
       BladesPC.IsType(rollPrimaryDoc)
       && U.pullElement(playerUserIDs, rollPrimaryDoc.primaryUser?.id)
@@ -4121,11 +4130,12 @@ class BladesActionRoll extends BladesRoll {
       ...linkConfig
     };
 
+    // Build RollPrimaryData
+    parsedConfig.rollPrimaryData = BladesRollPrimary.BuildData(parsedConfig);
+
     // Call super.New and cast the result appropriately.
     // The cast to InstanceType<C> is safe here because C is constrained to typeof BladesActionRoll.
-    const rollInst = await super.New(parsedConfig) as InstanceType<C>;
-
-    return rollInst;
+    return await super.New(parsedConfig) as InstanceType<C>;
   }
 
   override get rollModsSchemaSets(): BladesRollMod.Schema[] {
