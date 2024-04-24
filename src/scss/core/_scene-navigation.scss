@@ -1,0 +1,32 @@
+& {
+  opacity: 1;
+  transform-origin: 0 0;
+  scale: 0.8;
+  margin-top: 4px;
+  #scene-list .scene.nav-item {
+    margin: 0 2px;
+    border: none;
+    box-shadow: none;
+    // filter: grayscale(1);
+    background: var(--blades-black-fade);
+    a {
+      color: var(--blades-grey-bright);
+      font-family: var(--font-heading);
+    }
+
+    &.view {
+      color: var(--blades-white-bright);
+      opacity: 1;
+      box-shadow: 0 0 10px 2px var(--blades-white-bright);
+      // scale: 1.15 1;
+      // margin: 0 8px;
+      * {
+        color: var(--blades-white-bright);
+      }
+      a {
+        // font-family: var(--font-emphasis);
+      }
+      background: var(--blades-black-dark);
+    }
+  }
+}

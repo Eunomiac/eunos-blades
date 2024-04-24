@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities";
 import C, {ClockKey_SVGDATA, BladesPhase, BladesNoticeType, ClockKeyDisplayMode} from "../core/constants";
@@ -27,7 +26,8 @@ class BladesDirector {
   }
 
   public static getInstance(): BladesDirector {
-    return (BladesDirector.instance ??= new BladesDirector());
+    BladesDirector.instance ??= new BladesDirector();
+    return BladesDirector.instance;
   }
   // #endregion
 
@@ -582,8 +582,8 @@ class BladesDirector {
       } else if (targets === "GM") {
         return socketlib.system.executeForAllGMs("pushNotice_SocketCall", pushID, config);
       } else {
-        targets = game.users.filter(this._isNoticeForUser.bind(this))
-          .map((user) => user.id as string);
+        targets = game.users.filter((user: User) => this._isNoticeForUser(user, targets as string))
+          .map((user) => user.id);
       }
     }
     if (targets.length > 0) {
@@ -600,8 +600,8 @@ class BladesDirector {
       ...config
     }))
       .appendTo(director.notificationSection$)
-      .on("click", (event: ClickEvent) => {director.$removePush(event.currentTarget);})
-      .on("contextmenu", (event: ContextMenuEvent) => {director.$removeAndClear(event.currentTarget);});
+      .on("click", (event: ClickEvent) => {director.removePush(event.currentTarget);})
+      .on("contextmenu", (event: ContextMenuEvent) => {director.removeAndClear(event.currentTarget);});
 
     U.gsap.fromTo(
       pushElem$,
@@ -620,7 +620,7 @@ class BladesDirector {
       });
   }
 
-  private async $removePush(target: HTMLElement) {
+  private async removePush(target: HTMLElement) {
     U.gsap.to(
       target,
       {
@@ -634,7 +634,7 @@ class BladesDirector {
       });
   }
 
-  private async $removeAndClear(target: HTMLElement) {
+  private async removeAndClear(target: HTMLElement) {
     const targets = $(target).prevAll().get().reverse();
     targets.unshift(target);
     U.gsap.to(
@@ -680,54 +680,175 @@ class BladesDirector {
   _tooltipElems: Map<string, JQuery> = new Map<string, JQuery>();
   _displayedTooltipID?: string;
 
+  getTooltipFinalRect(tooltip$: JQuery, trigger$: JQuery, side: Direction, padding = 15): MutableRect {
+
+    const tooltipRect = U.getMutableRect(tooltip$[0].getBoundingClientRect());
+    const triggerRect = U.getMutableRect(trigger$[0].getBoundingClientRect());
+    const triggerCenter = {
+      x: triggerRect.left + (0.5 * triggerRect.width),
+      y: triggerRect.top + (0.5 * triggerRect.height)
+    };
+
+    switch (side) {
+      case "top": {
+        tooltipRect.bottom = triggerRect.top - padding;
+        tooltipRect.top = tooltipRect.bottom - tooltipRect.height;
+        tooltipRect.right = triggerCenter.x + (0.5 * tooltipRect.width);
+        tooltipRect.left = tooltipRect.right - tooltipRect.width;
+        break;
+      }
+      case "left": {
+        tooltipRect.right = triggerRect.left - padding;
+        tooltipRect.left = tooltipRect.right - tooltipRect.width;
+        tooltipRect.bottom = triggerCenter.y + (0.5 * tooltipRect.height);
+        tooltipRect.top = tooltipRect.bottom - tooltipRect.height;
+        break;
+      }
+      case "right": {
+        tooltipRect.left = triggerRect.right + padding;
+        tooltipRect.right = tooltipRect.left + tooltipRect.width;
+        tooltipRect.bottom = triggerCenter.y + (0.5 * tooltipRect.height);
+        tooltipRect.top = tooltipRect.bottom - tooltipRect.height;
+        break;
+      }
+      case "bottom": {
+        tooltipRect.top = triggerRect.bottom + padding;
+        tooltipRect.bottom = tooltipRect.top + tooltipRect.height;
+        tooltipRect.right = triggerCenter.x + (0.5 * tooltipRect.width);
+        tooltipRect.left = tooltipRect.right - tooltipRect.width;
+        break;
+      }
+    }
+    tooltipRect.x = tooltipRect.left;
+    tooltipRect.y = tooltipRect.top;
+
+    return tooltipRect;
+  }
+
+  /**
+ * Calculates the necessary adjustments to make one DOMRect fit entirely within another.
+ * @param innerRect The DOMRect to adjust to fit within the outerRect.
+ * @param outerRect The DOMRect that should contain the innerRect.
+ * @returns A Partial<DOMRect> with properties x and y indicating the necessary adjustments, or an empty object if no adjustment is needed.
+ * @throws Error if innerRect is larger than outerRect in either dimension.
+ */
+  getAdjustedTooltipFinalRect(tooltipRect: MutableRect, side: Direction, padding = 25): MutableRect {
+
+    const containerRect = U.getMutableRect(this.tooltipSection$[0].getBoundingClientRect());
+
+    // Apply padding to containerRect
+    containerRect.left = containerRect.left + padding;
+    containerRect.right = containerRect.right - padding;
+    containerRect.width = containerRect.width - (2 * padding);
+    containerRect.top = containerRect.top + padding;
+    containerRect.bottom = containerRect.bottom - padding;
+    containerRect.height = containerRect.height - (2 * padding);
+
+
+    if (tooltipRect.width > containerRect.width || tooltipRect.height > containerRect.height) {
+      throw new Error("innerRect is larger than outerRect and cannot be made to fit.");
+    }
+
+    let deltaX = 0;
+    let deltaY = 0;
+
+    // Check horizontal fit
+    if (tooltipRect.x < containerRect.x) {
+      deltaX = containerRect.x - tooltipRect.x;
+    } else if (tooltipRect.right > containerRect.right) {
+      deltaX = containerRect.right - tooltipRect.right;
+    }
+
+    // Check vertical fit
+    if (tooltipRect.y < containerRect.y) {
+      deltaY = containerRect.y - tooltipRect.y;
+    } else if (tooltipRect.bottom > containerRect.bottom) {
+      deltaY = containerRect.bottom - tooltipRect.bottom;
+    }
+
+    // Confirm that no adjustments would push tooltip to overlap is trigger
+    switch (side) {
+      case "top": {
+        if (deltaY > 0) {
+          eLog.error("[adjustTooltipFinalRect] Error adjusting tooltip position.", {tooltipRect, side, padding, containerRect, deltaX, deltaY});
+          throw new Error(`[adjustTooltipFinalRect] "top"-aligned tooltip requires shift down (deltaY = ${deltaY}`);
+        }
+        break;
+      }
+      case "bottom": {
+        if (deltaY < 0) {
+          eLog.error("[adjustTooltipFinalRect] Error adjusting tooltip position.", {tooltipRect, side, padding, containerRect, deltaX, deltaY});
+          throw new Error(`[adjustTooltipFinalRect] "bottom"-aligned tooltip requires shift up (deltaY = ${deltaY}`);
+        }
+        break;
+      }
+      case "left": {
+        if (deltaX > 0) {
+          eLog.error("[adjustTooltipFinalRect] Error adjusting tooltip position.", {tooltipRect, side, padding, containerRect, deltaX, deltaY});
+          throw new Error(`[adjustTooltipFinalRect] "left"-aligned tooltip requires shift right (deltaX = ${deltaX}`);
+        }
+        break;
+      }
+      case "right": {
+        if (deltaX < 0) {
+          eLog.error("[adjustTooltipFinalRect] Error adjusting tooltip position.", {tooltipRect, side, padding, containerRect, deltaX, deltaY});
+          throw new Error(`[adjustTooltipFinalRect] "right"-aligned tooltip requires shift left (deltaX = ${deltaX}`);
+        }
+        break;
+      }
+    }
+
+    // Apply adjustments
+    tooltipRect.left += deltaX;
+    tooltipRect.right += deltaX;
+    tooltipRect.x += deltaX;
+    tooltipRect.top += deltaY;
+    tooltipRect.bottom += deltaY;
+    tooltipRect.y += deltaY;
+
+    return {...tooltipRect};
+  }
+
+  canTooltipFit(tooltip$: JQuery, trigger$: JQuery, side: Direction, padding = 50): boolean {
+    // Calculate bounds and directly apply necessary shifts to the tooltip element
+    const tooltipRect = this.getTooltipFinalRect(tooltip$, trigger$, side);
+    const containerRect = this.tooltipSection$[0].getBoundingClientRect();
+
+    if (["top", "left"].includes(side)) {
+      if (tooltipRect[side] >= (containerRect[side] + padding)) {
+        return true;
+      }
+    } else if (tooltipRect[side] < (containerRect[side] - padding)) {
+      return true;
+    }
+    return false;
+  }
   /**
    * Adjusts the tooltip's position to ensure it remains within its parent container using jQuery methods.
    * @param tooltip - The tooltip element, which can be either an HTMLElement or a JQuery.
    */
-  getTooltipPosition(
-    tooltip$: JQuery
-  ) {
+  getTooltipSide(tooltip$: JQuery, trigger$: JQuery) {
 
     // Validate tooltip position style
     if (tooltip$.css("position") !== "absolute") {
       throw new Error("Tooltip position must be 'absolute'.");
     }
 
-    // Calculate bounds and directly apply necessary shifts to the tooltip element
-    const tooltipRect = tooltip$[0].getBoundingClientRect();
-    const containerRect = this.tooltipSection$[0].getBoundingClientRect();
-
     // Preferred sides, in order of priority:
     const preferredSides: Direction[] = [
       "top",
-      "right",
       "left",
+      "right",
       "bottom"
     ];
 
-    return preferredSides.find((pSide) => {
-      if (["top", "left"].includes(pSide)) {
-        console.log(`Checking ${pSide} Side.  tooltipRect.${pSide} = ${tooltipRect[pSide]}; containerRect.${pSide} = ${containerRect[pSide]};`, {
-          tooltipRect,
-          containerRect
-        });
-        if (tooltipRect[pSide] >= (containerRect[pSide] + 250)) {
-          console.log(`${pSide} Side is VALID.`);
-          return pSide;
-        }
-        return false;
-      } else {
-        console.log(`Checking ${pSide} Side.  tooltipRect.${pSide} = ${tooltipRect[pSide]}; containerRect.${pSide} = ${containerRect[pSide]};`, {
-          tooltipRect,
-          containerRect
-        });
-        if (tooltipRect[pSide] < (containerRect[pSide] - 250)) {
-          console.log(`${pSide} Side is VALID.`);
-          return pSide;
-        }
-      }
-      return false;
-    });
+    const side = preferredSides.find((pSide) => this.canTooltipFit(tooltip$, trigger$, pSide));
+
+    if (!side) {
+      throw new Error("Unable to determine side for tooltip.");
+    }
+
+    return side;
   }
 
   displayTooltip(tooltip: HTMLElement) {
@@ -736,16 +857,27 @@ class BladesDirector {
     }
     this._displayedTooltipID = tooltip.id;
     const self = this;
+    const tooltip$ = $(tooltip);
     // Clear out any other tooltips in the overlay.
     game.eunoblades.Director.clearTooltips();
+    const trigger$ = tooltip$.closest(".tooltip-trigger");
     if (!this._tooltipElems.has(tooltip.id)) {
+
       // Create cloned tooltip and attach it to the tooltip overlay.
       const ttClone$ = $(U.changeContainer(
         tooltip,
         game.eunoblades.Director.tooltipSection$[0],
         true
       ));
+      // Determine side on which tooltip will appear
+      const side = this.getTooltipSide(ttClone$, trigger$);
+
       // Adjust the tooltip's position so it does not overflow the tooltip container
+      const tooltipFinalRect = {...this.getTooltipFinalRect(ttClone$, trigger$, side)};
+      const tooltipAdjustedRect = {...this.getAdjustedTooltipFinalRect(this.getTooltipFinalRect(ttClone$, trigger$, side), side)};
+      U.set(ttClone$, {y: tooltipAdjustedRect.top, x: tooltipAdjustedRect.left});
+
+      eLog.checkLog3("displayTooltip", "Tooltip Rects", {side, tooltipFinalRect, tooltipAdjustedRect});
 
       // Generate the reveal timeline and attach it to the cloned tooltip element.
       const revealTimeline = U.gsap.effects.blurRevealTooltip(
@@ -766,7 +898,9 @@ class BladesDirector {
               $(this).remove(); // Remove the element from the DOM
             });
           },
-          tooltipDirection: this.getTooltipPosition(ttClone$)
+          tooltipDirection: side,
+          trigger$,
+          tTipSource$:      $(tooltip)
         }
       );
       ttClone$.data("revealTimeline", revealTimeline);

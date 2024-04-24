@@ -75,13 +75,14 @@ declare global {
         models: Partial<Record<BladesAI.Usage, string>>,
         fileID: string
       }
-    }
+    }s
 
     export interface Game {
       ClockKeeper: BladesClockKeeper,
       Director: BladesDirector,
       Tracker: BladesGMTracker,
       Rolls: Collection<BladesRoll>,
+      RollMods: Collection<BladesRollMod>,
       ClockKeys: Collection<BladesClockKey>,
       Consequences: Collection<BladesConsequence>,
       Tooltips: WeakMap<HTMLElement, gsap.core.Timeline>,

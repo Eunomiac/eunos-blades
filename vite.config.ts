@@ -3,6 +3,7 @@ import { defineConfig, type UserConfig, type Plugin } from "vite";
 import path from "path";
 import fs from "fs";
 import checker from 'vite-plugin-checker';
+import { exec } from "child_process";
 
 /** *** CHECK: *** https://vitejs.dev/guide/performance
  *
@@ -12,6 +13,26 @@ import checker from 'vite-plugin-checker';
  * ... in your tsconfig.json's compilerOptions to use .ts and .tsx extensions directly in your code.
  * */
 
+/**
+ * Custom plugin to open Chrome with specific flags when the Vite server starts.
+ */
+function openChromePlugin(): Plugin {
+  return {
+    name: "open-chrome",
+    apply: "serve", // Only apply this plugin during development
+    configResolved(chromeConfig) {
+      if (chromeConfig.command === "serve" && chromeConfig.server.open) {
+        // Replace the PowerShell command with its equivalent in Node.js
+        const command = `start chrome --start-maximized --remote-debugging-port=9222 --auto-open-devtools-for-tabs --user-data-dir="D:/Projects/.CODING/FoundryVTT/ChromeDevProfile" http://localhost:${chromeConfig.server.port} http://localhost:${chromeConfig.server.port}`;
+        exec(command, (error) => {
+          if (error) {
+            console.error("Failed to open Chrome:", error);
+          }
+        });
+      }
+    },
+  };
+}
 
 function scssVariablesToJsPlugin(): Plugin {
   return {
@@ -163,7 +184,8 @@ const config: UserConfig = defineConfig({
   plugins: [
     foundryPlugin(),
     checker({ typescript: true }),
-    scssVariablesToJsPlugin()
+    scssVariablesToJsPlugin(),
+    openChromePlugin() // Add the custom plugin here
   ]
 });
 

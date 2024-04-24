@@ -173,7 +173,7 @@ const isRGBColor = (ref: unknown): ref is RGBColor => typeof ref === "string" &&
 const isUndefined = (ref: unknown): ref is undefined => ref === undefined;
 const isDefined = <T>(ref: T): ref is T & (null | NonNullable<T>) => !isUndefined(ref);
 const isEmpty = (ref: Record<key, unknown> | unknown[]): boolean => Object.keys(ref).length === 0;
-const hasItems = (ref: Index<unknown>): boolean => !isEmpty(ref);
+const hasItems = (ref: Index): boolean => !isEmpty(ref);
 const isInstance = <T extends new (...args: unknown[]) => unknown>(
   classRef: T,
   ref: unknown
@@ -333,7 +333,7 @@ const degToRad = (deg: number, isConstrained = true): number => {
   deg *= Math.PI / 180;
   return deg;
 };
-const getKey = <T>(key: string | number | symbol, obj: Record<string | number | symbol, T>): T | null => {
+const getKey = <T>(key: key, obj: Record<key, T>): T | null => {
   if (key in obj) {
     return obj[key];
   }
@@ -382,7 +382,7 @@ const regExtract = (ref: unknown, pattern: string | RegExp, flags?: string) => {
   }
   flags = splitFlags.join("");
   pattern = new RegExp(pattern, flags);
-  const matches = `${ref}`.match(pattern) || [];
+  const matches = RegExp(pattern).exec(`${ref}`) || [];
   return isGrouping ? Array.from(matches) : matches.pop();
 };
 
@@ -472,7 +472,7 @@ const stringifyNum = (num: number | string) => {
           baseDecs.slice(baseDecs.length - numFinalDecs)
         ].join("");
         return [
-          stringyNum.charAt(0) === "-" ? "-" : "",
+          stringyNum.startsWith("-") ? "-" : "",
           finalInts,
           "0".repeat(Math.max(0, numFinalInts - finalInts.length)),
           finalDecs.length ? "." : "",
@@ -520,7 +520,7 @@ const verbalizeNum = (num: number | string) => {
     return result;
   };
   const numWords = [];
-  if (num.charAt(0) === "-") {
+  if (num.startsWith("-")) {
     numWords.push("negative");
   }
   const [integers, decimals] = num.replace(/[,\s-]/g, "").split(".");
@@ -551,7 +551,7 @@ const verbalizeNum = (num: number | string) => {
 };
 const ordinalizeNum = (num: string | number, isReturningWords = false) => {
   if (isReturningWords) {
-    const [numText, suffix]: RegExpMatchArray = lCase(verbalizeNum(num)).match(/.*?[-\s]?(\w*)$/i) ?? ["", ""];
+    const [numText, suffix]: RegExpMatchArray = RegExp(/.*?[-\s]?(\w*)$/i).exec(lCase(verbalizeNum(num))) ?? ["", ""];
     return numText.replace(
       new RegExp(`${suffix}$`),
       suffix in _ordinals ? _ordinals[suffix as KeyOf<typeof _ordinals>] : `${suffix}th`
@@ -900,9 +900,7 @@ const shuffle = (array: unknown[]) => {
 
   return array;
 };
-const toArray = <T>(target: JQuery|string|Record<string, unknown>|Element|null): T[] => {
-  return gsap.utils.toArray(target) as T[];
-};
+const toArray = gsap.utils.toArray;
 // #endregion ▄▄▄▄▄ ARRAYS ▄▄▄▄▄
 
 // #region ████████ OBJECTS: Manipulation of Simple Key/Val Objects ████████ ~
@@ -916,11 +914,11 @@ const checkVal = ({k, v}: {k?: unknown, v?: unknown}, checkTest: checkTest) => {
 };
 /**
  * Given an array or list and a search function, will remove the first matching element and return it.
- * @param {Index<unknown>} obj The array or list to be searched.
+ * @param {Index} obj The array or list to be searched.
  * @param {testFunc<keyFunc | valFunc> | number | string} checkTest The search function.
  * @returns {unknown | false} - The removed element or false if no element was found.
  */
-const remove = (obj: Index<unknown>, checkTest: testFunc<keyFunc | valFunc> | number | string) => {
+const remove = (obj: Index, checkTest: testFunc<keyFunc | valFunc> | number | string) => {
   if (isArray(obj)) {
     const index = obj.findIndex((v) => checkVal({v}, checkTest));
     if (index >= 0) {
@@ -955,16 +953,16 @@ const removeElementFromArray = (array: unknown[], index: number) => {
 
 /**
  * Removes an element from a list at a given key and returns it.
- * @param {List<unknown>} list The list to remove the element from.
+ * @param {List} list The list to remove the element from.
  * @param {string} key The key of the element to remove.
  * @returns {unknown} - The removed element.
  */
-const removeElementFromList = (list: List<unknown>, key: string) => {
+const removeElementFromList = (list: List, key: string) => {
   const remVal = list[key];
   delete list[key];
   return remVal;
 };
-const replace = (obj: Index<unknown>, checkTest: checkTest, repVal: unknown) => {
+const replace = (obj: Index, checkTest: checkTest, repVal: unknown) => {
   // As remove, except instead replaces the element with the provided value.
   // Returns true/false to indicate whether the replace action succeeded.
   let repKey;
@@ -1030,7 +1028,7 @@ const partition = <Type>(obj: Type[], predicate: testFunc<valFunc> = () => true)
  * @returns {Record<T, U>} - The resulting object.
  * @throws {Error} - Throws an error if the arrays are not of equal length, if the keys are not unique, or if the keys are not of a type that can be used as object keys.
  */
-const zip = <T extends string | number | symbol, U>(keys: T[], values: U[]): Record<T, U> => {
+const zip = <T extends key, U>(keys: T[], values: U[]): Record<T, U> => {
   // Check that the arrays are of equal length
   if (keys.length !== values.length) {
     throw new Error("The arrays must be of equal length.");
@@ -1053,21 +1051,21 @@ const zip = <T extends string | number | symbol, U>(keys: T[], values: U[]): Rec
 /**
  *  An object-equivalent Array.map() function, which accepts mapping functions to transform both keys and values.
  *  If only one function is provided, it's assumed to be mapping the values and will receive (v, k) args.
- * @param {Index<unknown>} obj
+ * @param {Index} obj
  * @param {mapFunc<keyFunc|valFunc>|false} keyFunc
  * @param {mapFunc<valFunc>} [valFunc]
  */
 function objMap<T extends Record<PropertyKey, unknown>|unknown[]>(
-  obj: Index<unknown>,
+  obj: Index,
   valFunc: mapFunc<valFunc>
 ): T extends Record<PropertyKey, unknown> ? Record<PropertyKey, unknown> : unknown[]
 function objMap<T extends Record<PropertyKey, unknown>|unknown[]>(
-  obj: Index<unknown>,
+  obj: Index,
   valFunc: false,
   keyFunc: mapFunc<keyFunc>
 ): T extends Record<PropertyKey, unknown> ? Record<PropertyKey, unknown> : unknown[]
 function objMap<T extends Record<PropertyKey, unknown>|unknown[]>(
-  obj: Index<unknown>,
+  obj: Index,
   keyFunc: mapFunc<keyFunc>,
   valFunc: mapFunc<valFunc>
 ): T extends Record<PropertyKey, unknown> ? Record<PropertyKey, unknown> : unknown[]
@@ -1121,7 +1119,7 @@ const objSize = (obj: unknown) => {
  * @returns {KeyOf<Type> | false} The key of the first entry that passes the test.
  *                                If no entries pass the test, return false.
  */
-function objFindKey<Type extends Index<unknown>>(
+function objFindKey<Type extends Index>(
   obj: Type,
   keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false,
   valFunc?: testFunc<valFunc>
@@ -1155,7 +1153,7 @@ function objFindKey<Type extends Index<unknown>>(
  * @param {testFunc<valFunc>} [valFunc] The testing function for values.
  * @returns {Type} The filtered object.
  */
-const objFilter = <Type extends Index<unknown>>(
+const objFilter = <Type extends Index>(
   obj: Type,
   keyFunc: testFunc<keyFunc> | testFunc<valFunc> | false,
   valFunc?: testFunc<valFunc>,
@@ -1189,7 +1187,7 @@ const objFilter = <Type extends Index<unknown>>(
       .filter(([key, val]: [string, unknown]) => kFunc(key, val) && vFunc(val, key))
   ) as Type;
 };
-const objForEach = (obj: Index<unknown>, func: valFunc): void => {
+const objForEach = (obj: Index, func: valFunc): void => {
   // An object-equivalent Array.forEach() function, which accepts one function(val, key) to perform for each member.
   if (isArray(obj)) {
     obj.forEach(func);
@@ -1198,7 +1196,7 @@ const objForEach = (obj: Index<unknown>, func: valFunc): void => {
   }
 };
 // Prunes an object of given set of values, [undefined, null] default
-const objCompact = <Type extends (Index<unknown>)>(
+const objCompact = <Type extends (Index)>(
   obj: Type,
   removeWhiteList: unknown[] = [undefined, null],
   isMutating = false
@@ -1381,7 +1379,7 @@ const objFlatten = <ST>(obj: Index<ST>): Record<string, ST> => {
  * @param {T} obj The object or array to be nullified.
  * @returns {Record<KeyOf<T>, null> | null[] | T} - The nullified object or array, or the input as is.
  */
-function objNullify<T extends List<unknown>>(obj: T & Record<KeyOf<T>, null>): Record<KeyOf<T>, null>
+function objNullify<T extends List>(obj: T & Record<KeyOf<T>, null>): Record<KeyOf<T>, null>
 function objNullify<T extends unknown[]>(obj: T & null[]): null[]
 /**
  *
@@ -1475,7 +1473,7 @@ const changeContainer = (elem: HTMLElement, container: HTMLElement, isCloning = 
     container,
     curPosition
   );
-  eLog.checkLog3("changeContainer", "Target Element", {elem, container, curContainer, curPosition, relPos});
+
   // Clone the element, if indicated
   if (isCloning) {
     elem = $(elem).clone()[0];
@@ -1498,7 +1496,7 @@ const changeContainer = (elem: HTMLElement, container: HTMLElement, isCloning = 
  * @returns {void}
  */
 const adjustTextContainerAspectRatio = (
-  textContainer: HTMLElement|JQuery<HTMLElement>,
+  textContainer: HTMLElement|JQuery,
   targetRatio: number,
   maxHeight?: number,
   maxWidth?: number,
@@ -1568,17 +1566,11 @@ const adjustTextContainerAspectRatio = (
 
     // Handle cases where lineCount is defined
     if (isInt(lineCount)) {
-      if (lines > lineCount) {
-        if (recurAdjustment()) {
-          return;
-        }
-        break;
-      }
+      if (lines > lineCount && recurAdjustment()) { return; }
+      break;
     } else if (maxHeight && expectedHeight > maxHeight) {
       // Handle cases where maxHeight is exceeded
-      if (recurAdjustment()) {
-        return;
-      }
+      if (recurAdjustment()) { return; }
       break;
     }
 
@@ -1592,18 +1584,31 @@ const adjustTextContainerAspectRatio = (
   }
 
   // If the best width exceeds maxWidth, attempt to adjust font size and line height
-  if (!isAtMaxLineCount && maxWidth && bestWidth > maxWidth) {
-    if (recurAdjustment()) { return; }
-  }
+  if (!isAtMaxLineCount && maxWidth && bestWidth > maxWidth && recurAdjustment()) { return; }
 
   // Apply the best width to the text container
   textContainer.style.setProperty("width", `${bestWidth}px`, "important");
 };
 
+/**
+ * Creates a mutable (editable) version of a DOMRect object.
+ * @param rect The DOMRect to convert.
+ * @returns A new object with the properties of the DOMRect.
+ */
+const getMutableRect = (rect: DOMRect): MutableRect => ({
+  x:      rect.x,
+  y:      rect.y,
+  width:  rect.width,
+  height: rect.height,
+  top:    rect.top,
+  right:  rect.right,
+  bottom: rect.bottom,
+  left:   rect.left
+});
+
 
 const getSvgCode = (svgDotKey: string, svgPathKeys?: string|string[]) => {
   const svgData = getProperty(SVGDATA, svgDotKey) as HbsSvgData|undefined;
-  // eLog.checkLog3("compileSvg", {svgDotKey, svgPaths, svgData});
   if (!svgData) { return ""; }
   const {viewBox, paths, classes} = svgData;
   svgPathKeys ??= Object.keys(paths).join("|");
@@ -1747,7 +1752,7 @@ const escapeHTML = <T = unknown>(str: T): T => (typeof str === "string"
  * @param params - The parameters to pass to the function.
  */
 const testFuncPerformance = (
-  func: (...args: unknown[]) => unknown | Promise<unknown>,
+  func: (...args: unknown[]) => unknown,
   ...params: unknown[]
 ): void => {
   const start = performance.now(); // Start the timer
@@ -1807,7 +1812,7 @@ function get(target: gsap.TweenTarget, property: keyof gsap.CSSProperties & stri
 const getGSAngleDelta = (startAngle: number, endAngle: number) => signNum(roundNum(getAngleDelta(startAngle, endAngle), 2)).replace(/^(.)/, "$1=");
 
 const getNearestLabel = (tl: gsap.core.Timeline, matchTest?: RegExp|string): string|undefined => {
-  if (!tl) { return undefined; }
+  if (!(tl instanceof gsap.core.Timeline)) { return undefined; }
   if (!objSize(tl.labels)) { return undefined; }
   if (typeof matchTest === "string") {
     matchTest = new RegExp(matchTest);
@@ -1839,7 +1844,7 @@ const reverseRepeatingTimeline = (tl: gsap.core.Timeline): gsap.core.Timeline =>
   } else {
     // Get currently-running child tween, check if that is repeating.
     const [tw] = tl.getChildren(false, true, true, tl.time());
-    if (tw && tw.repeat() === -1) {
+    if ((tw instanceof gsap.core.Timeline || tw instanceof gsap.core.Tween) && tw.repeat() === -1) {
       // Child tween is repeating. Set totalTime of TWEEN equal to time, reverse TIMELINE.
       tw.totalTime(tw.time());
     }
@@ -1938,9 +1943,7 @@ const EventHandlers = {
 
 // #region ████████ FOUNDRY: Requires Configuration of System ID in constants.ts ████████ ~
 
-const isDocID = (ref: unknown): ref is IDString => {
-  return typeof ref === "string" && /^[A-Za-z0-9]{16}$/.test(ref);
-};
+const isDocID = (ref: unknown): ref is IDString => typeof ref === "string" && /^[A-Za-z0-9]{16}$/.test(ref);
 
 const isDocUUID = (ref: unknown): ref is UUIDString => {
   if (typeof ref !== "string") { return false; }
@@ -1949,9 +1952,7 @@ const isDocUUID = (ref: unknown): ref is UUIDString => {
   return game.collections.has(docName);
 };
 
-const isDotKey = (ref: unknown): ref is DotKey => {
-  return typeof ref === "string";
-};
+const isDotKey = (ref: unknown): ref is DotKey => typeof ref === "string";
 
 const isTargetKey = (ref: unknown): ref is TargetKey => {
   if (!isDotKey(ref)) { return false; }
@@ -2027,7 +2028,7 @@ function getTemplatePath(subFolder: string, fileName: string | string[]) {
  * @param position.left
  */
 function displayImageSelector(
-  callback: (path: string) => Promise<unknown>,
+  callback: (path: string) => void,
   pathRoot = `systems/${C.SYSTEM_ID}/assets`,
   position: {top: number | null, left: number | null} = {top: 200, left: 200}
 ) {
@@ -2107,7 +2108,7 @@ export default {
 
   // ████████ HTML: Parsing HTML Code, Manipulating DOM Objects ████████
   getSvgCode,
-  changeContainer, adjustTextContainerAspectRatio,
+  changeContainer, adjustTextContainerAspectRatio, getMutableRect,
 
   getRawCirclePath, drawCirclePath,
 

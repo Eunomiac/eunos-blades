@@ -790,25 +790,20 @@ export const gsapEffects: Record<string, gsapEffect> = {
       if (!target) { throw new Error(`blurRevealTooltip effect: tooltip element is ${target === null ? "null" : typeof target}`); }
       const tooltip$: JQuery = $(target as HTMLElement);
 
-      const xPStart: gsap.TweenVars = {xPercent: -50, yPercent: -50};
-      const xPEnd: gsap.TweenVars = {xPercent: -50, yPercent: -50};
+      const tTipFrom: gsap.TweenVars = {autoAlpha: 0};
 
-      switch (config.tooltipDirection) {
+       switch (config.tooltipDirection) {
         case "top":
-          xPStart.yPercent = -120;
-          xPEnd.yPercent = -100;
-          break;
-        case "right":
-          xPStart.xPercent = 5;
-          xPEnd.xPercent = 15;
+          tTipFrom.y = "+=50";
           break;
         case "bottom":
-          xPStart.yPercent = 0;
-          xPEnd.yPercent = 20;
+          tTipFrom.y = "-=50";
+          break;
+        case "right":
+          tTipFrom.x = "-=100";
           break;
         case "left":
-          xPStart.xPercent = -80;
-          xPEnd.xPercent = -100;
+          tTipFrom.x = "+=100";
           break;
         default:
           throw new Error(`blurRevealTooltip effect: tooltipDirection '${config.tooltipDirection}' is not valid`);
@@ -819,23 +814,19 @@ export const gsapEffects: Record<string, gsapEffect> = {
         delay:             0.25,
         onReverseComplete: config.onReverseComplete
       })
-        .fromTo(
+        .from(
           tooltip$,
           {
-            autoAlpha: 0,
-            ...xPStart
-          },
-          {
-            autoAlpha: 1,
-            ...xPEnd,
-            duration:  config.duration
+            ...tTipFrom,
+            duration: config.duration,
+            ease:     config.ease
           }
         );
     },
     defaults: {
       scale:             1.25,
       blurStrength:      5,
-      ease:              "power3.inOut",
+      ease:              "sine",
       duration:          0.25,
       onReverseComplete: undefined,
       tooltipDirection:  "top"

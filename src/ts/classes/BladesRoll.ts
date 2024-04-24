@@ -3,7 +3,7 @@
 import U from "../core/utilities";
 import C, {BladesActorType, BladesItemType, RollPermissions, RollType, RollSubType, RollModType, RollModStatus, RollModSection, ActionTrait, DowntimeAction, AttributeTrait, Position, Effect, Factor, RollResult, RollPhase, ConsequenceType, Tag} from "../core/constants";
 import {BladesActor, BladesPC, BladesCrew} from "../documents/BladesActorProxy";
-import {BladesItem, BladesGMTracker, BladesProject} from "../documents/BladesItemProxy";
+import {BladesItem, BladesGMTracker} from "../documents/BladesItemProxy";
 import {ApplyTooltipAnimations, Dragger} from "../core/gsap";
 import BladesConsequence from "./BladesConsequence";
 import BladesClockKey from "./BladesClockKey";
@@ -562,26 +562,31 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
   constructor(modData: BladesRollMod.Data, rollInstance: BladesRoll) {
     super(modData);
     this._rollInstance = rollInstance;
+
+    if (!game.eunoblades.RollMods.has(this.id)) {
+      game.eunoblades.RollMods.set(this.id, this);
+    }
+
+
   }
 
   get rollInstance(): BladesRoll {return this._rollInstance;}
+  get rollId(): IDString { return this.rollInstance.id; }
   get name(): string {return this.data.name;}
   get modType(): RollModType {return this.data.modType;}
   get sourceName(): string {return this.data.source_name ?? this.data.name;}
   get section(): RollModSection {return this.data.section;}
   get posNeg(): "positive" | "negative" {return this.data.posNeg;}
 
+  get isRendered() { return this.rollInstance.isRendered; }
+
   get userStatus(): RollModStatus | undefined {return this.data.user_status;}
   set userStatus(val: RollModStatus | undefined) {
     if (val === this.userStatus) {return;}
     const {isRerendering} = this;
     if (!val || val === this.baseStatus) {
-      this.updateTarget("user_status", null)
-        .then(() => {
-          if (isRerendering) {
-            this.rollInstance.renderRollCollab_SocketCall();
-          }
-        });
+      this.rollModStatusChange_SocketCall(this.baseStatus);
+      this.updateTarget("user_status", null);
     } else {
       if (!game.user.isGM
         && (BladesRollMod.GMOnlyModStatuses.includes(val)
@@ -589,56 +594,132 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
       ) {
         return;
       }
-      this.updateTarget("user_status", val)
-        .then(() => {
-          if (isRerendering) {
-            this.rollInstance.renderRollCollab_SocketCall();
-          }
-        });
+      this.rollModStatusChange_SocketCall(val);
+      this.updateTarget("user_status", val);
     }
   }
 
   get elem$() { return this.rollInstance.elem$.find(`#${this.id}`); }
+  get elem() { return this.elem$[0]; }
 
   get statusChangeTimeline(): gsap.core.Timeline {
     let tl = this.elem$.data("statusChangeTimeline");
-    if (!(tl instanceof gsap.core.Timeline)) {
-      tl = U.gsap.effects.rollModStatusChange(this.elem$, {startAt: this.status});
+    if (tl === undefined) {
+
       /**
       *    Single Labeled Timeline with five steps:
       *       Hidden <--> Forced Off <--> Toggled Off <--> Toggled On <--> Forced On
       * */
+      const posNegColors = {
+        positive: {
+          dark:   "105, 86, 0",
+          medium: "143, 118, 11",
+          bright: "206, 180, 71"
+        },
+        negative: {
+          dark:   "150, 0, 0",
+          medium: "200, 0, 0",
+          bright: "255, 0, 0"
+        }
+      }[this.posNeg];
+
+      tl = U.gsap.timeline({paused: true})
+        .to(this.elem, {
+          // Hidden: Grey text, transparent textShadow, transparent background, dotted posNeg border, square edges
+          color:        "rgb(116, 116, 116)",
+          textShadow:   "0px 0px 0px rgba(0, 0, 0, 1)",
+          background:   "rgba(73, 73, 73, 0)",
+          borderColor:  `rgba(${posNegColors.medium}, 1)`,
+          borderStyle:  "dotted",
+          borderRadius: 0,
+
+          duration: 0
+        })
+        .addLabel(RollModStatus.Hidden)
+        .to(this.elem, {
+          // ForcedOff: medium grey text, medium posNeg textShadow, transparent background, transparent border, square edges
+          color:        "rgb(116, 116, 116)",
+          textShadow:   `1px 1px 2px rgba(${posNegColors.medium}, 1)`,
+          background:   "rgba(73, 73, 73, 0)",
+          borderColor:  `rgba(${posNegColors.medium}, 0)`,
+          borderStyle:  "solid",
+          borderRadius: 0,
+
+          duration: 0.25
+        })
+        .addLabel(RollModStatus.ForcedOff)
+        .to(this.elem, {
+          // ToggledOff: Bright Grey Text, dark black textShadow, dark grey background, medium PosNeg border, round edges
+          color:        "rgb(158, 158, 158)",
+          textShadow:   "1px 1px 2px rgba(0, 0, 0, 1)",
+          background:   "rgba(73, 73, 73, 1)",
+          borderColor:  `rgba(${posNegColors.medium}, 1)`,
+          borderStyle:  "solid",
+          borderRadius: 5,
+
+          duration: 0.25
+
+        })
+        .addLabel(RollModStatus.ToggledOff)
+        .to(this.elem, {
+          // ToggledOn: Bright White Text, dark black textShadow, bright posNeg background, same-color posNeg border, round edges
+          color:        "rgb(255, 255, 255)",
+          textShadow:   "1px 1px 2px rgba(0, 0, 0, 1)",
+          background:   `rgba(${posNegColors.bright}, 1)`,
+          borderColor:  `rgba(${posNegColors.bright}, 1)`,
+          borderStyle:  "solid",
+          borderRadius: 5,
+
+          duration: 0.25
+        })
+        .addLabel(RollModStatus.ToggledOn)
+        .to(this.elem, {
+          // ForcedOn: bright posneg text, dark black textShadow, transparent background, transparent border, square edges
+          color:        `rgba(${posNegColors.bright}, 0)`,
+          textShadow:   "1px 1px 2px rgba(0, 0, 0, 1)",
+          background:   `rgba(${posNegColors.bright}, 0)`,
+          borderColor:  `rgba(${posNegColors.bright}, 0)`,
+          borderStyle:  "solid",
+          borderRadius: 0,
+
+          duration: 0.25
+        })
+        .addLabel(RollModStatus.ForcedOn);
+
+      tl.seek(this.status);
       this.elem$.data("statusChangeTimeline", tl);
     }
     return tl;
   }
 
-  async rollModStatusChange_Animation(): Promise<gsap.core.Tween> {
-    return await this.statusChangeTimeline.tweenTo(this.status)
+  async rollModStatusChange_Animation(newStatus: RollModStatus): Promise<gsap.core.Tween> {
+    return this.statusChangeTimeline.tweenTo(newStatus)
       .then(() => {
         this.rollInstance.renderRollCollab();
       });
   }
 
-  async rollModStatusChange_SocketCall() {
+  async rollModStatusChange_SocketCall(newStatus: RollModStatus) {
     if (this.rollInstance.isRendered) {
-      socketlib.system.executeForEveryone("rollModStatusChange_SocketCall", this.id);
+      socketlib.system.executeForEveryone("rollModStatusChange_SocketCall", this.id, newStatus, game.user.name);
     }
   }
 
-  static rollModStatusChange_SocketResponse(rollID: IDString, modID: IDString) {
-    const rollInstance = game.eunoblades.Rolls.get(rollID);
-    if (rollInstance?.isRendered) {
-      rollInstance.getRollModByID(modID)?.rollModStatusChange_Animation();
+  static rollModStatusChange_SocketResponse(modID: IDString, newStatus: string, callerName: string) {
+    const rollMod = game.eunoblades.RollMods.get(modID) as Maybe<BladesRollMod>;
+    if (rollMod?.isRendered && rollMod.statusChangeTimeline.currentLabel() !== newStatus) {
+      const {rollInstance} = rollMod;
+      eLog.checkLog3("rollModStatusChange", `[${callerName}] '${rollMod.name}' Status Changed Received: ${rollMod.status} to ${newStatus}. Remember to set 'isAnimating' flag keyed to the roll mod's ID so a refresh can be triggered only when no animations are running!`, {rollInstance, rollMod});
+      rollMod.rollModStatusChange_Animation(newStatus as RollModStatus);
     }
   }
 
   get baseStatus(): RollModStatus {return this.data.base_status;}
   get heldStatus(): RollModStatus | null | undefined {return this.data.held_status;}
   set heldStatus(val: RollModStatus | undefined) {
-    if (val === this.heldStatus) {return;}
-    this.updateTarget("held_status", val || null)
-      .then(this.rollModStatusChange_SocketCall.bind(this));
+    if (val === this.heldStatus) { return; }
+    this.rollModStatusChange_SocketCall(val || (this.userStatus ?? this.baseStatus));
+    this.updateTarget("held_status", val || null);
   }
 
   get value(): number {return this.data.value;}
@@ -1291,6 +1372,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     socketlib.system.register("renderRollCollab_SocketCall", BladesRoll.renderRollCollab_SocketResponse.bind(BladesRoll));
     socketlib.system.register("closeRollCollab_SocketCall", BladesRoll.closeRollCollab_SocketResponse.bind(BladesRoll));
 
+    /* BladesRollMod Socket Interface */
+    socketlib.system.register("rollModStatusChange_SocketCall", BladesRollMod.rollModStatusChange_SocketResponse.bind(BladesRollMod));
+
   }
 
   static override ParseConfigToData<Schema = BladesRoll.Schema>(
@@ -1830,7 +1914,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   // #endregion
 
   // #region SOCKET CALLS & RESPONSES ~
-  static GetRollSubClass(linkData: BladesTargetLink.Data) {
+  static GetRollSubClass(linkData: BladesTargetLink.Data): typeof BladesRoll {
     const targetLink = new BladesTargetLink<BladesRoll.Schema>(linkData);
     switch (targetLink.data.rollType) {
       case RollType.Action: return BladesActionRoll;
@@ -1850,6 +1934,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       }
       case RollType.IndulgeVice: return BladesIndulgeViceRoll;
     }
+    return BladesRoll;
   }
 
   constructRollCollab_SocketCall(linkData: BladesTargetLink.Data) {

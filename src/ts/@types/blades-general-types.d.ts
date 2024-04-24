@@ -125,6 +125,21 @@ declare global {
   // Represents an object describing dimensions of an HTML element, of form {x: number, y: number, width: number, height: number}
   type ElemPosData = {x: number, y: number, width: number, height: number};
 
+  // Represents an object describing dimensions of an HTML element, in the form of a DOMRect object with mutable properties.
+  type MutableRect = Omit<Mutable<DOMRect>, "toJSON">;
+
+  /**
+   * Represents a type that may be either of type T or undefined.
+   * @template T - The type that may be present or may be undefined.
+   */
+  type Maybe<T> = T | undefined;
+
+  // Represents a tuple of two elements
+  type Tuple<T1, T2 = T1> = [T1, T2];
+
+  // Represents a tuple of three elements
+  type Threeple<T1, T2 = T1, T3 = T2> = [T1, T2, T3];
+
   // Represents an object with frozen properties
   type FreezeProps<T> = {
     [Prop in keyof T as string extends Prop ? never : number extends Prop ? never : Prop]: T[Prop]
@@ -133,6 +148,11 @@ declare global {
   // Represents a deep-partial of an object
   type FullPartial<T> = {
     [P in keyof T]?: T[P] extends object ? FullPartial<T[P]> : T[P];
+  };
+
+  // Represents a mutable version of a readonly type
+  type Mutable<T> = {
+    -readonly [P in keyof T]: T[P];
   };
 
   // Represents a gsap animation

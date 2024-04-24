@@ -1,19 +1,10 @@
 // #region ▮▮▮▮▮▮▮ IMPORTS ▮▮▮▮▮▮▮ ~
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import "../scss/style.scss";
-// import "../scss/fonts.scss";
-// import "../scss/tinymce/skin/skin.scss";
-// import "../scss/tinymce/content.scss";
-// import "../scss/tinymce/fonts.scss";
+
 import C, {
   ActionTrait,
-  ClockColor,
-  ClockKeyDisplayMode,
-  AttributeTrait,
-  RollType,
-  ConsequenceType,
-  Position,
-  RollResult
+  RollType
 } from "./core/constants";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initDOMStyles} from "./core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates, getColor} from "./core/helpers";
@@ -222,6 +213,7 @@ Hooks.once("init", async () => {
   // Initialize Game object
   game.eunoblades = {
     Rolls:        new Collection<BladesRoll>(),
+    RollMods:     new Collection<BladesRollMod>(),
     ClockKeys:    new Collection<BladesClockKey>(),
     Consequences: new Collection<BladesConsequence>(),
     Director:     BladesDirector.getInstance(),

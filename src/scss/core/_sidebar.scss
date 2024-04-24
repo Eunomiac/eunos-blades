@@ -189,8 +189,14 @@
         }
 
         &.folder {
-
-
+          > .folder-header {
+            padding: 0px 3px;
+            align-items: center;
+            line-height: var(--line-height-heading);
+            font-family: var(--font-heading);
+            font-weight: var(--font-weight-heading);
+            text-shadow: var(--text-shadow-heading);
+          }
 
           &:not(.collapsed) {
             > .subdirectory {

@@ -1,0 +1,19 @@
+& {
+
+  &, * {
+    --font-primary: "Fjalla One", sans-serif;
+    --font-heading: "Fjalla One", sans-serif;
+    --font-weight-heading: normal;
+    --text-shadow-heading: none;
+    --line-height-heading: 1;
+  }
+
+  #controls,
+  #navigation,
+  #hotbar,
+  #players {
+    opacity: 0.5;
+    transition: 0.25s;
+    &:hover { opacity: 1 }
+  }
+}

@@ -21,6 +21,12 @@
     &.overlay-section-transitions,
     &.overlay-section-tooltips {
       z-index: 150;
+
+      // .tooltip {
+      //   top: initial;
+      //   left: initial;
+      //   // transform: none;
+      // }
     }
   }
 

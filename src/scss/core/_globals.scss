@@ -271,6 +271,7 @@
     background: var(--blades-black-dark);
 
     width: auto;
+    // width: 400px;
     max-width: 400px;
 
     padding: toRem(10px);
@@ -287,7 +288,9 @@
     // left: -200px;
     // bottom: 50px;
     // z-index: zLevel(+10);
-
+    // transform: translate(-50%, -50%);
+    // top: 0%;
+    // left: 0%;
     pointer-events: none;
 
     // transform-origin: 50% 100%;
@@ -329,6 +332,23 @@
 
     h2 {
       color: var(--blades-white-bright);
+    }
+  }
+
+  .tooltip-placeholder {
+    position: absolute;
+    z-index: 9999;
+    background: rgba(255, 255, 0, 0.1);
+    outline: 1px dotted yellow;
+    pointer-events: none;
+
+    &.trigger-placeholder {
+      background: rgba(255, 0, 255, 0.1);
+      outline: 1px dotted magenta;
+    }
+    &.source-placeholder {
+      background: rgba(0, 255, 255, 0.1);
+      outline: 1px dotted cyan;
     }
   }
 

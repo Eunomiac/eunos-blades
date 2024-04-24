@@ -1,0 +1,30 @@
+& {
+  // Applying scrollbar styles to both :root and all elements using the universal (*) selector
+  &, * {
+    scrollbar-color: var(--blades-white) var(--blades-black);
+    scrollbar-width: thin;
+  }
+
+  // Targeting all elements for custom scrollbar styles
+  * {
+    // Customizing the scrollbar itself
+    &::-webkit-scrollbar {
+      width: var(--blades-spacer-sm);
+    }
+
+    // Customizing the scrollbar track
+    &::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
+      border: none;
+      border-radius: 0;
+    }
+
+    // Customizing the scrollbar thumb
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(var(--color-background-light), 1);
+      border: none;
+      border-radius: 0;
+      outline: none;
+    }
+  }
+}
