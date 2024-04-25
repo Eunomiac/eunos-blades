@@ -16,17 +16,26 @@ import { exec } from "child_process";
 /**
  * Custom plugin to open Chrome with specific flags when the Vite server starts.
  */
+
 function openChromePlugin(): Plugin {
   return {
     name: "open-chrome",
     apply: "serve", // Only apply this plugin during development
     configResolved(chromeConfig) {
-      if (chromeConfig.command === "serve" && chromeConfig.server.open) {
-        // Replace the PowerShell command with its equivalent in Node.js
-        const command = `start chrome --start-maximized --remote-debugging-port=9222 --auto-open-devtools-for-tabs --user-data-dir="D:/Projects/.CODING/FoundryVTT/ChromeDevProfile" http://localhost:${chromeConfig.server.port} http://localhost:${chromeConfig.server.port}`;
-        exec(command, (error) => {
+      if (chromeConfig.command === "serve") {
+        // Command to open the first Chrome instance
+        const command1 = `start chrome --start-maximized --remote-debugging-port=9222 --auto-open-devtools-for-tabs --user-data-dir="D:/Projects/.CODING/FoundryVTT/ChromeDevProfile_1" http://localhost:${chromeConfig.server.port}`;
+        exec(command1, (error) => {
           if (error) {
-            console.error("Failed to open Chrome:", error);
+            console.error("Failed to open first Chrome instance:", error);
+          }
+        });
+
+        // Command to open the second Chrome instance with a different profile
+        const command2 = `start chrome --start-maximized --remote-debugging-port=9223 --auto-open-devtools-for-tabs --user-data-dir="D:/Projects/.CODING/FoundryVTT/ChromeDevProfile_2" http://localhost:${chromeConfig.server.port}`;
+        exec(command2, (error) => {
+          if (error) {
+            console.error("Failed to open second Chrome instance:", error);
           }
         });
       }
@@ -135,7 +144,7 @@ const config: UserConfig = defineConfig({
     // Setting the port number for the development server
     port: 30001,
     // Automatically open the project in the browser when the server starts
-    open: true,
+    open: false,
     // Configuring proxy rules for certain URLs
     proxy: {
       // Redirecting requests that do not start with "/systems/eunos-blades" to localhost:30000

@@ -811,8 +811,8 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       return U.gsap.timeline({
         paused:            true,
-        delay:             0.25,
-        onReverseComplete: config.onReverseComplete
+        delay:             0.2,
+        onInterrupt:       config.onInterrupt
       })
         .from(
           tooltip$,
@@ -828,7 +828,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
       blurStrength:      5,
       ease:              "sine",
       duration:          0.25,
-      onReverseComplete: undefined,
+      onInterrupt:       undefined,
       tooltipDirection:  "top"
     },
     extendTimeline: true
@@ -956,7 +956,7 @@ export function ApplyTooltipAnimations(html: JQuery) {
         game.eunoblades.Director.displayTooltip(tooltipElem);
       },
       mouseleave() {
-        game.eunoblades.Director.clearTooltip(tooltipID);
+        game.eunoblades.Director.clearTooltip(tooltipID, true);
       }
     });
   });

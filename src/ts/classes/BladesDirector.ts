@@ -677,7 +677,7 @@ class BladesDirector {
 
   // #region TOOLTIPS ~
   _tooltipObserver?: Observer;
-  _tooltipElems: Map<string, JQuery> = new Map<string, JQuery>();
+  // _tooltipElems: Map<string, JQuery> = new Map<string, JQuery>();
   _displayedTooltipID?: string;
 
   getTooltipFinalRect(tooltip$: JQuery, trigger$: JQuery, side: Direction, padding = 15): MutableRect {
@@ -851,86 +851,83 @@ class BladesDirector {
     return side;
   }
 
-  displayTooltip(tooltip: HTMLElement) {
+  async displayTooltip(tooltip: HTMLElement) {
     if (!tooltip.id) {
       throw new Error("Tooltip must have an ID to be cloned to the overlay.");
     }
-    this._displayedTooltipID = tooltip.id;
-    const self = this;
-    const tooltip$ = $(tooltip);
-    // Clear out any other tooltips in the overlay.
-    game.eunoblades.Director.clearTooltips();
-    const trigger$ = tooltip$.closest(".tooltip-trigger");
-    if (!this._tooltipElems.has(tooltip.id)) {
-
-      // Create cloned tooltip and attach it to the tooltip overlay.
-      const ttClone$ = $(U.changeContainer(
-        tooltip,
-        game.eunoblades.Director.tooltipSection$[0],
-        true
-      ));
-      // Determine side on which tooltip will appear
-      const side = this.getTooltipSide(ttClone$, trigger$);
-
-      // Adjust the tooltip's position so it does not overflow the tooltip container
-      const tooltipFinalRect = {...this.getTooltipFinalRect(ttClone$, trigger$, side)};
-      const tooltipAdjustedRect = {...this.getAdjustedTooltipFinalRect(this.getTooltipFinalRect(ttClone$, trigger$, side), side)};
-      U.set(ttClone$, {y: tooltipAdjustedRect.top, x: tooltipAdjustedRect.left});
-
-      eLog.checkLog3("displayTooltip", "Tooltip Rects", {side, tooltipFinalRect, tooltipAdjustedRect});
-
-      // Generate the reveal timeline and attach it to the cloned tooltip element.
-      const revealTimeline = U.gsap.effects.blurRevealTooltip(
-        ttClone$[0],
-        {
-          onReverseComplete() {
-            if (ttClone$.attr("id") === self._displayedTooltipID) {
-              delete self._displayedTooltipID;
-            }
-            game.eunoblades.Director._tooltipElems.delete(ttClone$.attr("id") as string);
-            game.eunoblades.Director.tooltipSection$.find(`#${ttClone$.attr("id")}`).remove();
-            game.eunoblades.Director.tooltipSection$.children("[style*='opacity: 0'], [style*='opacity:0']").each(function() {
-              const id = this.id; // Get the ID of the current element
-              if (id === self._displayedTooltipID) { return; }
-              if (id) {
-                game.eunoblades.Director._tooltipElems.delete(id); // Remove from the map if the ID exists
-              }
-              $(this).remove(); // Remove the element from the DOM
-            });
-          },
-          tooltipDirection: side,
-          trigger$,
-          tTipSource$:      $(tooltip)
-        }
-      );
-      ttClone$.data("revealTimeline", revealTimeline);
-      // Register the cloned tooltip element to the master map
-      this._tooltipElems.set(tooltip.id, ttClone$);
+    if (tooltip.id === this._displayedTooltipID) {
+      eLog.error("displayTooltip", `Tooltip with id '${tooltip.id}' already displayed: Not re-rendering.`);
+      return;
     }
+    this._displayedTooltipID = tooltip.id;
+    const tooltip$ = $(tooltip);
+    const trigger$ = tooltip$.closest(".tooltip-trigger");
+
+    // Clear out all other tooltips in the overlay.
+    await this.clearTooltips();
+
+    // Create cloned tooltip and attach it to the tooltip overlay.
+    const ttClone$ = $(U.changeContainer(
+      tooltip,
+      this.tooltipSection$[0],
+      true
+    ));
+
+    // Determine side on which tooltip will appear
+    const side = this.getTooltipSide(ttClone$, trigger$);
+
+    // Adjust the tooltip's position so it does not overflow the tooltip container
+    const tooltipAdjustedRect = {...this.getAdjustedTooltipFinalRect(this.getTooltipFinalRect(ttClone$, trigger$, side), side)};
+    U.set(ttClone$, {y: tooltipAdjustedRect.top, x: tooltipAdjustedRect.left});
+
+    // Generate the reveal timeline and attach it to the cloned tooltip element.
+    const revealTimeline = U.gsap.effects.blurRevealTooltip(
+      ttClone$[0],
+      {
+        // onInterrupt() { ttClone$.remove(); },
+        tooltipDirection: side,
+        trigger$,
+        tTipSource$:      $(tooltip)
+      }
+    );
+
+    // Attach the timeline to the element for later reversal
+    ttClone$.data("revealTimeline", revealTimeline);
+
     // Play the timeline.
-    this._tooltipElems.get(tooltip.id)?.data("revealTimeline")?.play();
+    ttClone$.data("revealTimeline")?.play();
   }
 
-  clearTooltip(tooltipID: string, isClearingIfTweening = true) {
+  async clearTooltip(tooltipID: string, isClearingIfTweening = true): Promise<void> {
     if (tooltipID === this._displayedTooltipID) {
       delete this._displayedTooltipID;
     }
-    const ttElem = game.eunoblades.Director._tooltipElems.get(tooltipID);
-    if (!ttElem) {return;}
-    const ttTimeline = ttElem.data("revealTimeline") as gsap.core.Timeline;
+    const ttElem$ = this.tooltipSection$.find(`#${tooltipID}`);
+    if (!ttElem$.length) { return; }
+    const ttTimeline = ttElem$.data("revealTimeline") as gsap.core.Timeline;
     if (ttTimeline.isActive() && !isClearingIfTweening) { return; }
-    ttTimeline.reverse();
+    await new Promise<void>((resolve) => {
+      if (ttTimeline.progress() === 0) { resolve(); }
+      ttTimeline.eventCallback("onReverseComplete", () => { resolve(); });
+      ttTimeline.reverse();
+    });
+    U.gsap.killTweensOf(ttElem$);
+    ttElem$.remove();
   }
 
-  clearTooltips() {
-    eLog.checkLog3("Observer", "Observer Triggered!");
-    // Look for tooltip elements in the overlay container, and remove them.
-    game.eunoblades.Director._tooltipElems.forEach((ttElem) => {
-      if (ttElem.attr("id") === this._displayedTooltipID) {
-        return;
-      }
-      game.eunoblades.Director.clearTooltip(ttElem.attr("id") as string, true);
-    });
+  async clearTooltips(): Promise<void[]> {
+    const self = this;
+    return Promise.all(
+      Array.from(self.tooltipSection$.find(".tooltip")).map((ttElem) => {
+        const ttElem$ = $(ttElem);
+        const ttID = ttElem$.attr("id");
+        if (!ttID) {
+          eLog.error("clearTooltips", "Cloned tooltip without ID", ttElem$);
+          throw new Error("[BladesDirector.clearTooltips] Cloned tooltip missing ID. See log for details.");
+        }
+        return self.clearTooltip(ttID, true);
+      })
+    );
   }
 
   private initTooltipSection() {
@@ -941,41 +938,29 @@ class BladesDirector {
     this._tooltipObserver?.kill();
 
     // Simplified throttle function that takes a function with Observer parameter
-    const throttle = (func: (obs: Observer) => void, limit: number) => {
-      let lastFunc: number;
+    const throttle = (func: (obs: Observer) => void, timeLimit: number, distanceLimit: number) => {
       let lastRan: number;
+      let lastPos: Point;
       return function(this: void, obs: Observer) {
         const now = Date.now();
-        if (!lastRan || now - lastRan >= limit) {
-          func(obs);
+        const thisPos = {x: obs.x, y: obs.y} as Point;
+
+        // First throttle the function by time, doing nothing until at least timeLimit has passed:
+        if (!lastRan || now - lastRan >= timeLimit) {
+          // If timeLimit has passed, confirm that distanceLimit has also passed:
+          if (!lastPos || U.getDistance(lastPos, thisPos) >= distanceLimit) {
+            func(obs);
+          }
           lastRan = now;
-        } else {
-          clearTimeout(lastFunc);
-          lastFunc = window.setTimeout(() => {
-            if (now - lastRan >= limit) {
-              func(obs);
-              lastRan = now;
-            }
-          }, limit - (now - lastRan));
+          lastPos = thisPos;
         }
       };
     };
 
-    // Throttled onMove callback
-    throttle((obs: Observer) => {
-      // Calculate the absolute magnitude of velocity independent of direction
-      const magnitudeOfVelocity = Math.sqrt((obs.velocityX ** 2) + (obs.velocityY ** 2));
-      if (magnitudeOfVelocity >= C.MIN_MOUSE_MOVEMENT_THRESHOLD) {
-        self.clearTooltips();
-      }
-    }, 200); // Adjust 200ms to your preferred throttling limit
-
     this._tooltipObserver = Observer.create({
-      type: "touch,pointer",
-      // onMove: throttledOnMove,
-      onClick() {
-        self.clearTooltips();
-      }
+      type:    "touch, pointer",
+      onMove:  throttle(() => { self.clearTooltips(); }, 200, 100),
+      onClick: () => { self.clearTooltips(); }
     });
   }
   // #endregion

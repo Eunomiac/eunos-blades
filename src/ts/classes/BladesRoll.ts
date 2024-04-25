@@ -200,7 +200,7 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
       .map((modString) => this.getSchemaFromStrings((modString as string).split(/@/)));
   }
 
-  public isRerendering = false;
+  // public isRerendering = false;
 
   get status() {
     // USER STATUS of "ForcedOn", "ForcedOff", or "Hidden" trumps all other status values.
@@ -583,10 +583,9 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
   get userStatus(): RollModStatus | undefined {return this.data.user_status;}
   set userStatus(val: RollModStatus | undefined) {
     if (val === this.userStatus) {return;}
-    const {isRerendering} = this;
+    // const {isRerendering} = this;
     if (!val || val === this.baseStatus) {
-      this.rollModStatusChange_SocketCall(this.baseStatus);
-      this.updateTarget("user_status", null);
+      val = null as unknown as undefined;
     } else {
       if (!game.user.isGM
         && (BladesRollMod.GMOnlyModStatuses.includes(val)
@@ -594,132 +593,42 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
       ) {
         return;
       }
-      this.rollModStatusChange_SocketCall(val);
-      this.updateTarget("user_status", val);
+      const oldStatus = this.statusReport;
+      this.updateTarget("user_status", val).then(() => {
+        eLog.checkLog3("rollModStatus", `[set USER] ${this.name} Status Change: ${oldStatus["!STATUS"]} -> ${this.status} (val = ${val})`, {
+          from: oldStatus.comps,
+          to:   this.statusReport.comps
+        });
+      });
     }
+  }
+
+  // @ts-expect-error Why aren't I able to simply pass the function parameters through to the superclass?
+  override async updateTarget(...args: Parameters<BladesTargetLink<BladesRollMod.Schema>["updateTarget"]>) {
+    await super.updateTarget(...args);
+    this.rollInstance.renderRollCollab_SocketCall();
   }
 
   get elem$() { return this.rollInstance.elem$.find(`#${this.id}`); }
   get elem() { return this.elem$[0]; }
 
-  get statusChangeTimeline(): gsap.core.Timeline {
-    let tl = this.elem$.data("statusChangeTimeline");
-    if (tl === undefined) {
-
-      /**
-      *    Single Labeled Timeline with five steps:
-      *       Hidden <--> Forced Off <--> Toggled Off <--> Toggled On <--> Forced On
-      * */
-      const posNegColors = {
-        positive: {
-          dark:   "105, 86, 0",
-          medium: "143, 118, 11",
-          bright: "206, 180, 71"
-        },
-        negative: {
-          dark:   "150, 0, 0",
-          medium: "200, 0, 0",
-          bright: "255, 0, 0"
-        }
-      }[this.posNeg];
-
-      tl = U.gsap.timeline({paused: true})
-        .to(this.elem, {
-          // Hidden: Grey text, transparent textShadow, transparent background, dotted posNeg border, square edges
-          color:        "rgb(116, 116, 116)",
-          textShadow:   "0px 0px 0px rgba(0, 0, 0, 1)",
-          background:   "rgba(73, 73, 73, 0)",
-          borderColor:  `rgba(${posNegColors.medium}, 1)`,
-          borderStyle:  "dotted",
-          borderRadius: 0,
-
-          duration: 0
-        })
-        .addLabel(RollModStatus.Hidden)
-        .to(this.elem, {
-          // ForcedOff: medium grey text, medium posNeg textShadow, transparent background, transparent border, square edges
-          color:        "rgb(116, 116, 116)",
-          textShadow:   `1px 1px 2px rgba(${posNegColors.medium}, 1)`,
-          background:   "rgba(73, 73, 73, 0)",
-          borderColor:  `rgba(${posNegColors.medium}, 0)`,
-          borderStyle:  "solid",
-          borderRadius: 0,
-
-          duration: 0.25
-        })
-        .addLabel(RollModStatus.ForcedOff)
-        .to(this.elem, {
-          // ToggledOff: Bright Grey Text, dark black textShadow, dark grey background, medium PosNeg border, round edges
-          color:        "rgb(158, 158, 158)",
-          textShadow:   "1px 1px 2px rgba(0, 0, 0, 1)",
-          background:   "rgba(73, 73, 73, 1)",
-          borderColor:  `rgba(${posNegColors.medium}, 1)`,
-          borderStyle:  "solid",
-          borderRadius: 5,
-
-          duration: 0.25
-
-        })
-        .addLabel(RollModStatus.ToggledOff)
-        .to(this.elem, {
-          // ToggledOn: Bright White Text, dark black textShadow, bright posNeg background, same-color posNeg border, round edges
-          color:        "rgb(255, 255, 255)",
-          textShadow:   "1px 1px 2px rgba(0, 0, 0, 1)",
-          background:   `rgba(${posNegColors.bright}, 1)`,
-          borderColor:  `rgba(${posNegColors.bright}, 1)`,
-          borderStyle:  "solid",
-          borderRadius: 5,
-
-          duration: 0.25
-        })
-        .addLabel(RollModStatus.ToggledOn)
-        .to(this.elem, {
-          // ForcedOn: bright posneg text, dark black textShadow, transparent background, transparent border, square edges
-          color:        `rgba(${posNegColors.bright}, 0)`,
-          textShadow:   "1px 1px 2px rgba(0, 0, 0, 1)",
-          background:   `rgba(${posNegColors.bright}, 0)`,
-          borderColor:  `rgba(${posNegColors.bright}, 0)`,
-          borderStyle:  "solid",
-          borderRadius: 0,
-
-          duration: 0.25
-        })
-        .addLabel(RollModStatus.ForcedOn);
-
-      tl.seek(this.status);
-      this.elem$.data("statusChangeTimeline", tl);
-    }
-    return tl;
+  get statusReport() {
+    return {
+      "!STATUS": this.status,
+      "comps":   `[B:${this.baseStatus}], [U:${this.userStatus}], [H:${this.heldStatus}]`
+    };
   }
-
-  async rollModStatusChange_Animation(newStatus: RollModStatus): Promise<gsap.core.Tween> {
-    return this.statusChangeTimeline.tweenTo(newStatus)
-      .then(() => {
-        this.rollInstance.renderRollCollab();
-      });
-  }
-
-  async rollModStatusChange_SocketCall(newStatus: RollModStatus) {
-    if (this.rollInstance.isRendered) {
-      socketlib.system.executeForEveryone("rollModStatusChange_SocketCall", this.id, newStatus, game.user.name);
-    }
-  }
-
-  static rollModStatusChange_SocketResponse(modID: IDString, newStatus: string, callerName: string) {
-    const rollMod = game.eunoblades.RollMods.get(modID) as Maybe<BladesRollMod>;
-    if (rollMod?.isRendered && rollMod.statusChangeTimeline.currentLabel() !== newStatus) {
-      const {rollInstance} = rollMod;
-      eLog.checkLog3("rollModStatusChange", `[${callerName}] '${rollMod.name}' Status Changed Received: ${rollMod.status} to ${newStatus}. Remember to set 'isAnimating' flag keyed to the roll mod's ID so a refresh can be triggered only when no animations are running!`, {rollInstance, rollMod});
-      rollMod.rollModStatusChange_Animation(newStatus as RollModStatus);
-    }
-  }
-
   get baseStatus(): RollModStatus {return this.data.base_status;}
   get heldStatus(): RollModStatus | null | undefined {return this.data.held_status;}
   set heldStatus(val: RollModStatus | undefined) {
     if (val === this.heldStatus) { return; }
-    this.rollModStatusChange_SocketCall(val || (this.userStatus ?? this.baseStatus));
-    this.updateTarget("held_status", val || null);
+    const oldStatus = this.statusReport;
+    this.updateTarget("held_status", val || null).then(() => {
+      eLog.checkLog3("rollModStatus", `[set HELD] ${this.name} Status Change: ${oldStatus["!STATUS"]} -> ${this.status} (val = ${val})`, {
+        from: oldStatus.comps,
+        to:   this.statusReport.comps
+      });
+    });
   }
 
   get value(): number {return this.data.value;}
@@ -779,14 +688,17 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
   // #region Static Methods ~
   static IsValidData(data: unknown): data is BladesRoll.PrimaryData {
     if (BladesRollPrimary.IsDoc(data)) {return false;}
-    return U.isList(data)
-      && typeof data.rollPrimaryName === "string"
-      && typeof data.rollPrimaryType === "string"
-      && typeof data.rollPrimaryImg === "string"
-      && Array.isArray(data.rollPrimaryModsSchemaSet)
-      && U.isList(data.rollFactors)
-      && (!data.rollPrimaryID || typeof data.rollPrimaryID === "string")
-      && (!data.rollPrimaryDoc || BladesRollPrimary.IsDoc(data.rollPrimaryDoc));
+    if (!U.isList(data)) { return false; }
+    if ([
+      typeof data.rollPrimaryName,
+      typeof data.rollPrimaryType,
+      typeof data.rollPrimaryImg
+    ].some((type: string) => type !== "string")) { return false; }
+    if (!Array.isArray(data.rollPrimaryModsSchemaSet)) { return false; }
+    if (!U.isList(data.rollFactors)) { return false; }
+    if (data.rollPrimaryID && typeof data.rollPrimaryID !== "string") { return false; }
+    if (data.rollPrimaryDoc && !BladesRollPrimary.IsDoc(data.rollPrimaryDoc)) { return false; }
+    return true;
   }
 
   static GetDoc(docRef: unknown): BladesRoll.PrimaryDoc|false {
@@ -901,17 +813,14 @@ class BladesRollPrimary implements BladesRoll.PrimaryData {
   }
 
   async applyHarm(amount: harmLevel, name: string) {
-    if (this.rollPrimaryDoc) {
-      return this.rollPrimaryDoc.applyHarm(amount, name);
-    }
+    if (!this.rollPrimaryDoc) { return undefined; }
+    return this.rollPrimaryDoc.applyHarm(amount, name);
   }
 
   async applyWorsePosition() {
-    if (this.rollPrimaryDoc) {
-      return this.rollPrimaryDoc.applyWorsePosition();
-    }
+    if (!this.rollPrimaryDoc) { return undefined; }
+    return this.rollPrimaryDoc.applyWorsePosition();
   }
-
 
   get hasSpecialArmor() {
     return BladesPC.IsType(this.rollPrimaryDoc) && this.rollPrimaryDoc.isSpecialArmorAvailable;
@@ -1170,7 +1079,7 @@ class BladesRollOpposition implements BladesRoll.OppositionData {
   }
 
   refresh() {
-    if (!this.rollInstance) {return;}
+    if (!this.rollInstance) {return undefined;}
     const rollOppFlags = this.rollInstance.data.rollOppData;
     if (rollOppFlags) {
       this.rollOppID = rollOppFlags.rollOppID;
@@ -1372,9 +1281,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     socketlib.system.register("renderRollCollab_SocketCall", BladesRoll.renderRollCollab_SocketResponse.bind(BladesRoll));
     socketlib.system.register("closeRollCollab_SocketCall", BladesRoll.closeRollCollab_SocketResponse.bind(BladesRoll));
 
-    /* BladesRollMod Socket Interface */
-    socketlib.system.register("rollModStatusChange_SocketCall", BladesRollMod.rollModStatusChange_SocketResponse.bind(BladesRollMod));
-
   }
 
   static override ParseConfigToData<Schema = BladesRoll.Schema>(
@@ -1526,7 +1432,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     } else if ([RollType.Resistance, RollType.IndulgeVice].includes(rollType)) {
       imgPath += "grad-";
     }
-    imgPath += dieVal;
+    imgPath += `${dieVal}`;
     if (!isGhost && dieVal === 6 && dieIndex <= 1 && isCritical) {
       imgPath += "-crit";
     }
@@ -1574,7 +1480,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     // Get user IDs of players
     const playerUserIDs = game.users
       .filter((user) => BladesPC.IsType(user.character) && !user.isGM && typeof user.id === "string")
-      .map((user) => user.id as IDString);
+      .map((user) => user.id);
 
     // Prepare user ID permissions object
     const userIDs: Record<RollPermissions, IDString[]> = {
@@ -1605,7 +1511,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         userIDs[RollPermissions.Primary].push(...playerUserIDs);
       } else if (BladesPC.IsType(rollPrimaryDoc.parent)
         && rollPrimaryDoc.parent.primaryUser?.id) {
-        userIDs[RollPermissions.Primary].push(rollPrimaryDoc.parent.primaryUser.id as IDString);
+        userIDs[RollPermissions.Primary].push(rollPrimaryDoc.parent.primaryUser.id);
       }
     } else if (
       BladesGMTracker.IsType(rollPrimaryDoc)
@@ -1672,7 +1578,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
           if (
             BladesPC.IsType(pDoc) && typeof pDoc.primaryUser?.id === "string"
           ) {
-            return pDoc.primaryUser.id as IDString;
+            return pDoc.primaryUser.id;
           } else if (
             BladesCrew.IsType(pDoc)
             || BladesItem.IsType(pDoc, BladesItemType.cohort_gang, BladesItemType.cohort_expert)
@@ -1944,19 +1850,21 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   static constructRollCollab_SocketResponse(linkData: BladesTargetLink.Data) {
     const rollInst = new (this.GetRollSubClass(linkData))(linkData);
     eLog.checkLog3("rollCollab", "constructRollCollab_SocketResponse()", {params: {linkData}, rollInst});
-    this.renderRollCollab_SocketResponse(rollInst.id);
+    this.renderRollCollab_SocketResponse(rollInst.id, true);
   }
 
-  renderRollCollab_SocketCall() {
-    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+  renderRollCollab_SocketCall(isForcing = false) {
+    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id, isForcing);
   }
 
-  static renderRollCollab_SocketResponse(id: IDString) {
-    const rollInst = game.eunoblades.Rolls.get(id);
+  static renderRollCollab_SocketResponse(id: IDString, isForcing = false) {
+    const rollInst = game.eunoblades.Rolls.get(id) as BladesRoll;
     if (!rollInst) {
       throw new Error(`[BladesRoll.renderRollCollab_SocketResponse] No roll found with id ${id}.`);
     }
-    rollInst.renderRollCollab();
+    if (isForcing || rollInst.isRendered) {
+      rollInst.renderRollCollab();
+    }
   }
 
   closeRollCollab_Animation(): gsap.core.Timeline {
@@ -1983,13 +1891,13 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   _rollParticipants?: BladesRoll.RollParticipantDocs;
 
-  projectSelectOptions?: Array<BladesSelectOption<string, string>>;
+  projectSelectOptions?: Array<BladesSelectOption<string>>;
 
   constructor(config: BladesRoll.Config)
   constructor(data: BladesTargetLink.Data & Partial<BladesRoll.Schema>)
   constructor(dataOrConfig: BladesRoll.Config | BladesTargetLink.Data & Partial<BladesRoll.Schema>) {
     super(dataOrConfig);
-    this.rollPermission = this.data.userPermissions[game.user.id as IDString];
+    this.rollPermission = this.data.userPermissions[game.user.id];
     this._rollPrimary = new BladesRollPrimary(this, this.data.rollPrimaryData);
     if (this.data.rollOppData) {
       this._rollOpposition = new BladesRollOpposition(this, this.data.rollOppData);
@@ -2123,7 +2031,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       RollModSection.position,
       RollModSection.effect
     ] as Array<KeyOf<BladesRoll.RollParticipantDocs>>).forEach((rollSection) => {
-      const sectionFlagData = participantFlagData[rollSection] as ValOf<BladesRoll.RollParticipantDataSet> | undefined;
+      const sectionFlagData = participantFlagData[rollSection];
       if (sectionFlagData) {
         const sectionParticipants: Partial<Record<
           BladesRoll.ParticipantSubSection,
@@ -2649,11 +2557,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         }
         watchMod("PUSH-CHECK: FORCE OFF BARGAIN");
       } else {
-        // Otherwise, hide all Is-Push mods
+        // Otherwise, ForceOff all visible Is-Push mods
         this.getInactivePushMods(cat)
-          .filter((mod) => !mod.isBasicPush)
-          .forEach((mod) => {mod.heldStatus = RollModStatus.Hidden;});
-        watchMod("PUSH-CHECK: HIDE IS-PUSH");
+          .filter((mod) => !mod.isBasicPush && ![RollModStatus.Hidden, RollModStatus.ForcedOff].includes(mod.status))
+          .forEach((mod) => {mod.heldStatus = RollModStatus.ForcedOff;});
+        watchMod("PUSH-CHECK: FORCE OFF IS-PUSH");
       }
     });
 
@@ -2674,6 +2582,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       watchMod("OVERPAYMENT PASS");
     }
 
+    if (U.isEmpty(initReport)) { return; }
     eLog.checkLog2("rollMods", "*** initRollMods() PASS ***", initReport);
   }
 
@@ -3281,34 +3190,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     return diceData;
   }
-
-  // get dieValsHTML(): string {
-  //   eLog.checkLog3("rollCollab", "[get dieValsHTML()]", {roll: this, dieVals: this.dieVals});
-  //   const dieVals = [...this.dieVals];
-  //   const ghostNum = this.isRollingZero ? dieVals.shift() : null;
-  //   const isCritical = dieVals.filter((val) => val === 6).length >= 2;
-
-  //   const diceData = dieVals.map((val, i) => ({
-  //     value: val,
-  //     dieClass: BladesRoll.GetDieClass(this.rollType, this.rollResult, val, i),
-  //     dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, val, i, false, isCritical)
-  //   }));
-
-  //   if (ghostNum) {
-  //     diceData.push({
-  //       value: ghostNum,
-  //       dieClass: "blades-die-ghost",
-  //       dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, ghostNum, diceData.length, true, false)
-  //     });
-  //   }
-
-  //   return [
-  //     ...dieVals.map((val, i) => `<span class='blades-die ${dieClass} blades-die-${value}'><img src='${dieImage}' /></span>`),
-  //     ghostNum ? `<span class='blades-die blades-die-ghost blades-die-${ghostNum}'><img src='${this.getDieImage(ghostNum, 0, true)}' /></span>` : null
-  //   ]
-  //     .filter((val): val is string => typeof val === "string")
-  //     .join("");
-  // }
   // #endregion
 
   // #region RESULT GETTERS ~
@@ -3353,7 +3234,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     await this.roll.evaluate({async: true});
 
-    return await this.updateTargetData({
+    return this.updateTargetData({
       ...this.data,
       rollPositionFinal: this.rollPositionFinal,
       rollEffectFinal:   this.rollEffectFinal,
@@ -3412,12 +3293,12 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   // #region *** ROLL COLLAB HTML ELEMENT ***
 
-  _elem$?: JQuery<HTMLElement>;
+  _elem$?: JQuery;
   _overlayPosition: gsap.Point2D = {x: 200, y: 200};
   get overlayPosition(): gsap.Point2D { return this._overlayPosition; }
   set overlayPosition(val: gsap.Point2D) { this._overlayPosition = val; }
 
-  get elem$(): JQuery<HTMLElement> {
+  get elem$(): JQuery {
     if (this._elem$) { return this._elem$; }
     const elem$ = $(`#${this.id}`);
     if (elem$.length) {
@@ -3482,7 +3363,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     const rollMod = this.getRollModByID(id);
     if (!rollMod) {throw new Error(`Unable to find roll mod with id '${id}'`);}
 
-    rollMod.isRerendering = true;
     switch (rollMod.status) {
       case RollModStatus.Hidden: rollMod.userStatus = RollModStatus.ForcedOff; break;
       case RollModStatus.ForcedOff: rollMod.userStatus = RollModStatus.ToggledOff; break;
@@ -3494,7 +3374,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       case RollModStatus.ForcedOn: rollMod.userStatus = RollModStatus.Hidden; break;
       default: throw new Error(`Unrecognized RollModStatus: ${rollMod.status}`);
     }
-    rollMod.isRerendering = false;
   }
 
   /**
@@ -3560,7 +3439,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   async _gmControlResetTarget(event: ClickEvent) {
     event.preventDefault();
     if (!game.user.isGM) {return;}
-    await this.updateTarget($(event.currentTarget).data("target"), undefined);
+    await this.updateTarget($(event.currentTarget).data("target"), null);
     socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
@@ -3686,22 +3565,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       BladesDialog.DisplaySimpleInputDialog(this, prompt, undefined, flagTarget);
     }
   }
-
-  // Async _gmControlSelect(event: SelectChangeEvent) {
-  //   event.preventDefault();
-  //   const elem$ = $(event.currentTarget);
-  //   const section = elem$.data("rollSection");
-  //   const subSection = elem$.data("rollSubSection");
-  //   const selectedOption = elem$.val();
-
-  //   if (typeof selectedOption !== "string") { return; }
-  //   if (selectedOption === "false") {
-  //     await this.document.unsetFlag(C.SYSTEM_ID, `rollCollab.rollParticipantData.${section}.${subSection}`);
-  //   }
-  //   await this.addRollParticipant(selectedOption, section, subSection);
-
-  // }
-
   // #endregion
   // #region ACTIVATE LISTENERS ~
 
@@ -3716,7 +3579,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       throw new Error(`[BladesRoll.spawnPositionDragger] No elem$ found for roll ${this.id}.`);
     }
     this._positionDragger?.kill();
-    return (this._positionDragger = new Dragger(this._elem$, {
+    this._positionDragger = new Dragger(this._elem$, {
       type:    "top,left",
       trigger: ".window-header.dragger",
       onDragStart(this: Dragger) {
@@ -3726,7 +3589,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         U.gsap.to(this.target, {opacity: 1, duration: 0.25, ease: "power2"});
         self.overlayPosition = {x: this.endX, y: this.endY};
       }
-    }));
+    });
+    return this._positionDragger;
   }
 
   _onPlayerToggleRollMod(event: ClickEvent) {
@@ -3737,11 +3601,57 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     if (!mod) {throw new Error(`Unable to find roll mod with id '${modID}'`);}
     switch (mod.status) {
       case RollModStatus.ToggledOff: {
-        mod.heldStatus = RollModStatus.ToggledOn;
+        mod.userStatus = RollModStatus.ToggledOn;
         break;
       }
       case RollModStatus.ToggledOn: {
-        mod.heldStatus = RollModStatus.ToggledOff;
+        mod.userStatus = RollModStatus.ToggledOff;
+        break;
+      }
+      default: break;
+    }
+  }
+  _onGMToggleRollMod(event: ClickEvent) {
+    event.preventDefault();
+    const eventType = event.type;
+    const elem$ = $(event.currentTarget);
+    const modID = elem$.attr("id") as IDString;
+    const mod = this.getRollModByID(modID);
+    if (!mod) {throw new Error(`Unable to find roll mod with id '${modID}'`);}
+    switch (mod.status) {
+      case RollModStatus.Hidden: {
+        mod.userStatus = {
+          click:       RollModStatus.ForcedOn,
+          contextmenu: RollModStatus.ToggledOff
+        }[eventType];
+        break;
+      }
+      case RollModStatus.ForcedOff: {
+        mod.userStatus = {
+          click:       RollModStatus.ForcedOn,
+          contextmenu: RollModStatus.Hidden
+        }[eventType];
+        break;
+      }
+      case RollModStatus.ToggledOff: {
+        mod.userStatus = {
+          click:       RollModStatus.ForcedOn,
+          contextmenu: RollModStatus.ForcedOff
+        }[eventType];
+        break;
+      }
+      case RollModStatus.ToggledOn: {
+        mod.userStatus = {
+          click:       RollModStatus.ForcedOff,
+          contextmenu: RollModStatus.ForcedOn
+        }[eventType];
+        break;
+      }
+      case RollModStatus.ForcedOn: {
+        mod.userStatus = {
+          click:       RollModStatus.ForcedOff,
+          contextmenu: RollModStatus.ToggledOff
+        }[eventType];
         break;
       }
       default: break;
@@ -3806,7 +3716,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     // Player-Toggleable Roll Mods
     this.elem$.find("[data-action='player-toggle-mod']").on({
-      click: this._onPlayerToggleRollMod.bind(this)
+      click: game.user.isGM
+        ? this._onGMToggleRollMod.bind(this)
+        : this._onPlayerToggleRollMod.bind(this)
     });
 
     // Player Select Elements
@@ -3829,18 +3741,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     if (!game.user.isGM) {return;}
 
-    // GM Slide-Out Roll Mod Controls Panel
-    this.elem$.find(".roll-mod-controls-container").each((_i, container) => {
-      const container$ = $(container);
-      const panel$ = container$.find(".roll-mod-controls-panel");
-      container$.on({
-        mouseenter: () => { panel$.toggleClass("active"); },
-        mouseleave: () => { panel$.toggleClass("active"); }
-      });
-
-      // GM Roll Mod Panel Controls
-
-
+    // GM Alternate RollMod Toggle
+    this.elem$.find("[data-action='player-toggle-mod']").on({
+      contextmenu: this._onGMToggleRollMod.bind(this)
     });
 
 
@@ -3893,10 +3796,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     this.elem$
       .find("select[data-action='gm-select']")
       .on({change: this._onSelectChange.bind(this)});
-
-    // this.elem$
-    //   .find("[data-action=\"gm-edit-consequences\"]")
-    //   .on({click: () => BladesDialog.DisplayRollConsequenceDialog(this)});
 
     this.elem$
       .find("[data-action=\"gm-text-popup\"]")
@@ -4371,10 +4270,8 @@ class BladesResistanceRoll extends BladesRoll {
     };
 
     // Call super.New and cast the result appropriately.
-    // The cast to InstanceType<C> is safe here because C is constrained to typeof BladesResistanceRoll.
-    const rollInst = await super.New(parsedConfig) as InstanceType<C>;
 
-    return rollInst;
+    return await super.New(parsedConfig) as InstanceType<C>;
   }
 
   override get collabTemplate(): string {
@@ -4453,9 +4350,7 @@ class BladesFortuneRoll extends BladesRoll {
 
     // Call super.New and cast the result appropriately.
     // The cast to InstanceType<C> is safe here because C is constrained to typeof BladesFortuneRoll.
-    const rollInst = await super.New(parsedConfig) as InstanceType<C>;
-
-    return rollInst;
+    return await super.New(parsedConfig) as InstanceType<C>;
   }
 }
 
@@ -4511,9 +4406,7 @@ class BladesIndulgeViceRoll extends BladesRoll {
 
     // Call super.New and cast the result appropriately.
     // The cast to InstanceType<C> is safe here because C is constrained to typeof BladesIndulgeViceRoll.
-    const rollInst = await super.New(parsedConfig) as InstanceType<C>;
-
-    return rollInst;
+    return await super.New(parsedConfig) as InstanceType<C>;
   }
 
   override get collabTemplate(): string {
