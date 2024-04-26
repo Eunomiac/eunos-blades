@@ -792,26 +792,26 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       const tTipFrom: gsap.TweenVars = {autoAlpha: 0};
 
-       switch (config.tooltipDirection) {
-        case "top":
-          tTipFrom.y = "+=50";
-          break;
-        case "bottom":
-          tTipFrom.y = "-=50";
-          break;
-        case "right":
-          tTipFrom.x = "-=100";
-          break;
-        case "left":
-          tTipFrom.x = "+=100";
-          break;
-        default:
-          throw new Error(`blurRevealTooltip effect: tooltipDirection '${config.tooltipDirection}' is not valid`);
-      }
+      //  switch (config.tooltipDirection) {
+      //   case "top":
+      //     tTipFrom.y = "+=50";
+      //     break;
+      //   case "bottom":
+      //     tTipFrom.y = "-=50";
+      //     break;
+      //   case "right":
+      //     tTipFrom.x = "-=100";
+      //     break;
+      //   case "left":
+      //     tTipFrom.x = "+=100";
+      //     break;
+      //   default:
+      //     throw new Error(`blurRevealTooltip effect: tooltipDirection '${config.tooltipDirection}' is not valid`);
+      // }
 
       return U.gsap.timeline({
         paused:            true,
-        delay:             0.2,
+        delay:             0.25,
         onInterrupt:       config.onInterrupt
       })
         .from(
