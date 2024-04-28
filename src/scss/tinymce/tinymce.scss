@@ -36,7 +36,10 @@ html, :root {
 #tinymce,
 .editor .editor-content { @import './tinymce-text-styles'; }
 
-.tab-label + .editor:not(.tinymce) { margin-top: -0.3125rem !important }
+.tab-label + .editor:not(.tinymce) {
+  margin-top: var(--tinymce-margin-top);
+  min-height: calc(var(--tinymce-min-height) - var(--tinymce-margin-top));
+}
 
 .editor {
   position: relative;
@@ -81,6 +84,12 @@ html, :root {
     max-width: unset;
     width: 100%;
     min-height: var(--tinymce-min-height);
+    margin-top: calc(var(--tinymce-top-shift) + 3px) !important;
+    margin-bottom: 6px !important;
+  }
+
+  &:not(.tinymce) {
+    margin-bottom: 2px !important;
   }
 }
 

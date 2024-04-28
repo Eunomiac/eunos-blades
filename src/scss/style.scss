@@ -36,7 +36,7 @@
       figcaption {
         text-shadow: 1px 1px 3px #000, 1px 1px 3px #000, 1px 1px 3px #000, 0px 0px 5px #000;
         font-family: "Historical FellType", serif;
-        line-height: 1.5rem;
+        line-height: #{toPixels(1.5rem)};
         padding: 0 35%;
         text-wrap: balance;
         transform-origin: 50% 50%;
@@ -95,7 +95,7 @@
     }
 
     #clocks-overlay {
-      margin-top: toRem(4px);
+      margin-top: 4px;
       // @import './core/reset';
       // @import './core/globals';
       @import './components/clocks-overlay';
@@ -126,8 +126,8 @@
   .tox-textarea {
     height: 100%;
     font-family: var(--font-mono);
-    font-size: toRem(12px);
-    line-height: toRem(14px);
+    font-size: 12px;
+    line-height: 14px;
   }
 }
 

@@ -14,13 +14,13 @@
 
   .comp-label {
     color: var(--blades-white-bright);
-    font-size: toRem(12px);
-    line-height: toRem(12px);
+    font-size: 12px;
+    line-height: 12px;
     z-index: zLevel(+3);
     flex-grow: 0.5;
 
     &.comp-prompt {
-      font-size: toRem(16px);
+      font-size: 16px;
       line-height: 1.1;
       font-family: var(--font-emphasis);
       color: var(--blades-gold);
@@ -31,7 +31,7 @@
 
       .sur-title {
         display: block;
-        font-size: toRem(14px);
+        font-size: 14px;
         text-transform: lowercase;
         font-variant: small-caps;
         text-shadow: none;
@@ -63,7 +63,7 @@
     font-weight: bold;
 
     color: var(--comp-control-color);
-    text-shadow: 0 0 #{toRem(3px)} var(--comp-control-shadow-color);
+    text-shadow: 0 0 3px var(--comp-control-shadow-color);
     &:hover { transform: scale(1.5) }
     display: block;
 
@@ -89,13 +89,13 @@
         --comp-control-hover-shadow-color: var(--blades-black-dark);
 
         // position: absolute;
-        // left: toRem(4px);
+        // left: 4px;
         // transform: translate(0, -50%);
         // top: 45%;
 
-        margin-left: toRem(10px);
+        margin-left: 10px;
 
-        i { line-height: toRem(24px) }
+        i { line-height: 24px }
 
 
         // + span { margin-left: 20px }
@@ -104,7 +104,7 @@
       &:hover {
         opacity: 1;
         color: var(--comp-control-hover-color);
-        text-shadow: 0 0 #{toRem(3px)} var(--comp-control-hover-shadow-color);
+        text-shadow: 0 0 3px var(--comp-control-hover-shadow-color);
       }
     }
   }
@@ -124,8 +124,8 @@
   .comp-toggle {
     font-family: var(--font-emphasis);
     text-transform: uppercase;
-    font-size: toRem(16px);
-    line-height: toRem(20px);
+    font-size: 16px;
+    line-height: 20px;
 
     &.comp-toggle-red {
       color: var(--blades-red-bright);
@@ -146,19 +146,19 @@
   }
 
   .number-circle {
-    --number-circle-size: #{toRem(20px)};
+    --number-circle-size: 20px;
     // position: absolute;
 
     &.item-load {
-      // bottom: toRem(-5px);
-      // right: toRem(-15px);
+      // bottom: -5px;
+      // right: -15px;
     }
   }
 
   .comp-number-input {
     font-family: var(--font-emphasis);
     color: var(--blades-white-bright);
-    width: toRem(32px);
+    width: 32px;
     text-align: center;
   }
 
@@ -208,12 +208,12 @@
 
 .comp.comp-vertical {
   --comp-img-scale: 2;
-  --comp-name-size: #{toRem(16px)};
+  --comp-name-size: 16px;
   flex-direction: column;
-  // min-height: toRem(60px);
-  // max-height: toRem(60px);
+  // min-height: 60px;
+  // max-height: 60px;
   pointer-events: auto;
-  // flex-basis: toRem(30px);
+  // flex-basis: 30px;
 
   --main-title-color: #AAA;
   .comp-button.comp-delete { left: 75%; top: 0%; }
@@ -231,8 +231,8 @@
     text-align: center;
 
     &.comp-prompt {
-      height: toRem(12px);
-      margin-top: toRem(-10px);
+      height: 12px;
+      margin-top: -10px;
     }
   }
 
@@ -249,7 +249,7 @@
   .comp-body {
     display: flex;
     flex-direction: column;
-    min-height: toRem(48px);
+    min-height: 48px;
     width: 100%;
 
     > img {
@@ -273,19 +273,19 @@
   &.comp-playbook {
     --comp-img-scaleX: -2;
     --comp-img-scaleY: 2;
-    --comp-name-size: #{toRem(42px)};
+    --comp-name-size: 42px;
     position: relative;
-    top: toRem(20px);
-    margin-bottom: toRem(-68px);
+    top: 20px;
+    margin-bottom: -68px;
     z-index: zLevel(-2);
 
-    .comp-button.comp-delete { left: unset; right: toRem(5px); top: -10px; }
+    .comp-button.comp-delete { left: unset; right: 5px; top: -10px; }
 
     .comp-label:not(.comp-prompt) .comp-control.comp-add { display: none }
 
     .comp-body {
       img {
-        height: toRem(120px);
+        height: 120px;
         width: auto;
         opacity: 1;
         filter: blur(1px);
@@ -297,19 +297,19 @@
         font-family: var(--font-emphasis-alt);
         color: var(--blades-white-bright);
         text-shadow: 1px 1px 0px var(--blades-grey-bright), -1px -1px 0px var(--blades-black);
-        font-size: toRem(70px);
+        font-size: 70px;
         text-transform: lowercase;
         text-align: right;
-        padding-right: toRem(4px);
-        margin-bottom: toRem(45px);
-        margin-top: toRem(15px);
+        padding-right: 4px;
+        margin-bottom: 45px;
+        margin-top: 15px;
       }
     }
   }
 
   &.portrait-block {
     height: 80px;
-    flex-basis: toRem(80px);
+    flex-basis: 80px;
     min-width: 90px;
     margin: 10px 0;
 
@@ -321,7 +321,7 @@
     .comp-button.comp-delete { left: 5px; right: unset; top: 62px }
 
     .comp-body {
-      filter: drop-shadow(0 0 #{toRem(2px)} var(--blades-black-dark));
+      filter: drop-shadow(0 0 2px var(--blades-black-dark));
       width: 100%;
 
       .comp-title {
@@ -358,16 +358,16 @@
   align-items: flex-start;
 
 
-  .comp-button.comp-delete { left: toRem(5px); top: unset; bottom: 0 }
+  .comp-button.comp-delete { left: 5px; top: unset; bottom: 0 }
 
   > .comp-label {
     text-align: right;
-    font-size: toRem(14px);
-    line-height: toRem(18px);
+    font-size: 14px;
+    line-height: 18px;
     margin: 0;
 
     &.comp-input-label {
-      line-height: toRem(26px);
+      line-height: 26px;
       margin: 0 5px 0 10px;
     }
   }
@@ -379,9 +379,9 @@
 
   &.comp-desc-trait {
     align-items: flex-start;
-    padding: toRem(5px) 0;
+    padding: 5px 0;
 
-    &:first-of-type { margin-top: toRem(-5px); }
+    &:first-of-type { margin-top: -5px; }
 
     &:not(:first-of-type) { border-top: 1px solid var(--blades-white); }
 
@@ -397,24 +397,24 @@
     }
 
     .comp-body {
-      min-height: toRem(50px);
+      min-height: 50px;
 
       .comp-img {
         position: absolute;
         height: 50px;
         transform: translate(-50%, -50%);
         top: 50%;
-        left: toRem(50px);
+        left: 50px;
         filter: blur(1px);
         opacity: 0.5;
       }
 
       .comp-title {
         position: relative;
-        width: toRem(100px);
+        width: 100px;
         flex-shrink: 0;
         flex-grow: 0;
-        min-height: toRem(40px);
+        min-height: 40px;
         align-self: flex-start;
         color: var(--blades-white-bright);
 
@@ -424,8 +424,8 @@
         align-items: center;
 
         font-family: var(--font-emphasis);
-        font-size: toRem(14px);
-        padding: 0 toRem(7px);
+        font-size: 14px;
+        padding: 0 7px;
         text-align: center;
         z-index: 1;
         line-height: var(--line-height-default);
@@ -447,7 +447,7 @@
         font-family: var(--font-primary-small-narrow);
         hyphens: auto;
         text-align: justify;
-        padding: 0 toRem(5px) 0 0;
+        padding: 0 5px 0 0;
         line-height: var(--line-height-compact);
         flex-grow: 1;
 
@@ -460,9 +460,9 @@
 .comp.comp-teeth {
   &.comp-horizontal {
     .dotline {
-      padding-left: toRem(4px);
-      --dotline-dot-sizeX: #{toRem(18px)};
-      --dotline-dot-spacing: #{toRem(4px)};
+      padding-left: 4px;
+      --dotline-dot-sizeX: 18px;
+      --dotline-dot-spacing: 4px;
 
       .dot { flex-shrink: 1 }
     }
@@ -476,7 +476,7 @@
         justify-content: flex-end;
 
         .dotline {
-          --dotline-dot-spacing: #{toRem(2px)};
+          --dotline-dot-spacing: 2px;
           --dotline-horiz-align: flex-end;
 
           --frame-color: var(--blades-black);
@@ -491,7 +491,7 @@
         right: 0;
 
         .dotline {
-          --dotline-dot-sizeX: #{toRem(18px)};
+          --dotline-dot-sizeX: 18px;
 
           .dot {
             transform-origin: top;
@@ -515,12 +515,12 @@
     margin: 0;
     flex-grow: 0.5;
 
-    .comp-body{ top: toRem(-5px) }
+    .comp-body{ top: -5px }
 
     .dotline-label {
-      min-width: toRem(90px);
+      min-width: 90px;
       text-align: center;
-      margin-left: toRem(20px);
+      margin-left: 20px;
     }
 
     .dotline {
@@ -528,8 +528,8 @@
       justify-content: center;
       margin-top: -50%;
       margin-bottom: -50%;
-      --dotline-dot-sizeX: #{toRem(16px)};
-      --dotline-dot-spacing: #{toRem(4px)};
+      --dotline-dot-sizeX: 16px;
+      --dotline-dot-spacing: 4px;
     }
   }
 }
@@ -545,7 +545,7 @@
     .comp-body { flex-shrink: 0.5; min-height: unset; margin-top: 5px;}
   }
   .dotline {
-    --dotline-dot-size: #{toRem(18px)};
+    --dotline-dot-size: 18px;
     --dotline-dot-spacing: -2px;
 
     .dot.empty-dot {
@@ -557,10 +557,10 @@
     }
   }
   &.comp-coins .dot:nth-of-type(4n) + .dot {
-    margin-left: toRem(5px);
+    margin-left: 5px;
   }
   &.comp-stash .dot:nth-of-type(10n) + .dot {
-    margin-left: toRem(10px);
+    margin-left: 10px;
   }
 }
 

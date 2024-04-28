@@ -68,14 +68,14 @@
         z-index: 10;
         top: -60px;
         display: block;
-        height: toRem(20px);
-        line-height: toRem(20px);
+        height: 20px;
+        line-height: 20px;
         width: 100%;
         background-color: rgb(255, 255, 0);
         font-weight: bold;
         font-family: var(--font-emphasis), serif;
         text-align: center;
-        font-size: toRem(14px);
+        font-size: 14px;
         color: var(--blades-black);
       }
 
@@ -121,7 +121,7 @@
             img[data-edit] { height: 75px }
 
             .sheet-title {
-              --sheet-title-font-size: #{toRem(32px)};
+              --sheet-title-font-size: 32px;
               --sheet-title-height-mult: 1.5;
 
               grid-area: title;
@@ -138,7 +138,7 @@
             }
 
             .sheet-subtitle {
-              --sheet-subtitle-font-size: #{toRem(20px)};
+              --sheet-subtitle-font-size: 20px;
               // --sheet-subtitle-height-mult: 1.8;
 
               grid-area: subtitle;
@@ -160,7 +160,7 @@
             flex-wrap: nowrap;
             position: relative;
             height: var(--sheet-mid-height);
-            // padding-right: toRem(20px);
+            // padding-right: 20px;
           }
 
           &.tab-content {
@@ -209,11 +209,11 @@
     .tab-label {
       background: var(--blades-grey);
       position: relative;
-      height: toRem(24px);
-      min-height: toRem(24px);
+      height: 24px;
+      min-height: 24px;
       width: 100%;
       margin-left: calc(-0.5 * var(--content-padding, 0));
-      margin-bottom: toRem(5px);
+      margin-bottom: 5px;
 
       display: flex;
       justify-content: flex-start;
@@ -221,11 +221,11 @@
 
       .tab-title {
         font-family: var(--font-emphasis);
-        font-size: toRem(14px);
+        font-size: 14px;
         color: var(--blades-white-bright);
         text-transform: uppercase;
-        margin-left: toRem(5px);
-        line-height: toRem(14px);
+        margin-left: 5px;
+        line-height: 14px;
       }
     }
 

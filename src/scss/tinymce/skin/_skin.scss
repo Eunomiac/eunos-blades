@@ -1545,8 +1545,8 @@
     margin-inline-end: 0;
     -webkit-margin-start: 0;
     margin-inline-start: 0;
-    -webkit-padding-start: 2.5rem;
-    padding-inline-start: 2.5rem;
+    -webkit-padding-start: #{toPixels(2.5rem)};
+    padding-inline-start: #{toPixels(2.5rem)};
   }
 
   .tox .tox-dialog__body-content .tox-form__group h1 {
@@ -1556,7 +1556,7 @@
     font-weight: bold;
     letter-spacing: normal;
     margin-bottom: 14px;
-    margin-top: 2rem;
+    margin-top: #{toPixels(2rem)};
     text-transform: none;
   }
 
@@ -1567,7 +1567,7 @@
     font-weight: bold;
     letter-spacing: normal;
     margin-bottom: 14px;
-    margin-top: 2rem;
+    margin-top: #{toPixels(2rem)};
     text-transform: none;
   }
 
@@ -2719,7 +2719,7 @@
   }
 
   .tox .tox-notification__body>*+* {
-    margin-top: 1rem;
+    margin-top: #{toPixels(1rem)};
   }
 
   .tox .tox-notification__icon {

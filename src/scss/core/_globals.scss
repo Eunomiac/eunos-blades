@@ -2,8 +2,8 @@
 
   blockquote {
     border-left: 2px solid var(--blades-grey-bright);
-    margin-left: 1.5rem;
-    padding-left: 1rem;
+    margin-left: #{toPixels(1.5rem)};
+    padding-left: #{toPixels(1rem)};
   }
 
   table,
@@ -42,13 +42,13 @@
 
   figure {
     display: table;
-    margin: 1rem auto;
+    margin: #{toPixels(1rem)} auto;
 
     figcaption {
       font-family: var(--font-primary-small);
       color: var(--blades-grey-bright);
       display: block;
-      margin-top: 0.25rem;
+      margin-top: #{toPixels(0.25rem)};
       text-align: center;
     }
   }
@@ -60,7 +60,7 @@
   }
 
   code {
-    padding: 0.1rem 0.2rem;
+    padding: #{toPixels(0.1rem)} #{toPixels(0.2rem)};
   }
 
   button {
@@ -106,8 +106,8 @@
     border-radius: 3px;
     // outline: 1px dotted var(--blades-white);
     box-shadow: 0 0 3px var(--blades-white-bright), 0 0 3px var(--blades-white-bright), 0 0 3px var(--blades-white-bright);
-    padding: 0 #{toRem(5px)};
-    margin: 0 #{toRem(5px)};
+    padding: 0 5px;
+    margin: 0 5px;
 
     &:first-child:last-child { display: block }
   }
@@ -119,10 +119,10 @@
   }
 
   .filled-label {
-    font-size: toRem(20px);
+    font-size: 20px;
     line-height: 1;
     flex-grow: 0;
-    padding: toRem(5px);
+    padding: 5px;
     background: var(--blades-white);
     color: var(--blades-black);
     font-family: var(--font-emphasis);
@@ -143,7 +143,7 @@
   }
 
   .number-circle {
-    --nc-size: var(--number-circle-size, #{toRem(20px)});
+    --nc-size: var(--number-circle-size, 20px);
     --nc-border-width: calc(var(--nc-size) * (1/10));
     --nc-font-size: calc(var(--nc-size) * (7/10));
     --nc-border-radius: calc(var(--nc-size) * (5/10));
@@ -161,7 +161,7 @@
     color: var(--number-circle-color, var(--blades-white));
     line-height: var(--nc-line-height);
     border: var(--nc-border-width) outset var(--number-circle-color, var(--blades-white));
-    margin: #{toRem(-3px)} #{toRem(4px)} 0  0;
+    margin: -3px 4px 0  0;
     flex-shrink: 0;
   }
 
@@ -274,9 +274,9 @@
     // width: 400px;
     max-width: 400px;
 
-    padding: toRem(10px);
-    border: #{toRem(1px)} solid var(--blades-grey);
-    border-radius: toRem(5px);
+    padding: 10px;
+    border: 1px solid var(--blades-grey);
+    border-radius: 5px;
     box-shadow: 5px 5px 10px var(--blades-black-dark);
 
     // hyphens: auto;
@@ -428,8 +428,8 @@
         .pc-summary-name {
           grid-area: name;
           font-family: var(--font-emphasis);
-          font-size: toRem(20px);
-          line-height: toRem(20px);
+          font-size: 20px;
+          line-height: 20px;
           color: var(--blades-white-bright);
           font-variant: small-caps;
         }
@@ -458,21 +458,21 @@
           flex-basis: 100%;
           flex-grow: 1;
           flex-shrink: 0;
-          line-height: toRem(14px);
-          height: toRem(14px);
+          line-height: 14px;
+          height: 14px;
           &:not(:first-child) {
             margin-top: 5px;
           }
           label {
             font-family: var(--font-emphasis-narrow);
-            font-size: toRem(12px);
-            line-height: toRem(12px);
+            font-size: 12px;
+            line-height: 12px;
             color: var(--blades-white);
           }
           span {
             font-family: var(--font-emphasis-narrow);
-            font-size: toRem(12px);
-            line-height: toRem(12px);
+            font-size: 12px;
+            line-height: 12px;
             color: var(--blades-white-bright);
           }
         }
@@ -481,22 +481,22 @@
           flex-basis: 50%;
           flex-grow: 0;
           flex-shrink: 0;
-          line-height: toRem(12px);
-          height: toRem(12px);
+          line-height: 12px;
+          height: 12px;
           display: flex;
           flex-direction: row;
           label {
             font-family: var(--font-emphasis-narrow);
-            font-size: toRem(10px);
-            line-height: toRem(10px);
+            font-size: 10px;
+            line-height: 10px;
             color: var(--blades-grey-bright);
             flex-grow: 1;
             text-align: right;
           }
           span {
             font-family: var(--font-emphasis-narrow);
-            font-size: toRem(10px);
-            line-height: toRem(10px);
+            font-size: 10px;
+            line-height: 10px;
             color: var(--blades-white-bright);
             width: 20px;
             text-align: center;
@@ -817,9 +817,9 @@
           inset 0px 0px 3px var(--blades-black-dark),
           inset 0px 0px 3px var(--blades-black-dark),
           inset 0px 0px 3px var(--blades-black-dark);
-        font-size: toRem(14px);
+        font-size: 14px;
         color: var(--blades-white-bright);
-        height: toRem(18px);
+        height: 18px;
         transform-origin: 0% 50%;
         flex-shrink: 1;
         scale: 0.75 1;
@@ -890,7 +890,7 @@
 
           textarea {
             resize: none;
-            min-height: 2.5rem;
+            min-height: #{toPixels(2.5rem)};
             padding: 3px;
             text-indent: 0;
             font-size: 10px;

@@ -13,13 +13,13 @@
     grid-template-rows: 40px 20px;
     .sheet-title {
       text-align: left;
-      font-size: toRem(40px);
-      line-height: toRem(40px);
+      font-size: 40px;
+      line-height: 40px;
     }
     .sheet-subtitle {
       text-align: left;
-      font-size: toRem(16px);
-      line-height: toRem(20px);
+      font-size: 16px;
+      line-height: 20px;
       position: relative;
       z-index: 2;
       background: transparent;

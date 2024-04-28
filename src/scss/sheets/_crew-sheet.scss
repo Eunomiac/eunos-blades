@@ -20,7 +20,7 @@
             grid-template-rows: join($heights, (), $separator: space);
 
             .sheet-title {
-              --sheet-title-font-size: #{toRem(48px)};
+              --sheet-title-font-size: 48px;
             }
 
             .comp-playbook {
@@ -65,8 +65,8 @@
                   margin-bottom: -5px;
                   resize: none;
                   font-family: var(--font-primary);
-                  font-size: toRem(12px);
-                  line-height: toRem(13px);
+                  font-size: 12px;
+                  line-height: 13px;
                   text-align: center;
                   width: 200px;
                   background-color: var(--blades-black-dark);
@@ -91,13 +91,13 @@
               top: unset;
 
               .dotline {
-                --dotline-dot-sizeY: 2.5rem;
+                --dotline-dot-sizeY: #{toPixels(2.5rem)};
                 --fill-color-full: var(--blades-red-bright);
                 margin: 0;
                 align-items: stretch;
 
                 .dot {
-                  height: toRem(25px);
+                  height: 25px;
 
                   svg {
                     scale: 1.2 1;

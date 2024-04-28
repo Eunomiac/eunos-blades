@@ -74,7 +74,7 @@
       .cohort-name {
         pointer-events: auto;
         font-family: var(--font-emphasis);
-        font-size: toRem(18px);
+        font-size: 18px;
         line-height: 25px;
         color: var(--blades-white-bright);
         transition: 0.25s;
@@ -89,7 +89,7 @@
       }
 
       .cohort-subtitle {
-        font-size: toRem(14px);
+        font-size: 14px;
         font-style: italic;
         line-height: 14px;
         position: relative;
@@ -102,13 +102,13 @@
         text-align: right;
 
         .cohort-quality-label {
-          font-size: toRem(16px);
+          font-size: 16px;
           font-family: var(--font-emphasis);
         }
 
         .cohort-quality-number {
           display: inline-block;
-          font-size: toRem(16px);
+          font-size: 16px;
           font-weight: bold;
           color: var(--blades-gold-bright);
           transform-origin: 50% 50%;
@@ -122,13 +122,13 @@
         margin-top: -5px;
 
         .cohort-scale-label {
-          font-size: toRem(16px);
+          font-size: 16px;
           font-family: var(--font-emphasis);
         }
 
         .cohort-scale-number {
           display: inline-block;
-          font-size: toRem(16px);
+          font-size: 16px;
           font-weight: bold;
           color: var(--blades-gold-bright);
           transform-origin: 50% 50%;

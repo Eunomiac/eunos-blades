@@ -23,7 +23,7 @@
     }
 
     .turf-block {
-      --name-size: #{toRem(18px)};
+      --name-size: 18px;
 
       &:not(:nth-child(-n+5)) {
         display: none
@@ -175,12 +175,12 @@
       }
 
       &.turf-lair .turf-name {
-        --name-size: #{toRem(32px)};
+        --name-size: 32px;
         font-family: var(--font-emphasis);
       }
 
       &.turf-turf .turf-name {
-        --name-size: #{toRem(32px)};
+        --name-size: 32px;
         font-family: var(--font-emphasis);
       }
 
@@ -230,7 +230,7 @@
           cursor: text;
 
           &::placeholder {
-            font-size: toRem(12px);
+            font-size: 12px;
             font-style: italic;
             color: var(--blades-grey);
             padding: 30px 5px;
@@ -240,7 +240,7 @@
         .turf-district {
           position: absolute;
           z-index: 10;
-          height: toRem(18px);
+          height: 18px;
           min-height: unset;
           min-width: 100px;
           max-width: 100px;
@@ -253,8 +253,8 @@
           outline: 1px outset var(--blades-white);
 
           font-family: var(--font-emphasis-narrower);
-          font-size: toRem(14px);
-          line-height: toRem(20px);
+          font-size: 14px;
+          line-height: 20px;
           text-align: center;
 
           overflow: hidden;

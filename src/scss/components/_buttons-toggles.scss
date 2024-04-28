@@ -1,8 +1,8 @@
 .button-icon, .toggle-icon {
   position: absolute;
-  height: 1.5rem;
-  width: 1.5rem;
-  line-height: 1.5rem;
+  height: #{toPixels(1.5rem)};
+  width: #{toPixels(1.5rem)};
+  line-height: #{toPixels(1.5rem)};
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -10,12 +10,12 @@
       text-shadow: none;
 
   i {
-    height: 1.5rem;
-    width: 1.5rem;
-    line-height: 1.75rem;
+    height: #{toPixels(1.5rem)};
+    width: #{toPixels(1.5rem)};
+    line-height: #{toPixels(1.75rem)};
     text-align: center;
     opacity: 0.75;
-    margin-top: -0.125rem;
+    margin-top: #{toPixels(-0.125rem)};
     pointer-events: none;
 
     &.toggle-off {

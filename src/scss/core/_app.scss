@@ -26,15 +26,15 @@
       flex-grow: 1;
       text-align: center;
       position: relative;
-      line-height: toRem(26px);
+      line-height: 26px;
       display: block;
       text-transform: uppercase;
       margin: 0;
-      padding: 0 toRem(5px);
+      padding: 0 5px;
       text-decoration: none;
       color: var(--blades-black);
       font-family: var(--font-emphasis);
-      font-size: toRem(14px);
+      font-size: 14px;
       // font-weight: 600;
       transition: 0.25s;
       z-index: 3;
@@ -99,9 +99,9 @@
 
     // .tab-selector {
     //   color: var(--blades-black);
-    //   padding: 0 toRem(5px);
+    //   padding: 0 5px;
     //   font-family: var(--font-emphasis);
-    //   line-height: toRem(20px);
+    //   line-height: 20px;
     //   transition: 0.25s;
     //   white-space: nowrap;
 

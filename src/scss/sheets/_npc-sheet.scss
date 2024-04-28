@@ -33,7 +33,7 @@
           height: calculate-sum($heights);
 
           .comp-name {
-            --sheet-title-font-size: #{toRem(38px)};
+            --sheet-title-font-size: 38px;
           }
 
           .comp-status {
@@ -45,13 +45,13 @@
 
             .comp-label.shadowed {
               font-family: var(--font-emphasis);
-              font-size: toRem(16px);
+              font-size: 16px;
               font-variant: small-caps;
               color: var(--blades-grey-bright);
             }
 
             .comp-body {
-              min-height: 1rem;
+              min-height: #{toPixels(1rem)};
 
               .comp-status-toggle {
                 // top: 0;
@@ -140,7 +140,7 @@
             &.randomize-button {
               position: absolute;
               top: 26px;
-              font-size: 1.5rem;
+              font-size: #{toPixels(1.5rem)};
               color: var(--blades-gold);
               right: 0px;
               overflow: visible;
@@ -164,11 +164,11 @@
             overflow: visible;
 
             h2.full-width {
-              font-size: 1rem;
+              font-size: #{toPixels(1rem)};
               padding: 0;
               margin: 5px 0;
-              line-height: 1.5rem;
-              height: 1.35rem;
+              line-height: #{toPixels(1.5rem)};
+              height: #{toPixels(1.35rem)};
               text-indent: 5px;
             }
           }
@@ -232,7 +232,7 @@
           background: var(--blades-grey);
           font-family: var(--font-emphasis-narrow);
           text-indent: 5px;
-          line-height: 2rem;
+          line-height: #{toPixels(2rem)};
 
         }
       }

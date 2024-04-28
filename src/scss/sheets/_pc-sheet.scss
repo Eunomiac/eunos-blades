@@ -20,9 +20,9 @@
             ". heritage heritage background background vice vice crew crew coins coins"
             "stash stash stash stash stash stash stash stash stash stash stash";
 
-          .sheet-title { --sheet-title-font-size: #{toRem(72px)} }
+          .sheet-title { --sheet-title-font-size: 72px }
           .sheet-subtitle {
-            --sheet-subtitle-font-size: #{toRem(28px)};
+            --sheet-subtitle-font-size: 28px;
             padding-bottom: 15px;
           }
 
@@ -140,8 +140,8 @@
           }
 
           .comp-trauma-conditions {
-            min-width: toRem(300px);
-            margin-right: toRem(4px);
+            min-width: 300px;
+            margin-right: 4px;
           }
         }
 
@@ -151,7 +151,7 @@
           > table {
             > tbody {
               > tr {
-                height: toRem(35px);
+                height: 35px;
 
                 &:nth-child(2n) {
                   filter: brightness(0.8);
@@ -165,10 +165,10 @@
                 }
 
                 .harm-level {
-                  width: toRem(35px);
+                  width: 35px;
                   font-family: var(--font-emphasis);
-                  font-size: toRem(28px);
-                  line-height: toRem(35px);
+                  font-size: 28px;
+                  line-height: 35px;
                   text-align: center;
                   color: var(--blades-white-bright);
                 }
@@ -177,7 +177,7 @@
                   input[type="text"] {
                     font-family: var(--font-decorative);
                     font-style: italic;
-                    font-size: toRem(18px);
+                    font-size: 18px;
                     text-align: center;
                   }
                 }
@@ -185,7 +185,7 @@
                 .harm-effect {
                   color: var(--blades-white-bright);
                   text-align: center;
-                  font-size: toRem(16px);
+                  font-size: 16px;
                 }
 
                 &.red-harm-highlight-3 { --row-bg-color: var(--blades-red-bright); }
@@ -230,7 +230,7 @@
 
 
 
-                  padding: 0 toRem(10px);
+                  padding: 0 10px;
                   width: 120px;
 
                   --clock-size: 80px;
@@ -245,7 +245,7 @@
                 }
 
                 .armor-uses {
-                  padding: 0 toRem(10px);
+                  padding: 0 10px;
                   width: 100px;
                   .comp-armor {
                     position: relative;
@@ -383,17 +383,17 @@
               .tab-label {
 
                 .load-selector {
-                  width: toRem(150px);
-                  margin: 0 toRem(10px);
+                  width: 150px;
+                  margin: 0 10px;
                   font-family: var(--font-emphasis);
                   text-transform: uppercase;
-                  text-indent: toRem(3px);
+                  text-indent: 3px;
                 }
 
                 .load-selected-count span {
                   color: var(--blades-white-bright);
                   font-weight: bold;
-                  font-size: toRem(24px);
+                  font-size: 24px;
                   line-height: inherit;
                   position: relative;
                   top: 2px;
@@ -402,12 +402,12 @@
                 .load-level {
                   flex-grow: 1;
                   text-align: right;
-                  padding-right: toRem(5px);
+                  padding-right: 5px;
                 }
                 .load-amount {
-                  --number-circle-size: #{toRem(24px)};
+                  --number-circle-size: 24px;
                   filter: brightness(1.5);
-                  margin: 0 #{toRem(2px)} 0 #{toRem(5px)};
+                  margin: 0 2px 0 5px;
                 }
               }
 
@@ -416,7 +416,7 @@
                 transform: none;
 
                 + .comp-title .item-title {
-                  margin-left: toRem(12px);
+                  margin-left: 12px;
                 }
               }
             }
@@ -431,34 +431,34 @@
 
             .comp-attribute {
               background: var(--blades-white);
-              margin-bottom: toRem(5px);
-              max-height: toRem(24px);
+              margin-bottom: 5px;
+              max-height: 24px;
 
               label {
                 color: var(--blades-black);
-                font-size: toRem(16px);
+                font-size: 16px;
                 font-family: var(--font-emphasis);
                 text-shadow: none;
-                line-height: toRem(28px);
+                line-height: 28px;
                 text-transform: uppercase;
                 text-align: left;
-                text-indent: toRem(5px);
-                margin-bottom: toRem(5px);
+                text-indent: 5px;
+                margin-bottom: 5px;
               }
 
               .comp-body {
                 justify-content: flex-end;
                 align-items: flex-start;
                 position: relative;
-                max-height: toRem(26px);
+                max-height: 26px;
                 .dotline {
                   position: relative;
                   right: 0;
                   left: unset;
                   justify-content: flex-end;
 
-                  --dotline-dot-sizeX: #{toRem(11px)};
-                  --dotline-dot-spacing: #{toRem(1px)};
+                  --dotline-dot-sizeX: 11px;
+                  --dotline-dot-spacing: 1px;
 
                   --frame-color: var(--blades-black);
                   --fill-color-full: var(--blades-gold-bright);
@@ -479,18 +479,18 @@
               }
 
               &:not(:first-child) {
-                margin-top: toRem(5px);
+                margin-top: 5px;
               }
             }
 
             .comp-action {
-              padding: #{toRem(1.5px)} #{toRem(20px)} #{toRem(1.5px)} #{toRem(10px)};
+              padding: 1.5px 20px 1.5px 10px;
 
               label {
                 text-align: left;
                 flex-grow: 1;
-                margin-left: toRem(20px);
-                font-size: toRem(16px);
+                margin-left: 20px;
+                font-size: 16px;
                 line-height: 1.2;
               }
               .comp-body {
@@ -498,7 +498,7 @@
                 flex-grow: 0;
 
                 .dotline {
-                  --dotline-dot-spacing: #{toRem(2px)};
+                  --dotline-dot-spacing: 2px;
 
                   .img-main, .img-hover {
                     filter: drop-shadow(0px 0px 1px var(--blades-grey-dark))
@@ -507,13 +507,13 @@
                   .dot:first-child {
                     height: 18px;
                     border-right: 1px dotted var(--blades-white);
-                    margin-right: toRem(2.5px);
-                    padding-right: toRem(2.5px);
+                    margin-right: 2.5px;
+                    padding-right: 2.5px;
                     width: 17.5px;
                   }
 
                   .dot:nth-child(2) {
-                    margin-left: toRem(2.5px);
+                    margin-left: 2.5px;
                   }
                 }
               }

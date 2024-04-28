@@ -67,7 +67,7 @@
       .filled-label {
         background: transparent;
         color: var(--blades-white);
-        font-size: toRem(16px);
+        font-size: 16px;
         line-height: 20px;
         height: 20px;
         margin: 0;
@@ -85,7 +85,7 @@
         box-shadow: none;
         text-shadow: none;
         color: var(--blades-grey);
-        font-size: toRem(14px);
+        font-size: 14px;
         // font-style: italic;
         // text-align: center;
         margin-left: 40px;
@@ -843,7 +843,7 @@
               align-items: center;
 
               .consequence-name {
-                font-size: toRem(16px);
+                font-size: 16px;
                 padding: 0px;
                 margin: 3px 5px -3px 0;
                 text-align: right;
@@ -930,8 +930,8 @@
                   background: var(--consequence-bg-color);
                   font-family: var(--font-decorative);
                   font-style: italic;
-                  font-size: 1.25rem;
-                  line-height: 1.25rem;
+                  font-size: #{toPixels(1.25rem)};
+                  line-height: #{toPixels(1.25rem)};
                   color: var(--blades-white-bright);
                   text-shadow: var(--text-shadow-dark-strong);
                   border: 2px outset var(--consequence-border-color);
@@ -1068,7 +1068,7 @@
         .sheet-topper {
           position: absolute;
           width: 100%;
-          height: toRem(23px);
+          height: 23px;
           display: block;
           border: none;
           top: 0;
@@ -1109,8 +1109,8 @@
 
             .roll-type-header {
               font-family: var(--font-emphasis);
-              font-size: toRem(20px);
-              line-height: toRem(20px);
+              font-size: 20px;
+              line-height: 20px;
               color: var(--roll-type-header-color);
               text-transform: uppercase;
               margin-top: 3px;
@@ -1306,7 +1306,7 @@
           >* {
             flex-grow: 1;
             flex-shrink: 1;
-            font-size: 1.5rem;
+            font-size: #{toPixels(1.5rem)};
             font-family: var(--font-emphasis);
             text-shadow:
               0px 0px 5px var(--blades-black-dark),
@@ -1426,7 +1426,7 @@
                 color: var(--blades-black);
                 border: none;
                 text-align: center;
-                font-size: toRem(18px);
+                font-size: 18px;
                 font-style: normal;
                 margin-left: 0;
                 position: unset;

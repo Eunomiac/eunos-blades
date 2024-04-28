@@ -1,7 +1,7 @@
 .dotline {
-  --dotline-zero-dot-size: #{toRem(14px)};
-  --dotline-dot-size: #{toRem(14px)};
-  --dotline-dot-spacing: #{toRem(3px)};
+  --dotline-zero-dot-size: 14px;
+  --dotline-dot-size: 14px;
+  --dotline-dot-spacing: 3px;
   --dotline-horiz-align: flex-start;
   --dotline-vert-align: center;
 
@@ -25,16 +25,16 @@
 
   &.dotline-right {
     margin-left: auto;
-    margin-right: toRem(20px);
+    margin-right: 20px;
   }
 
   .dotline-label {
     font-family: var(--font-emphasis);
-    font-size: toRem(14px);
+    font-size: 14px;
     color: var(--blades-white);
     text-transform: uppercase;
-    line-height: toRem(14px);
-    margin-right: toRem(5px);
+    line-height: 14px;
+    margin-right: 5px;
   }
 
   .dot {

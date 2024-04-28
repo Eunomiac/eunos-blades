@@ -3,6 +3,7 @@ $isCompactLayout: true;
 &, * {
   --tinymce-min-height: 100px;
   --tinymce-top-shift: -32px;
+  --tinymce-margin-top: -5px;
   --tinymce-toolbar-scale: 1; // 0.75;
   --tinymce-toolbar-bottom-shift: 0px;
   --tinymce-statusbar-height: 15px;
@@ -112,22 +113,22 @@ $isCompactLayout: true;
   // --font-mono: monospace;
   // --font-awesome: "Font Awesome 6 Pro";
 
-  --font-size-11: 0.6875rem;
-  --font-size-12: 0.75rem;
-  --font-size-13: 0.8125rem;
-  --font-size-14: 0.875rem;
-  --font-size-16: 1rem;
-  --font-size-18: 1.125rem;
-  --font-size-20: 1.25rem;
-  --font-size-24: 1.5rem;
-  --font-size-28: 1.75rem;
-  --font-size-32: 2rem;
-  --font-size-48: 3rem;
+  --font-size-11: #{toPixels(0.6875rem)};
+  --font-size-12: #{toPixels(0.75rem)};
+  --font-size-13: #{toPixels(0.8125rem)};
+  --font-size-14: #{toPixels(0.875rem)};
+  --font-size-16: #{toPixels(1rem)};
+  --font-size-18: #{toPixels(1.125rem)};
+  --font-size-20: #{toPixels(1.25rem)};
+  --font-size-24: #{toPixels(1.5rem)};
+  --font-size-28: #{toPixels(1.75rem)};
+  --font-size-32: #{toPixels(2rem)};
+  --font-size-48: #{toPixels(3rem)};
 
-  --line-height-12: 0.75rem;
-  --line-height-16: 1rem;
-  --line-height-20: 1.25rem;
-  --line-height-30: 1.875rem;
+  --line-height-12: #{toPixels(0.75rem)};
+  --line-height-16: #{toPixels(1rem)};
+  --line-height-20: #{toPixels(1.25rem)};
+  --line-height-30: #{toPixels(1.875rem)};
   // #endregion ___ Text ___
 // #endregion ▄▄▄▄▄ Original ▄▄▄▄▄
 
@@ -165,19 +166,19 @@ $isCompactLayout: true;
 // #endregion ▄▄▄▄▄ Overrides ▄▄▄▄▄
 
 // #region ████████ Pixels to Rem: Pixel Sizes Converted to Rems ████████ ~
-  --size-10px: #{toRem(10px)};      // 0.6125rem /* Expansion (not defined by Foundry) */
-  --size-11px: var(--font-size-11); // 0.6875rem
-  --size-12px: var(--font-size-12); // 0.75rem
-  --size-13px: var(--font-size-13); // 0.8125rem
-  --size-14px: var(--font-size-14); // 0.875rem
-  --size-16px: var(--font-size-16); // 1rem
-  --size-18px: var(--font-size-18); // 1.125rem
-  --size-20px: var(--font-size-20); // 1.25rem
-  --size-24px: var(--font-size-24); // 1.5rem
-  --size-28px: var(--font-size-28); // 1.75rem
-  --size-30px: #{toRem(30px)};      // 1.875rem /* Expansion (not defined by Foundry) */
-  --size-32px: var(--font-size-32); // 2rem
-  --size-48px: var(--font-size-48); // 3rem
+  --size-10px: 10px;      // #{toPixels(0.6125rem)} /* Expansion (not defined by Foundry) */
+  --size-11px: var(--font-size-11); // #{toPixels(0.6875rem)}
+  --size-12px: var(--font-size-12); // #{toPixels(0.75rem)}
+  --size-13px: var(--font-size-13); // #{toPixels(0.8125rem)}
+  --size-14px: var(--font-size-14); // #{toPixels(0.875rem)}
+  --size-16px: var(--font-size-16); // #{toPixels(1rem)}
+  --size-18px: var(--font-size-18); // #{toPixels(1.125rem)}
+  --size-20px: var(--font-size-20); // #{toPixels(1.25rem)}
+  --size-24px: var(--font-size-24); // #{toPixels(1.5rem)}
+  --size-28px: var(--font-size-28); // #{toPixels(1.75rem)}
+  --size-30px: 30px;      // #{toPixels(1.875rem)} /* Expansion (not defined by Foundry) */
+  --size-32px: var(--font-size-32); // #{toPixels(2rem)}
+  --size-48px: var(--font-size-48); // #{toPixels(3rem)}
 // #endregion ▄▄▄▄▄ Pixels to Rem ▄▄▄▄▄
 
 // #region ████████ Colors: System Color Settings ████████ ~
@@ -268,8 +269,8 @@ $isCompactLayout: true;
   --text-shadow-emboss:
     -1px -1px 1px var(--blades-white),
     1px 1px 1px var(--blades-black-dark);
-  --box-shadow-dark: inset 0 0 0.3rem var(--blades-black-dark-fade);
-  --box-shadow-dark-strong: inset 0 0 0.5rem var(--blades-black-dark);
+  --box-shadow-dark: inset 0 0 #{toPixels(0.3rem)} var(--blades-black-dark-fade);
+  --box-shadow-dark-strong: inset 0 0 #{toPixels(0.5rem)} var(--blades-black-dark);
   // #endregion ░░░░[Style Components]░░░░
 
 
@@ -298,9 +299,9 @@ $isCompactLayout: true;
   --background-heading-strong: var(--blades-grey-dark);
 
   --margin-heading: 0;
-  --margin-heading-strong: 0 0 0.5rem 0;
+  --margin-heading-strong: 0 0 #{toPixels(0.5rem)} 0;
   --padding-heading: 0;
-  --padding-heading-strong: 0.25rem;
+  --padding-heading-strong: #{toPixels(0.25rem)};
 
   --font-heading: var(--font-emphasis);
   --font-heading-strong: var(--font-heading);
@@ -324,7 +325,7 @@ $isCompactLayout: true;
 
   --border-color-heading: var(--background-heading-strong);
   --border-color-heading-strong: var(--border-color-heading);
-  --border-width-heading: #{toRem(2px)};
+  --border-width-heading: 2px;
   --border-width-heading-strong: var(--border-width-heading);
   --border-style-heading: none none solid none;
   --border-style-heading-strong: none;
@@ -366,31 +367,31 @@ $isCompactLayout: true;
   // #region ████████ LAYOUT ████████ ~
   // --content-padding: 0px;
 
-  --blades-spacer-pf: 0.0625rem;
-  --blades-spacer-xs: 0.125rem;
+  --blades-spacer-pf: #{toPixels(0.0625rem)};
+  --blades-spacer-xs: #{toPixels(0.125rem)};
 
   @if $isCompactLayout {
-    --blades-spacer-base: 0.125rem;
-    --blades-spacer-sm: 0.25rem;
-    --blades-spacer-md: 0.5rem;
-    --blades-spacer-lg: 0.75rem;
-    --blades-spacer-xl: 1rem;
-    --blades-spacer-button-lg: 2rem;
-    --blades-spacer-button: 1.5rem;
-    --blades-spacer-button-sm: 1.25rem;
-    --blades-spacer-button-xs: 1.125rem;
-    --blades-spacer-sidebar: 17.875rem;
+    --blades-spacer-base: #{toPixels(0.125rem)};
+    --blades-spacer-sm: #{toPixels(0.25rem)};
+    --blades-spacer-md: #{toPixels(0.5rem)};
+    --blades-spacer-lg: #{toPixels(0.75rem)};
+    --blades-spacer-xl: #{toPixels(1rem)};
+    --blades-spacer-button-lg: #{toPixels(2rem)};
+    --blades-spacer-button: #{toPixels(1.5rem)};
+    --blades-spacer-button-sm: #{toPixels(1.25rem)};
+    --blades-spacer-button-xs: #{toPixels(1.125rem)};
+    --blades-spacer-sidebar: #{toPixels(17.875rem)};
   } @else {
-    --blades-spacer-base: 0.25rem;
-    --blades-spacer-sm: 0.5rem;
-    --blades-spacer-md: 1rem;
-    --blades-spacer-lg: 1.5rem;
-    --blades-spacer-xl: 2rem;
-    --blades-spacer-button-lg: 2.5rem;
-    --blades-spacer-button: 2rem;
-    --blades-spacer-button-sm: 1.5rem;
-    --blades-spacer-button-xs: 1.25rem;
-    --blades-spacer-sidebar: 20rem;
+    --blades-spacer-base: #{toPixels(0.25rem)};
+    --blades-spacer-sm: #{toPixels(0.5rem)};
+    --blades-spacer-md: #{toPixels(1rem)};
+    --blades-spacer-lg: #{toPixels(1.5rem)};
+    --blades-spacer-xl: #{toPixels(2rem)};
+    --blades-spacer-button-lg: #{toPixels(2.5rem)};
+    --blades-spacer-button: #{toPixels(2rem)};
+    --blades-spacer-button-sm: #{toPixels(1.5rem)};
+    --blades-spacer-button-xs: #{toPixels(1.25rem)};
+    --blades-spacer-sidebar: #{toPixels(20rem)};
   }
   // #endregion ▄▄▄▄▄ LAYOUT ▄▄▄▄▄
 // #endregion 🟩🟩🟩 PRIMARY STYLES 🟩🟩🟩

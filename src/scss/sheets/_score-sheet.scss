@@ -64,7 +64,7 @@
           }
 
           .sheet-title.shadowed {
-            --sheet-title-font-size: 1rem;
+            --sheet-title-font-size: #{toPixels(1rem)};
           }
 
         }
@@ -128,12 +128,12 @@
             }
             .randomizer-input-title {
               width: calc(100% - 25px);
-              font-size: toRem(11px);
+              font-size: 11px;
               height: 11px;
             }
             .randomizer-input-subtitle {
               width: 100%;
-              font-size: toRem(10px);
+              font-size: 10px;
               height: 10px;
               text-align: center;
             }

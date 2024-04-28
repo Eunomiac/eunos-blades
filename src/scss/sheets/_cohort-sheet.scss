@@ -55,15 +55,15 @@
             width: 100%;
             font-family: var(--font-emphasis);
             color: var(--blades-gold);
-            font-size: toRem(40px);
-            line-height: toRem(40px);
+            font-size: 40px;
+            line-height: 40px;
           }
 
           .scale-example {
             height: 20px;
             line-height: 20px;
             font-style: italic;
-            font-size: toRem(14px);
+            font-size: 14px;
             font-family: var(--font-emphasis-narrow);
             text-align: center;
             white-space: nowrap;

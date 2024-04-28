@@ -1,10 +1,10 @@
 @use "sass:math";
 @use "sass:color";
-$remPerPixel: 0.0625rem;
+// $remPerPixel: #{toPixels(0.0625rem)};
 $pixelsPerRem: 16px;
 
 @function toPixels($size) {
-  // Define the conversion factor from rem to pixels (assuming 1rem = 16px)
+  // Define the conversion factor from rem to pixels (assuming #{toPixels(1rem)} = 16px)
 
   // Check if the input size is unitless
   @if unitless($size) {
@@ -19,8 +19,20 @@ $pixelsPerRem: 16px;
   @debug "Input size in rem: #{$size}, Output size in pixels: #{$outputSizeInPixels}";
 
   // Convert the size from rem to pixels
-  @return math.div($size, 1rem) * $pixelsPerRem;
+  @return $outputSizeInPixels;
 }
+
+// @function toRem($pixelSize) {
+//   // @if not unitless($pixelSize) {
+//   //   $pixelSize: math.div($pixelSize, 1px);
+//   // }
+//   // @return $pixelSize * $remPerPixel;
+
+//   @if unitless($pixelSize) {
+//     $pixelSize: $pixelSize * 1px;
+//   }
+//   @return $pixelSize;
+// }
 
 @function zLevel($delta: 0) {
   $z-index-base: 2;

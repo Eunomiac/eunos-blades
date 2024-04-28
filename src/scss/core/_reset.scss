@@ -89,10 +89,10 @@
     box-shadow: var(--box-shadow-heading);
   }
 
-  h1:not(i):not(button) { font-size: toRem(20px) }
+  h1:not(i):not(button) { font-size: 20px }
   h2:not(i):not(button),
-  h3:not(i):not(button) { font-size: toRem(18px) }
-  h4:not(i):not(button) { font-size: toRem(16px) }
+  h3:not(i):not(button) { font-size: 18px }
+  h4:not(i):not(button) { font-size: 16px }
 
   select:not(i):not(button),
   input:not(i):not(button),
@@ -116,7 +116,7 @@
     text: {
       shadow: var(--text-shadow-input);
       transform: var(--text-transform-input);
-      indent: toRem(3px);
+      indent: 3px;
     }
     border-color: var(--border-color-input);
     border-style: var(--border-style-input);
@@ -136,8 +136,8 @@
   }
 
   p + p {
-    margin: 0.5rem 0;
-    min-height: 1rem;
+    margin: #{toPixels(0.5rem)} 0;
+    min-height: #{toPixels(1rem)};
   }
 
   .window-header {
@@ -156,7 +156,7 @@
         flex-shrink: 0.5;
     }
     a {
-        margin: 0 toRem(5px);
+        margin: 0 5px;
         i {
             // color: var(--blades-white-bright);
         }
@@ -168,16 +168,16 @@
         i {
             font-weight: bold;
             color: var(--blades-white-bright);
-            font-size: toRem(20px);
+            font-size: 20px;
             line-height: 1;
-            margin-top: toRem(-1px);
+            margin-top: -1px;
 
             font-family: var(--font-emphasis), serif;
             transform-origin: center center;
             transform: scaleY(0.75);
             &::before {
                 content: "X";
-                padding-top: toRem(4px);
+                padding-top: 4px;
             }
         }
     }
