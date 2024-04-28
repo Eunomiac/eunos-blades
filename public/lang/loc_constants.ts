@@ -4,74 +4,74 @@
 
 /* Just fill in the translation inside the quotes. */
 const TERMS = {
-  "downtime": "",
-  "downtime action": "",
-  "consequence": "",
-  "roll": "",
-  "position": "",
-  "effect": "",
-  "die": "", // one die
-  "dice": "", // multiple dice
-  "result": "",
-  "loadout": "",
-  "attribute": "",
-  "action": "",
-  "tooltip": "",
-  "Gamemaster": "",
-  "GM": "",
-  "difficulty": "",
-  "controlled": "",
-  "risky" : "",
-  "desperate": "",
-  "critical": "",
-  "success": "",
-  "fail": "",
+  "downtime":             "",
+  "downtime action":      "",
+  "consequence":          "",
+  "roll":                 "",
+  "position":             "",
+  "effect":               "",
+  "die":                  "", // one die
+  "dice":                 "", // multiple dice
+  "result":               "",
+  "loadout":              "",
+  "attribute":            "",
+  "action":               "",
+  "tooltip":              "",
+  "Gamemaster":           "",
+  "GM":                   "",
+  "difficulty":           "",
+  "controlled":           "",
+  "risky":                "",
+  "desperate":            "",
+  "critical":             "",
+  "success":              "",
+  "fail":                 "",
   // Attributes
-  "insight": "",
-  "prowess": "",
-  "resolve": "",
+  "insight":              "",
+  "prowess":              "",
+  "resolve":              "",
   // Actions
-  "hunt": "",
-  "study": "",
-  "survey": "",
-  "tinker": "",
-  "finesse": "",
-  "prowl": "",
-  "skirmish": "",
-  "wreck": "",
-  "attune": "",
-  "command": "",
-  "consort": "",
-  "sway": "",
+  "hunt":                 "",
+  "study":                "",
+  "survey":               "",
+  "tinker":               "",
+  "finesse":              "",
+  "prowl":                "",
+  "skirmish":             "",
+  "wreck":                "",
+  "attune":               "",
+  "command":              "",
+  "consort":              "",
+  "sway":                 "",
   // Playbooks (Scoundrel)
-  "cutter": "",
-  "hound": "",
-  "leech": "",
-  "lurk": "",
-  "slide": "",
-  "spider": "",
-  "whisper": "",
-  "ghost": "",
-  "hull": "",
-  "vampire": "",
+  "cutter":               "",
+  "hound":                "",
+  "leech":                "",
+  "lurk":                 "",
+  "slide":                "",
+  "spider":               "",
+  "whisper":              "",
+  "ghost":                "",
+  "hull":                 "",
+  "vampire":              "",
   // Playbooks (Crew)
-  "assassins": "",
-  "bravos": "",
-  "cult": "",
-  "hawkers": "",
-  "shadows": "",
-  "smugglers": "",
+  "assassins":            "",
+  "bravos":               "",
+  "cult":                 "",
+  "hawkers":              "",
+  "shadows":              "",
+  "smugglers":            "",
   // Vices
-  "faith": "",
-  "gambling": "",
-  "luxury": "",
-  "obligation": "",
-  "pleasure": "",
-  "stupor": "",
-  "weird": "",
-  "worship": "", // (special cult vice)
-  "living essence": "", // (ghosts)
-  "life essence": "", // (vampires)
+  "faith":                "",
+  "gambling":             "",
+  "luxury":               "",
+  "obligation":           "",
+  "pleasure":             "",
+  "stupor":               "",
+  "weird":                "",
+  "worship":              "", // (special cult vice)
+  "living essence":       "", // (ghosts)
+  "life essence":         "", // (vampires)
   "electroplasmic power": "" // (hulls)
 };
 // #endregion
@@ -80,8 +80,8 @@ const TERMS = {
 
 /* Only translate the values (i.e. the quoted strings on the right); don't change the keys, as they are hard-coded (but won't be displayed anyways). */
 const C = {
-  SYSTEM_NAME:      "Euno's Blades",
-  SYSTEM_FULL_NAME: "Euno's Blades In The Dark",
+  SYSTEM_NAME:           "Euno's Blades",
+  SYSTEM_FULL_NAME:      "Euno's Blades In The Dark",
   DowntimeActionDisplay: {
     [DowntimeAction.AcquireAsset]:    "Acquire an Asset",
     [DowntimeAction.IndulgeVice]:     "Indulge Your Vice",
@@ -191,7 +191,7 @@ const C = {
     [ActionTrait.consort]:  "<p>When you <strong>Consort</strong>, you socialize with friends and contacts.</p><ul><li>You might gain access to resources, information, people, or places.</li><li>You might make a good impression or win someone over with charm and style.</li><li>You might make new friends or connect with your heritage or background.</li></ul><ul><li>You could try to direct allies with social pressure <em>(but <strong>Commanding</strong> might be better)</em>.</li></ul><hr><ul><li>Who do you consort with?</li><li>Where do you meet?</li><li>What do you talk about?</li><li>What do you hope to achieve?</li></ul>",
     [ActionTrait.sway]:     "<p>When you <strong>Sway</strong>, you influence someone with guile, charm, or argument.</p><ul><li>You might lie convincingly.</li><li>You might persuade someone to do what you want.</li><li>You might argue a case that leaves no clear rebuttal.</li></ul><ul><li>You could try to trick people into affection or obedience <em>(but <strong>Consorting</strong> or <strong>Commanding</strong> might be better)</em>.</li></ul><hr><ul><li>Who do you sway?</li><li>What kind of leverage do you have here?</li><li>What do you hope they'll do?</li></ul>"
   },
-  ActionVerbs: { /* for sentences like "<name> <verb>s", e.g. "Alistair hunts" */
+  ActionVerbs: {/* for sentences like "<name> <verb>s", e.g. "Alistair hunts" */
     [ActionTrait.hunt]:     "hunts",
     [ActionTrait.study]:    "studies",
     [ActionTrait.survey]:   "surveys",
@@ -205,7 +205,7 @@ const C = {
     [ActionTrait.consort]:  "consorts",
     [ActionTrait.sway]:     "sways"
   },
-  ActionPastVerbs: { /* for past-tense sentences like "<name> <verb>ed", e.g. "Alistair hunted" */
+  ActionPastVerbs: {/* for past-tense sentences like "<name> <verb>ed", e.g. "Alistair hunted" */
     [ActionTrait.hunt]:     "hunted",
     [ActionTrait.study]:    "studied",
     [ActionTrait.survey]:   "surveyed",
@@ -573,7 +573,7 @@ const C = {
     Ghost: {
       "system.tagline":            "A Vengeful Disembodied Spirit",
       "system.acquaintances_name": "Enemies & Rivals",
-      "system.experience_clues": [
+      "system.experience_clues":   [
         "You exacted vengeance upon those whom you deem deserving.",
         "You expressed your outrage or anger, or settled scores from your heritage, or background.",
         "You struggled with issues from your need or glooms during the session."
@@ -592,7 +592,7 @@ const C = {
     Hull: {
       "system.tagline":            "An Animated Spark-Craft Frame",
       "system.acquaintances_name": "Master",
-      "system.experience_clues": [
+      "system.experience_clues":   [
         "You fulfilled your functions despite difficulty or danger.",
         "You suppressed or ignored your former human beliefs, drives, heritage, or background.",
         "You struggled with issues from your wear during the session."
@@ -611,7 +611,7 @@ const C = {
     Vampire: {
       "system.tagline":            "An Animated Undead Body",
       "system.acquaintances_name": "Dark Servants",
-      "system.experience_clues": [
+      "system.experience_clues":   [
         "You displayed your dominance or slayed without mercy.",
         "You expressed your beliefs, drives, heritage, or background.",
         "You struggled with issues from your vice, traumas, or strictures during the session."

@@ -1,0 +1,87 @@
+@import '../core/normalize.scss';
+
+// Utility imports
+@import '../core/functions';
+@import '../core/mixins';
+
+html, :root {
+  @import "../core/reset";
+  @import '../core/vars';
+  @import "../core/globals";
+  // @import "../core/colors";
+  // @import "../core/vars";
+  // @import "../core/components";
+  // @import "../core/functions";
+
+  scrollbar-color: var(--blades-grey) var(--blades-black-dark-fade);
+  scrollbar-width: thin;
+}
+::-webkit-scrollbar {
+  width: var(--blades-spacer-sm);
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 0 1px rgba(var(--color-background-darkest), 0.5);
+  border: none;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--color-background-light), 1);
+  border: none;
+  border-radius: 0;
+  outline: none;
+}
+
+.tox-dialog { @import './tinymce-dialog-styles'; }
+
+#tinymce,
+.editor .editor-content { @import './tinymce-text-styles'; }
+
+.tab-label + .editor:not(.tinymce) { margin-top: -0.3125rem !important }
+
+.editor {
+  position: relative;
+  overflow-x: hidden;
+  width: 100%;
+  min-height: var(--tinymce-min-height);
+
+  &.prosemirror, &.prosemirror * {
+    --color-control-bg: var(--blades-black-dark);
+    --color-hover-bg: var(--blades-black);
+    color: var(--blades-white-bright);
+
+    .menu button {
+      background: var(--blades-black);
+
+      &:hover, &.active {
+        background: var(--blades-black-dark);
+      }
+    }
+
+    .menu button:hover, .menu button:active {
+      background: var(--blades-black-dark);
+    }
+  }
+
+  .editor-edit {
+    display: block;
+    opacity: 0.25;
+    pointer-events: auto;
+    z-index: zLevel(+1);
+
+    &:hover { opacity: 1; }
+  }
+
+  .editor-content {
+    position: relative;
+    padding-left: var(--content-padding);
+    padding-right: var(--content-padding);
+  }
+
+  &.tinymce {
+    max-width: unset;
+    width: 100%;
+    min-height: var(--tinymce-min-height);
+  }
+}
+
+@import './skin/skin';

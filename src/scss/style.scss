@@ -3,18 +3,20 @@
 // Utility imports
 @import './core/functions';
 @import './core/mixins';
-@import './core/colors';
+@import './core/globals';
+// @import './core/colors';
 
-
+// Third-Party Libraries
+@import './tinymce/tinymce'; // > TINYMCE CUSTOM CONFIG
 
 :root {
+  @import './core/vars';
   @import './core/scrollbars';
-  @import './core/globals';
 
   &,
   * {
-    @import './core/vars';
-    @import "./components/accordian-block";
+    // @import './core/vars';
+    //
   }
 
   body.vtt.game.system-eunos-blades {
@@ -50,64 +52,6 @@
       // Third-Party Library Inputs
       @import './lib/tagify'; // > TAGIFY
       @import './tagify-custom'; // > TAGIFY CUSTOM CONFIG
-
-      .editor:not(.tinymce) {
-        position: relative;
-        overflow-x: hidden;
-        width: 100%;
-        min-height: var(--min-tinymce-height);
-
-        &.prosemirror, &.prosemirror * {
-          --color-control-bg: var(--blades-black-dark);
-          --color-hover-bg: var(--blades-black);
-          color: var(--blades-white-bright);
-
-          .menu button {
-            background: var(--blades-black);
-
-            &:hover, &.active {
-              background: var(--blades-black-dark);
-            }
-          }
-
-          .menu button:hover, .menu button:active {
-            background: var(--blades-black-dark);
-          }
-        }
-
-        .editor-edit {
-          display: block;
-          opacity: 0.25;
-          pointer-events: auto;
-          z-index: zLevel(+1);
-
-          &:hover {
-            opacity: 1
-          }
-        }
-
-        .editor-content {
-          position: relative;
-          padding-left: var(--content-padding);
-          padding-right: var(--content-padding);
-          // @import './tinymce/tinymce-content';
-
-        }
-      }
-
-      .tab-label + .editor:not(.tinymce) { margin-top: -0.3125rem !important }
-
-      .editor.tinymce {
-        position: relative;
-        max-width: unset;
-        width: 100%;
-        min-height: 100px;
-
-        .editor-content {
-          // @import './tinymce/tinymce-content';
-        }
-
-      }
 
       &.sheet {
 

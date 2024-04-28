@@ -1,0 +1,86 @@
+
+
+.editor.tinymce {
+
+  position: relative;
+  margin-top: var(--tinymce-top-shift);
+  z-index: 3;
+  // margin-bottom: var(--tinymce-top-shift);
+  overflow: visible;
+
+  .tox.tox-tinymce {
+    min-height: calc(var(--tinymce-min-height) - var(--tinymce-top-shift) - 5px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    visibility: inherit !important;
+
+    .tox-editor-container {
+
+      .tox-editor-header {
+        width: calc(100% / var(--tinymce-toolbar-scale));
+        opacity: var(--tinymce-toolbar-hidden-opacity);
+        transition: opacity 0.5s;
+        position: relative;
+        top: 2px;
+        margin-left: auto;
+        &:hover { opacity: var(--tinymce-toolbar-visible-opacity); }
+
+        .tox-toolbar-overlord {
+          background-color: transparent;
+          overflow: hidden;
+          height: 26px;
+          .tox-toolbar, .tox-toolbar__overflow, .tox-toolbar__primary {
+            background-color: rgba(0,0,0,1);
+            justify-content: space-between;
+            // margin-top: 26px;
+            // transform: translateY(0px);
+            // transition: opacity 0.5s;
+
+            .tox-toolbar__group {
+              background: rgba(0,0,0,0.5);
+              .tox-tbtn {
+                margin: 0;
+                height: 24px;
+
+                &[title="Formats"] {
+                  width: 120px;
+                  text-align: left;
+                }
+
+                .tox-tbtn__select-label {
+                  font-family: var(--font-emphasis);
+                }
+              }
+            }
+          }
+        }
+      }
+      .tox-sidebar-wrap {
+        min-height: var(--tinymce-min-height);
+        .tox-edit-area {
+          .tox-edit-area__iframe {
+            background-color: rgba(0,0,0,0.5);
+            box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 1);
+            padding: 0 var(--content-padding, 5px);
+          }
+        }
+      }
+    }
+    .tox-statusbar {
+      height: var(--tinymce-statusbar-height);
+
+      .tox-statusbar__text-container {
+
+        .tox-statusbar__path {
+          font-family: var(--font-emphasis);
+          font-weight: bold;
+          text-transform: uppercase;
+        }
+
+      }
+    }
+  }
+
+}

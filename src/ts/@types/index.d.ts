@@ -75,7 +75,7 @@ declare global {
         models: Partial<Record<BladesAI.Usage, string>>,
         fileID: string
       }
-    }s
+    };
 
     export interface Game {
       ClockKeeper: BladesClockKeeper,

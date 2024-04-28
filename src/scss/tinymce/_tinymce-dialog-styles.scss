@@ -1,0 +1,12 @@
+&.tox-dialog--width-lg {
+  .tox-dialog__header {
+  }
+
+  .tox-dialog__body {
+    .tox-dialog__body-content {
+      code { // .tox-textarea {
+        font-family: var(--font-mono);
+      }
+    }
+  }
+}

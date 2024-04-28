@@ -1,7 +1,13 @@
 $isCompactLayout: true;
 
-& {
-  --min-tinymce-height: 40px;
+&, * {
+  --tinymce-min-height: 100px;
+  --tinymce-top-shift: -32px;
+  --tinymce-toolbar-scale: 1; // 0.75;
+  --tinymce-toolbar-bottom-shift: 0px;
+  --tinymce-statusbar-height: 15px;
+  --tinymce-toolbar-hidden-opacity: 0;
+  --tinymce-toolbar-visible-opacity: 1;
 
   --clock-glow-size: 50px;
   --clock-frame-size: 50px;
@@ -175,6 +181,8 @@ $isCompactLayout: true;
 // #endregion ▄▄▄▄▄ Pixels to Rem ▄▄▄▄▄
 
 // #region ████████ Colors: System Color Settings ████████ ~
+  @import './colors';
+
   // #region ░░░░░░░ Numerically-Defined Colors (for Emu Stylesheet) ░░░░░░░ ~
   --color-primary: var(--blades-white-nums);
   --color-background: var(--blades-black-nums);
@@ -386,7 +394,7 @@ $isCompactLayout: true;
   }
   // #endregion ▄▄▄▄▄ LAYOUT ▄▄▄▄▄
 // #endregion 🟩🟩🟩 PRIMARY STYLES 🟩🟩🟩
-}
+// }
 
 // $theme-colors: (
 //   'someColor': #000,
@@ -397,4 +405,4 @@ $isCompactLayout: true;
 //   @each $key, $value in $theme-colors {
 //     #{unquote($key)}: $value;
 //   }
-// }
+}

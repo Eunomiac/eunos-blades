@@ -200,12 +200,12 @@ export function initTinyMCEStyles() {
   CONFIG.TinyMCE = {
     ...CONFIG.TinyMCE,
     ...{
-      skin:                        "skin",
-      skin_url:                    "systems/eunos-blades/tinymce/skin",
-      content_css:                 `systems/eunos-blades/tinymce/content.css?${new Date().getTime()}`,
+      skin:                        false,
+      // skin_url:                    "systems/eunos-blades/tinymce/skin",
+      content_css:                 "systems/eunos-blades/tinymce/tinymce.css",
       font_css:                    "systems/eunos-blades/fonts.css",
       max_height:                  500,
-      min_height:                  40,
+      min_height:                  100,
       autoresize_overflow_padding: 0,
       autoresize_bottom_margin:    0, // 25,
       menubar:                     false,

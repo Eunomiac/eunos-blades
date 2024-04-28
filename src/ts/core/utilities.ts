@@ -36,7 +36,7 @@ ut dui vel leo laoreet sodales nec ac tellus. In hac habitasse platea dictumst. 
 sollicitudin interdum. Sed id lacus porttitor nisi vestibulum tincidunt. Nulla facilisi. Vestibulum
 feugiat finibus magna in pretium. Proin consectetur lectus nisi, non commodo lectus tempor et. Cras
 viverra, mi in consequat aliquet, justo mauris fringilla tellus, at accumsan magna metus in eros. Sed
-vehicula, diam ut sagittis semper, purus massa mattis dolor, in posuere.` as const;
+vehicula, diam ut sagittis semper, purus massa mattis dolor, in posuere.`;
 
 // _randomWords -- A collection of random words for various debugging purposes.
 const _randomWords = `
@@ -1744,6 +1744,53 @@ const escapeHTML = <T = unknown>(str: T): T => (typeof str === "string"
     .replace(/[`']/g, "&#039;") as T
   : str);
 
+/**
+ * Extracts the computed styles of a given jQuery element.
+ * @param {HTMLElement|JQuery<HTMLElement>} element - The jQuery element from which to extract styles.
+ * @returns {string} A JSON object containing the computed styles.
+ */
+function extractComputedStyles(element: JQuery|Element) {
+  if (!(element instanceof Element)) {
+    element = element[0];
+  }
+  const style = window.getComputedStyle(element);
+  const styleObject: List<string> = {};
+
+  // Iterate over all the properties in the computed style
+  for (let i = 0; i < style.length; i++) {
+      const prop = style[i];
+      styleObject[prop] = style.getPropertyValue(prop);
+  }
+
+  return JSON.stringify(styleObject);
+}
+
+/**
+* Compares the computed styles of a new element against a previously saved styles object.
+* @param {Object} savedStyles - The object containing previously saved styles.
+* @param {HTMLElement|JQuery<HTMLElement>} newElement - The new jQuery element to compare against.
+* @returns {Array} A list of differences in computed styles.
+*/
+function compareComputedStyles(savedStyles: string|List<string>, newElement: Element|JQuery) {
+  if (typeof savedStyles === "string") {
+    savedStyles = JSON.parse(savedStyles) as List<string>;
+  }
+  const newStyles = JSON.parse(extractComputedStyles(newElement)) as List<string>;
+  const differences: string[] = [];
+  const allProps = new Set([...Object.keys(savedStyles), ...Object.keys(newStyles)]);
+
+  // Check for differences
+  allProps.forEach((prop) => {
+      const oldStyle = (savedStyles as List<string>)[prop];
+      const newStyle = (newStyles as List<string>)[prop];
+      if (oldStyle !== newStyle) {
+          differences.push(`Property: ${prop}, Old: ${oldStyle}, New: ${newStyle}`);
+      }
+  });
+
+  return differences;
+}
+
 // #region ████████ PERFORMANCE: Performance Testing & Metrics ████████
 /**
  * Test the performance of a function (synchronous or asynchronous).
@@ -2117,6 +2164,8 @@ export default {
   getSiblings,
 
   escapeHTML,
+
+  extractComputedStyles, compareComputedStyles,
 
   // ████████ PERFORMANCE: Performance Testing & Metrics ████████
   testFuncPerformance,
