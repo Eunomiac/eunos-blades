@@ -3465,8 +3465,6 @@ html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item .
   overflow-x: hidden;
   width: 100%;
   min-height: var(--tinymce-min-height);
-  margin-top: calc(var(--tinymce-top-shift) + 1px) !important;
-  margin-bottom: 6px !important;
 }
 .editor.prosemirror, .editor.prosemirror * {
   --color-control-bg: var(--blades-black-dark);
@@ -3500,6 +3498,8 @@ html .randomizer-panel .randomizer-container .randomizer-list .randomizer-item .
   max-width: unset;
   width: 100%;
   min-height: var(--tinymce-min-height);
+  margin-top: calc(var(--tinymce-top-shift) + 3px) !important;
+  margin-bottom: 6px !important;
 }
 .editor:not(.tinymce) {
   margin-bottom: 2px !important;

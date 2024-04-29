@@ -5,6 +5,7 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "checkJs": false,
+            "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "lib": [
@@ -31,24 +32,16 @@
     ],
     "rootDir": ".",
     "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
     "strictNullChecks": true,
-    "sourceMap": false,
-    "target": "ES2022",
+    "target": "ESNext",
     "traceResolution": false,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules/@league-of-foundry-developers",
-      "./src/ts/@types"
+    "types": [
+      "@league-of-foundry-developers/foundry-vtt-types"
     ],
   },
   "include": [
-    "./src/ts/**/*.ts" ],
-  "exclude": [
-    "dist/**",
-    "/scripts/**",
-    "POSTCSSgulpfile.js",
-    "node_modules/**",
-    ".dev-refs/**/*.*",
-    "**/*.js"
+    "./src/ts/**/*.ts"
   ]
 }

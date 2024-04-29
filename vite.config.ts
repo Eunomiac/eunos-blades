@@ -3,6 +3,7 @@ import { defineConfig, type UserConfig, type Plugin } from "vite";
 import path from "path";
 import fs from "fs";
 import checker from 'vite-plugin-checker';
+import {visualizer} from "rollup-plugin-visualizer";
 import { exec } from "child_process";
 
 /** *** CHECK: *** https://vitejs.dev/guide/performance
@@ -142,16 +143,16 @@ const config: UserConfig = defineConfig({
   // Configuration for the development server
   server: {
     // Setting the port number for the development server
-    port: 30001,
+    port: 31101,
     // Automatically open the project in the browser when the server starts
     open: false,
     // Configuring proxy rules for certain URLs
     proxy: {
-      // Redirecting requests that do not start with "/systems/eunos-blades" to localhost:30000
-      "^(?!/systems/eunos-blades)": "http://localhost:30000/",
+      // Redirecting requests that do not start with "/systems/eunos-blades" to localhost:31100
+      "^(?!/systems/eunos-blades)": "http://localhost:31100/",
       // Special proxy configuration for WebSocket connections used by socket.io
       "/socket.io": {
-        target: "ws://localhost:30000", // Target server for the proxy
+        target: "ws://localhost:31100", // Target server for the proxy
         ws: true // Enable WebSocket support
       }
     }
@@ -165,6 +166,7 @@ const config: UserConfig = defineConfig({
     // Generate source maps for the build
     sourcemap: true,
     // Configuration for the Terser minifier
+    minify: "terser",
     terserOptions: {
       mangle: false, // Disable mangling of variable and function names
       keep_classnames: true, // Preserve class names
@@ -172,11 +174,6 @@ const config: UserConfig = defineConfig({
     },
     // Temporarily disable minification for output checking
     // minify: false,
-    // Configuration for Rollup (used by Vite under the hood)
-    // rollupOptions: {
-    //   // Specify external modules that shouldn't be bundled
-    //   external: ["gsap/all"]
-    // },
     // Configuration for building a library
     lib: {
       name: "blades", // Name of the library
@@ -186,6 +183,7 @@ const config: UserConfig = defineConfig({
     }
   },
   resolve: {
+    preserveSymlinks: true,
     alias: {
       "gsap/all": "scripts/greensock/esm/all.js"
     }
@@ -194,6 +192,10 @@ const config: UserConfig = defineConfig({
     foundryPlugin(),
     checker({ typescript: true }),
     scssVariablesToJsPlugin(),
+    visualizer({
+      gzipSize: true,
+      template: "treemap"
+    }),
     openChromePlugin() // Add the custom plugin here
   ]
 });
