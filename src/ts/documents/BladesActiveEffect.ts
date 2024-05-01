@@ -15,7 +15,6 @@ const CUSTOMFUNCS: Record<
   (actor: BladesActor, funcData: string, effect?: BladesActiveEffect, isReversing?: boolean) => Promise<void>
 > = {
   addItem: async (actor: BladesActor, funcData: string, _, isReversing = false) => {
-    eLog.checkLog("activeEffects", "addItem", {actor, funcData, isReversing});
     if (actor.hasActiveSubItemOf(funcData)) {
       if (isReversing) {
         return actor.remSubItem(funcData);
@@ -26,7 +25,6 @@ const CUSTOMFUNCS: Record<
     return undefined;
   },
   addIfChargen: async (actor, funcData, _, isReversing = false) => {
-    eLog.checkLog("activeEffects", "addIfChargen", {actor, funcData, isReversing});
     if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return; }
     const [target, qty] = funcData.split(/:/);
     if (isReversing) {
@@ -36,7 +34,6 @@ const CUSTOMFUNCS: Record<
     await actor.update({[target]: U.pInt(getProperty(actor, target)) + U.pInt(qty)});
   },
   upgradeIfChargen: async (actor, funcData, _, isReversing = false) => {
-    eLog.checkLog("activeEffects", "upgradeIfChargen", {actor, funcData, isReversing});
     if (!isReversing && game.eunoblades.Tracker?.system.phase !== BladesPhase.CharGen) { return; }
     const [target, qty] = funcData.split(/:/);
     if (getProperty(actor, target) < U.pInt(qty)) {
@@ -284,22 +281,16 @@ class BladesActiveEffect extends ActiveEffect {
   static ThrottleCustomFunc(actor: BladesActor, data: BladesCustomFuncData) {
     const {funcName, funcData, isReversing, effect} = data;
     if (!actor.id) { return; }
-    eLog.checkLog3("activeEffect", `Throttling Func: ${funcName}(${funcData}, ${isReversing})`);
     // Is there a currently-running function for this actor?
     if (actor.id && actor.id in FUNCQUEUE) {
       // Is this a duplicate of a function already queued?
       const matchingQueue = FUNCQUEUE[actor.id].queue
         .find((fData: BladesCustomFuncData) => JSON.stringify(fData) === JSON.stringify(data));
-      eLog.checkLog("activeEffects", "... Checking Queue", {data, FUNCQUEUE: FUNCQUEUE[actor.id], matchingQueue});
-      if (matchingQueue) {
-        eLog.error("... Function ALREADY QUEUED, SKIPPING");
-        return;
-      }
+      if (matchingQueue) { return; }
       FUNCQUEUE[actor.id].queue.push(data);
       return;
     }
     // If not, create FUNCQUEUE entry and run first function.
-    eLog.checkLog3("activeEffect", "... Creating New FUNCQUEUE, RUNNING:");
     FUNCQUEUE[actor.id] = {
       curFunc: BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing)),
       queue:   []
@@ -308,20 +299,16 @@ class BladesActiveEffect extends ActiveEffect {
 
   static async RunCustomFunc(actor: BladesActor, funcPromise: Promise<void>): Promise<void> {
     if (!actor.id) { return; }
-    eLog.checkLog("activeEffects", "... Running Func ...");
     await funcPromise;
-    eLog.checkLog("activeEffects", "... Function Complete!");
     if (FUNCQUEUE[actor.id].queue.length) {
       const {funcName, funcData, isReversing, effect} = FUNCQUEUE[actor.id].queue.shift() ?? {};
       if (!funcName || !(funcName in CUSTOMFUNCS)) { return; }
       if (!funcData) { return; }
-      eLog.checkLog3("activeEffect", `Progressing Queue: ${funcName}(${funcData}, ${isReversing}) -- ${FUNCQUEUE[actor.id].queue.length} remaining funcs.`);
       FUNCQUEUE[actor.id].curFunc = BladesActiveEffect.RunCustomFunc(
         actor,
         CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing)
       );
     } else {
-      eLog.checkLog3("activeEffect", "Function Queue Complete! Deleting.");
       delete FUNCQUEUE[actor.id];
     }
   }

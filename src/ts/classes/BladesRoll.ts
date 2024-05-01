@@ -593,21 +593,25 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
       ) {
         return;
       }
-      const oldStatus = this.statusReport;
-      this.updateTarget("user_status", val).then(() => {
-        eLog.checkLog3("rollModStatus", `[set USER] ${this.name} Status Change: ${oldStatus["!STATUS"]} -> ${this.status} (val = ${val})`, {
-          from: oldStatus.comps,
-          to:   this.statusReport.comps
-        });
-      });
     }
+    const oldStatus = this.statusReport;
+    this.updateTarget("user_status", val).then(() => {
+      eLog.checkLog3("rollModStatus", `[set USER] ${this.name} Status Change: ${oldStatus["!STATUS"]} -> ${this.status} (val = ${val})`, {
+        from: oldStatus.comps,
+        to:   this.statusReport.comps
+      });
+    });
   }
 
-  // @ts-expect-error Why aren't I able to simply pass the function parameters through to the superclass?
-  override async updateTarget(...args: Parameters<BladesTargetLink<BladesRollMod.Schema>["updateTarget"]>) {
+  async silentUpdateTarget(...args: Parameters<BladesTargetLink<BladesRollMod.Schema>["updateTarget"]>) {
     await super.updateTarget(...args);
+  }
+
+  override async updateTarget(...args: unknown[]) {
+    await super.updateTarget(...args as Parameters<BladesTargetLink<BladesRollMod.Schema>["updateTarget"]>);
     this.rollInstance.renderRollCollab_SocketCall();
   }
+
 
   get elem$() { return this.rollInstance.elem$.find(`#${this.id}`); }
   get elem() { return this.elem$[0]; }
@@ -619,16 +623,16 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     };
   }
   get baseStatus(): RollModStatus {return this.data.base_status;}
-  get heldStatus(): RollModStatus | null | undefined {return this.data.held_status;}
-  set heldStatus(val: RollModStatus | undefined) {
+  _heldStatus: RollModStatus | null | undefined;
+  get heldStatus(): RollModStatus | null | undefined {return this._heldStatus;}
+  set heldStatus(val: RollModStatus | null | undefined) {
     if (val === this.heldStatus) { return; }
     const oldStatus = this.statusReport;
-    this.updateTarget("held_status", val || null).then(() => {
-      eLog.checkLog3("rollModStatus", `[set HELD] ${this.name} Status Change: ${oldStatus["!STATUS"]} -> ${this.status} (val = ${val})`, {
-        from: oldStatus.comps,
-        to:   this.statusReport.comps
-      });
+    eLog.checkLog3("set heldStatus", `[set HELD] ${this.name} Status Change: ${oldStatus["!STATUS"]} -> ${this.status} (val = ${val})`, {
+      from: oldStatus.comps,
+      to:   this.statusReport.comps
     });
+    this._heldStatus = val;
   }
 
   get value(): number {return this.data.value;}
@@ -943,14 +947,16 @@ class BladesRollOpposition implements BladesRoll.OppositionData {
   // #region Static Methods ~
   static IsValidData(data: unknown): data is BladesRoll.OppositionData {
     if (BladesRollOpposition.IsDoc(data)) {return true;}
-    return U.isList(data)
-      && typeof data.rollOppName === "string"
-      && typeof data.rollOppType === "string"
-      && typeof data.rollOppImg === "string"
-      && (!data.rollOppSubName || typeof data.rollOppSubName === "string")
-      && (!data.rollOppModsSchemaSet || Array.isArray(data.rollOppModsSchemaSet))
-      && U.isList(data.rollFactors)
-      && (!data.rollOppID || typeof data.rollOppID === "string");
+    if (!U.isList(data)) { return false; }
+    if ([
+      typeof data.rollOppName,
+      typeof data.rollOppType,
+      typeof data.rollOppImg
+    ].some((type: string) => type !== "string")) { return false; }
+    if (!Array.isArray(data.rollOppModsSchemaSet)) { return false; }
+    if (!U.isList(data.rollFactors)) { return false; }
+    if (data.rollOppID && typeof data.rollOppID !== "string") { return false; }
+    return true;
   }
 
   static GetDoc(docRef: unknown): BladesRoll.OppositionDoc | false {
@@ -1101,14 +1107,17 @@ class BladesRollParticipant implements BladesRoll.ParticipantData {
   // #region Static Methods ~
   static IsValidData(data: unknown): data is BladesRoll.ParticipantData {
     if (BladesRollParticipant.IsDoc(data)) {return true;}
-    return U.isList(data)
-      && typeof data.rollParticipantName === "string"
-      && typeof data.rollParticipantType === "string"
-      && typeof data.rollParticipantIcon === "string"
-      && (!data.rollParticipantModsSchemaSet || Array.isArray(data.rollParticipantModsSchemaSet))
-      && U.isList(data.rollFactors)
-      && (!data.rollParticipantID || typeof data.rollParticipantID === "string")
-      && (!data.rollParticipantDoc || BladesRollParticipant.IsDoc(data.rollParticipantDoc));
+    if (!U.isList(data)) { return false; }
+    if ([
+      typeof data.rollParticipantName,
+      typeof data.rollParticipantType,
+      typeof data.rollParticipantIcon
+    ].some((type: string) => type !== "string")) { return false; }
+    if (!Array.isArray(data.rollParticipantModsSchemaSet)) { return false; }
+    if (!U.isList(data.rollFactors)) { return false; }
+    if (data.rollParticipantID && typeof data.rollParticipantID !== "string") { return false; }
+    if (data.rollParticipantDoc && !BladesRollParticipant.IsDoc(data.rollParticipantDoc)) { return false; }
+    return true;
   }
 
   static GetDoc(docRef: unknown): BladesRoll.ParticipantDoc | false {
@@ -1383,7 +1392,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     return [];
   }
 
-  static GetDieClass(rollType: RollType, rollResult: number | false | RollResult, dieVal: number, dieIndex: number) {
+  static GetDieClass(rollType: RollType, rollResult: RollResultOrNumber | false, dieVal: number, dieIndex: number) {
     switch (rollType) {
       case RollType.Resistance: {
         if (dieVal === 6 && dieIndex <= 1 && rollResult === -1) {
@@ -1420,7 +1429,6 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   static GetDieImage(
     rollType: RollType,
-    rollResult: number | false | RollResult,
     dieVal: number,
     dieIndex: number,
     isGhost = false,
@@ -1551,12 +1559,10 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
           if (BladesRollParticipant.IsDoc(pData)) {
             return pData;
           }
-          if (BladesRollParticipant.IsValidData(pData)) {
-            if (typeof pData.rollParticipantID === "string") {
-              const pDoc = game.actors.get(pData.rollParticipantID) ?? game.items.get(pData.rollParticipantID);
-              if (BladesRollParticipant.IsDoc(pDoc)) {
-                return pDoc;
-              }
+          if (BladesRollParticipant.IsValidData(pData) && typeof pData.rollParticipantID === "string") {
+            const pDoc = game.actors.get(pData.rollParticipantID) ?? game.items.get(pData.rollParticipantID);
+            if (BladesRollParticipant.IsDoc(pDoc)) {
+              return pDoc;
             }
           }
           // Throw an error with sufficient debug data if pData does not match any expected types
@@ -1893,6 +1899,22 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   projectSelectOptions?: Array<BladesSelectOption<string>>;
 
+  _getSectionParticipants(
+    rollSection: BladesRoll.ParticipantSection,
+    rollParticipantList: BladesRoll.RollParticipantDataSet
+  ) {
+    const sectionParticipants: Record<string, BladesRollParticipant> = {};
+    for (const [participantType, participantData] of Object.entries(rollParticipantList)) {
+      sectionParticipants[participantType] = new BladesRollParticipant(
+        this,
+        rollSection,
+        participantType as BladesRoll.ParticipantSubSection,
+        participantData as BladesRoll.ParticipantData
+      );
+    }
+    return sectionParticipants;
+  }
+
   constructor(config: BladesRoll.Config)
   constructor(data: BladesTargetLink.Data & Partial<BladesRoll.Schema>)
   constructor(dataOrConfig: BladesRoll.Config | BladesTargetLink.Data & Partial<BladesRoll.Schema>) {
@@ -1911,16 +1933,10 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       for (const [rollSection, rollParticipantList] of Object.entries(this.data.rollParticipantData)) {
         if ([RollModSection.roll, RollModSection.position, RollModSection.effect]
           .includes(rollSection as RollModSection) && !U.isEmpty(rollParticipantList)) {
-          const sectionParticipants: Record<string, BladesRollParticipant> = {};
-          for (const [participantType, participantData] of Object.entries(rollParticipantList)) {
-            sectionParticipants[participantType] = new BladesRollParticipant(
-              this,
-              rollSection as BladesRoll.ParticipantSection,
-              participantType as BladesRoll.ParticipantSubSection,
-              participantData as BladesRoll.ParticipantData
-            );
-          }
-          this._rollParticipants[rollSection as BladesRoll.ParticipantSection] = sectionParticipants;
+          this._rollParticipants[rollSection as BladesRoll.ParticipantSection] = this._getSectionParticipants(
+            rollSection as BladesRoll.ParticipantSection,
+            rollParticipantList
+          );
         }
       }
     }
@@ -1940,12 +1956,14 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       rollSubSection = "Assist";
     }
 
-    const participantData = typeof participantRef === "string"
-      ? game.actors.get(participantRef)
-      ?? game.actors.getName(participantRef)
-      ?? game.items.get(participantRef)
-      ?? game.items.getName(participantRef)
-      : participantRef;
+    function getParticipantData(pRef: typeof participantRef) {
+      if (typeof pRef === "string") {
+        return game.actors.get(pRef) ?? game.items.get(pRef) ?? game.actors.getName(pRef) ?? game.items.getName(pRef);
+      }
+      return pRef;
+    }
+    const participantData = getParticipantData(participantRef);
+
     if (!BladesRollParticipant.IsValidData(participantData)) {
       throw new Error("Bad data.");
     }
@@ -2085,7 +2103,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     };
   }
 
-  get rollType(): RollType {return this.data.rollType as RollType;}
+  get rollType(): RollType {return this.data.rollType;}
 
   get rollSubType(): RollSubType | undefined {return this.data.rollSubType;}
 
@@ -2277,7 +2295,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       + (this.tempGMBoosts.Result ?? 0);
   }
 
-  get rollResultFinal(): RollResult | number | false {
+  get rollResultFinal(): RollResultOrNumber | false {
     if (this.rollResult === false) {return false;}
     if (this.rollResultDelta === 0) {return this.rollResult;}
 
@@ -2439,10 +2457,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     this.rollTraitValOverride = undefined;
     this.rollFactorPenaltiesNegated = {};
     this.tempGMBoosts = {};
+    this.rollMods.forEach((rollMod) => rollMod.heldStatus = undefined);
 
     // ESLINT DISABLE: Dev Code.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const initReport: Record<string, any> = {};
+    const initReport: Record<string, unknown> = {};
 
     let initReportCount = 0;
     const watchMod = (label: string) => {
@@ -3158,7 +3177,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   get dieVals(): number[] {
     return (this.roll.terms as DiceTerm[])[0].results
       .map((result) => result.result)
-      .sort()
+      .sort((a, b) => (a - b))
       .reverse();
     // return this._dieVals;
   }
@@ -3177,14 +3196,14 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     const diceData: BladesRoll.DieData[] = dieVals.map((val, i) => ({
       value:    val,
       dieClass: BladesRoll.GetDieClass(this.rollType, this.rollResult, val, i),
-      dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, val, i, false, isCritical)
+      dieImage: BladesRoll.GetDieImage(this.rollType, val, i, false, isCritical)
     }));
 
     if (ghostNum) {
       diceData.push({
         value:    ghostNum,
         dieClass: "blades-die-ghost",
-        dieImage: BladesRoll.GetDieImage(this.rollType, this.rollResult, ghostNum, diceData.length, true, false)
+        dieImage: BladesRoll.GetDieImage(this.rollType, ghostNum, diceData.length, true, false)
       });
     }
 
@@ -3599,6 +3618,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     const modID = elem$.attr("id") as IDString;
     const mod = this.getRollModByID(modID);
     if (!mod) {throw new Error(`Unable to find roll mod with id '${modID}'`);}
+    eLog.checkLog3("playerToggleRollMod", "BEFORE _onPlayerToggleRollMod", {modID, modStatus: mod.status, baseStatus: mod.baseStatus, userStatus: mod.userStatus, heldStatus: mod.heldStatus});
     switch (mod.status) {
       case RollModStatus.ToggledOff: {
         mod.userStatus = RollModStatus.ToggledOn;
@@ -3610,6 +3630,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       }
       default: break;
     }
+    eLog.checkLog3("playerToggleRollMod", "AFTER _onPlayerToggleRollMod", {modID, modStatus: mod.status, baseStatus: mod.baseStatus, userStatus: mod.userStatus, heldStatus: mod.heldStatus});
   }
   _onGMToggleRollMod(event: ClickEvent) {
     event.preventDefault();

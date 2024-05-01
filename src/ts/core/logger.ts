@@ -1,14 +1,24 @@
 import U from "./utilities";
 import {getColor} from "./helpers";
 
-const LOGGERCONFIG = {
-  fullName:             "eLogger",
-  aliases:              ["dbLog"],
-  stackTraceExclusions: {
-    handlebars: [/scripts\/handlebars/] // From internal Handlebars module
-  }
-};
+// const LOGGERCONFIG = {
+//   fullName:             "eLogger",
+//   aliases:              ["dbLog"],
+//   stackTraceExclusions: {
+//     handlebars: [/scripts\/handlebars/] // From internal Handlebars module
+//   }
+// };
 
+const STACK_TRACE_EXCLUSIONS = [
+  /at Logger/,
+  /\beLog\b/,
+  /scripts\/handlebars/ // From internal Handlebars module
+];
+
+const STACK_TRACE_PROJECT_CODE = [
+  /\/systems\//,
+  /\/modules\//
+];
 
 const STYLES = {
   base: {
@@ -86,50 +96,48 @@ const STYLELINES = Object.fromEntries(
     ])
 );
 
+/**
+ * Runs a stack trace from the calling scope. If an ID is passed, it will be used to identify a previously-recorded trace from another scope. Both stack traces will be parsed and combined into a readable description of the caller's call chain.
+ * @param caller - The calling class or function.
+ * @param id - Optional ID string for a previously-recorded backtrace. If not provided, the standard stack trace will not be modified by a backtrace.
+ * @returns The combined and parsed full stack trace of the caller's call chain.
+ */
+// const runBackTrace = (id?: IDString): string => {
+//   if (!stackTrace) { return "StackTrace Unavailable"; }
+//   if (id && _backTrace[id]) {
+//     const backTrace = _backTrace[id].split("\n");
+//     const parsedTrace = stackTrace.split("\n").map((line, i) => {
+//       if (backTrace[i]) {
+//         return `${line} // ${backTrace[i]}`;
+//       }
+//       return line;
+//     });
+//     return parsedTrace.join("\n");
+//   }
+//   return stackTrace;
+// };
+
+type DebugLevel = 0|1|2|3|4|5;
+function isDebugLevel(level: unknown): level is DebugLevel {
+  return typeof level === "number" && [0, 1, 2, 3, 4, 5].includes(level);
+}
+
 const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...content: [string, ...unknown[]]) => {
-  if (!(["error", "display"].includes(type) || CONFIG.debug.logging)) { return; }
-  const lastElem = U.getLast(content);
-  let trace: string|null = null;
-  if (content[0].startsWith("StackTrace:")) {
-    trace = (content.shift() as string)?.replace("StackTrace:", "") ?? null;
-  }
+  if (!CONFIG.debug.logging && type !== "display" && type !== "error") { return; }
 
-  let dbLevel: 0|1|2|3|4|5 = typeof lastElem === "number" && [0, 1, 2, 3, 4, 5].includes(lastElem)
-    ? content.pop() as 0|1|2|3|4|5
-    : 3;
-  let key: string|false = false;
+  const dbLevel: DebugLevel = isDebugLevel(U.getLast(content)) ? content.pop() as DebugLevel : 3;
+  if (((U.getSetting("debugLevel", "debugSettings") ?? 5) as DebugLevel) < dbLevel) { return; }
+
   if (type === "checkLog") {
-    key = content.shift() as string;
-    type = `log${dbLevel}`;
+    content.shift();
+    type = "log";
   }
-
   const [message, ...data] = content;
-
-  if (key) {
-    const validKey: string = key;
-    const blacklist = ((U.getSetting("blacklist", "debugSettings") ?? "") as string).split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
-    const whitelist = ((U.getSetting("whitelist", "debugSettings") ?? "") as string).split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
-    const isBlack = blacklist.some((pat) => pat.test(validKey));
-    const isWhite = whitelist.some((pat) => pat.test(validKey));
-    if (isBlack && !isWhite) {
-      dbLevel = Math.max(4, Math.min(5, dbLevel + 2)) as 4|5;
-    }
-    if (isWhite && !isBlack) {
-      dbLevel = Math.min(3, Math.max(1, dbLevel - 2)) as 1|2|3;
-    }
-  }
-  if ((U.getSetting("debugLevel", "debugSettings") ?? 5) as 0|1|2|3|4|5 < dbLevel) { return; }
   if (type === "log") {
     type = `${type}${dbLevel}`;
   }
-  let stackTrace: string|null;
-  if (type === "display") {
-    stackTrace = null;
-  } else if (trace) {
-    stackTrace = filterStackTrace(trace, LOGGERCONFIG.stackTraceExclusions[type as KeyOf<typeof LOGGERCONFIG["stackTraceExclusions"]>] ?? []);
-  } else {
-    stackTrace = getStackTrace(LOGGERCONFIG.stackTraceExclusions[type as KeyOf<typeof LOGGERCONFIG["stackTraceExclusions"]>] ?? []);
-  }
+
+  const stackTrace = type === "display" ? null : getStackTrace();
 
   let logFunc;
   if (stackTrace) {
@@ -163,54 +171,86 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
   }
   console.groupEnd();
 
-
-  function parseStackTrace(traceString: string) {
-    return traceString.split(/\n/).map((ln) => {
-      const [_full, method, file, line, col] = ln.match(/at (.+) \((.+):(\d+):(\d+)\)/) ?? [];
-      return {method, file, line, col};
-    });
-  }
-
-  function filterStackTrace(traceString: string, regExpFilters: RegExp[] = []): string {
-    regExpFilters.push(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${
-      LOGGERCONFIG.aliases.map(String).join("|")
-    }|Object\\.(log|display|hbsLog|error))`), /^Error/);
-    return traceString
+  function filterStackTrace(traceString: string): string {
+    const trace = traceString
       .split(/\n/)
-      .map((sLine) => sLine.trim())
-      .filter((sLine) => !regExpFilters.some((rTest) => rTest.test(sLine)))
-      .join("\n");
+      .slice(1)
+      .filter((sLine) => !STACK_TRACE_EXCLUSIONS.some((rTest) => rTest.test(sLine)))
+      .map((sLine, i, arr) => {
+        let sL = sLine.trim();
+        if (sL.includes("Object.fn")) {
+          if (arr[i + 1]?.includes("at #call ")) {
+            sL = sL.replace(/at Object\.fn (\(.*?([^/.]+)[^/]*\)\s*)$/, "at $2 Hook $1");
+          } else {
+            sL = sL.replace(/at((?: async)? Object\.fn \(.*?([^/.]+(?:\.\w+)?)[^/]*\)\s*)$/, "at $2$1");
+          }
+        }
+        if (i === 0) { return `${sL.replace(/^at/, "LOGGED AT")}`; }
+        return `  ${!STACK_TRACE_PROJECT_CODE.some((rTest) => rTest.test(sL)) ? "    ..." : ">>>"} ${sL.replace(/\bat /, "")}`;
+      });
+
+    // if (trace.length === 0) { return traceString; }
+    // trace[0] = `${trace[0].replace(/^\s*[.>]{3} /, "LOGGED AT ")}`;
+
+    return trace.join("\n");
   }
-  /**
-   *
-   * @param regExpFilters
-   */
-  function getStackTrace(regExpFilters: RegExp[] = []): string|null {
-    return filterStackTrace((new Error()).stack ?? "", regExpFilters);
+
+  function getStackTrace(): string {
+    const trace = new Error();
+    Error.captureStackTrace(trace, eLogger);
+    return trace.stack
+      ? filterStackTrace(trace.stack)
+      : "... Stack Trace Unavailable ...";
   }
 };
 
 type eLogParams = [string, ...unknown[]];
-const logger = {
-  display:   (...content: eLogParams) => eLogger("display", ...content),
-  log0:      (...content: eLogParams) => eLogger("log", ...content, 0),
-  log1:      (...content: eLogParams) => eLogger("log", ...content, 1),
-  log2:      (...content: eLogParams) => eLogger("log", ...content, 2),
-  log:       (...content: eLogParams) => eLogger("log", ...content, 3),
-  log3:      (...content: eLogParams) => eLogger("log", ...content, 3),
-  log4:      (...content: eLogParams) => eLogger("log", ...content, 4),
-  log5:      (...content: eLogParams) => eLogger("log", ...content, 5),
-  checkLog0: (...content: eLogParams) => eLogger("checkLog", ...content, 0),
-  checkLog1: (...content: eLogParams) => eLogger("checkLog", ...content, 1),
-  checkLog2: (...content: eLogParams) => eLogger("checkLog", ...content, 2),
-  checkLog:  (...content: eLogParams) => eLogger("checkLog", ...content, 3),
-  checkLog3: (...content: eLogParams) => eLogger("checkLog", ...content, 3),
-  checkLog4: (...content: eLogParams) => eLogger("checkLog", ...content, 4),
-  checkLog5: (...content: eLogParams) => eLogger("checkLog", ...content, 5),
-  warn:      (...content: eLogParams) => eLogger("warn", ...content),
-  error:     (...content: eLogParams) => eLogger("error", ...content),
-  hbsLog:    (...content: eLogParams) => eLogger("handlebars", ...content),
-  backTrace: (...content: eLogParams) => eLogger("checkLog", `StackTrace:${String(content.shift() ?? "")}`, ...content, 3)
-};
 
-export default logger;
+
+function checkLog3(...content: eLogParams) {
+  eLogger("checkLog", ...content, 3);
+}
+
+class Logger {
+  static display(...content: eLogParams) { eLogger("display", ...content); }
+  static log0(...content: eLogParams) { eLogger("log", ...content, 0); }
+  static log1(...content: eLogParams) { eLogger("log", ...content, 1); }
+  static log2(...content: eLogParams) { eLogger("log", ...content, 2); }
+  static log(...content: eLogParams) { eLogger("log", ...content, 3); }
+  static log3(...content: eLogParams) { eLogger("log", ...content, 3); }
+  static log4(...content: eLogParams) { eLogger("log", ...content, 4); }
+  static log5(...content: eLogParams) { eLogger("log", ...content, 5); }
+  static checkLog0(...content: eLogParams) { eLogger("checkLog", ...content, 0); }
+  static checkLog1(...content: eLogParams) { eLogger("checkLog", ...content, 1); }
+  static checkLog2(...content: eLogParams) { eLogger("checkLog", ...content, 2); }
+  static checkLog(...content: eLogParams) { eLogger("checkLog", ...content, 3); }
+  static checkLog3(...content: eLogParams) { eLogger("checkLog", ...content, 3); }
+  static checkLog4(...content: eLogParams) { eLogger("checkLog", ...content, 4); }
+  static checkLog5(...content: eLogParams) { eLogger("checkLog", ...content, 5); }
+  static warn(...content: eLogParams) { eLogger("warn", ...content); }
+  static error(...content: eLogParams) { eLogger("error", ...content); }
+  static hbsLog(...content: eLogParams) { eLogger("handlebars", ...content); }
+}
+
+// const logger = {
+//   display:   (...content: eLogParams) => eLogger("display", ...content),
+//   log0:      (...content: eLogParams) => eLogger("log", ...content, 0),
+//   log1:      (...content: eLogParams) => eLogger("log", ...content, 1),
+//   log2:      (...content: eLogParams) => eLogger("log", ...content, 2),
+//   log:       (...content: eLogParams) => eLogger("log", ...content, 3),
+//   log3:      (...content: eLogParams) => eLogger("log", ...content, 3),
+//   log4:      (...content: eLogParams) => eLogger("log", ...content, 4),
+//   log5:      (...content: eLogParams) => eLogger("log", ...content, 5),
+//   checkLog0: (...content: eLogParams) => eLogger("checkLog", ...content, 0),
+//   checkLog1: (...content: eLogParams) => eLogger("checkLog", ...content, 1),
+//   checkLog2: (...content: eLogParams) => eLogger("checkLog", ...content, 2),
+//   checkLog:  (...content: eLogParams) => eLogger("checkLog", ...content, 3),
+//   checkLog3: (...content: eLogParams) => eLogger("checkLog", ...content, 3),
+//   checkLog4: (...content: eLogParams) => eLogger("checkLog", ...content, 4),
+//   checkLog5: (...content: eLogParams) => eLogger("checkLog", ...content, 5),
+//   warn:      (...content: eLogParams) => eLogger("warn", ...content),
+//   error:     (...content: eLogParams) => eLogger("error", ...content),
+//   hbsLog:    (...content: eLogParams) => eLogger("handlebars", ...content)
+// };
+
+export default Logger;

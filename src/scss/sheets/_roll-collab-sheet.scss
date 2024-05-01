@@ -149,7 +149,7 @@
         right: calc(100% + 2*var(--roll-spacing, 5px) - 2px);
         background: rgb(24, 24, 24);
         top: 0px;
-        padding: 2px 0 2px 5px;
+        padding: 2px 5px;
         outline: 1px solid var(--blades-white);
         gap: 0;
         flex-wrap: wrap;
@@ -157,10 +157,7 @@
 
         .roll-mod-container {
 
-          &,
-          & * {
-            --roll-mod-height: 20px
-          }
+          --roll-mod-height: 20px
 
           display: inline-flex;
           flex-direction: row;
@@ -168,6 +165,7 @@
           background: transparent;
           box-shadow: none;
           height: var(--roll-mod-height);
+          width: 100%;
           margin: 0;
           padding: 0;
           justify-content: flex-start;
@@ -199,7 +197,7 @@
 
           &.status-forcedoff {
             .roll-mod-label {
-              left: calc(-1.35 * var(--roll-mod-height));
+              // left: calc(-1.35 * var(--roll-mod-height));
 
               svg {
                 opacity: 0
@@ -254,7 +252,7 @@
         --roll-mod-font-style: normal;
         --roll-mod-font-weight: normal;
         --roll-mod-text-transform: none;
-        --roll-mod-text-indent: 10px;
+        --roll-mod-text-indent: 0px;
         --roll-mod-text-shadow: var(--text-shadow-dark);
 
         // --roll-mod-sidestring-font-color: var(--roll-mod-font-color);
@@ -270,6 +268,7 @@
 
       height: var(--roll-mod-height);
       width: min-content;
+      padding: 0px 5px;
       display: block;
       flex-grow: 0;
       flex-shrink: 0;

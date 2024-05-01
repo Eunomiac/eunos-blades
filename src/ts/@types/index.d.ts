@@ -53,15 +53,13 @@ declare global {
 
   declare class ObjectField extends foundry.data.fields.OBJECT_FIELD { }
 
-  let _backTrace: List<string, IDString>;
+  // let _backTrace: List<string, IDString>;
 
   declare function fromUuidSync(uuid: string, options?: {
     relative?: Document,
     invalid?: boolean,
     strict?: boolean
   }): BladesDoc | null;
-
-  declare function randomID(): IDString;
 
   declare namespace EunoBlades {
 

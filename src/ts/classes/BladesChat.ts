@@ -39,10 +39,7 @@ class BladesChat extends ChatMessage {
 
   static Initialize() {
 
-    const backTraceID = U.markBackTrace(BladesChat as AnyClass);
-
     Hooks.on("renderChatMessage", (msg: BladesChat, html: JQuery) => {
-      eLog.backTrace(U.runBackTrace(backTraceID), "hooks", "renderChatMessage", {msg, html});
       ApplyTooltipAnimations(html);
       if (msg.isBladesRoll) {
         html.addClass("blades-chat-message");

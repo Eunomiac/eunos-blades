@@ -122,11 +122,6 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   }
   // #endregion
 
-  constructor(data: ActorDataConstructorData) {
-    super(data);
-    eLog.checkLog3("pcConstructor", "new BladesPC()", {data});
-  }
-
   // #region BladesPrimaryActor Implementation ~
   get primaryUser(): User | null {
     return game.users?.find((user) => user.character?.id === this?.id) || null;
@@ -294,8 +289,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   get healingClock(): BladesClockKey|undefined {
     if (!this.isHealingClockReady) { return undefined; }
     const [clockKeyID] = Object.keys(this.system.clocksData);
-    const clockKey = game.eunoblades.ClockKeys.get(clockKeyID ?? "");
-    return clockKey;
+    return game.eunoblades.ClockKeys.get(clockKeyID ?? "");
   }
 
   get harmLevel(): number {
@@ -670,7 +664,7 @@ class BladesPC extends BladesActor implements BladesActorSubClass.Scoundrel,
   }
   // #endregion
 
-  override render(force?: boolean) {
+  override render(force = false) {
     // if (!this.isHealingClockReady) {
     //   setTimeout(() => this.render(force), 1000);
     //   return;

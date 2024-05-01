@@ -18,26 +18,39 @@ class BladesTargetLink<Schema> {
     ] as const;
   }
 
+  static HasValidID(ref: Record<key, unknown>) {
+    return U.isDocID(ref.target) || U.isDocID(ref.targetID);
+  }
+
+  static HasValidUUID(ref: Record<key, unknown>) {
+    return U.isDocUUID(ref.target) || U.isDocUUID(ref.targetID);
+  }
+
+  static HasValidKey(ref: Record<key, unknown>) {
+    // Return false if ref has neither targetKey nor targetFlagKey
+    if (!U.isTargetKey(ref.targetKey) && !U.isTargetFlagKey(ref.targetFlagKey)) { return false; }
+    // Return false if ref has BOTH targetKey and targetFlagKey
+    if (U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey)) { return false; }
+    // Return true if exactly one is set
+    return true;
+  }
+
+  static HasValidTargetRef(ref: Record<key, unknown>) {
+    return this.HasValidID(ref)
+      || this.HasValidUUID(ref)
+      || this.ValidTargetClasses.some((cls) => ref.target instanceof cls);
+  }
+
   static IsValidConfig(ref: unknown): ref is BladesTargetLink.Config {
-    return U.isSimpleObj(ref)
-    && (
-      U.isDocID(ref.target)
-      || U.isDocUUID(ref.target)
-      || U.isDocID(ref.targetID)
-      || U.isDocUUID(ref.targetID)
-      || this.ValidTargetClasses.some((cls) => ref.target instanceof cls)
-    )
-    && (U.isTargetKey(ref.targetKey) || U.isTargetFlagKey(ref.targetFlagKey))
-    && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey));
+    if (!U.isSimpleObj(ref)) { return false; }
+    return this.HasValidKey(ref) && this.HasValidTargetRef(ref);
   }
 
   static IsValidData(ref: unknown): ref is BladesTargetLink.Data {
-    return U.isSimpleObj(ref)
-      && U.isDocID(ref.id)
+    if (!U.isSimpleObj(ref)) { return false; }
+    return U.isDocID(ref.id)
       && U.isDocUUID(ref.targetID)
-      && (U.isTargetKey(ref.targetKey) || U.isTargetFlagKey(ref.targetFlagKey))
-      && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey));
-    // && (typeof ref.isScopingById === "boolean");
+      && this.HasValidKey(ref);
   }
 
   static #ParseChildLinkData<Schema>(
@@ -251,13 +264,13 @@ class BladesTargetLink<Schema> {
  * Subclasses must override this method to apply their own defaults.
  *
  * @template Schema - The data schema required by the subclass.
- * @param {Partial<Schema>} schemaData - Schema data overriding the defaults.
+ * @param {Partial<Schema>} _schemaData - Schema data overriding the defaults.
  * @returns {Schema} - The schema data with defaults applied.
  * @throws {Error} - Throws an error if this method is not overridden in a subclass.
  */
   static ApplySchemaDefaults<Schema>(
     this: BladesTargetLink.StaticThisContext<Schema>,
-    schemaData: Partial<Schema>
+    _schemaData: Partial<Schema>
   ): Schema {
     throw new Error("[BladesTargetLink.ApplySchemaDefaults] Static Method ApplySchemaDefaults must be overridden in subclass");
   }
@@ -275,8 +288,8 @@ class BladesTargetLink<Schema> {
    * @throws {Error} - Throws an error if the initialization of the target link fails.
    */
   static async Create<C extends new(
-    config: BladesTargetLink.Config & Partial<Schema>,
-    parentLinkData?: BladesTargetLink.Data & Schema
+    configType: BladesTargetLink.Config & Partial<Schema>,
+    parentLinkDataType?: BladesTargetLink.Data & Schema
   ) => BladesTargetLink<Schema>, Schema>(
     this: C,
     config: BladesTargetLink.Config & Partial<Schema>,
@@ -291,12 +304,12 @@ class BladesTargetLink<Schema> {
   // #region GETTERS ~
   get isGM() {return game.user.isGM;}
 
-  private _id: IDString;
-  private _targetID: UUIDString;
-  private _targetKey?: TargetKey;
-  private _targetFlagKey?: TargetFlagKey;
-  private _isScopingById = true;
-  private _initialSchema: Schema;
+  private readonly _id: IDString;
+  private readonly _targetID: UUIDString;
+  private readonly _targetKey?: TargetKey;
+  private readonly _targetFlagKey?: TargetFlagKey;
+  private readonly _isScopingById = true;
+  private readonly _initialSchema: Schema;
 
   get id() { return this._id; }
   get targetID() { return this._targetID; }
@@ -354,7 +367,7 @@ class BladesTargetLink<Schema> {
   }
 
 
-  private _target: BladesLinkDoc;
+  private readonly _target: BladesLinkDoc;
   get target(): BladesLinkDoc { return this._target; }
 
   protected get localData(): BladesTargetLink.Data & Schema {
@@ -409,14 +422,14 @@ class BladesTargetLink<Schema> {
     if (subclassConstructor.IsValidData(dataOrConfig)) {
       // If a simple link data object was provided, acquire the schema from the source document
       ({linkData} = subclassConstructor.PartitionSchemaData(dataOrConfig));
-      const target = fromUuidSync(linkData.targetID);
-      if (!target) {
+      const linkTarget = fromUuidSync(linkData.targetID);
+      if (!linkTarget) {
         throw new Error(`[new BladesTargetLink()] Unable to resolve target from uuid '${linkData.targetID}'`);
       }
       if ("targetKey" in linkData) {
-        schema = getProperty(target, `${linkData.targetKey}.${linkData.id}`);
+        schema = getProperty(linkTarget, `${linkData.targetKey}.${linkData.id}`);
       } else {
-        schema = target.getFlag(C.SYSTEM_ID, `${linkData.targetFlagKey}.${linkData.id}`) as Schema;
+        schema = linkTarget.getFlag(C.SYSTEM_ID, `${linkData.targetFlagKey}.${linkData.id}`) as Schema;
       }
       // Set the isInitPromiseResolved flag to true
       this.isInitPromiseResolved = true;
@@ -427,7 +440,7 @@ class BladesTargetLink<Schema> {
       const parsedData = BladesTargetLink.#ParseConfigToData(
         dataOrConfig,
         parentLinkData
-      ) as BladesTargetLink.Data & Partial<Schema>;
+      );
 
       // Next we separate the linkData and the schemaData from the parsedData object.
       let partialSchema: Partial<Schema>;
@@ -456,7 +469,7 @@ class BladesTargetLink<Schema> {
   // #endregion
 
   // #region ASYNC UPDATE & DELETE METHODS ~
-  private getDotKeyToProp(prop: string|number|undefined, isNullifying = false): string {
+  private getDotKeyToProp(prop: Maybe<string|number>, isNullifying = false): string {
     if (this.targetKeyPrefix) {
       if (prop === undefined) {
         return isNullifying ? this.targetKeyNullPrefix as TargetKey : this.targetKeyPrefix;
@@ -472,11 +485,11 @@ class BladesTargetLink<Schema> {
     throw new Error("[BladesTargetLink.getDotKeyToProp()] Missing 'targetKeyPrefix' and 'targetFlagKeyPrefix'");
   }
 
-  private getFlagParamsToProp(prop: string|number|undefined) {
+  private getFlagParamsToProp(prop: Maybe<string|number>) {
     return [C.SYSTEM_ID, this.getDotKeyToProp(prop)] as const;
   }
 
-  private async updateTargetFlag(prop: string|number|undefined, val: unknown) {
+  private async updateTargetFlag(prop: Maybe<string|number>, val: unknown) {
     if (!this.targetFlagKeyPrefix) { return; }
     if (val === null) {
       await this.target.unsetFlag(...this.getFlagParamsToProp(prop));
@@ -542,7 +555,7 @@ class BladesTargetLink<Schema> {
           resolve();
         }).catch(reject);
       } else {
-        reject();
+        reject(new Error(`[BladesTargetLink.#updateTargetViaMerge] Unable to update target data for BladesTargetLink id '${this.id}': Missing both 'targetKeyPrefix' and 'targetFlagKeyPrefix'`));
       }
     });
 
@@ -553,7 +566,7 @@ class BladesTargetLink<Schema> {
     await U.waitFor(waitFor);
     if (this.targetKeyPrefix) {
       // First, prepend targetKeyPrefix or targetFlagKeyPrefix (as appropriate) to each key of updateData
-      updateData = U.objMap(updateData, false, (key) => `${this.targetKeyPrefix || this.targetFlagKeyPrefix}.${String(key)}`) as Record<string, unknown>;
+      updateData = U.objMap(updateData, false, (key) => `${this.targetKeyPrefix ?? this.targetFlagKeyPrefix}.${String(key)}`) as Record<string, unknown>;
       return this.target.update(updateData, {render: false});
     } else if (this.targetFlagKeyPrefix) {
       // We must retrieve the existing flag data, flattenObject it, then merge it with updateData
@@ -573,6 +586,8 @@ class BladesTargetLink<Schema> {
       return this.target.update({[`${this.targetKeyPrefix}.${prop}`]: val});
     } else if (this.targetFlagKeyPrefix) {
       return this.updateTargetFlag(prop, val);
+    } else {
+      throw new Error(`[BladesTargetLink.#updateTargetPropVal] Unable to update target data for BladesTargetLink id '${this.id}': Missing both 'targetKeyPrefix' and 'targetFlagKeyPrefix'`);
     }
   }
 
@@ -580,20 +595,19 @@ class BladesTargetLink<Schema> {
   async updateTarget(prop: string, val: unknown, waitFor?: Promise<unknown>|gsapAnim): Promise<unknown>
   async updateTarget(
     propOrData: string | Record<string, unknown>,
-    valOrWaitFor?: unknown | Promise<unknown>|gsapAnim,
+    valOrWaitFor?: unknown,
     waitFor?: Promise<unknown>|gsapAnim
   ): Promise<unknown> {
 
     // If the provided data is an object, we assume it is a full data object and we update the target with it.
     if (typeof propOrData === "string") {
-      if (getProperty(this.data, propOrData) === valOrWaitFor) { return; }
+      if (getProperty(this.data, propOrData) === valOrWaitFor) { return Promise.resolve(); }
       return this.#updateTargetPropVal(propOrData, valOrWaitFor, waitFor);
     }
     if (typeof propOrData === "object") {
       return this.#updateTargetViaMerge(propOrData, valOrWaitFor as Promise<unknown>|gsapAnim|undefined);
-    } else {
-      throw new Error(`[BladesTargetLink.updateTarget()] Bad updateData for id '${this.id}': ${propOrData}`);
     }
+    throw new Error(`[BladesTargetLink.updateTarget()] Bad updateData for id '${this.id}': ${propOrData}`);
   }
 
   async updateTargetData(val: Partial<Schema> | null, waitFor?: Promise<unknown>|gsapAnim) {

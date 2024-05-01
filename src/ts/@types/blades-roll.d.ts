@@ -11,6 +11,8 @@ import BladesTargetLink from "../classes/BladesTargetLink";
 
 declare global {
 
+  type RollResultOrNumber = RollResult|number;
+
   namespace BladesRollMod {
 
     // export type Value = string|number|string[];

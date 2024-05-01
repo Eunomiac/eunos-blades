@@ -1864,43 +1864,6 @@ const testFuncPerformance = (
 
   runFunc(); // Start the first call to 'func'
 };
-
-/**
- * Marks a backtrace for debugging purposes.
- *
- * @param caller - The calling class or function.
- * @param id - Optional ID string for the backtrace. If not provided, a new ID will be generated.
- * @returns The ID of the backtrace.
- */
-const markBackTrace = (caller: AnyClass, id?: IDString) => {
-  id ??= getID();
-  const stackTrace = new Error().stack?.split("\n").slice(1).join("\n") ?? `... StackTrace from ${caller.name} Unavailable ...`;
-  eLog.checkLog3(id ?? "backTrace", caller.name, {id, stackTrace});
-  _backTrace[id] = stackTrace;
-  return id;
-};
-
-/**
- * Runs a stack trace from the calling scope. If an ID is passed, it will be used to identify a previously-recorded trace from another scope. Both stack traces will be parsed and combined into a readable description of the caller's call chain.
- * @param caller - The calling class or function.
- * @param id - Optional ID string for a previously-recorded backtrace. If not provided, the standard stack trace will not be modified by a backtrace.
- * @returns The combined and parsed full stack trace of the caller's call chain.
- */
-const runBackTrace = (id?: IDString): string => {
-  const stackTrace = new Error().stack?.split("\n").slice(1).join("\n");
-  if (!stackTrace) { return "StackTrace Unavailable"; }
-  if (id && _backTrace[id]) {
-    const backTrace = _backTrace[id].split("\n");
-    const parsedTrace = stackTrace.split("\n").map((line, i) => {
-      if (backTrace[i]) {
-        return `${line} // ${backTrace[i]}`;
-      }
-      return line;
-    });
-    return parsedTrace.join("\n");
-  }
-  return stackTrace;
-};
 // #endregion
 
 // #region ░░░░░░░[GreenSock]░░░░ Wrappers for GreenSock Functions ░░░░░░░ ~
@@ -2242,7 +2205,7 @@ export default {
   extractComputedStyles, compareComputedStyles,
 
   // ████████ PERFORMANCE & DEBUG: Debugging Functions, Performance Testing & Metrics ████████
-  testFuncPerformance, markBackTrace, runBackTrace,
+  testFuncPerformance,
 
   // ░░░░░░░ GreenSock ░░░░░░░
   gsap, get, set, getGSAngleDelta, getNearestLabel, reverseRepeatingTimeline, /* to, from, fromTo, */
