@@ -9,6 +9,8 @@ eunos-blades/
 
 # IDE
 # dist/
+dist/packs
+
 
 .idea/
 .vs/
