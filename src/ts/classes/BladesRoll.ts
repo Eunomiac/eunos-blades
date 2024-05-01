@@ -583,16 +583,13 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
   get userStatus(): RollModStatus | undefined {return this.data.user_status;}
   set userStatus(val: RollModStatus | undefined) {
     if (val === this.userStatus) {return;}
-    // const {isRerendering} = this;
     if (!val || val === this.baseStatus) {
       val = null as unknown as undefined;
-    } else {
-      if (!game.user.isGM
-        && (BladesRollMod.GMOnlyModStatuses.includes(val)
-          || (this.userStatus && BladesRollMod.GMOnlyModStatuses.includes(this.userStatus)))
-      ) {
-        return;
-      }
+    } else if (!game.user.isGM
+      && (BladesRollMod.GMOnlyModStatuses.includes(val)
+        || (this.userStatus && BladesRollMod.GMOnlyModStatuses.includes(this.userStatus)))
+    ) {
+      return;
     }
     const oldStatus = this.statusReport;
     this.updateTarget("user_status", val).then(() => {
