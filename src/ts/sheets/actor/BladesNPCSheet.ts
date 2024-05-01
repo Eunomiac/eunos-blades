@@ -13,8 +13,8 @@ class BladesNPCSheet extends BladesActorSheet {
     });
   }
 
-  override getData() {
-    const context = super.getData() as ReturnType<BladesActorSheet["getData"]> & Record<string, unknown>;
+  override async getData() {
+    const context = await super.getData() as Awaited<ReturnType<BladesActorSheet["getData"]>> & Record<string, unknown>;
 
     context.isSubActor = context.actor.isSubActor;
     context.parentActor = context.actor.parentActor;
@@ -60,7 +60,7 @@ class BladesNPCSheet extends BladesActorSheet {
     return context;
   }
 
-  override activateListeners(html: JQuery<HTMLElement>) {
+  override activateListeners(html: JQuery) {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable

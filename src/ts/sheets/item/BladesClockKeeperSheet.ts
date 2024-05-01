@@ -4,7 +4,7 @@ import U from "../../core/utilities";
 import BladesItemSheet from "./BladesItemSheet";
 import BladesClockKeeper from "../../documents/items/BladesClockKeeper";
 // import U from "../../core/utilities";
-import {BladesItemType, ClockColor, ClockDisplayContext, ClockKeyUpdateAction} from "../../core/constants";
+import {BladesItemType, ClockColor, ClockDisplayContext} from "../../core/constants";
 import {BladesPC, BladesFaction} from "../../documents/BladesActorProxy";
 import BladesClockKey, {BladesClock} from "../../classes/BladesClockKey";
 
@@ -30,8 +30,8 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     ]);
   }
 
-  override getData() {
-    const context = super.getData();
+  override async getData() {
+    const context = await super.getData();
 
     const sheetData: BladesItemDataOfType<BladesItemType.clock_keeper> = {
   currentScene:     game.scenes.current.id,
@@ -42,7 +42,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       factions:        Array.from(BladesFaction.All)
     };
 
-    return {...context, ...sheetData} as BladesItemSheetData;
+    return {...context, ...sheetData};
   }
 
   addKey(event: MouseEvent) {
@@ -96,7 +96,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     }
   }
 
-  override async activateListeners(html: JQuery<HTMLElement>) {
+  override async activateListeners(html: JQuery) {
     await super.activateListeners(html);
 
     // *** CREATE CLOCK KEY *** ~
@@ -153,7 +153,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
 
     // #region isOnDisplay === TRUE OR FALSE (Conditional Animation Checks Required) ~
     clockKeyControls$.find("[data-action=\"toggle-name-visibility\"]")
-      .each((i, elem) => {
+      .each((_i, elem) => {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-key-control-flipper");
         elem$.on({
@@ -184,7 +184,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       });
 
     clockKeyControls$.find("[data-action=\"toggle-spotlight\"]")
-      .each((i, elem) => {
+      .each((_i, elem) => {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-key-control-flipper");
         elem$.on({
@@ -216,7 +216,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
 
     // #region isOnDisplay === TRUE ~
     clockKeyControls$.find("[data-action=\"pull-clock-key\"]")
-      .each((i, elem) => {
+      .each((_i, elem) => {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-key-control-flipper");
         elem$.on({
@@ -233,7 +233,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
 
     // #region isOnDisplay === FALSE ~
     clockKeyControls$.find("[data-action=\"drop-clock-key\"]")
-      .each((i, elem) => {
+      .each((_i, elem) => {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-key-control-flipper");
         elem$.on({
@@ -305,7 +305,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
     // #region isOnDisplay === TRUE OR FALSE (Conditional Animation Checks Required) ~
 
     clockControls$.find("[data-action=\"toggle-visible\"]")
-      .each((i, elem) => {
+      .each((_i, elem) => {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({
@@ -335,13 +335,13 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       });
 
     clockControls$.find("[data-action=\"toggle-active\"]")
-      .each((i, elem) => {
+      .each((_i, elem) => {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({
           click: async (event: ClickEvent) => {
             event.preventDefault();
-            const [clockKey, clock] = getClockFromEvent(event);
+            const [_key, clock] = getClockFromEvent(event);
             const isActive = !clock.isActive;
             clock.updateTarget("isActive", isActive);
 
@@ -365,7 +365,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       });
 
     clockControls$.find("[data-action=\"toggle-name-visibility\"]")
-      .each((i, elem) => {
+      .each((_i, elem) => {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({
@@ -395,13 +395,13 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       });
 
     clockControls$.find("[data-action=\"toggle-highlight\"]")
-      .each((i, elem) => {
+      .each((_i, elem) => {
         const elem$ = $(elem as HTMLButtonElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({
           click: async (event: ClickEvent) => {
             event.preventDefault();
-            const [clockKey, clock] = getClockFromEvent(event);
+            const [_key, clock] = getClockFromEvent(event);
             const isHighlighted = !clock.isHighlighted;
             clock.updateTarget("isHighlighted", isHighlighted);
 
@@ -426,13 +426,13 @@ class BladesClockKeeperSheet extends BladesItemSheet {
 
     // #region isOnDisplay === TRUE ~
     clockControls$.find("[data-action=\"change-segments\"]")
-      .each((i, elem) => {
+      .each((_i, elem) => {
         const elem$ = $(elem as HTMLInputElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({
           click: async (event: ClickEvent) => {
             event.preventDefault();
-            const [clockKey, clock] = getClockFromEvent(event);
+            const [_key, clock] = getClockFromEvent(event);
             const delta = U.pInt($(event.currentTarget).data("value"));
             const finalVal = U.gsap.utils.clamp(0, clock.max, clock.value + delta);
 
@@ -453,7 +453,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
 
     // #region isOnDisplay === FALSE ~
     clockControls$.find("select.clock-control-select")
-      .each((i, elem) => {
+      .each((_i, elem) => {
         const elem$ = $(elem as HTMLSelectElement);
         if (elem$.hasClass("clock-select-color")) {
           // this.setSelectColor(elem$);
@@ -476,7 +476,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       });
 
     clockControls$.find("input.clock-input:not([readonly])")
-      .each((i, elem) => {
+      .each((_i, elem) => {
         const elem$ = $(elem as HTMLInputElement);
         const control$ = elem$.closest(".clock-control-flipper");
         elem$.on({

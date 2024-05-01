@@ -4,7 +4,6 @@ import U from "../../core/utilities";
 import G, {ApplyTooltipAnimations} from "../../core/gsap";
 import BladesActor from "../../BladesActor";
 import BladesItem from "../../BladesItem";
-import {BladesProject} from "../../documents/BladesItemProxy";
 import BladesActiveEffect from "../../documents/BladesActiveEffect";
 // import {ApplyClockListeners} from "../../classes/BladesClocks";
 /* eslint-enable @typescript-eslint/no-unused-vars */
@@ -31,13 +30,13 @@ class BladesItemSheet extends ItemSheet {
 
   // override async getData() {
 
-  override getData() {
-    const context = super.getData();
+  override async getData() {
+    const context = await super.getData();
 
     const sheetData: Partial<BladesItemSheetData> = {
       cssClass:       this.item.type,
       editable:       this.options.editable,
-      isGM:           (game.eunoblades.Tracker?.system.is_spoofing_player ? false : Boolean(game.user.isGM)) as boolean,
+      isGM:           game.eunoblades.Tracker?.system.is_spoofing_player ? false : Boolean(game.user.isGM),
       isEmbeddedItem: Boolean(this.item.parent),
       item:           this.item,
       system:         this.item.system,
@@ -294,7 +293,7 @@ class BladesItemSheet extends ItemSheet {
 
   /* -------------------------------------------- */
 
-  private addDotlineListeners(html: JQuery<HTMLElement>) {
+  private addDotlineListeners(html: JQuery) {
     html.find(".dotline").each((__, elem) => {
       if ($(elem).hasClass("locked")) { return; }
 
@@ -334,8 +333,8 @@ class BladesItemSheet extends ItemSheet {
     });
   }
 
-  override async activateListeners(html: JQuery<HTMLElement>) {
-    await super.activateListeners(html);
+  override async activateListeners(html: JQuery) {
+    super.activateListeners(html);
     const self = this;
 
     Tags.InitListeners(html, this.item);

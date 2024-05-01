@@ -7,14 +7,13 @@ import C, {BladesActorType, BladesPhase, BladesItemType, DowntimeAction, Attribu
 import Tags from "../../core/tags";
 import {BladesActor, BladesPC, BladesCrew} from "../../documents/BladesActorProxy";
 import {BladesItem, BladesProject} from "../../documents/BladesItemProxy";
-import BladesClockKey from "../../classes/BladesClockKey";
 import BladesDialog, {SelectionCategory} from "../../classes/BladesDialog";
 import BladesActiveEffect from "../../documents/BladesActiveEffect";
-import BladesRoll, {BladesRollPrimary, BladesRollOpposition, BladesActionRoll, BladesResistanceRoll, BladesFortuneRoll, BladesIndulgeViceRoll} from "../../classes/BladesRoll";
+import {BladesRollPrimary, BladesRollOpposition, BladesActionRoll, BladesFortuneRoll, BladesIndulgeViceRoll} from "../../classes/BladesRoll";
 // #endregion
 // #region TYPES: BladesCompData ~
 type BladesCompData = {
-  elem$: JQuery<HTMLElement>;
+  elem$: JQuery;
   docID?: string;
   docCat?: SelectionCategory;
   docType?: "Actor" | "Item";
@@ -34,10 +33,10 @@ class BladesActorSheet extends ActorSheet {
    *                 hasFullVision, hasLimitedVision, hasControl, preparedItems.
    * @returns {BladesActorSheetData} The data object for the actor sheet.
    */
-  override getData() {
+  override async getData() {
 
     // Get the base data context from the parent class.
-    const context = super.getData();
+    const context = await super.getData();
 
     // Prepare additional data specific to this actor's sheet.
     const sheetData: DeepPartial<BladesActorSheetData> = {
@@ -184,7 +183,7 @@ class BladesActorSheet extends ActorSheet {
 
   // #region LISTENERS & EVENT HANDLERS
 
-  override activateListeners(html: JQuery<HTMLElement>) {
+  override activateListeners(html: JQuery) {
     super.activateListeners(html);
 
     // Handle removal or revealing of secret information content.
@@ -410,7 +409,7 @@ class BladesActorSheet extends ActorSheet {
     if (!doc) {
       return;
     }
-    await G.effects.blurRemove(elem$).then(async () => await doc.delete());
+    await G.effects.blurRemove(elem$).then(async () => doc.delete());
   }
 
   async _onItemToggleClick(event: ClickEvent) {

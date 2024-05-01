@@ -53,12 +53,15 @@ declare global {
 
   declare class ObjectField extends foundry.data.fields.OBJECT_FIELD { }
 
+  let _backTrace: List<string, IDString>;
 
   declare function fromUuidSync(uuid: string, options?: {
     relative?: Document,
     invalid?: boolean,
     strict?: boolean
   }): BladesDoc | null;
+
+  declare function randomID(): IDString;
 
   declare namespace EunoBlades {
 
@@ -75,7 +78,7 @@ declare global {
         models: Partial<Record<BladesAI.Usage, string>>,
         fileID: string
       }
-    };
+    }
 
     export interface Game {
       ClockKeeper: BladesClockKeeper,
@@ -128,7 +131,7 @@ declare global {
 
   // GreenSock Accessor Object
   declare const gsap: gsap;
-  type BladesTweenTarget = JQuery<HTMLElement> | gsap.TweenTarget;
+  type BladesTweenTarget = JQuery | gsap.TweenTarget;
 
   // Global Debugger/Logger
   type eLogParams = [string, ...unknown[]];

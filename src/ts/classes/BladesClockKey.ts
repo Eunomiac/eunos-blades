@@ -1,34 +1,33 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import C, {ClockKey_SVGDATA, ClockKeySVGData, ClockDisplayContext, BladesActorType, BladesItemType, ClockColor, ClockKeyDisplayMode, Factor} from "../core/constants";
+import C, {ClockKey_SVGDATA, ClockKeySVGData, ClockDisplayContext, BladesActorType, BladesItemType, ClockColor, ClockKeyDisplayMode} from "../core/constants";
 import {Dragger} from "../core/gsap";
 import BladesTargetLink from "./BladesTargetLink";
 import U from "../core/utilities";
-import {BladesActor, BladesPC, BladesFaction} from "../documents/BladesActorProxy";
+import {BladesActor, BladesFaction} from "../documents/BladesActorProxy";
 import {BladesItem, BladesClockKeeper, BladesProject, BladesScore} from "../documents/BladesItemProxy";
-import BladesRoll from "./BladesRoll";
 
 export type ClockElems$ = {
-  clockElem$: JQuery<HTMLElement>,
-  clockContainer$: JQuery<HTMLElement>,
-  clockLabel$: JQuery<HTMLElement>,
-  cover$: JQuery<HTMLElement>,
-  bg$: JQuery<HTMLElement>,
-  frame$: JQuery<HTMLElement>,
-  fill$: JQuery<HTMLElement>,
-  glow$: JQuery<HTMLElement>,
-  oneSegments$: JQuery<HTMLElement>
+  clockElem$: JQuery,
+  clockContainer$: JQuery,
+  clockLabel$: JQuery,
+  cover$: JQuery,
+  bg$: JQuery,
+  frame$: JQuery,
+  fill$: JQuery,
+  glow$: JQuery,
+  oneSegments$: JQuery
 }
 
 export type ClockKeyElems$ = {
-  elem$: JQuery<HTMLElement>,
-  container$: JQuery<HTMLElement>,
-  imgContainer$: JQuery<HTMLElement>,
-  label$: JQuery<HTMLElement>,
+  elem$: JQuery,
+  container$: JQuery,
+  imgContainer$: JQuery,
+  label$: JQuery,
   clocks: Record<IDString, ClockElems$>,
 
-  factionLabel$?: JQuery<HTMLElement>,
-  projectLabel$?: JQuery<HTMLElement>,
-  scoreLabel$?: JQuery<HTMLElement>,
+  factionLabel$?: JQuery,
+  projectLabel$?: JQuery,
+  scoreLabel$?: JQuery,
 };
 
 function isElemPosData(obj: unknown): obj is ElemPosData {
@@ -143,7 +142,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
       );
     } else if (tempLink.targetFlagKeyPrefix) {
       config.clocksData = Object.fromEntries(clocksInitialData
-        .map((cSchema, i) => {
+        .map((cSchema) => {
           const cData = BladesClock.ParseConfigToData({
             ...BladesClock.ApplySchemaDefaults(cSchema),
             targetID:      tempLink.targetID,
@@ -173,7 +172,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     return clockKey as C;
   }
 
-  static GetFromElement(elem: HTMLElement | JQuery<HTMLElement>): BladesClockKey | undefined {
+  static GetFromElement(elem: HTMLElement | JQuery): BladesClockKey | undefined {
     const keyElem$ = $(elem).closest(".clock-key-container").find(".clock-key");
     if (keyElem$.length === 0) {return undefined;}
     const clockKeyID = keyElem$.attr("id");
@@ -237,9 +236,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     return new Collection(
       Object.entries(this.clocksData)
         .sort((a, b) => a[1].index - b[1].index)
-        .map(([id, data]) => {
-          return [id, new BladesClock(data)];
-        })
+        .map(([id, data]) => [id, new BladesClock(data)] as [IDString, BladesClock])
     );
   }
 
@@ -353,11 +350,9 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
    * containing those BladesClock instances that appear in ALL provided arrays.
    */
   getClocksIn(...clockArrays: BladesClock[][]): BladesClock[] {
-    if (clockArrays.length === 0) return [];
+    if (clockArrays.length === 0) { return []; }
 
-    return clockArrays.reduce((acc, currentArray) => {
-      return acc.filter((clock) => currentArray.includes(clock));
-    });
+    return clockArrays.reduce((acc, currentArray) => acc.filter((clock) => currentArray.includes(clock)));
   }
 
   /** This function accepts an array of BladesClock, and returns the BladesClock
@@ -365,7 +360,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
    */
   getEarliestClock(clockArray: BladesClock[]): BladesClock | undefined {
     if (clockArray.length) {
-      return clockArray.sort((a, b) => a.index - b.index)[0] as BladesClock;
+      return clockArray.toSorted((a, b) => a.index - b.index)[0];
     }
     return undefined;
   }
@@ -374,7 +369,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
    */
   getLatestClock(clockArray: BladesClock[]): BladesClock | undefined {
     if (clockArray.length) {
-      return clockArray.sort((a, b) => b.index - a.index)[0] as BladesClock;
+      return clockArray.toSorted((a, b) => b.index - a.index)[0];
     }
     return undefined;
   }
@@ -457,8 +452,8 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   // #region HTML INTERACTION ~
 
   // #region Get Elements$ ~
-  private getElemFromDisplayContext(displayContext: ClockDisplayContext): JQuery<HTMLElement> {
-    let elem$: JQuery<HTMLElement>;
+  private getElemFromDisplayContext(displayContext: ClockDisplayContext): JQuery {
+    let elem$: JQuery;
     const DOM$ = $(".vtt.game.system-eunos-blades");
     switch (displayContext) {
       case ClockDisplayContext.overlay: {
@@ -498,8 +493,8 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     return elem$;
   }
 
-  getElements$(displayContext: ClockDisplayContext | HTMLElement | JQuery<HTMLElement>): ClockKeyElems$ {
-    let elem$: JQuery<HTMLElement>;
+  getElements$(displayContext: ClockDisplayContext | HTMLElement | JQuery): ClockKeyElems$ {
+    let elem$: JQuery;
     if (typeof displayContext === "string") {
       displayContext = this.getElemFromDisplayContext(displayContext);
     }
@@ -510,7 +505,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     }
 
     if (!elem$?.length) {
-      throw new Error(`[BladesClockKey.getElements$] Cannot find elements for display context '${displayContext}' of clockKey '${this.id}'.`);
+      throw new Error(`[BladesClockKey.getElements$] Cannot find elements for display context '${String(displayContext)}' of clockKey '${this.id}'.`);
     }
 
     // Using elem$ as a reference, locate relevant clock key elements and return them in a dictionary.
@@ -555,7 +550,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
 
   // #region Initial Rendering ~
   public async renderTo(
-    parentElem: HTMLElement | JQuery<HTMLElement>
+    parentElem: HTMLElement | JQuery
   ) {
     const parent$ = $(parentElem);
     if (!parent$.length) {throw new Error(`[BladesClockKey.renderClockKeyTo] Error parent element not provided for key '${this.id}'.`);}
@@ -578,10 +573,10 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
    * - "presentN" (where N is a clock index number) - zooms in to the clock at index N, and presents whichever side has the next available segment towards the camera.
    * - A clock index number - zooms in to the clock at index N
    *
-   * @param {HTMLElement | JQuery<HTMLElement> | {x: number, y: number, width: number, height: number}} [container$] - The container within which the key will be displayed.
+   * @param {HTMLElement | JQuery | {x: number, y: number, width: number, height: number}} [container$] - The container within which the key will be displayed.
    * This can be:
    * - An HTMLElement
-   * - A JQuery<HTMLElement>
+   * - A JQuery
    * - A {x, y, width, height} position definition
    * If not provided, it defaults to the clock key's container element (only if the key is already rendered in the DOM).
    *
@@ -597,7 +592,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   getVarsForDisplayMode(
     keyElems$: ClockKeyElems$,
     displayMode: ClockKeyDisplayMode|ClockIndex = ClockKeyDisplayMode.full,
-    container$?: HTMLElement | JQuery<HTMLElement> | ElemPosData
+    container$?: HTMLElement | JQuery | ElemPosData
   ): {keyTweenVars: gsap.TweenVars, keyImgContTweenVars: gsap.TweenVars} {
 
     const keyTweenVars: gsap.TweenVars = {};
@@ -608,7 +603,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     // === TARGET CONTAINER ELEMENT ===
     // container$ refers to the element that the desired clocks will be made to fit within, and can be either an
     //   HTMLElement (or JQuery reference to such), or an Element Position object ({x, y, height, width}).
-    // We first convert any HTMLElements or JQuery<HTMLElement>s to an Element Position object:
+    // We first convert any HTMLElements or JQuerys to an Element Position object:
 
     let targetPosData: ElemPosData;
     if (container$ instanceof HTMLElement || container$ instanceof jQuery) {
@@ -622,7 +617,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     } else if (isElemPosData(container$)) {
       targetPosData = container$;
     } else {
-      throw new Error(`[BladesClockKey.getVarsForDisplayMode] Error container$ '${container$}' is not a valid type.`);
+      throw new Error(`[BladesClockKey.getVarsForDisplayMode] Error container$ '${String(container$)}' is not a valid type.`);
     }
 
     // === TARGET FOCUS AREA ===
@@ -774,7 +769,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
         projectLabel$ ? [projectLabel$, 2, 2] : undefined,
         scoreLabel$ ? [scoreLabel$, 2, 2] : undefined,
         ...this.clocks.map((clock) => [clocks[clock.id].clockLabel$, 2.5, 3])
-      ].filter(Boolean) as Array<[JQuery<HTMLElement>, number, number]>
+      ].filter(Boolean) as Array<[JQuery, number, number]>
     ).forEach(([labelElem$, aspectRatio, maxLines]) => {
       U.adjustTextContainerAspectRatio(labelElem$, aspectRatio, maxLines);
     });
@@ -794,7 +789,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   }
 
   public initElementsInContext(
-    html: JQuery<HTMLElement>,
+    html: JQuery,
     displayMode?: ClockKeyDisplayMode|ClockIndex,
     isUpdatingTarget = true
   ) {
@@ -860,7 +855,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     };
   }
 
-  isInOverlay(elem: HTMLElement | JQuery<HTMLElement>) {
+  isInOverlay(elem: HTMLElement | JQuery) {
     return $(elem).hasClass(".overlay-section") || $(elem).closest(".overlay-section").length > 0;
   }
 
@@ -881,7 +876,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     this.positionDragger?.kill();
     delete this.positionDragger;
   }
-  spawnPositionDragger(containerElem$: HTMLElement | JQuery<HTMLElement> = game.eunoblades.Director.clockKeySection$) {
+  spawnPositionDragger(containerElem$: HTMLElement | JQuery = game.eunoblades.Director.clockKeySection$) {
     const self = this;
     if (this.positionDragger) {
       this.removePositionDragger();
@@ -1100,7 +1095,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     .then(() => { this.parentKey.renderTargetAndKeeper(); });
   }
 
-  get color(): ClockColor {return this.data.color as ClockColor ?? ClockColor.white;}
+  get color(): ClockColor {return this.data.color ?? ClockColor.white;}
   set color(val: ClockColor) {this.updateTarget("color", val)
     .then(() => { this.parentKey.renderTargetAndKeeper(); });
   }
@@ -1192,8 +1187,8 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
   // #endregion
 
   // #region HTML INTERACTION ~
-  private getElemFromDisplayContext(displayContext: ClockDisplayContext): JQuery<HTMLElement> {
-    let elem$: JQuery<HTMLElement>;
+  private getElemFromDisplayContext(displayContext: ClockDisplayContext): JQuery {
+    let elem$: JQuery;
     const DOM$ = $(".vtt.game.system-eunos-blades");
     switch (displayContext) {
       case ClockDisplayContext.overlay: {
@@ -1233,8 +1228,8 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     return elem$;
   }
 
-  getElements$(displayContext: ClockDisplayContext | HTMLElement | JQuery<HTMLElement>): ClockElems$ {
-    let elem$: JQuery<HTMLElement>;
+  getElements$(displayContext: ClockDisplayContext | HTMLElement | JQuery): ClockElems$ {
+    let elem$: JQuery;
     if (typeof displayContext === "string") {
       displayContext = this.getElemFromDisplayContext(displayContext);
     }
@@ -1245,7 +1240,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     }
 
     if (!elem$?.length) {
-      throw new Error(`[BladesClock.getElements$] Cannot find elements for display context '${displayContext}' of clock '${this.id}' of key '${this.parentKey.id}'.`);
+      throw new Error(`[BladesClock.getElements$] Cannot find elements for display context '${String(displayContext)}' of clock '${this.id}' of key '${this.parentKey.id}'.`);
     }
 
     // Using elem$ as a reference, locate relevant clock elements and return them in a dictionary.
@@ -1294,10 +1289,10 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
   reveal_Animation(clockElems$: ClockElems$, callback?: () => void) {
     // Identify elements for fading in
-    const fadeInElements: Array<JQuery<HTMLElement>> = [
+    const fadeInElements: JQuery[] = [
       clockElems$.frame$,
       clockElems$.fill$
-    ].filter((el$) => el$ !== undefined) as Array<JQuery<HTMLElement>>;
+    ].filter((el$) => el$ !== undefined);
 
     // Construct timeline for revealing clock
     const tl = U.gsap.timeline({
@@ -1364,10 +1359,10 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
 
   hide_Animation(clockElems$: ClockElems$, callback?: () => void) {
     // Identify elements for fading out
-    const fadeOutElements: Array<JQuery<HTMLElement>> = [
+    const fadeOutElements: JQuery[] = [
       clockElems$.frame$,
       clockElems$.fill$
-    ].filter((el$) => el$ !== undefined) as Array<JQuery<HTMLElement>>;
+    ].filter((el$) => el$ !== undefined);
 
     // Construct timeline for hiding clock
     const tl = U.gsap.timeline({
@@ -1578,7 +1573,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     return oneSegsToAnimate;
   }
 
-  changeSegments_Animation(clockElems$: ClockElems$, startVal: number, endVal: number, callback?: () => void) {
+  changeSegments_Animation(clockElems$: ClockElems$, startVal: number, endVal: number) {
     startVal = U.gsap.utils.clamp(0, this.max, startVal);
     endVal = U.gsap.utils.clamp(0, this.max, endVal);
     let delta = endVal - startVal;

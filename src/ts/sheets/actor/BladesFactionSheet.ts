@@ -53,7 +53,7 @@ class BladesFactionSheet extends BladesActorSheet {
     this.actor.deleteClock(clockID);
   }
 
-  override activateListeners(html: JQuery<HTMLElement>) {
+  override activateListeners(html: JQuery) {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable

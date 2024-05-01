@@ -145,6 +145,12 @@ const UUIDLOG: Array<[string, string, number]> = [];
 
 // #endregion ▮▮▮▮[HELPERS]▮▮▮▮
 
+// #region █████████████████ INITIALIZATION ███████████████████████
+const Initialize = async () => {
+  Object.assign(globalThis, {_backTrace: {} });
+};
+// #endregion ▄▄▄▄▄ INITIALIZATION ▄▄▄▄▄
+
 // #region ████████ GETTERS: Basic Data Lookup & Retrieval ████████ ~
 // @ts-expect-error Leauge of foundry developers is wrong about user not being on game.
 const GMID = (): string | false => game?.user?.find((user) => user.isGM)?.id ?? false;
@@ -171,6 +177,7 @@ const isHTMLCode = (ref: unknown): ref is HTMLCode => typeof ref === "string" &&
 const isHexColor = (ref: unknown): ref is HEXColor => typeof ref === "string" && /^#(([0-9a-fA-F]{2}){3,4}|[0-9a-fA-F]{3,4})$/.test(ref);
 const isRGBColor = (ref: unknown): ref is RGBColor => typeof ref === "string" && /^rgba?\((\d{1,3},\s*){1,2}?\d{1,3},\s*\d{1,3}(\.\d+)?\)$/.test(ref);
 const isUndefined = (ref: unknown): ref is undefined => ref === undefined;
+const isNullOrUndefined = (ref: unknown): ref is null | undefined => ref === null || ref === undefined;
 const isDefined = <T>(ref: T): ref is T & (null | NonNullable<T>) => !isUndefined(ref);
 const isEmpty = (ref: Record<key, unknown> | unknown[]): boolean => Object.keys(ref).length === 0;
 const hasItems = (ref: Index): boolean => !isEmpty(ref);
@@ -216,77 +223,78 @@ function assertNonNullType<T>(
     throw new Error(`Value ${valStr} is not a ${type.name}!`);
   }
 }
+
+
 /**
- * Checks if two values are "fuzzy" equal, simulating the behavior of the "==" operator.
- * This function does not use the "==" operator directly to comply with linting rules.
- *
- * @param {unknown} val1 The first value to compare.
- * @param {unknown} val2 The second value to compare.
- * @returns {boolean} True if the values are "fuzzy" equal, false otherwise.
+ * Checks if multiple values are fuzzy equal.
+ * @param {...unknown[]} refs - The values to compare.
+ * @returns {boolean} - True if all values are fuzzy equal, false otherwise.
  */
-const areFuzzyEqual = (val1: unknown, val2: unknown): boolean => {
-  // If both values are null or undefined, they are considered equal
-  if (
-    ([null, undefined] as unknown[]).includes(val1)
-    && ([null, undefined] as unknown[]).includes(val2)
-  ) { return true; }
+const areFuzzyEqual = (...refs: unknown[]) => {
 
-  // If only one of the values is null or undefined, they are not equal
-  if (
-    ([null, undefined] as unknown[]).includes(val1)
-    || ([null, undefined] as unknown[]).includes(val2)
-  ) { return false; }
+  const _areFuzzyEqual = (val1: unknown, val2: unknown): boolean => {
+    if (val1 === val2) {
+      return true;
+    }
 
-  // If both values are numbers, they are considered equal if they are numerically equal
-  if (typeof val1 === "number" && typeof val2 === "number") { return val1 === val2; }
+    // If any of the values are either null or undefined, they are considered equal only if both are null or undefined
+    if (isNullOrUndefined(val1) || isNullOrUndefined(val2)) {
+      return isNullOrUndefined(val1 ?? val2);
+    }
 
-  // If both values are booleans, they are considered equal if they are both true or both false
-  if (typeof val1 === "boolean" && typeof val2 === "boolean") { return val1 === val2; }
+    // If the values are both of the same type, they are considered equal if their values are equal
+    if (typeof val1 === typeof val2) {
+      return val1 === val2;
+    }
 
-  // If both values are strings, they are considered equal if they are identical
-  if (typeof val1 === "string" && typeof val2 === "string") { return val1 === val2; }
+    // If one value is a number, they are considered equal if the other can be converted to the same number.
+    if ([val1, val2].some((v) => typeof v === "number")) {
+      return Number(typeof val1 === "boolean" ? NaN : val1) === Number(typeof val2 === "boolean" ? NaN : val2);
+    }
 
-  // If one value is a number and the other is a string, they are considered
-  //                         equal if the string can be converted to the number
-  if (typeof val1 === "number" && typeof val2 === "string") { return val1 === Number(val2); }
-  if (typeof val1 === "string" && typeof val2 === "number") { return Number(val1) === val2; }
+    // If one value is a boolean and the other is a string, an empty string equals false, and a non-empty string equals true.
+    if (
+      [val1, val2].some((v) => typeof v === "boolean")
+      && [val1, val2].some((v) => typeof v === "string")
+    ) {
+      return Boolean((val1 && val2 !== "") || (!val1 && val2 === ""));
+    }
 
-  // If one value is a boolean and the other is a non-null object, they are not equal
-  if (typeof val1 === "boolean" && typeof val2 === "object") { return false; }
-  if (typeof val1 === "object" && typeof val2 === "boolean") { return false; }
+    // If none of the above conditions are met, the values are not equal
+    return false;
+  };
 
-  // If one value is a boolean and the other is a string, they are considered equal ID:
-  //      ... the boolean is true and the string is not empty, or
-  //      ... the boolean is false and the string is empty
-  if (
-    typeof val1 === "boolean"
-    && typeof val2 === "string"
-  ) { return (val1 && val2 !== "") || (!val1 && val2 === ""); }
-  if (
-    typeof val1 === "string"
-    && typeof val2 === "boolean"
-  ) { return (val2 && val1 !== "") || (!val2 && val1 === ""); }
-
-  // If one value is a number or a string and the other is an object, they are not equal
-  if ((typeof val1 === "number" || typeof val1 === "string") && typeof val2 === "object") { return false; }
-  if (typeof val1 === "object" && (typeof val2 === "number" || typeof val2 === "string")) { return false; }
-
-  // If both values are objects, they are considered equal if they are identical
-  if (typeof val1 === "object" && typeof val2 === "object") { return val1 === val2; }
-
-  // If none of the above conditions are met, the values are not equal
-  return false;
-};
-
-const areEqual = (...refs: unknown[]) => {
   do {
     const ref = refs.pop();
-    if (refs.length && !areFuzzyEqual(ref, refs[0])) {
+    if (refs.length && !_areFuzzyEqual(ref, refs[0])) {
       return false;
     }
   } while (refs.length);
   return true;
 };
+
+/**
+ * Checks if all provided values of any type are identical in type and form
+ *  (e.g. two different objects are considered equal if all of their properties and values are equal).
+ *
+ * @param {...unknown[]} refs - The values to compare.
+ * @returns {boolean} True if all values are identical in form, false otherwise.
+ */
+const areEqual = (...refs: unknown[]) => {
+  const _areEqual = (val1: unknown, val2: unknown): boolean => {
+    if (typeof val1 !== typeof val2) { return false; }
+    if (val1 === val2) { return true; }
+    if (isNullOrUndefined(val1) || isNullOrUndefined(val2)) { return isNullOrUndefined(val1 ?? val2); }
+    return false;
+  };
+
+  do {
+    const ref = refs.pop();
+    if (refs.length && !_areEqual(ref, refs[0])) { return false; }
+  } while (refs.length);
+  return true;
+};
+
 const pFloat = (ref: unknown, sigDigits?: posInt, isStrict = false): number => {
   if (typeof ref === "string") {
     ref = parseFloat(ref);
@@ -344,6 +352,19 @@ const FILTERS = {
   IsInstance: ((classRef: unknown) => ((item: unknown) => typeof classRef === "function" && item instanceof classRef))
 };
 // #endregion ▄▄▄▄▄ TYPES ▄▄▄▄▄
+
+// #region ████████ BOOLEAN: Combining & Manipulating Boolean Tests ████████
+
+// A combining test function that accepts an array of unknown values and a single-value test function. It will return 'true' if the test function passes for all values.
+const checkAll = <T>(items: T[], test: (item: T) => boolean): boolean => items.every(test);
+
+// A combining test function that accepts an array of unknown values and a single-value test function. It will return 'true' if the test function passes for at least one value.
+const checkAny = <T>(items: T[], test: (item: T) => boolean): boolean => items.some(test);
+
+// A combining test function that accepts an array of unknown values and a single-value test function. It will return 'true' if the test function fails for all values.
+const checkAllFail = <T>(items: T[], test: (item: T) => boolean): boolean => !checkAny(items, test);
+
+// #endregion ▄▄▄▄▄ BOOLEAN ▄▄▄▄▄
 
 // #region ████████ STRINGS: String Parsing, Manipulation, Conversion, Regular Expressions ████████
 // #region ░░░░░░░[Case Conversion]░░░░ Upper, Lower, Sentence & Title Case ░░░░░░░ ~
@@ -607,6 +628,7 @@ const getUID = (id: string): string => {
   Object.assign(globalThis, {UUIDLOG});
   return uuid;
 };
+const getID = (): IDString => randomID() as IDString;
 // #endregion ░░░░[Content]░░░░
 // #endregion ▄▄▄▄▄ STRINGS ▄▄▄▄▄
 
@@ -1090,8 +1112,9 @@ function objMap<T extends Record<PropertyKey, unknown> | unknown[]>(
   }
 
   return Object.fromEntries(Object.entries(obj).map(([key, val]) => {
-    assertNonNullType(valFuncTyped, "function");
-    return [(keyFuncTyped as mapFunc<keyFunc>)(key, val), valFuncTyped(val, key)];
+    assertNonNullType<mapFunc<valFunc>>(valFuncTyped, "function");
+    assertNonNullType<mapFunc<keyFunc>>(keyFuncTyped, "function");
+    return [keyFuncTyped(key, val), valFuncTyped(val, key)];
   })) as T;
 }
 /**
@@ -1238,8 +1261,12 @@ function objMerge<Tx, Ty>(
   // Clone the target if mutation is not allowed
   target = isMutatingOk ? target : objClone(target, isStrictlySafe);
 
-  // If source is an instance of  or target is undefined, return source
-  if ((source && typeof source === "object" && "id" in source && isDocID(source.id)) || isUndefined(target)) {
+  // If source is an instance of or target is undefined, return source
+  if (source && typeof source === "object" && "id" in source && isDocID(source.id)) {
+    return source as unknown as Tx & Ty;
+  }
+
+  if (isUndefined(target)) {
     return source as unknown as Tx & Ty;
   }
 
@@ -1488,7 +1515,7 @@ const changeContainer = (elem: HTMLElement, container: HTMLElement, isCloning = 
  * Adjusts the aspect ratio of a text container to match a target ratio by modifying its font size and line height.
  * This function recursively adjusts the font size and line height until the container's aspect ratio or maximum dimensions are met.
  *
- * @param {HTMLElement|JQuery<HTMLElement>} textContainer - The text container element or jQuery object to adjust.
+ * @param {HTMLElement|JQuery} textContainer - The text container element or jQuery object to adjust.
  * @param {number} targetRatio - The target aspect ratio (width / height) to achieve.
  * @param {number} [maxHeight] - Optional maximum height for the text container.
  * @param {number} [maxWidth] - Optional maximum width for the text container.
@@ -1554,33 +1581,34 @@ const adjustTextContainerAspectRatio = (
   let isAtMaxLineCount = false;
 
   // Loop to find the best width that matches the target aspect ratio
-  for (let lines = 1; ; lines++) {
+  let lines = 1;
+  let isContinuing = true;
+  while (isContinuing) {
     const expectedHeight = lineHeight * lines;
     const expectedWidth = initialWidth / lines;
     const expectedRatio = expectedWidth / expectedHeight;
 
     // Break the loop if the expected ratio is less than the target ratio
     if (expectedRatio < targetRatio) {
-      break;
-    }
-
-    // Handle cases where lineCount is defined
-    if (isInt(lineCount)) {
+      isContinuing = false;
+    } else if (isInt(lineCount)) {
+      // Handle cases where lineCount is defined
       if (lines > lineCount && recurAdjustment()) { return; }
-      break;
+      isContinuing = false;
     } else if (maxHeight && expectedHeight > maxHeight) {
       // Handle cases where maxHeight is exceeded
       if (recurAdjustment()) { return; }
-      break;
+      isContinuing = false;
+    } else {
+      // Update bestWidth with the expected width
+      bestWidth = expectedWidth;
+      // Check if the current line count matches the maximum line count
+      if (isInt(lineCount) && lines === lineCount) {
+        isAtMaxLineCount = true;
+        isContinuing = false;
+      }
     }
-
-    // Update bestWidth with the expected width
-    bestWidth = expectedWidth;
-    // Check if the current line count matches the maximum line count
-    if (isInt(lineCount) && lines === lineCount) {
-      isAtMaxLineCount = true;
-      break;
-    }
+    lines++;
   }
 
   // If the best width exceeds maxWidth, attempt to adjust font size and line height
@@ -1746,7 +1774,7 @@ const escapeHTML = <T = unknown>(str: T): T => (typeof str === "string"
 
 /**
  * Extracts the computed styles of a given jQuery element.
- * @param {HTMLElement|JQuery<HTMLElement>} element - The jQuery element from which to extract styles.
+ * @param {HTMLElement|JQuery} element - The jQuery element from which to extract styles.
  * @returns {string} A JSON object containing the computed styles.
  */
 function extractComputedStyles(element: JQuery|Element) {
@@ -1756,10 +1784,10 @@ function extractComputedStyles(element: JQuery|Element) {
   const style = window.getComputedStyle(element);
   const styleObject: List<string> = {};
 
-  // Iterate over all the properties in the computed style
-  for (let i = 0; i < style.length; i++) {
-      const prop = style[i];
-      styleObject[prop] = style.getPropertyValue(prop);
+  // Convert the CSSStyleDeclaration to an array and iterate over it
+  const properties = Array.from(style);
+  for (const prop of properties) {
+    styleObject[prop] = style.getPropertyValue(prop);
   }
 
   return JSON.stringify(styleObject);
@@ -1768,12 +1796,15 @@ function extractComputedStyles(element: JQuery|Element) {
 /**
 * Compares the computed styles of a new element against a previously saved styles object.
 * @param {Object} savedStyles - The object containing previously saved styles.
-* @param {HTMLElement|JQuery<HTMLElement>} newElement - The new jQuery element to compare against.
+* @param {HTMLElement|JQuery} newElement - The new jQuery element to compare against.
 * @returns {Array} A list of differences in computed styles.
 */
 function compareComputedStyles(savedStyles: string|List<string>, newElement: Element|JQuery) {
+  let savedStylesData: List<string>;
   if (typeof savedStyles === "string") {
-    savedStyles = JSON.parse(savedStyles) as List<string>;
+    savedStylesData = JSON.parse(savedStyles) as List<string>;
+  } else {
+    savedStylesData = savedStyles;
   }
   const newStyles = JSON.parse(extractComputedStyles(newElement)) as List<string>;
   const differences: string[] = [];
@@ -1781,8 +1812,8 @@ function compareComputedStyles(savedStyles: string|List<string>, newElement: Ele
 
   // Check for differences
   allProps.forEach((prop) => {
-      const oldStyle = (savedStyles as List<string>)[prop];
-      const newStyle = (newStyles as List<string>)[prop];
+      const oldStyle = savedStylesData[prop];
+      const newStyle = newStyles[prop];
       if (oldStyle !== newStyle) {
           differences.push(`Property: ${prop}, Old: ${oldStyle}, New: ${newStyle}`);
       }
@@ -1832,6 +1863,43 @@ const testFuncPerformance = (
   };
 
   runFunc(); // Start the first call to 'func'
+};
+
+/**
+ * Marks a backtrace for debugging purposes.
+ *
+ * @param caller - The calling class or function.
+ * @param id - Optional ID string for the backtrace. If not provided, a new ID will be generated.
+ * @returns The ID of the backtrace.
+ */
+const markBackTrace = (caller: AnyClass, id?: IDString) => {
+  id ??= getID();
+  const stackTrace = new Error().stack?.split("\n").slice(1).join("\n") ?? `... StackTrace from ${caller.name} Unavailable ...`;
+  eLog.checkLog3(id ?? "backTrace", caller.name, {id, stackTrace});
+  _backTrace[id] = stackTrace;
+  return id;
+};
+
+/**
+ * Runs a stack trace from the calling scope. If an ID is passed, it will be used to identify a previously-recorded trace from another scope. Both stack traces will be parsed and combined into a readable description of the caller's call chain.
+ * @param caller - The calling class or function.
+ * @param id - Optional ID string for a previously-recorded backtrace. If not provided, the standard stack trace will not be modified by a backtrace.
+ * @returns The combined and parsed full stack trace of the caller's call chain.
+ */
+const runBackTrace = (id?: IDString): string => {
+  const stackTrace = new Error().stack?.split("\n").slice(1).join("\n");
+  if (!stackTrace) { return "StackTrace Unavailable"; }
+  if (id && _backTrace[id]) {
+    const backTrace = _backTrace[id].split("\n");
+    const parsedTrace = stackTrace.split("\n").map((line, i) => {
+      if (backTrace[i]) {
+        return `${line} // ${backTrace[i]}`;
+      }
+      return line;
+    });
+    return parsedTrace.join("\n");
+  }
+  return stackTrace;
 };
 // #endregion
 
@@ -2093,8 +2161,11 @@ function displayImageSelector(
 // #endregion ▄▄▄▄▄ FOUNDRY ▄▄▄▄▄
 
 export default {
+  // █████████████████ INITIALIZATION ███████████████████████
+  Initialize,
+
   // ████████ GETTERS: Basic Data Lookup & Retrieval ████████
-  GMID, getUID,
+  GMID, getUID, getID,
 
   // ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████
   isNumber, isNumString, isBooleanString, isSimpleObj, isList, isArray, isFunc, isInt, isFloat, isPosInt, isIterable,
@@ -2106,6 +2177,9 @@ export default {
   assertNonNullType,
 
   FILTERS,
+
+  // ████████ BOOLEAN: Combining & Manipulating Boolean Tests ████████
+  checkAll, checkAny, checkAllFail,
 
   // ████████ REGEXP: Regular Expressions, Replacing, Matching ████████
   testRegExp,
@@ -2167,8 +2241,8 @@ export default {
 
   extractComputedStyles, compareComputedStyles,
 
-  // ████████ PERFORMANCE: Performance Testing & Metrics ████████
-  testFuncPerformance,
+  // ████████ PERFORMANCE & DEBUG: Debugging Functions, Performance Testing & Metrics ████████
+  testFuncPerformance, markBackTrace, runBackTrace,
 
   // ░░░░░░░ GreenSock ░░░░░░░
   gsap, get, set, getGSAngleDelta, getNearestLabel, reverseRepeatingTimeline, /* to, from, fromTo, */

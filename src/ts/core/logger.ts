@@ -1,5 +1,4 @@
 import U from "./utilities";
-import C from "./constants";
 import {getColor} from "./helpers";
 
 const LOGGERCONFIG = {
@@ -90,6 +89,10 @@ const STYLELINES = Object.fromEntries(
 const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...content: [string, ...unknown[]]) => {
   if (!(["error", "display"].includes(type) || CONFIG.debug.logging)) { return; }
   const lastElem = U.getLast(content);
+  let trace: string|null = null;
+  if (content[0].startsWith("StackTrace:")) {
+    trace = (content.shift() as string)?.replace("StackTrace:", "") ?? null;
+  }
 
   let dbLevel: 0|1|2|3|4|5 = typeof lastElem === "number" && [0, 1, 2, 3, 4, 5].includes(lastElem)
     ? content.pop() as 0|1|2|3|4|5
@@ -103,10 +106,11 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
   const [message, ...data] = content;
 
   if (key) {
+    const validKey: string = key;
     const blacklist = ((U.getSetting("blacklist", "debugSettings") ?? "") as string).split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
     const whitelist = ((U.getSetting("whitelist", "debugSettings") ?? "") as string).split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
-    const isBlack = blacklist.some((pat) => pat.test(key as string));
-    const isWhite = whitelist.some((pat) => pat.test(key as string));
+    const isBlack = blacklist.some((pat) => pat.test(validKey));
+    const isWhite = whitelist.some((pat) => pat.test(validKey));
     if (isBlack && !isWhite) {
       dbLevel = Math.max(4, Math.min(5, dbLevel + 2)) as 4|5;
     }
@@ -118,9 +122,14 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
   if (type === "log") {
     type = `${type}${dbLevel}`;
   }
-  const stackTrace = type === "display"
-    ? null
-    : getStackTrace(LOGGERCONFIG.stackTraceExclusions[type as KeyOf<typeof LOGGERCONFIG["stackTraceExclusions"]>] ?? []);
+  let stackTrace: string|null;
+  if (type === "display") {
+    stackTrace = null;
+  } else if (trace) {
+    stackTrace = filterStackTrace(trace, LOGGERCONFIG.stackTraceExclusions[type as KeyOf<typeof LOGGERCONFIG["stackTraceExclusions"]>] ?? []);
+  } else {
+    stackTrace = getStackTrace(LOGGERCONFIG.stackTraceExclusions[type as KeyOf<typeof LOGGERCONFIG["stackTraceExclusions"]>] ?? []);
+  }
 
   let logFunc;
   if (stackTrace) {
@@ -155,19 +164,29 @@ const eLogger = (type: "checkLog"|"log"|KeyOf<typeof STYLES> = "base", ...conten
   console.groupEnd();
 
 
+  function parseStackTrace(traceString: string) {
+    return traceString.split(/\n/).map((ln) => {
+      const [_full, method, file, line, col] = ln.match(/at (.+) \((.+):(\d+):(\d+)\)/) ?? [];
+      return {method, file, line, col};
+    });
+  }
+
+  function filterStackTrace(traceString: string, regExpFilters: RegExp[] = []): string {
+    regExpFilters.push(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${
+      LOGGERCONFIG.aliases.map(String).join("|")
+    }|Object\\.(log|display|hbsLog|error))`), /^Error/);
+    return traceString
+      .split(/\n/)
+      .map((sLine) => sLine.trim())
+      .filter((sLine) => !regExpFilters.some((rTest) => rTest.test(sLine)))
+      .join("\n");
+  }
   /**
    *
    * @param regExpFilters
    */
   function getStackTrace(regExpFilters: RegExp[] = []): string|null {
-    regExpFilters.push(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${
-      LOGGERCONFIG.aliases.map(String).join("|")
-    }|Object\\.(log|display|hbsLog|error))`), /^Error/);
-    return ((new Error()).stack ?? "")
-      .split(/\n/)
-      .map((sLine) => sLine.trim())
-      .filter((sLine) => !regExpFilters.some((rTest) => rTest.test(sLine)))
-      .join("\n");
+    return filterStackTrace((new Error()).stack ?? "", regExpFilters);
   }
 };
 
@@ -190,7 +209,8 @@ const logger = {
   checkLog5: (...content: eLogParams) => eLogger("checkLog", ...content, 5),
   warn:      (...content: eLogParams) => eLogger("warn", ...content),
   error:     (...content: eLogParams) => eLogger("error", ...content),
-  hbsLog:    (...content: eLogParams) => eLogger("handlebars", ...content)
+  hbsLog:    (...content: eLogParams) => eLogger("handlebars", ...content),
+  backTrace: (...content: eLogParams) => eLogger("checkLog", `StackTrace:${String(content.shift() ?? "")}`, ...content, 3)
 };
 
 export default logger;

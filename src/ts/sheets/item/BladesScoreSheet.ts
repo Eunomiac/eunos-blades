@@ -142,8 +142,11 @@ class BladesScoreSheet extends BladesItemSheet {
     await this.document.update({"system.randomizers": finalRandomData});
   }
 
-  override getData() {
-    const context = super.getData() as ReturnType<BladesItemSheet["getData"]> & {system: ExtractBladesItemSystem<BladesItemType.score>};
+  override async getData() {
+
+    const context = await super.getData() as Awaited<ReturnType<BladesItemSheet["getData"]>> & {
+      system: ExtractBladesItemSystem<BladesItemType.score>
+    };
 
     const sheetData: Partial<BladesItemDataOfType<BladesItemType.score>> = {};
 
@@ -172,7 +175,7 @@ class BladesScoreSheet extends BladesItemSheet {
 
     // Prune system data for blank/empty opposition entries
     const validOppositions: Record<string, BladesRoll.OppositionData> = {};
-    for (const [id, data] of Object.entries(context.system.oppositions)) {
+    for (const [id, data] of Object.entries(context.system.oppositions ?? {})) {
       if (!data.rollOppName && !data.rollOppSubName) { continue; }
       validOppositions[id] = data;
     }
@@ -181,7 +184,7 @@ class BladesScoreSheet extends BladesItemSheet {
     return {
       ...context,
       ...sheetData
-    } as ReturnType<BladesItemSheet["getData"]> & {system: ExtractBladesItemSystem<BladesItemType.score>};
+    };
   }
 
   _toggleRandomizerLock(event: ClickEvent) {
@@ -262,7 +265,7 @@ class BladesScoreSheet extends BladesItemSheet {
     eLog.checkLog3("scoreSheet", "Updated!", {gm_notes: actor.system.gm_notes});
   }
 
-  override async activateListeners(html: JQuery<HTMLElement>) {
+  override async activateListeners(html: JQuery) {
     super.activateListeners(html);
 
     html.find("[data-action='select-image']").on({
@@ -287,7 +290,7 @@ class BladesScoreSheet extends BladesItemSheet {
     });
   }
 
-  override async _onSubmit(event: OnSubmitEvent, params: List<unknown> = {}) {
+  override async _onSubmit(event: OnSubmitEvent, params: List = {}) {
     // eLog.checkLog3("scoreSheet", "_onSubmit()", {event, params, elemText: event.currentTarget.innerHTML});
     let isForcingRender = true;
 

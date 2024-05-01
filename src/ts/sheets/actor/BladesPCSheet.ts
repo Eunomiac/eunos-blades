@@ -4,7 +4,6 @@ import C, {BladesActorType, BladesItemType, AttributeTrait, Tag, ActionTrait, Do
 import U from "../../core/utilities";
 import BladesActorSheet from "./BladesActorSheet";
 import {BladesActor, BladesPC, BladesNPC} from "../../documents/BladesActorProxy";
-import BladesGMTrackerSheet from "../item/BladesGMTrackerSheet";
 
 class BladesPCSheet extends BladesActorSheet {
 
@@ -18,8 +17,8 @@ class BladesPCSheet extends BladesActorSheet {
     });
   }
 
-  override getData() {
-    const context = super.getData();
+  override async getData() {
+    const context = await super.getData();
 
     const {activeSubItems, activeSubActors} = this.actor;
 
@@ -183,7 +182,7 @@ class BladesPCSheet extends BladesActorSheet {
       selLoadCount: this.actor.system.loadout.levels[
         U.lCase(this.actor.system.loadout.selected as Loadout)
       ],
-      options:  C.Loadout.selections as Array<BladesSelectOption<string, string>>,
+      options:  C.Loadout.selections as Array<BladesSelectOption<string>>,
       selected: this.actor.system.loadout.selected ?? ""
     };
 
@@ -470,7 +469,7 @@ class BladesPCSheet extends BladesActorSheet {
     }
   }
 
-  override activateListeners(html: JQuery<HTMLElement>) {
+  override activateListeners(html: JQuery) {
 
     super.activateListeners(html);
 

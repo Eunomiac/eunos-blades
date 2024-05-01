@@ -208,6 +208,10 @@ class GlobalGetter {
 );/* !DEVCODE*/
 // #endregion Globals
 
+// #region ████████ CODE INITIALIZATION: Initializing Code (Before any Hooks) ████████
+U.Initialize();
+// #endregion ████████ CODE INITIALIZATION
+
 // #region ████████ SYSTEM INITIALIZATION: Initializing Blades In The Dark System on 'Init' Hook ████████
 Hooks.once("init", async () => {
   // Initialize Game object

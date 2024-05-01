@@ -1,9 +1,7 @@
 // #region IMPORTS ~
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./utilities";
-import C from "./constants";
 import {getColor} from "./helpers";
-import {UploadBladesPDF} from "./ai";
 /* eslint-enable @typescript-eslint/no-unused-vars */
 // #endregion ▮▮▮▮[IMPORTS]▮▮▮▮
 
@@ -107,7 +105,7 @@ class OpenAISettingsSubmenu extends FormApplication {
 //   }
 
 //   // Add listeners to the form elements, specifically the file input and the submit button.
-//   override activateListeners(html: JQuery<HTMLElement>) {
+//   override activateListeners(html: JQuery) {
 //     super.activateListeners(html);
 //     const fileInput = html.find("input[type='file']");
 //     const submitButton = html.find("button[type='submit']");

@@ -16,8 +16,8 @@ class BladesCrewSheet extends BladesActorSheet {
     });
   }
 
-  override getData() {
-    const context = super.getData();
+  override async getData() {
+    const context = await super.getData();
 
     eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", {...context});
     const {activeSubItems} = this.actor as BladesCrew;
@@ -31,7 +31,7 @@ class BladesCrewSheet extends BladesActorSheet {
         abilities: activeSubItems
           .filter((item): item is BladesItemOfType<BladesItemType.crew_ability> =>
             item.type === BladesItemType.crew_ability),
-        playbook:   this.actor.playbook as BladesItemOfType<BladesItemType.crew_playbook>|undefined,
+        playbook:   this.actor.playbook,
         reputation: activeSubItems
           .find((item): item is BladesItemOfType<BladesItemType.crew_reputation> =>
             item.type === BladesItemType.crew_reputation),
@@ -154,7 +154,7 @@ class BladesCrewSheet extends BladesActorSheet {
     return {...context, ...sheetData} as BladesActorSheetData;
   }
 
-  override activateListeners(html: JQuery<HTMLElement>) {
+  override activateListeners(html: JQuery) {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable

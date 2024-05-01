@@ -22,7 +22,7 @@ const _onTagifyChange = (event: Event, doc: BladesDoc, targetKey: keyof BladesDo
 };
 
 const Tags = {
-  InitListeners: (html: JQuery<HTMLElement>, doc: BladesDoc) => {
+  InitListeners: (html: JQuery, doc: BladesDoc) => {
 
     /**
      * Applies tags and Tagify functionality to a specified HTML element.

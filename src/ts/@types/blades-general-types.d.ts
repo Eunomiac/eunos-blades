@@ -22,6 +22,15 @@ declare global {
   // Represents a string, false, or undefined
   type MaybeStringOrFalse = string | false | undefined;
 
+  // Represents a function with an unknown number of parameters, returning a value of type R
+  type func<R = unknown> = (...args: unknown[]) => R;
+
+  // Represents an async function with an unknown number of parameters, returning a Promise resolving to a value of type R
+  type asyncFunc<R = unknown> = (...args: unknown[]) => Promise<R>;
+
+  // Represents any class constructor with an unknown number of parameters
+  type AnyClass<T = unknown> = new (...args: unknown[]) => T;
+
   // Represents an integer
   type int = number;
 

@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {BladesActorType, BladesItemType, BladesPhase} from "../../core/constants";
+import {BladesActorType, BladesPhase} from "../../core/constants";
 import BladesItemSheet from "./BladesItemSheet";
-import BladesItem from "../../BladesItem";
-import BladesGMTracker from "../../documents/items/BladesGMTracker";
 import BladesActor from "../../BladesActor";
 import BladesPC from "../../documents/actors/BladesPC";
 
@@ -78,7 +76,7 @@ class BladesGMTrackerSheet extends BladesItemSheet {
     ]);
   }
 
-  override async activateListeners(html: JQuery<HTMLElement>) {
+  override async activateListeners(html: JQuery) {
     super.activateListeners(html);
   }
 

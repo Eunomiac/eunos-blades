@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../../core/utilities";
-import C, {BladesActorType, BladesItemType, BladesPhase, Tag, Randomizers, ClockColor, ClockKeyDisplayMode} from "../../core/constants";
+import {BladesItemType, ClockKeyDisplayMode} from "../../core/constants";
 import BladesItemSheet from "./BladesItemSheet";
 
-import {BladesActor, BladesPC} from "../../documents/BladesActorProxy";
 import {BladesProject} from "../../documents/BladesItemProxy";
-import BladesRoll, {BladesRollOpposition} from "../../classes/BladesRoll";
 import BladesClockKey, {BladesClock, ClockKeyElems$} from "../../classes/BladesClockKey";
 
 class BladesProjectSheet extends BladesItemSheet {
@@ -17,8 +15,11 @@ class BladesProjectSheet extends BladesItemSheet {
     });
   }
 
-  override getData() {
-    const context = super.getData() as ReturnType<BladesItemSheet["getData"]> & {system: ExtractBladesItemSystem<BladesItemType.project>};
+  override async getData() {
+
+    const context = await super.getData() as Awaited<ReturnType<BladesItemSheet["getData"]>> & {
+      system: ExtractBladesItemSystem<BladesItemType.project>
+    };
 
     const sheetData: Partial<BladesItemDataOfType<BladesItemType.project>> = {};
 
@@ -27,7 +28,7 @@ class BladesProjectSheet extends BladesItemSheet {
     return {
       ...context,
       ...sheetData
-    } as ReturnType<BladesItemSheet["getData"]> & {system: ExtractBladesItemSystem<BladesItemType.project>};
+    };
   }
 
   private get presentedClock(): BladesClock|false {
@@ -49,7 +50,7 @@ class BladesProjectSheet extends BladesItemSheet {
     return this.document.clockKey.getClockByIndex(focusedClockIndex) ?? false;
   }
 
-  private getClockKeyComponents(html: JQuery<HTMLElement>) {
+  private getClockKeyComponents(html: JQuery) {
     const {clockKey} = this.document;
 
     if (!clockKey) {
@@ -140,8 +141,8 @@ class BladesProjectSheet extends BladesItemSheet {
     });
   }
 
-  _htmlContext?: JQuery<HTMLElement>;
-  override async activateListeners(html: JQuery<HTMLElement>) {
+  _htmlContext?: JQuery;
+  override async activateListeners(html: JQuery) {
     this._htmlContext = html;
     await super.activateListeners(html);
 

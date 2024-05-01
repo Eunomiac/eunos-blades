@@ -916,7 +916,7 @@ export function Initialize() {
 
 /**
  * Applies listeners to '.tooltip-trigger' elements in the document.
- * @param {JQuery<HTMLElement>} html The document to be searched.
+ * @param {JQuery} html The document to be searched.
  */
 export function ApplyTooltipAnimations(html: JQuery) {
 

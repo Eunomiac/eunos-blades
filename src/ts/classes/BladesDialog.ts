@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {ApplyTooltipAnimations} from "../core/gsap";
 import U from "../core/utilities";
-import {BladesActor, BladesPC} from "../documents/BladesActorProxy";
+import {BladesActor} from "../documents/BladesActorProxy";
 import BladesItem from "../BladesItem";
 import BladesRoll from "./BladesRoll";
-import BladesConsequence from "./BladesConsequence";
-import C, {RollResult, ConsequenceType, AttributeTrait, Position} from "../core/constants";
-import BladesAI, {AGENTS} from "../core/ai";
 
 export enum SelectionCategory {
   Heritage = "Heritage",
@@ -76,8 +73,8 @@ class BladesDialog extends Dialog {
         apply: {
           icon:     '<i class="fa-solid fa-arrow-down-to-arc"></i>',
           label:    "Apply",
-          callback: (html: HTMLElement|JQuery<HTMLElement>) => (app as BladesDialog)
-          //   .writeToRollInstance(html as JQuery<HTMLElement>)
+          callback: (html: HTMLElement|JQuery) => app
+          //   .writeToRollInstance(html as JQuery)
         },
         cancel: {
           icon:     '<i class="fas fa-times"></i>',
@@ -136,8 +133,8 @@ class BladesDialog extends Dialog {
   //     apply: {
   //       icon: '<i class="fa-solid fa-arrow-down-to-arc"></i>',
   //       label: "Apply",
-  //       callback: (html: HTMLElement|JQuery<HTMLElement>) => (app as BladesDialog)
-  //         .writeToRollInstance(html as JQuery<HTMLElement>)
+  //       callback: (html: HTMLElement|JQuery) => (app as BladesDialog)
+  //         .writeToRollInstance(html as JQuery)
   //     },
   //     cancel: {
   //       icon: '<i class="fas fa-times"></i>',
@@ -341,7 +338,7 @@ class BladesDialog extends Dialog {
   //   return {} as never;
   // }
 
-  updateInputText(inputElem$: JQuery<HTMLElement>) {
+  updateInputText(inputElem$: JQuery) {
     const value = inputElem$.val();
     if (this.parent instanceof BladesRoll) {
       const flagTarget = inputElem$.data("flagTarget");
@@ -353,7 +350,7 @@ class BladesDialog extends Dialog {
     }
   }
 
-  // updateConsequenceType(csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
+  // updateConsequenceType(csqElem$: JQuery, cData: BladesConsequence.Data) {
   //   const type$ = csqElem$.find(".roll-consequence-type-select") as JQuery<HTMLSelectElement>;
   //   const typeVal = type$.val() as string|undefined;
   //   if (typeVal && typeVal in ConsequenceType) {
@@ -363,7 +360,7 @@ class BladesDialog extends Dialog {
   //   }
   // }
 
-  // updateConsequenceAttribute(csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
+  // updateConsequenceAttribute(csqElem$: JQuery, cData: BladesConsequence.Data) {
   //   if (/Insight/.exec(cData.type)) { cData.attribute = AttributeTrait.insight; }
   //   else if (/Prowess/.exec(cData.type)) { cData.attribute = AttributeTrait.prowess; }
   //   else if (/Resolve/.exec(cData.type)) { cData.attribute = AttributeTrait.resolve; }
@@ -392,7 +389,7 @@ class BladesDialog extends Dialog {
   //     : false;
   // }
 
-  // updateConsequenceResist(csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
+  // updateConsequenceResist(csqElem$: JQuery, cData: BladesConsequence.Data) {
 
   //   const resistOptions: Record<string, BladesRoll.ConsequenceResistOption> = cData.resistOptions ?? {};
 
@@ -438,7 +435,7 @@ class BladesDialog extends Dialog {
   //   cData.resistOptions = resistOptions;
   // }
 
-  // updateConsequenceArmorResist(_csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
+  // updateConsequenceArmorResist(_csqElem$: JQuery, cData: BladesConsequence.Data) {
   //   // If consequence is already minimal, toggle armorNegates to true and set 'armorTo' to None-type
   //   const minimalCsqTypes = Object.entries(C.ResistedConsequenceTypes)
   //     .filter(([_, rCsqType]) => rCsqType === ConsequenceType.None)
@@ -452,7 +449,7 @@ class BladesDialog extends Dialog {
   //   }
   // }
 
-  // updateConsequenceSpecialArmorResist(_csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
+  // updateConsequenceSpecialArmorResist(_csqElem$: JQuery, cData: BladesConsequence.Data) {
   //   // If consequence is already minimal, toggle specialArmorNegates to true and set 'specialTo' to None-type
   //   const minimalCsqTypes = Object.entries(C.ResistedConsequenceTypes)
   //     .filter(([_, rCsqType]) => rCsqType === ConsequenceType.None)
@@ -537,7 +534,7 @@ class BladesDialog extends Dialog {
   //   }
   // }
 
-  // async writeToRollInstance(html: JQuery<HTMLElement>) {
+  // async writeToRollInstance(html: JQuery) {
   // if (this.parent instanceof BladesRoll) {
   // this.updateConsequenceDialog(html, false);
   // await this.parent.updateTarget("consequenceData", this.csqData);
@@ -681,7 +678,7 @@ class BladesDialog extends Dialog {
   //   this.render();
   // }
 
-  override activateListeners(html: JQuery<HTMLElement>) {
+  override activateListeners(html: JQuery) {
     super.activateListeners(html);
 
     // ~ Tooltips
@@ -698,11 +695,11 @@ class BladesDialog extends Dialog {
     }
   }
 
-  activateInputListeners(html: JQuery<HTMLElement>) {
+  activateInputListeners(html: JQuery) {
     html.find("textarea").on({change: (event) => this.updateInputText($(event.currentTarget))});
   }
 
-  activateSelectionListeners(html: JQuery<HTMLElement>) {
+  activateSelectionListeners(html: JQuery) {
     const self = this;
 
     // ~ Changing Width on Tab Change Depending on Number of Items
@@ -738,7 +735,7 @@ class BladesDialog extends Dialog {
     super.close();
   }
 
-  // activateConsequenceListeners(html: JQuery<HTMLElement>) {
+  // activateConsequenceListeners(html: JQuery) {
   // html.find("input").on({change: () => this.updateConsequenceDialog(html)});
   // html.find("select").on({change: () => this.updateConsequenceDialog(html)});
   // html.find('[data-action^="ai-query"]').on({
