@@ -95,8 +95,8 @@ class BladesChat extends ChatMessage {
     const msgData = {
       speaker: bladesRoll.getSpeaker(BladesChat.getSpeaker()),
       content: await renderTemplate(bladesRoll.chatTemplate, bladesRoll.data),
-      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flags: {
+      type:    CONST.CHAT_MESSAGE_TYPES.ROLL,
+      flags:   {
         "eunos-blades": {
           template: bladesRoll.chatTemplate,
           rollData: bladesRoll.data
@@ -230,21 +230,21 @@ class BladesChat extends ChatMessage {
       > = {
       [Position.controlled]: {
         [RollResult.critical]: {},
-        [RollResult.success]: {},
-        [RollResult.partial]: {},
-        [RollResult.fail]: {}
+        [RollResult.success]:  {},
+        [RollResult.partial]:  {},
+        [RollResult.fail]:     {}
       },
       [Position.risky]: {
         [RollResult.critical]: {},
-        [RollResult.success]: {},
-        [RollResult.partial]: {},
-        [RollResult.fail]: {}
+        [RollResult.success]:  {},
+        [RollResult.partial]:  {},
+        [RollResult.fail]:     {}
       },
       [Position.desperate]: {
         [RollResult.critical]: {},
-        [RollResult.success]: {},
-        [RollResult.partial]: {},
-        [RollResult.fail]: {}
+        [RollResult.success]:  {},
+        [RollResult.partial]:  {},
+        [RollResult.fail]:     {}
       }
     };
     const {consequenceData} = this.flagData.rollData ?? {};

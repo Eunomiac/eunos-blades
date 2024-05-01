@@ -15,8 +15,8 @@ class BladesFactionSheet extends BladesActorSheet {
     }) as ActorSheet.Options;
   }
 
-  override getData() {
-    const context = super.getData();
+  override async getData() {
+    const context = await super.getData();
     if (!BladesActor.IsType(this.actor, BladesActorType.faction)) { return context; }
 
     const sheetData: BladesActorDataOfType<BladesActorType.faction> = {
