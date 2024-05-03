@@ -71,11 +71,6 @@
       {
         "id": "tidy-ui_game-settings",
         "type": "module"
-      },
-      {
-        "id": "city-of-knives",
-        "type": "world",
-        "manifest": "https://raw.githubusercontent.com/Eunomiac/eunos-blades/master/city-of-knives/world.json"
       }
     ]
 	},

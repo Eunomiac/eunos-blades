@@ -21,8 +21,9 @@
     "paths": {
       "*": [
         "*",
-        "D:/Users/Ryan/Documents/Projects/.CODING/FoundryVTT/FoundryDevData/Data/modules/*",
-        "D:/LTSC Programs/FoundryVTT/resources/app/*"
+        "D:/Projects/.CODING/FoundryVTT/FoundryV11DistData/Data/modules/*",
+        "D:/Projects/.CODING/FoundryVTT/FoundryV11DevData/Data/modules/*",
+        "C:/FoundryVTT/v11/Foundry Virtual Tabletop/resources/app/*"
       ]
     },
     "plugins": [

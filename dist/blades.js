@@ -15535,6 +15535,9 @@ const _romanNumerals = {
   ]
 };
 const UUIDLOG = [];
+const Initialize$1 = async () => {
+  Object.assign(globalThis, { _backTrace: {} });
+};
 const GMID = () => {
   var _a2, _b;
   return ((_b = (_a2 = game == null ? void 0 : game.user) == null ? void 0 : _a2.find((user) => user.isGM)) == null ? void 0 : _b.id) ?? false;
@@ -15555,6 +15558,7 @@ const isHTMLCode = (ref) => typeof ref === "string" && /^<.*>$/u.test(ref);
 const isHexColor = (ref) => typeof ref === "string" && /^#(([0-9a-fA-F]{2}){3,4}|[0-9a-fA-F]{3,4})$/.test(ref);
 const isRGBColor = (ref) => typeof ref === "string" && /^rgba?\((\d{1,3},\s*){1,2}?\d{1,3},\s*\d{1,3}(\.\d+)?\)$/.test(ref);
 const isUndefined = (ref) => ref === void 0;
+const isNullOrUndefined = (ref) => ref === null || ref === void 0;
 const isDefined = (ref) => !isUndefined(ref);
 const isEmpty = (ref) => Object.keys(ref).length === 0;
 const hasItems = (ref) => !isEmpty(ref);
@@ -15578,55 +15582,49 @@ function assertNonNullType(val, type) {
     throw new Error(`Value ${valStr} is not a ${type.name}!`);
   }
 }
-const areFuzzyEqual = (val1, val2) => {
-  if ([null, void 0].includes(val1) && [null, void 0].includes(val2)) {
-    return true;
-  }
-  if ([null, void 0].includes(val1) || [null, void 0].includes(val2)) {
+const areFuzzyEqual = (...refs) => {
+  const _areFuzzyEqual = (val1, val2) => {
+    if (val1 === val2) {
+      return true;
+    }
+    if (isNullOrUndefined(val1) || isNullOrUndefined(val2)) {
+      return isNullOrUndefined(val1 ?? val2);
+    }
+    if (typeof val1 === typeof val2) {
+      return val1 === val2;
+    }
+    if ([val1, val2].some((v) => typeof v === "number")) {
+      return Number(typeof val1 === "boolean" ? NaN : val1) === Number(typeof val2 === "boolean" ? NaN : val2);
+    }
+    if ([val1, val2].some((v) => typeof v === "boolean") && [val1, val2].some((v) => typeof v === "string")) {
+      return Boolean(val1 && val2 !== "" || !val1 && val2 === "");
+    }
     return false;
-  }
-  if (typeof val1 === "number" && typeof val2 === "number") {
-    return val1 === val2;
-  }
-  if (typeof val1 === "boolean" && typeof val2 === "boolean") {
-    return val1 === val2;
-  }
-  if (typeof val1 === "string" && typeof val2 === "string") {
-    return val1 === val2;
-  }
-  if (typeof val1 === "number" && typeof val2 === "string") {
-    return val1 === Number(val2);
-  }
-  if (typeof val1 === "string" && typeof val2 === "number") {
-    return Number(val1) === val2;
-  }
-  if (typeof val1 === "boolean" && typeof val2 === "object") {
-    return false;
-  }
-  if (typeof val1 === "object" && typeof val2 === "boolean") {
-    return false;
-  }
-  if (typeof val1 === "boolean" && typeof val2 === "string") {
-    return val1 && val2 !== "" || !val1 && val2 === "";
-  }
-  if (typeof val1 === "string" && typeof val2 === "boolean") {
-    return val2 && val1 !== "" || !val2 && val1 === "";
-  }
-  if ((typeof val1 === "number" || typeof val1 === "string") && typeof val2 === "object") {
-    return false;
-  }
-  if (typeof val1 === "object" && (typeof val2 === "number" || typeof val2 === "string")) {
-    return false;
-  }
-  if (typeof val1 === "object" && typeof val2 === "object") {
-    return val1 === val2;
-  }
-  return false;
-};
-const areEqual = (...refs) => {
+  };
   do {
     const ref = refs.pop();
-    if (refs.length && !areFuzzyEqual(ref, refs[0])) {
+    if (refs.length && !_areFuzzyEqual(ref, refs[0])) {
+      return false;
+    }
+  } while (refs.length);
+  return true;
+};
+const areEqual = (...refs) => {
+  const _areEqual = (val1, val2) => {
+    if (typeof val1 !== typeof val2) {
+      return false;
+    }
+    if (val1 === val2) {
+      return true;
+    }
+    if (isNullOrUndefined(val1) || isNullOrUndefined(val2)) {
+      return isNullOrUndefined(val1 ?? val2);
+    }
+    return false;
+  };
+  do {
+    const ref = refs.pop();
+    if (refs.length && !_areEqual(ref, refs[0])) {
       return false;
     }
   } while (refs.length);
@@ -15691,6 +15689,9 @@ const getKey = (key, obj) => {
 const FILTERS = {
   IsInstance: (classRef) => (item) => typeof classRef === "function" && item instanceof classRef
 };
+const checkAll = (items, test) => items.every(test);
+const checkAny = (items, test) => items.some(test);
+const checkAllFail = (items, test) => !checkAny(items, test);
 const uCase = (str2) => String(str2).toUpperCase();
 const lCase = (str2) => String(str2).toLowerCase();
 const sCase = (str2) => {
@@ -15935,6 +15936,7 @@ const getUID = (id) => {
   Object.assign(globalThis, { UUIDLOG });
   return uuid;
 };
+const getID = () => randomID();
 const fuzzyMatch = (val1, val2) => {
   const [str1, str2] = [val1, val2].map((val) => lCase(String(val).replace(/[^a-zA-Z0-9.+-]/g, "").trim()));
   return str1.length > 0 && str1 === str2;
@@ -16259,6 +16261,7 @@ function objMap(obj, keyFunc, valFunc) {
   }
   return Object.fromEntries(Object.entries(obj).map(([key, val]) => {
     assertNonNullType(valFuncTyped, "function");
+    assertNonNullType(keyFuncTyped, "function");
     return [keyFuncTyped(key, val), valFuncTyped(val, key)];
   }));
 }
@@ -16349,7 +16352,10 @@ function objMerge(target, source, {
   isReplacingArrays = false
 } = {}) {
   target = isMutatingOk ? target : objClone(target, isStrictlySafe);
-  if (source && typeof source === "object" && "id" in source && isDocID(source.id) || isUndefined(target)) {
+  if (source && typeof source === "object" && "id" in source && isDocID(source.id)) {
+    return source;
+  }
+  if (isUndefined(target)) {
     return source;
   }
   if (isUndefined(source)) {
@@ -16536,29 +16542,32 @@ const adjustTextContainerAspectRatio = (textContainer, targetRatio, maxHeight, m
   const initialWidth = parseFloat(style.width);
   let bestWidth = initialWidth;
   let isAtMaxLineCount = false;
-  for (let lines = 1; ; lines++) {
+  let lines = 1;
+  let isContinuing = true;
+  while (isContinuing) {
     const expectedHeight = lineHeight * lines;
     const expectedWidth = initialWidth / lines;
     const expectedRatio = expectedWidth / expectedHeight;
     if (expectedRatio < targetRatio) {
-      break;
-    }
-    if (isInt(lineCount)) {
+      isContinuing = false;
+    } else if (isInt(lineCount)) {
       if (lines > lineCount && recurAdjustment()) {
         return;
       }
-      break;
+      isContinuing = false;
     } else if (maxHeight && expectedHeight > maxHeight) {
       if (recurAdjustment()) {
         return;
       }
-      break;
+      isContinuing = false;
+    } else {
+      bestWidth = expectedWidth;
+      if (isInt(lineCount) && lines === lineCount) {
+        isAtMaxLineCount = true;
+        isContinuing = false;
+      }
     }
-    bestWidth = expectedWidth;
-    if (isInt(lineCount) && lines === lineCount) {
-      isAtMaxLineCount = true;
-      break;
-    }
+    lines++;
   }
   if (!isAtMaxLineCount && maxWidth && bestWidth > maxWidth && recurAdjustment()) {
     return;
@@ -16694,21 +16703,24 @@ function extractComputedStyles(element) {
   }
   const style = window.getComputedStyle(element);
   const styleObject = {};
-  for (let i = 0; i < style.length; i++) {
-    const prop = style[i];
+  const properties = Array.from(style);
+  for (const prop of properties) {
     styleObject[prop] = style.getPropertyValue(prop);
   }
   return JSON.stringify(styleObject);
 }
 function compareComputedStyles(savedStyles, newElement) {
+  let savedStylesData;
   if (typeof savedStyles === "string") {
-    savedStyles = JSON.parse(savedStyles);
+    savedStylesData = JSON.parse(savedStyles);
+  } else {
+    savedStylesData = savedStyles;
   }
   const newStyles = JSON.parse(extractComputedStyles(newElement));
   const differences = [];
   const allProps = /* @__PURE__ */ new Set([...Object.keys(savedStyles), ...Object.keys(newStyles)]);
   allProps.forEach((prop) => {
-    const oldStyle = savedStyles[prop];
+    const oldStyle = savedStylesData[prop];
     const newStyle = newStyles[prop];
     if (oldStyle !== newStyle) {
       differences.push(`Property: ${prop}, Old: ${oldStyle}, New: ${newStyle}`);
@@ -16930,9 +16942,12 @@ function displayImageSelector(callback, pathRoot = `systems/${C.SYSTEM_ID}/asset
   return fp.browse(pathRoot);
 }
 const U = {
+  // █████████████████ INITIALIZATION ███████████████████████
+  Initialize: Initialize$1,
   // ████████ GETTERS: Basic Data Lookup & Retrieval ████████
   GMID,
   getUID,
+  getID,
   // ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████
   isNumber,
   isNumString,
@@ -16964,6 +16979,10 @@ const U = {
   getKey,
   assertNonNullType,
   FILTERS,
+  // ████████ BOOLEAN: Combining & Manipulating Boolean Tests ████████
+  checkAll,
+  checkAny,
+  checkAllFail,
   // ████████ REGEXP: Regular Expressions, Replacing, Matching ████████
   testRegExp,
   regExtract,
@@ -17064,7 +17083,7 @@ const U = {
   escapeHTML,
   extractComputedStyles,
   compareComputedStyles,
-  // ████████ PERFORMANCE: Performance Testing & Metrics ████████
+  // ████████ PERFORMANCE & DEBUG: Debugging Functions, Performance Testing & Metrics ████████
   testFuncPerformance,
   // ░░░░░░░ GreenSock ░░░░░░░
   gsap: gsapWithCSS,
@@ -18649,14 +18668,14 @@ const _BladesTargetLink = class _BladesTargetLink {
     const subclassConstructor = this.constructor;
     if (subclassConstructor.IsValidData(dataOrConfig)) {
       ({ linkData } = subclassConstructor.PartitionSchemaData(dataOrConfig));
-      const target2 = fromUuidSync(linkData.targetID);
-      if (!target2) {
+      const linkTarget = fromUuidSync(linkData.targetID);
+      if (!linkTarget) {
         throw new Error(`[new BladesTargetLink()] Unable to resolve target from uuid '${linkData.targetID}'`);
       }
       if ("targetKey" in linkData) {
-        schema = getProperty(target2, `${linkData.targetKey}.${linkData.id}`);
+        schema = getProperty(linkTarget, `${linkData.targetKey}.${linkData.id}`);
       } else {
-        schema = target2.getFlag(C.SYSTEM_ID, `${linkData.targetFlagKey}.${linkData.id}`);
+        schema = linkTarget.getFlag(C.SYSTEM_ID, `${linkData.targetFlagKey}.${linkData.id}`);
       }
       this.isInitPromiseResolved = true;
     } else {
@@ -18688,11 +18707,35 @@ const _BladesTargetLink = class _BladesTargetLink {
       User
     ];
   }
+  static HasValidID(ref) {
+    return U.isDocID(ref.target) || U.isDocID(ref.targetID);
+  }
+  static HasValidUUID(ref) {
+    return U.isDocUUID(ref.target) || U.isDocUUID(ref.targetID);
+  }
+  static HasValidKey(ref) {
+    if (!U.isTargetKey(ref.targetKey) && !U.isTargetFlagKey(ref.targetFlagKey)) {
+      return false;
+    }
+    if (U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey)) {
+      return false;
+    }
+    return true;
+  }
+  static HasValidTargetRef(ref) {
+    return this.HasValidID(ref) || this.HasValidUUID(ref) || this.ValidTargetClasses.some((cls) => ref.target instanceof cls);
+  }
   static IsValidConfig(ref) {
-    return U.isSimpleObj(ref) && (U.isDocID(ref.target) || U.isDocUUID(ref.target) || U.isDocID(ref.targetID) || U.isDocUUID(ref.targetID) || this.ValidTargetClasses.some((cls) => ref.target instanceof cls)) && (U.isTargetKey(ref.targetKey) || U.isTargetFlagKey(ref.targetFlagKey)) && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey));
+    if (!U.isSimpleObj(ref)) {
+      return false;
+    }
+    return this.HasValidKey(ref) && this.HasValidTargetRef(ref);
   }
   static IsValidData(ref) {
-    return U.isSimpleObj(ref) && U.isDocID(ref.id) && U.isDocUUID(ref.targetID) && (U.isTargetKey(ref.targetKey) || U.isTargetFlagKey(ref.targetFlagKey)) && !(U.isTargetKey(ref.targetKey) && U.isTargetFlagKey(ref.targetFlagKey));
+    if (!U.isSimpleObj(ref)) {
+      return false;
+    }
+    return U.isDocID(ref.id) && U.isDocUUID(ref.targetID) && this.HasValidKey(ref);
   }
   static BuildLinkConfig(partialConfig) {
     if ("target" in partialConfig) {
@@ -18794,11 +18837,11 @@ const _BladesTargetLink = class _BladesTargetLink {
   * Subclasses must override this method to apply their own defaults.
   *
   * @template Schema - The data schema required by the subclass.
-  * @param {Partial<Schema>} schemaData - Schema data overriding the defaults.
+  * @param {Partial<Schema>} _schemaData - Schema data overriding the defaults.
   * @returns {Schema} - The schema data with defaults applied.
   * @throws {Error} - Throws an error if this method is not overridden in a subclass.
   */
-  static ApplySchemaDefaults(schemaData) {
+  static ApplySchemaDefaults(_schemaData) {
     throw new Error("[BladesTargetLink.ApplySchemaDefaults] Static Method ApplySchemaDefaults must be overridden in subclass");
   }
   /**
@@ -19002,7 +19045,7 @@ const _BladesTargetLink = class _BladesTargetLink {
           resolve();
         }).catch(reject);
       } else {
-        reject();
+        reject(new Error(`[BladesTargetLink.#updateTargetViaMerge] Unable to update target data for BladesTargetLink id '${this.id}': Missing both 'targetKeyPrefix' and 'targetFlagKeyPrefix'`));
       }
     });
     return this.initPromise;
@@ -19010,15 +19053,14 @@ const _BladesTargetLink = class _BladesTargetLink {
   async updateTarget(propOrData, valOrWaitFor, waitFor2) {
     if (typeof propOrData === "string") {
       if (getProperty(this.data, propOrData) === valOrWaitFor) {
-        return;
+        return Promise.resolve();
       }
       return __privateMethod(this, _updateTargetPropVal, updateTargetPropVal_fn).call(this, propOrData, valOrWaitFor, waitFor2);
     }
     if (typeof propOrData === "object") {
       return __privateMethod(this, _updateTargetViaMerge, updateTargetViaMerge_fn).call(this, propOrData, valOrWaitFor);
-    } else {
-      throw new Error(`[BladesTargetLink.updateTarget()] Bad updateData for id '${this.id}': ${propOrData}`);
     }
+    throw new Error(`[BladesTargetLink.updateTarget()] Bad updateData for id '${this.id}': ${propOrData}`);
   }
   async updateTargetData(val, waitFor2) {
     if (val) {
@@ -19102,7 +19144,7 @@ _updateTargetViaMerge = new WeakSet();
 updateTargetViaMerge_fn = async function(updateData, waitFor2) {
   await U.waitFor(waitFor2);
   if (this.targetKeyPrefix) {
-    updateData = U.objMap(updateData, false, (key) => `${this.targetKeyPrefix || this.targetFlagKeyPrefix}.${String(key)}`);
+    updateData = U.objMap(updateData, false, (key) => `${this.targetKeyPrefix ?? this.targetFlagKeyPrefix}.${String(key)}`);
     return this.target.update(updateData, { render: false });
   } else if (this.targetFlagKeyPrefix) {
     const existingFlagData = this.target.getFlag(C.SYSTEM_ID, this.targetFlagKeyPrefix) ?? {};
@@ -19120,6 +19162,8 @@ updateTargetPropVal_fn = async function(prop, val, waitFor2) {
     return this.target.update({ [`${this.targetKeyPrefix}.${prop}`]: val });
   } else if (this.targetFlagKeyPrefix) {
     return this.updateTargetFlag(prop, val);
+  } else {
+    throw new Error(`[BladesTargetLink.#updateTargetPropVal] Unable to update target data for BladesTargetLink id '${this.id}': Missing both 'targetKeyPrefix' and 'targetFlagKeyPrefix'`);
   }
 };
 __privateAdd(_BladesTargetLink, _ParseChildLinkData);
@@ -19224,7 +19268,7 @@ class BladesClockKey extends BladesTargetLink {
       );
     } else if (tempLink.targetFlagKeyPrefix) {
       config3.clocksData = Object.fromEntries(
-        clocksInitialData.map((cSchema, i) => {
+        clocksInitialData.map((cSchema) => {
           const cData = BladesClock.ParseConfigToData({
             ...BladesClock.ApplySchemaDefaults(cSchema),
             targetID: tempLink.targetID,
@@ -19331,9 +19375,7 @@ class BladesClockKey extends BladesTargetLink {
   // #endregion
   get clocks() {
     return new Collection(
-      Object.entries(this.clocksData).sort((a, b) => a[1].index - b[1].index).map(([id, data]) => {
-        return [id, new BladesClock(data)];
-      })
+      Object.entries(this.clocksData).sort((a, b) => a[1].index - b[1].index).map(([id, data]) => [id, new BladesClock(data)])
     );
   }
   getClockByID(clockID) {
@@ -19430,18 +19472,17 @@ class BladesClockKey extends BladesTargetLink {
    * containing those BladesClock instances that appear in ALL provided arrays.
    */
   getClocksIn(...clockArrays) {
-    if (clockArrays.length === 0)
+    if (clockArrays.length === 0) {
       return [];
-    return clockArrays.reduce((acc, currentArray) => {
-      return acc.filter((clock) => currentArray.includes(clock));
-    });
+    }
+    return clockArrays.reduce((acc, currentArray) => acc.filter((clock) => currentArray.includes(clock)));
   }
   /** This function accepts an array of BladesClock, and returns the BladesClock
    * instance with the lowest index property.
    */
   getEarliestClock(clockArray) {
     if (clockArray.length) {
-      return clockArray.sort((a, b) => a.index - b.index)[0];
+      return clockArray.toSorted((a, b) => a.index - b.index)[0];
     }
     return void 0;
   }
@@ -19450,7 +19491,7 @@ class BladesClockKey extends BladesTargetLink {
    */
   getLatestClock(clockArray) {
     if (clockArray.length) {
-      return clockArray.sort((a, b) => b.index - a.index)[0];
+      return clockArray.toSorted((a, b) => b.index - a.index)[0];
     }
     return void 0;
   }
@@ -19555,7 +19596,7 @@ class BladesClockKey extends BladesTargetLink {
       elem$ = $(displayContext).closest(`#${this.id}`);
     }
     if (!(elem$ == null ? void 0 : elem$.length)) {
-      throw new Error(`[BladesClockKey.getElements$] Cannot find elements for display context '${displayContext}' of clockKey '${this.id}'.`);
+      throw new Error(`[BladesClockKey.getElements$] Cannot find elements for display context '${String(displayContext)}' of clockKey '${this.id}'.`);
     }
     const keyElems$ = {
       elem$
@@ -19616,10 +19657,10 @@ class BladesClockKey extends BladesTargetLink {
    * - "presentN" (where N is a clock index number) - zooms in to the clock at index N, and presents whichever side has the next available segment towards the camera.
    * - A clock index number - zooms in to the clock at index N
    *
-   * @param {HTMLElement | JQuery<HTMLElement> | {x: number, y: number, width: number, height: number}} [container$] - The container within which the key will be displayed.
+   * @param {HTMLElement | JQuery | {x: number, y: number, width: number, height: number}} [container$] - The container within which the key will be displayed.
    * This can be:
    * - An HTMLElement
-   * - A JQuery<HTMLElement>
+   * - A JQuery
    * - A {x, y, width, height} position definition
    * If not provided, it defaults to the clock key's container element (only if the key is already rendered in the DOM).
    *
@@ -19648,7 +19689,7 @@ class BladesClockKey extends BladesTargetLink {
     } else if (isElemPosData(container$)) {
       targetPosData = container$;
     } else {
-      throw new Error(`[BladesClockKey.getVarsForDisplayMode] Error container$ '${container$}' is not a valid type.`);
+      throw new Error(`[BladesClockKey.getVarsForDisplayMode] Error container$ '${String(container$)}' is not a valid type.`);
     }
     let presentingClock;
     let focusPosData;
@@ -20216,7 +20257,7 @@ class BladesClock extends BladesTargetLink {
       elem$ = $(displayContext).closest(`#${this.id}`);
     }
     if (!(elem$ == null ? void 0 : elem$.length)) {
-      throw new Error(`[BladesClock.getElements$] Cannot find elements for display context '${displayContext}' of clock '${this.id}' of key '${this.parentKey.id}'.`);
+      throw new Error(`[BladesClock.getElements$] Cannot find elements for display context '${String(displayContext)}' of clock '${this.id}' of key '${this.parentKey.id}'.`);
     }
     const clockElems$ = {
       clockElem$: elem$
@@ -20541,7 +20582,7 @@ class BladesClock extends BladesTargetLink {
     }
     return oneSegsToAnimate;
   }
-  changeSegments_Animation(clockElems$, startVal, endVal, callback) {
+  changeSegments_Animation(clockElems$, startVal, endVal) {
     startVal = U.gsap.utils.clamp(0, this.max, startVal);
     endVal = U.gsap.utils.clamp(0, this.max, endVal);
     let delta = endVal - startVal;
@@ -22064,7 +22105,7 @@ class BladesDialog extends Dialog {
           icon: '<i class="fa-solid fa-arrow-down-to-arc"></i>',
           label: "Apply",
           callback: (html) => app
-          //   .writeToRollInstance(html as JQuery<HTMLElement>)
+          //   .writeToRollInstance(html as JQuery)
         },
         cancel: {
           icon: '<i class="fas fa-times"></i>',
@@ -22111,8 +22152,8 @@ class BladesDialog extends Dialog {
   //     apply: {
   //       icon: '<i class="fa-solid fa-arrow-down-to-arc"></i>',
   //       label: "Apply",
-  //       callback: (html: HTMLElement|JQuery<HTMLElement>) => (app as BladesDialog)
-  //         .writeToRollInstance(html as JQuery<HTMLElement>)
+  //       callback: (html: HTMLElement|JQuery) => (app as BladesDialog)
+  //         .writeToRollInstance(html as JQuery)
   //     },
   //     cancel: {
   //       icon: '<i class="fas fa-times"></i>',
@@ -22265,7 +22306,7 @@ class BladesDialog extends Dialog {
       this.parent.update({ [inputElem$.data("target")]: inputElem$.val() });
     }
   }
-  // updateConsequenceType(csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
+  // updateConsequenceType(csqElem$: JQuery, cData: BladesConsequence.Data) {
   //   const type$ = csqElem$.find(".roll-consequence-type-select") as JQuery<HTMLSelectElement>;
   //   const typeVal = type$.val() as string|undefined;
   //   if (typeVal && typeVal in ConsequenceType) {
@@ -22274,7 +22315,7 @@ class BladesDialog extends Dialog {
   //     cData.typeDisplay = C.ConsequenceDisplay[cData.type];
   //   }
   // }
-  // updateConsequenceAttribute(csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
+  // updateConsequenceAttribute(csqElem$: JQuery, cData: BladesConsequence.Data) {
   //   if (/Insight/.exec(cData.type)) { cData.attribute = AttributeTrait.insight; }
   //   else if (/Prowess/.exec(cData.type)) { cData.attribute = AttributeTrait.prowess; }
   //   else if (/Resolve/.exec(cData.type)) { cData.attribute = AttributeTrait.resolve; }
@@ -22300,7 +22341,7 @@ class BladesDialog extends Dialog {
   //     ? new BladesConsequence(cData.resistTo)
   //     : false;
   // }
-  // updateConsequenceResist(csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
+  // updateConsequenceResist(csqElem$: JQuery, cData: BladesConsequence.Data) {
   //   const resistOptions: Record<string, BladesRoll.ConsequenceResistOption> = cData.resistOptions ?? {};
   //   // If consequence is already minimal, toggle resistNegates to true and set 'resistTo' to None-type
   //   const minimalCsqTypes = Object.entries(C.ResistedConsequenceTypes)
@@ -22339,7 +22380,7 @@ class BladesDialog extends Dialog {
   //   }
   //   cData.resistOptions = resistOptions;
   // }
-  // updateConsequenceArmorResist(_csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
+  // updateConsequenceArmorResist(_csqElem$: JQuery, cData: BladesConsequence.Data) {
   //   // If consequence is already minimal, toggle armorNegates to true and set 'armorTo' to None-type
   //   const minimalCsqTypes = Object.entries(C.ResistedConsequenceTypes)
   //     .filter(([_, rCsqType]) => rCsqType === ConsequenceType.None)
@@ -22352,7 +22393,7 @@ class BladesDialog extends Dialog {
   //     cData.armorTo = this.getSelectedResistOption(cData);
   //   }
   // }
-  // updateConsequenceSpecialArmorResist(_csqElem$: JQuery<HTMLElement>, cData: BladesConsequence.Data) {
+  // updateConsequenceSpecialArmorResist(_csqElem$: JQuery, cData: BladesConsequence.Data) {
   //   // If consequence is already minimal, toggle specialArmorNegates to true and set 'specialTo' to None-type
   //   const minimalCsqTypes = Object.entries(C.ResistedConsequenceTypes)
   //     .filter(([_, rCsqType]) => rCsqType === ConsequenceType.None)
@@ -22425,7 +22466,7 @@ class BladesDialog extends Dialog {
   //     this.render();
   //   }
   // }
-  // async writeToRollInstance(html: JQuery<HTMLElement>) {
+  // async writeToRollInstance(html: JQuery) {
   // if (this.parent instanceof BladesRoll) {
   // this.updateConsequenceDialog(html, false);
   // await this.parent.updateTarget("consequenceData", this.csqData);
@@ -22598,7 +22639,7 @@ class BladesDialog extends Dialog {
     $("#eunos-blades-tooltips > *").remove();
     super.close();
   }
-  // activateConsequenceListeners(html: JQuery<HTMLElement>) {
+  // activateConsequenceListeners(html: JQuery) {
   // html.find("input").on({change: () => this.updateConsequenceDialog(html)});
   // html.find("select").on({change: () => this.updateConsequenceDialog(html)});
   // html.find('[data-action^="ai-query"]').on({
@@ -22646,6 +22687,7 @@ class BladesRollMod extends BladesTargetLink {
   constructor(modData, rollInstance) {
     super(modData);
     __publicField(this, "_rollInstance");
+    __publicField(this, "_heldStatus");
     this._rollInstance = rollInstance;
     if (!game.eunoblades.RollMods.has(this.id)) {
       game.eunoblades.RollMods.set(this.id, this);
@@ -23101,20 +23143,20 @@ class BladesRollMod extends BladesTargetLink {
     }
     if (!val || val === this.baseStatus) {
       val = null;
-    } else {
-      if (!game.user.isGM && (BladesRollMod.GMOnlyModStatuses.includes(val) || this.userStatus && BladesRollMod.GMOnlyModStatuses.includes(this.userStatus))) {
-        return;
-      }
-      const oldStatus = this.statusReport;
-      this.updateTarget("user_status", val).then(() => {
-        eLog.checkLog3("rollModStatus", `[set USER] ${this.name} Status Change: ${oldStatus["!STATUS"]} -> ${this.status} (val = ${val})`, {
-          from: oldStatus.comps,
-          to: this.statusReport.comps
-        });
-      });
+    } else if (!game.user.isGM && (BladesRollMod.GMOnlyModStatuses.includes(val) || this.userStatus && BladesRollMod.GMOnlyModStatuses.includes(this.userStatus))) {
+      return;
     }
+    const oldStatus = this.statusReport;
+    this.updateTarget("user_status", val).then(() => {
+      eLog.checkLog3("rollModStatus", `[set USER] ${this.name} Status Change: ${oldStatus["!STATUS"]} -> ${this.status} (val = ${val})`, {
+        from: oldStatus.comps,
+        to: this.statusReport.comps
+      });
+    });
   }
-  // @ts-expect-error Why aren't I able to simply pass the function parameters through to the superclass?
+  async silentUpdateTarget(...args) {
+    await super.updateTarget(...args);
+  }
   async updateTarget(...args) {
     await super.updateTarget(...args);
     this.rollInstance.renderRollCollab_SocketCall();
@@ -23135,19 +23177,18 @@ class BladesRollMod extends BladesTargetLink {
     return this.data.base_status;
   }
   get heldStatus() {
-    return this.data.held_status;
+    return this._heldStatus;
   }
   set heldStatus(val) {
     if (val === this.heldStatus) {
       return;
     }
     const oldStatus = this.statusReport;
-    this.updateTarget("held_status", val || null).then(() => {
-      eLog.checkLog3("rollModStatus", `[set HELD] ${this.name} Status Change: ${oldStatus["!STATUS"]} -> ${this.status} (val = ${val})`, {
-        from: oldStatus.comps,
-        to: this.statusReport.comps
-      });
+    eLog.checkLog3("set heldStatus", `[set HELD] ${this.name} Status Change: ${oldStatus["!STATUS"]} -> ${this.status} (val = ${val})`, {
+      from: oldStatus.comps,
+      to: this.statusReport.comps
     });
+    this._heldStatus = val;
   }
   get value() {
     return this.data.value;
@@ -23488,7 +23529,26 @@ class BladesRollOpposition {
     if (BladesRollOpposition.IsDoc(data)) {
       return true;
     }
-    return U.isList(data) && typeof data.rollOppName === "string" && typeof data.rollOppType === "string" && typeof data.rollOppImg === "string" && (!data.rollOppSubName || typeof data.rollOppSubName === "string") && (!data.rollOppModsSchemaSet || Array.isArray(data.rollOppModsSchemaSet)) && U.isList(data.rollFactors) && (!data.rollOppID || typeof data.rollOppID === "string");
+    if (!U.isList(data)) {
+      return false;
+    }
+    if ([
+      typeof data.rollOppName,
+      typeof data.rollOppType,
+      typeof data.rollOppImg
+    ].some((type) => type !== "string")) {
+      return false;
+    }
+    if (!Array.isArray(data.rollOppModsSchemaSet)) {
+      return false;
+    }
+    if (!U.isList(data.rollFactors)) {
+      return false;
+    }
+    if (data.rollOppID && typeof data.rollOppID !== "string") {
+      return false;
+    }
+    return true;
   }
   static GetDoc(docRef) {
     let doc = docRef;
@@ -23609,7 +23669,29 @@ class BladesRollParticipant {
     if (BladesRollParticipant.IsDoc(data)) {
       return true;
     }
-    return U.isList(data) && typeof data.rollParticipantName === "string" && typeof data.rollParticipantType === "string" && typeof data.rollParticipantIcon === "string" && (!data.rollParticipantModsSchemaSet || Array.isArray(data.rollParticipantModsSchemaSet)) && U.isList(data.rollFactors) && (!data.rollParticipantID || typeof data.rollParticipantID === "string") && (!data.rollParticipantDoc || BladesRollParticipant.IsDoc(data.rollParticipantDoc));
+    if (!U.isList(data)) {
+      return false;
+    }
+    if ([
+      typeof data.rollParticipantName,
+      typeof data.rollParticipantType,
+      typeof data.rollParticipantIcon
+    ].some((type) => type !== "string")) {
+      return false;
+    }
+    if (!Array.isArray(data.rollParticipantModsSchemaSet)) {
+      return false;
+    }
+    if (!U.isList(data.rollFactors)) {
+      return false;
+    }
+    if (data.rollParticipantID && typeof data.rollParticipantID !== "string") {
+      return false;
+    }
+    if (data.rollParticipantDoc && !BladesRollParticipant.IsDoc(data.rollParticipantDoc)) {
+      return false;
+    }
+    return true;
   }
   static GetDoc(docRef) {
     let doc = docRef;
@@ -23701,16 +23783,10 @@ const _BladesRoll = class _BladesRoll extends BladesTargetLink {
       this._rollParticipants = {};
       for (const [rollSection, rollParticipantList] of Object.entries(this.data.rollParticipantData)) {
         if ([RollModSection.roll, RollModSection.position, RollModSection.effect].includes(rollSection) && !U.isEmpty(rollParticipantList)) {
-          const sectionParticipants = {};
-          for (const [participantType, participantData] of Object.entries(rollParticipantList)) {
-            sectionParticipants[participantType] = new BladesRollParticipant(
-              this,
-              rollSection,
-              participantType,
-              participantData
-            );
-          }
-          this._rollParticipants[rollSection] = sectionParticipants;
+          this._rollParticipants[rollSection] = this._getSectionParticipants(
+            rollSection,
+            rollParticipantList
+          );
         }
       }
     }
@@ -23855,7 +23931,7 @@ const _BladesRoll = class _BladesRoll extends BladesTargetLink {
       "blades-die-critical"
     ][dieVal];
   }
-  static GetDieImage(rollType, rollResult, dieVal, dieIndex, isGhost = false, isCritical = false) {
+  static GetDieImage(rollType, dieVal, dieIndex, isGhost = false, isCritical = false) {
     let imgPath = "systems/eunos-blades/assets/dice/image/";
     if (isGhost) {
       imgPath += "ghost-";
@@ -23931,12 +24007,10 @@ const _BladesRoll = class _BladesRoll extends BladesTargetLink {
         if (BladesRollParticipant.IsDoc(pData)) {
           return pData;
         }
-        if (BladesRollParticipant.IsValidData(pData)) {
-          if (typeof pData.rollParticipantID === "string") {
-            const pDoc = game.actors.get(pData.rollParticipantID) ?? game.items.get(pData.rollParticipantID);
-            if (BladesRollParticipant.IsDoc(pDoc)) {
-              return pDoc;
-            }
+        if (BladesRollParticipant.IsValidData(pData) && typeof pData.rollParticipantID === "string") {
+          const pDoc = game.actors.get(pData.rollParticipantID) ?? game.items.get(pData.rollParticipantID);
+          if (BladesRollParticipant.IsDoc(pDoc)) {
+            return pDoc;
           }
         }
         throw new Error(`[getParticipantDocs] Invalid participant data encountered. Data: ${JSON.stringify(pData)}, Expected: "BladesRollParticipant or valid participant data", Function Context: "getParticipantDocs", Participant Data: ${JSON.stringify(participantData)}`);
@@ -24195,13 +24269,31 @@ const _BladesRoll = class _BladesRoll extends BladesTargetLink {
     var _a2;
     (_a2 = game.eunoblades.Rolls.get(id)) == null ? void 0 : _a2.closeRollCollab_Animation();
   }
+  _getSectionParticipants(rollSection, rollParticipantList) {
+    const sectionParticipants = {};
+    for (const [participantType, participantData] of Object.entries(rollParticipantList)) {
+      sectionParticipants[participantType] = new BladesRollParticipant(
+        this,
+        rollSection,
+        participantType,
+        participantData
+      );
+    }
+    return sectionParticipants;
+  }
   // #endregion
   // #region Roll Participation & User Permissions
   async addRollParticipant(participantRef, rollSection, rollSubSection) {
     if (!rollSubSection) {
       rollSubSection = "Assist";
     }
-    const participantData = typeof participantRef === "string" ? game.actors.get(participantRef) ?? game.actors.getName(participantRef) ?? game.items.get(participantRef) ?? game.items.getName(participantRef) : participantRef;
+    function getParticipantData(pRef) {
+      if (typeof pRef === "string") {
+        return game.actors.get(pRef) ?? game.items.get(pRef) ?? game.actors.getName(pRef) ?? game.items.getName(pRef);
+      }
+      return pRef;
+    }
+    const participantData = getParticipantData(participantRef);
     if (!BladesRollParticipant.IsValidData(participantData)) {
       throw new Error("Bad data.");
     }
@@ -24617,6 +24709,7 @@ const _BladesRoll = class _BladesRoll extends BladesTargetLink {
     this.rollTraitValOverride = void 0;
     this.rollFactorPenaltiesNegated = {};
     this.tempGMBoosts = {};
+    this.rollMods.forEach((rollMod) => rollMod.heldStatus = void 0);
     const initReport = {};
     let initReportCount = 0;
     const watchMod = (label) => {
@@ -25186,7 +25279,7 @@ const _BladesRoll = class _BladesRoll extends BladesTargetLink {
     return hasInactive;
   }
   get dieVals() {
-    return this.roll.terms[0].results.map((result) => result.result).sort().reverse();
+    return this.roll.terms[0].results.map((result) => result.result).sort((a, b) => a - b).reverse();
   }
   // Accounts for rolling zero dice by removing highest.
   get finalDieVals() {
@@ -25200,13 +25293,13 @@ const _BladesRoll = class _BladesRoll extends BladesTargetLink {
     const diceData = dieVals.map((val, i) => ({
       value: val,
       dieClass: _BladesRoll.GetDieClass(this.rollType, this.rollResult, val, i),
-      dieImage: _BladesRoll.GetDieImage(this.rollType, this.rollResult, val, i, false, isCritical)
+      dieImage: _BladesRoll.GetDieImage(this.rollType, val, i, false, isCritical)
     }));
     if (ghostNum) {
       diceData.push({
         value: ghostNum,
         dieClass: "blades-die-ghost",
-        dieImage: _BladesRoll.GetDieImage(this.rollType, this.rollResult, ghostNum, diceData.length, true, false)
+        dieImage: _BladesRoll.GetDieImage(this.rollType, ghostNum, diceData.length, true, false)
       });
     }
     return diceData;
@@ -25576,6 +25669,7 @@ const _BladesRoll = class _BladesRoll extends BladesTargetLink {
     if (!mod) {
       throw new Error(`Unable to find roll mod with id '${modID}'`);
     }
+    eLog.checkLog3("playerToggleRollMod", "BEFORE _onPlayerToggleRollMod", { modID, modStatus: mod.status, baseStatus: mod.baseStatus, userStatus: mod.userStatus, heldStatus: mod.heldStatus });
     switch (mod.status) {
       case RollModStatus.ToggledOff: {
         mod.userStatus = RollModStatus.ToggledOn;
@@ -25586,6 +25680,7 @@ const _BladesRoll = class _BladesRoll extends BladesTargetLink {
         break;
       }
     }
+    eLog.checkLog3("playerToggleRollMod", "AFTER _onPlayerToggleRollMod", { modID, modStatus: mod.status, baseStatus: mod.baseStatus, userStatus: mod.userStatus, heldStatus: mod.heldStatus });
   }
   _onGMToggleRollMod(event) {
     event.preventDefault();
@@ -26745,7 +26840,6 @@ const BladesItem$1 = BladesItem;
 const FUNCQUEUE = {};
 const CUSTOMFUNCS = {
   addItem: async (actor, funcData, _, isReversing = false) => {
-    eLog.checkLog("activeEffects", "addItem", { actor, funcData, isReversing });
     if (actor.hasActiveSubItemOf(funcData)) {
       if (isReversing) {
         return actor.remSubItem(funcData);
@@ -26757,7 +26851,6 @@ const CUSTOMFUNCS = {
   },
   addIfChargen: async (actor, funcData, _, isReversing = false) => {
     var _a2;
-    eLog.checkLog("activeEffects", "addIfChargen", { actor, funcData, isReversing });
     if (!isReversing && ((_a2 = game.eunoblades.Tracker) == null ? void 0 : _a2.system.phase) !== BladesPhase.CharGen) {
       return;
     }
@@ -26770,7 +26863,6 @@ const CUSTOMFUNCS = {
   },
   upgradeIfChargen: async (actor, funcData, _, isReversing = false) => {
     var _a2;
-    eLog.checkLog("activeEffects", "upgradeIfChargen", { actor, funcData, isReversing });
     if (!isReversing && ((_a2 = game.eunoblades.Tracker) == null ? void 0 : _a2.system.phase) !== BladesPhase.CharGen) {
       return;
     }
@@ -26972,18 +27064,14 @@ class BladesActiveEffect extends ActiveEffect {
     if (!actor.id) {
       return;
     }
-    eLog.checkLog3("activeEffect", `Throttling Func: ${funcName}(${funcData}, ${isReversing})`);
     if (actor.id && actor.id in FUNCQUEUE) {
       const matchingQueue = FUNCQUEUE[actor.id].queue.find((fData) => JSON.stringify(fData) === JSON.stringify(data));
-      eLog.checkLog("activeEffects", "... Checking Queue", { data, FUNCQUEUE: FUNCQUEUE[actor.id], matchingQueue });
       if (matchingQueue) {
-        eLog.error("... Function ALREADY QUEUED, SKIPPING");
         return;
       }
       FUNCQUEUE[actor.id].queue.push(data);
       return;
     }
-    eLog.checkLog3("activeEffect", "... Creating New FUNCQUEUE, RUNNING:");
     FUNCQUEUE[actor.id] = {
       curFunc: BladesActiveEffect.RunCustomFunc(actor, CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing)),
       queue: []
@@ -26993,9 +27081,7 @@ class BladesActiveEffect extends ActiveEffect {
     if (!actor.id) {
       return;
     }
-    eLog.checkLog("activeEffects", "... Running Func ...");
     await funcPromise;
-    eLog.checkLog("activeEffects", "... Function Complete!");
     if (FUNCQUEUE[actor.id].queue.length) {
       const { funcName, funcData, isReversing, effect } = FUNCQUEUE[actor.id].queue.shift() ?? {};
       if (!funcName || !(funcName in CUSTOMFUNCS)) {
@@ -27004,13 +27090,11 @@ class BladesActiveEffect extends ActiveEffect {
       if (!funcData) {
         return;
       }
-      eLog.checkLog3("activeEffect", `Progressing Queue: ${funcName}(${funcData}, ${isReversing}) -- ${FUNCQUEUE[actor.id].queue.length} remaining funcs.`);
       FUNCQUEUE[actor.id].curFunc = BladesActiveEffect.RunCustomFunc(
         actor,
         CUSTOMFUNCS[funcName](actor, funcData, effect, isReversing)
       );
     } else {
-      eLog.checkLog3("activeEffect", "Function Queue Complete! Deleting.");
       delete FUNCQUEUE[actor.id];
     }
   }
@@ -27446,9 +27530,9 @@ class BladesItemSheet extends ItemSheet {
   //   super(item, options);
   // }
   // override async getData() {
-  getData() {
+  async getData() {
     var _a2;
-    const context3 = super.getData();
+    const context3 = await super.getData();
     const sheetData = {
       cssClass: this.item.type,
       editable: this.options.editable,
@@ -27512,7 +27596,7 @@ class BladesItemSheet extends ItemSheet {
     });
   }
   async activateListeners(html) {
-    await super.activateListeners(html);
+    super.activateListeners(html);
     const self2 = this;
     Tags.InitListeners(html, this.item);
     ApplyTooltipAnimations(html);
@@ -27584,8 +27668,8 @@ class BladesProjectSheet extends BladesItemSheet {
       template: "systems/eunos-blades/templates/items/project-sheet.hbs"
     });
   }
-  getData() {
-    const context3 = super.getData();
+  async getData() {
+    const context3 = await super.getData();
     const sheetData = {};
     sheetData.presentingClock = this.presentedClock;
     return {
@@ -28091,8 +28175,8 @@ class BladesScoreSheet extends BladesItemSheet {
     });
     await this.document.update({ "system.randomizers": finalRandomData });
   }
-  getData() {
-    const context3 = super.getData();
+  async getData() {
+    const context3 = await super.getData();
     const sheetData = {};
     sheetData.playerCharacters = BladesActor$1.GetTypeWithTags(BladesActorType.pc, Tag.PC.ActivePC).map((pc) => {
       return Object.assign(
@@ -28113,7 +28197,7 @@ class BladesScoreSheet extends BladesItemSheet {
       );
     });
     const validOppositions = {};
-    for (const [id, data] of Object.entries(context3.system.oppositions)) {
+    for (const [id, data] of Object.entries(context3.system.oppositions ?? {})) {
       if (!data.rollOppName && !data.rollOppSubName) {
         continue;
       }
@@ -29481,9 +29565,9 @@ class BladesActorSheet extends ActorSheet {
    *                 hasFullVision, hasLimitedVision, hasControl, preparedItems.
    * @returns {BladesActorSheetData} The data object for the actor sheet.
    */
-  getData() {
+  async getData() {
     var _a2, _b;
-    const context3 = super.getData();
+    const context3 = await super.getData();
     const sheetData = {
       // Basic actor data.
       cssClass: this.actor.type,
@@ -29760,7 +29844,7 @@ class BladesActorSheet extends ActorSheet {
     if (!doc) {
       return;
     }
-    await G.effects.blurRemove(elem$).then(async () => await doc.delete());
+    await G.effects.blurRemove(elem$).then(async () => doc.delete());
   }
   async _onItemToggleClick(event) {
     event.preventDefault();
@@ -29941,9 +30025,9 @@ class BladesPCSheet extends BladesActorSheet {
       tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "abilities" }]
     });
   }
-  getData() {
+  async getData() {
     var _a2, _b, _c, _d;
-    const context3 = super.getData();
+    const context3 = await super.getData();
     const { activeSubItems, activeSubActors } = this.actor;
     const sheetData = {};
     sheetData.preparedItems = Object.assign(
@@ -30485,10 +30569,6 @@ class BladesPC extends BladesActor$1 {
     );
   }
   // #endregion
-  constructor(data) {
-    super(data);
-    eLog.checkLog3("pcConstructor", "new BladesPC()", { data });
-  }
   // #region BladesPrimaryActor Implementation ~
   get primaryUser() {
     var _a2;
@@ -30648,8 +30728,7 @@ class BladesPC extends BladesActor$1 {
       return void 0;
     }
     const [clockKeyID] = Object.keys(this.system.clocksData);
-    const clockKey = game.eunoblades.ClockKeys.get(clockKeyID ?? "");
-    return clockKey;
+    return game.eunoblades.ClockKeys.get(clockKeyID ?? "");
   }
   get harmLevel() {
     if (this.system.harm.severe.one.length > 1) {
@@ -30995,7 +31074,7 @@ class BladesPC extends BladesActor$1 {
     return tooltipStrings.join("");
   }
   // #endregion
-  render(force) {
+  render(force = false) {
     super.render(force);
   }
 }
@@ -31011,8 +31090,8 @@ class BladesNPCSheet extends BladesActorSheet {
       tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "description" }]
     });
   }
-  getData() {
-    const context3 = super.getData();
+  async getData() {
+    const context3 = await super.getData();
     context3.isSubActor = context3.actor.isSubActor;
     context3.parentActor = context3.actor.parentActor;
     context3.persona = context3.actor.system.persona;
@@ -31177,8 +31256,8 @@ class BladesFactionSheet extends BladesActorSheet {
       tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "overview" }]
     });
   }
-  getData() {
-    const context3 = super.getData();
+  async getData() {
+    const context3 = await super.getData();
     if (!BladesActor$1.IsType(this.actor, BladesActorType.faction)) {
       return context3;
     }
@@ -31304,8 +31383,8 @@ class BladesCrewSheet extends BladesActorSheet {
       tabs: [{ navSelector: ".nav-tabs", contentSelector: ".tab-content", initial: "claims" }]
     });
   }
-  getData() {
-    const context3 = super.getData();
+  async getData() {
+    const context3 = await super.getData();
     eLog.checkLog("actor", "[BladesCrewSheet] super.getData()", { ...context3 });
     const { activeSubItems } = this.actor;
     const sheetData = {};
@@ -31652,7 +31731,6 @@ class BladesChat extends ChatMessage {
         html.addClass("blades-roll-message");
         BladesConsequence.ApplyChatListeners(msg);
       }
-      html.addClass("display-ok");
     });
     return loadTemplates([
       "systems/eunos-blades/templates/chat/blades-message.hbs",
@@ -31703,10 +31781,13 @@ class BladesChat extends ChatMessage {
         }
       }
     };
-    return { data: {
-      ...baseChatData,
-      ...msgData
-    }, options };
+    return {
+      data: {
+        ...baseChatData,
+        ...msgData
+      },
+      options
+    };
   }
   static async ConstructBladesChatMessageData(data, options = {}) {
     var _a2;
@@ -31815,7 +31896,7 @@ class BladesChat extends ChatMessage {
     });
   }
   async setFlagVal(scope, key, val) {
-    return await this.setFlag(C.SYSTEM_ID, `${scope}.${key}`, val);
+    return this.setFlag(C.SYSTEM_ID, `${scope}.${key}`, val);
   }
   get allRollConsequences() {
     const returnData = {
@@ -31934,14 +32015,16 @@ class BladesChat extends ChatMessage {
   }
 }
 const BladesChat$1 = BladesChat;
-const LOGGERCONFIG = {
-  fullName: "eLogger",
-  aliases: ["dbLog"],
-  stackTraceExclusions: {
-    handlebars: [/scripts\/handlebars/]
-    // From internal Handlebars module
-  }
-};
+const STACK_TRACE_EXCLUSIONS = [
+  /at Logger/,
+  /\beLog\b/,
+  /scripts\/handlebars/
+  // From internal Handlebars module
+];
+const STACK_TRACE_PROJECT_CODE = [
+  /\/systems\//,
+  /\/modules\//
+];
 const STYLES = {
   base: {
     "background": getColor("black"),
@@ -32014,37 +32097,26 @@ const STYLELINES = Object.fromEntries(
     Object.entries({ ...baseStyles, ...styles }).map(([prop, val]) => `${prop}: ${val};`).join(" ")
   ])
 );
+function isDebugLevel(level) {
+  return typeof level === "number" && [0, 1, 2, 3, 4, 5].includes(level);
+}
 const eLogger = (type = "base", ...content) => {
-  if (!(["error", "display"].includes(type) || CONFIG.debug.logging)) {
+  if (!CONFIG.debug.logging && type !== "display" && type !== "error") {
     return;
   }
-  const lastElem = U.getLast(content);
-  let dbLevel = typeof lastElem === "number" && [0, 1, 2, 3, 4, 5].includes(lastElem) ? content.pop() : 3;
-  let key = false;
-  if (type === "checkLog") {
-    key = content.shift();
-    type = `log${dbLevel}`;
-  }
-  const [message, ...data] = content;
-  if (key) {
-    const blacklist = (U.getSetting("blacklist", "debugSettings") ?? "").split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
-    const whitelist = (U.getSetting("whitelist", "debugSettings") ?? "").split(/,/).map((pat) => new RegExp(`\\b${pat.trim()}\\b`, "igu"));
-    const isBlack = blacklist.some((pat) => pat.test(key));
-    const isWhite = whitelist.some((pat) => pat.test(key));
-    if (isBlack && !isWhite) {
-      dbLevel = Math.max(4, Math.min(5, dbLevel + 2));
-    }
-    if (isWhite && !isBlack) {
-      dbLevel = Math.min(3, Math.max(1, dbLevel - 2));
-    }
-  }
+  const dbLevel = isDebugLevel(U.getLast(content)) ? content.pop() : 3;
   if ((U.getSetting("debugLevel", "debugSettings") ?? 5) < dbLevel) {
     return;
   }
+  if (type === "checkLog") {
+    content.shift();
+    type = "log";
+  }
+  const [message, ...data] = content;
   if (type === "log") {
     type = `${type}${dbLevel}`;
   }
-  const stackTrace = type === "display" ? null : getStackTrace(LOGGERCONFIG.stackTraceExclusions[type] ?? []);
+  const stackTrace = type === "display" ? null : getStackTrace();
   let logFunc;
   if (stackTrace) {
     logFunc = console.groupCollapsed;
@@ -32075,31 +32147,86 @@ const eLogger = (type = "base", ...content) => {
     console.groupEnd();
   }
   console.groupEnd();
-  function getStackTrace(regExpFilters = []) {
-    regExpFilters.push(new RegExp(`at (getStackTrace|${LOGGERCONFIG.fullName}|${LOGGERCONFIG.aliases.map(String).join("|")}|Object\\.(log|display|hbsLog|error))`), /^Error/);
-    return (new Error().stack ?? "").split(/\n/).map((sLine) => sLine.trim()).filter((sLine) => !regExpFilters.some((rTest) => rTest.test(sLine))).join("\n");
+  function filterStackTrace(traceString) {
+    const trace = traceString.split(/\n/).slice(1).filter((sLine) => !STACK_TRACE_EXCLUSIONS.some((rTest) => rTest.test(sLine))).map((sLine, i, arr) => {
+      var _a2;
+      let sL = sLine.trim();
+      if (sL.includes("Object.fn")) {
+        if ((_a2 = arr[i + 1]) == null ? void 0 : _a2.includes("at #call ")) {
+          sL = sL.replace(/at Object\.fn (\(.*?([^/.]+)[^/]*\)\s*)$/, "at $2 Hook $1");
+        } else {
+          sL = sL.replace(/at((?: async)? Object\.fn \(.*?([^/.]+(?:\.\w+)?)[^/]*\)\s*)$/, "at $2$1");
+        }
+      }
+      if (i === 0) {
+        return `${sL.replace(/^at/, "LOGGED AT")}`;
+      }
+      return `  ${!STACK_TRACE_PROJECT_CODE.some((rTest) => rTest.test(sL)) ? "    ..." : ">>>"} ${sL.replace(/\bat /, "")}`;
+    });
+    return trace.join("\n");
+  }
+  function getStackTrace() {
+    const trace = new Error();
+    Error.captureStackTrace(trace, eLogger);
+    return trace.stack ? filterStackTrace(trace.stack) : "... Stack Trace Unavailable ...";
   }
 };
-const logger = {
-  display: (...content) => eLogger("display", ...content),
-  log0: (...content) => eLogger("log", ...content, 0),
-  log1: (...content) => eLogger("log", ...content, 1),
-  log2: (...content) => eLogger("log", ...content, 2),
-  log: (...content) => eLogger("log", ...content, 3),
-  log3: (...content) => eLogger("log", ...content, 3),
-  log4: (...content) => eLogger("log", ...content, 4),
-  log5: (...content) => eLogger("log", ...content, 5),
-  checkLog0: (...content) => eLogger("checkLog", ...content, 0),
-  checkLog1: (...content) => eLogger("checkLog", ...content, 1),
-  checkLog2: (...content) => eLogger("checkLog", ...content, 2),
-  checkLog: (...content) => eLogger("checkLog", ...content, 3),
-  checkLog3: (...content) => eLogger("checkLog", ...content, 3),
-  checkLog4: (...content) => eLogger("checkLog", ...content, 4),
-  checkLog5: (...content) => eLogger("checkLog", ...content, 5),
-  warn: (...content) => eLogger("warn", ...content),
-  error: (...content) => eLogger("error", ...content),
-  hbsLog: (...content) => eLogger("handlebars", ...content)
-};
+class Logger {
+  static display(...content) {
+    eLogger("display", ...content);
+  }
+  static log0(...content) {
+    eLogger("log", ...content, 0);
+  }
+  static log1(...content) {
+    eLogger("log", ...content, 1);
+  }
+  static log2(...content) {
+    eLogger("log", ...content, 2);
+  }
+  static log(...content) {
+    eLogger("log", ...content, 3);
+  }
+  static log3(...content) {
+    eLogger("log", ...content, 3);
+  }
+  static log4(...content) {
+    eLogger("log", ...content, 4);
+  }
+  static log5(...content) {
+    eLogger("log", ...content, 5);
+  }
+  static checkLog0(...content) {
+    eLogger("checkLog", ...content, 0);
+  }
+  static checkLog1(...content) {
+    eLogger("checkLog", ...content, 1);
+  }
+  static checkLog2(...content) {
+    eLogger("checkLog", ...content, 2);
+  }
+  static checkLog(...content) {
+    eLogger("checkLog", ...content, 3);
+  }
+  static checkLog3(...content) {
+    eLogger("checkLog", ...content, 3);
+  }
+  static checkLog4(...content) {
+    eLogger("checkLog", ...content, 4);
+  }
+  static checkLog5(...content) {
+    eLogger("checkLog", ...content, 5);
+  }
+  static warn(...content) {
+    eLogger("warn", ...content);
+  }
+  static error(...content) {
+    eLogger("error", ...content);
+  }
+  static hbsLog(...content) {
+    eLogger("handlebars", ...content);
+  }
+}
 class BladesScene extends Scene {
   async registerClockKey(clockKey) {
     this.update({ [`clockKeys.${clockKey.id}`]: true });
@@ -36107,8 +36234,8 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       "systems/eunos-blades/templates/items/clock_keeper-sheet.hbs"
     ]);
   }
-  getData() {
-    const context3 = super.getData();
+  async getData() {
+    const context3 = await super.getData();
     const sheetData = {
       currentScene: game.scenes.current.id,
       targetScene: this.item.targetSceneID,
@@ -36198,7 +36325,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       return [clockKey, clock];
     }
     const clockKeyControls$ = html.find(".clock-key-control-flipper");
-    clockKeyControls$.find('[data-action="toggle-name-visibility"]').each((i, elem) => {
+    clockKeyControls$.find('[data-action="toggle-name-visibility"]').each((_i, elem) => {
       const elem$ = $(elem);
       const control$ = elem$.closest(".clock-key-control-flipper");
       elem$.on({
@@ -36218,7 +36345,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         }
       });
     });
-    clockKeyControls$.find('[data-action="toggle-spotlight"]').each((i, elem) => {
+    clockKeyControls$.find('[data-action="toggle-spotlight"]').each((_i, elem) => {
       const elem$ = $(elem);
       const control$ = elem$.closest(".clock-key-control-flipper");
       elem$.on({
@@ -36231,7 +36358,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         }
       });
     });
-    clockKeyControls$.find('[data-action="pull-clock-key"]').each((i, elem) => {
+    clockKeyControls$.find('[data-action="pull-clock-key"]').each((_i, elem) => {
       const elem$ = $(elem);
       const control$ = elem$.closest(".clock-key-control-flipper");
       elem$.on({
@@ -36244,7 +36371,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         }
       });
     });
-    clockKeyControls$.find('[data-action="drop-clock-key"]').each((i, elem) => {
+    clockKeyControls$.find('[data-action="drop-clock-key"]').each((_i, elem) => {
       const elem$ = $(elem);
       const control$ = elem$.closest(".clock-key-control-flipper");
       elem$.on({
@@ -36300,7 +36427,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
       }
     });
     const clockControls$ = html.find(".clock-control-flipper");
-    clockControls$.find('[data-action="toggle-visible"]').each((i, elem) => {
+    clockControls$.find('[data-action="toggle-visible"]').each((_i, elem) => {
       const elem$ = $(elem);
       const control$ = elem$.closest(".clock-control-flipper");
       elem$.on({
@@ -36320,13 +36447,13 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         }
       });
     });
-    clockControls$.find('[data-action="toggle-active"]').each((i, elem) => {
+    clockControls$.find('[data-action="toggle-active"]').each((_i, elem) => {
       const elem$ = $(elem);
       const control$ = elem$.closest(".clock-control-flipper");
       elem$.on({
         click: async (event) => {
           event.preventDefault();
-          const [clockKey, clock] = getClockFromEvent(event);
+          const [_key, clock] = getClockFromEvent(event);
           const isActive = !clock.isActive;
           clock.updateTarget("isActive", isActive);
           if (clock.parentKey.isInScene() && clock.parentKey.isVisible && clock.isVisible) {
@@ -36340,7 +36467,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         }
       });
     });
-    clockControls$.find('[data-action="toggle-name-visibility"]').each((i, elem) => {
+    clockControls$.find('[data-action="toggle-name-visibility"]').each((_i, elem) => {
       const elem$ = $(elem);
       const control$ = elem$.closest(".clock-control-flipper");
       elem$.on({
@@ -36360,13 +36487,13 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         }
       });
     });
-    clockControls$.find('[data-action="toggle-highlight"]').each((i, elem) => {
+    clockControls$.find('[data-action="toggle-highlight"]').each((_i, elem) => {
       const elem$ = $(elem);
       const control$ = elem$.closest(".clock-control-flipper");
       elem$.on({
         click: async (event) => {
           event.preventDefault();
-          const [clockKey, clock] = getClockFromEvent(event);
+          const [_key, clock] = getClockFromEvent(event);
           const isHighlighted = !clock.isHighlighted;
           clock.updateTarget("isHighlighted", isHighlighted);
           if (clock.parentKey.isInScene() && clock.parentKey.isVisible && clock.isVisible) {
@@ -36380,13 +36507,13 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         }
       });
     });
-    clockControls$.find('[data-action="change-segments"]').each((i, elem) => {
+    clockControls$.find('[data-action="change-segments"]').each((_i, elem) => {
       const elem$ = $(elem);
       const control$ = elem$.closest(".clock-control-flipper");
       elem$.on({
         click: async (event) => {
           event.preventDefault();
-          const [clockKey, clock] = getClockFromEvent(event);
+          const [_key, clock] = getClockFromEvent(event);
           const delta = U.pInt($(event.currentTarget).data("value"));
           const finalVal = U.gsap.utils.clamp(0, clock.max, clock.value + delta);
           if (delta > 0) {
@@ -36399,7 +36526,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         }
       });
     });
-    clockControls$.find("select.clock-control-select").each((i, elem) => {
+    clockControls$.find("select.clock-control-select").each((_i, elem) => {
       const elem$ = $(elem);
       if (elem$.hasClass("clock-select-color"))
         ;
@@ -36415,7 +36542,7 @@ class BladesClockKeeperSheet extends BladesItemSheet {
         }
       }
     });
-    clockControls$.find("input.clock-input:not([readonly])").each((i, elem) => {
+    clockControls$.find("input.clock-input:not([readonly])").each((_i, elem) => {
       const elem$ = $(elem);
       const control$ = elem$.closest(".clock-control-flipper");
       elem$.on({
@@ -36506,8 +36633,8 @@ class BladesDebug {
   }
 }
 CONFIG.debug.logging = true;
-Object.assign(globalThis, { eLog: logger, BladesDebug });
-Handlebars.registerHelper("eLog", logger.hbsLog);
+Object.assign(globalThis, { eLog: Logger, BladesDebug });
+Handlebars.registerHelper("eLog", Logger.hbsLog);
 let socket;
 class GlobalGetter {
   get clockKeys() {
@@ -36665,6 +36792,7 @@ Object.assign(
     AGENTS
   }
 );
+U.Initialize();
 Hooks.once("init", async () => {
   game.eunoblades = {
     Rolls: new Collection(),

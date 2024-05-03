@@ -1,10 +1,10 @@
 // Importing necessary functions and types from the Vite package and the path module from Node.js
-import { defineConfig, type UserConfig, type Plugin } from "vite";
+import {defineConfig, type UserConfig, type Plugin} from "vite";
 import path from "path";
 import fs from "fs";
-import checker from 'vite-plugin-checker';
+import checker from "vite-plugin-checker";
 import {visualizer} from "rollup-plugin-visualizer";
-import { exec } from "child_process";
+import {exec} from "child_process";
 
 /** *** CHECK: *** https://vitejs.dev/guide/performance
  *
@@ -40,7 +40,7 @@ function openChromePlugin(): Plugin {
           }
         });
       }
-    },
+    }
   };
 }
 
@@ -72,10 +72,10 @@ function scssVariablesToJsPlugin(): Plugin {
             .replace(/^--blades-/, "")
             .replace(/-nums$/, "")
             .replace(/-/g, "_");
-          let [hue, brightness] = varName.split(/_/);
-          brightness ??= "normal";
+          const [hue, brightness] = varName.split(/_/);
+          const brightnessValue = brightness || "normal";
           colorDefs[hue] ??= {};
-          colorDefs[hue][brightness] = [parseInt(match[2], 10), parseInt(match[3], 10), parseInt(match[4], 10)];
+          colorDefs[hue][brightnessValue] = [parseInt(match[2], 10), parseInt(match[3], 10), parseInt(match[4], 10)];
         }
 
         return {
@@ -135,7 +135,7 @@ function foundryPlugin(): Plugin {
 // Defining the Vite configuration object with specific settings for this project
 const config: UserConfig = defineConfig({
   // Setting the root directory for the project to the "src" folder
-  root: "src/",
+  root: "src",
   // Setting the base URL for the project when deployed
   base: "/systems/eunos-blades/",
   // Specifying the directory where static assets are located
@@ -190,7 +190,7 @@ const config: UserConfig = defineConfig({
   },
   plugins: [
     foundryPlugin(),
-    checker({ typescript: true }),
+    checker({typescript: true}),
     scssVariablesToJsPlugin(),
     visualizer({
       gzipSize: true,
