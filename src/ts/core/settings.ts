@@ -43,8 +43,8 @@ class DebugSettingsSubmenu extends FormApplication {
    */
   override async _updateObject(_event: Event, formData: Record<string, unknown>|undefined) {
     if (!formData) { return; }
-    const data = expandObject(formData);
-    game.settings.set("eunos-blades", "debugSettings", data);
+    const data = expandObject(formData) as Record<string, unknown>;
+    await game.settings.set("eunos-blades", "debugSettings", data);
   }
 }
 
@@ -85,8 +85,8 @@ class OpenAISettingsSubmenu extends FormApplication {
    */
   override async _updateObject(_event: Event, formData: Record<string, unknown>|undefined) {
     if (!formData) { return; }
-    const data = expandObject(formData);
-    game.settings.set("eunos-blades", "openAISettings", data);
+    const data = expandObject(formData) as Record<string, unknown>;
+    await game.settings.set("eunos-blades", "openAISettings", data);
   }
 
 }
@@ -191,87 +191,85 @@ const registerSettings = function() {
   });
 };
 
-/**
- *
- */
+const TinyMCEConfig: TinyMCEConfig = {
+  skin:                        false,
+  // skin_url:                    "systems/eunos-blades/tinymce/skin",
+  content_css:                 "systems/eunos-blades/tinymce/tinymce.css",
+  font_css:                    "systems/eunos-blades/fonts.css",
+  max_height:                  500,
+  min_height:                  100,
+  autoresize_overflow_padding: 0,
+  autoresize_bottom_margin:    0, // 25,
+  menubar:                     false,
+  statusbar:                   false, // True,
+  elementPath:                 true,
+  branding:                    false,
+  resize:                      false,
+  plugins:                     "lists image table code save autoresize searchreplace quickbars template",
+  save_enablewhendirty:        false,
+  // Table_default_styles: {},
+  style_formats:               [
+    {
+      title: "Headings",
+      items: [
+        {title: "Heading 1", block: "h1", wrapper: false},
+        {title: "Heading 2", block: "h2", wrapper: false},
+        {title: "Heading 3", block: "h3", wrapper: false},
+        {title: "Heading 4", block: "h4", wrapper: false}
+      ]
+    },
+    {
+      title: "Blocks",
+      items: [
+        {title: "Paragraph", block: "p", wrapper: false},
+        {title: "Block Quote", block: "blockquote", wrapper: true}
+        // {title: "Secret", block: "span", classes: "text-secret", attributes: {"data-is-secret": "true"}, wrapper: false}
+      ]
+    },
+    {
+      title: "Inline",
+      items: [
+        {title: "Bold", inline: "b", wrapper: false},
+        {title: "Italics", inline: "i", wrapper: false},
+        {title: "Underline", inline: "u", wrapper: false},
+        {title: "Secret", inline: "span", classes: "text-secret", attributes: {"data-is-secret": "true"}, wrapper: false}
+      ]
+    }
+  ],
+  style_formats_merge: false,
+  toolbar:             "styles | searchreplace | formatting alignment lists elements | removeformat | code | save",
+  toolbar_groups:      {
+    formatting: {
+      icon:    "color-picker",
+      tooltip: "Formatting",
+      items:   "bold italic underline"
+    },
+    alignment: {
+      icon:    "align-left",
+      tooltip: "Alignment",
+      items:   "alignleft aligncenter alignright alignjustify | outdent indent"
+    },
+    lists: {
+      icon:    "unordered-list",
+      tooltip: "Lists",
+      items:   "bullist numlist"
+    },
+    elements: {
+      icon:    "duplicate",
+      tooltip: "Insert Element",
+      items:   "tableinsertdialog image hr | template"
+    }
+  },
+  toolbar_mode:                "floating",
+  quickbars_link_toolbar:      false,
+  quickbars_selection_toolbar: "styles | bold italic underline",
+  quickbars_insert_toolbar:    "hr image table",
+  quickbars_table_toolbar:     "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol"
+};
 export function initTinyMCEStyles() {
   CONFIG.TinyMCE = {
     ...CONFIG.TinyMCE,
-    ...{
-      skin:                        false,
-      // skin_url:                    "systems/eunos-blades/tinymce/skin",
-      content_css:                 "systems/eunos-blades/tinymce/tinymce.css",
-      font_css:                    "systems/eunos-blades/fonts.css",
-      max_height:                  500,
-      min_height:                  100,
-      autoresize_overflow_padding: 0,
-      autoresize_bottom_margin:    0, // 25,
-      menubar:                     false,
-      statusbar:                   false, // True,
-      elementPath:                 true,
-      branding:                    false,
-      resize:                      false,
-      plugins:                     "lists image table code save autoresize searchreplace quickbars template",
-      save_enablewhendirty:        false,
-      // Table_default_styles: {},
-      style_formats:               [
-        {
-          title: "Headings",
-          items: [
-            {title: "Heading 1", block: "h1", wrapper: false},
-            {title: "Heading 2", block: "h2", wrapper: false},
-            {title: "Heading 3", block: "h3", wrapper: false},
-            {title: "Heading 4", block: "h4", wrapper: false}
-          ]
-        },
-        {
-          title: "Blocks",
-          items: [
-            {title: "Paragraph", block: "p", wrapper: false},
-            {title: "Block Quote", block: "blockquote", wrapper: true}
-            // {title: "Secret", block: "span", classes: "text-secret", attributes: {"data-is-secret": "true"}, wrapper: false}
-          ]
-        },
-        {
-          title: "Inline",
-          items: [
-            {title: "Bold", inline: "b", wrapper: false},
-            {title: "Italics", inline: "i", wrapper: false},
-            {title: "Underline", inline: "u", wrapper: false},
-            {title: "Secret", inline: "span", classes: "text-secret", attributes: {"data-is-secret": "true"}, wrapper: false}
-          ]
-        }
-      ],
-      style_formats_merge: false,
-      toolbar:             "styles | searchreplace | formatting alignment lists elements | removeformat | code | save",
-      toolbar_groups:      {
-        formatting: {
-          icon:    "color-picker",
-          tooltip: "Formatting",
-          items:   "bold italic underline"
-        },
-        alignment: {
-          icon:    "align-left",
-          tooltip: "Alignment",
-          items:   "alignleft aligncenter alignright alignjustify | outdent indent"
-        },
-        lists: {
-          icon:    "unordered-list",
-          tooltip: "Lists",
-          items:   "bullist numlist"
-        },
-        elements: {
-          icon:    "duplicate",
-          tooltip: "Insert Element",
-          items:   "tableinsertdialog image hr | template"
-        }
-      },
-      toolbar_mode:                "floating",
-      quickbars_link_toolbar:      false,
-      quickbars_selection_toolbar: "styles | bold italic underline",
-      quickbars_insert_toolbar:    "hr image table",
-      quickbars_table_toolbar:     "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol"
-    }
+    ...TinyMCEConfig
   };
 }
 

@@ -40,6 +40,17 @@ export enum BladesItemType {
   score = "score"
 }
 
+
+export enum BladesItemUniqueTypes {
+  background = BladesItemType.background,
+  vice = BladesItemType.vice,
+  crew_playbook = BladesItemType.crew_playbook,
+  crew_reputation = BladesItemType.crew_reputation,
+  heritage = BladesItemType.heritage,
+  playbook = BladesItemType.playbook,
+  preferred_op = BladesItemType.preferred_op,
+}
+
 export enum PrereqType {
   HasActiveItem = "HasActiveItem", // Item will only appear in selector if character has Item with world_name (value)
   HasActiveItemsByTag = "HasActiveItemByTag", // For each Tag, character must have an active Item with that tag.
@@ -419,6 +430,11 @@ export namespace Tag {
     Skulks = "Skulks",
     Vehicle = "Vehicle"
   }
+}
+
+export enum BladesActorUniqueTags {
+  CharacterCrew = Tag.PC.CharacterCrew,
+  VicePurveyor = Tag.NPC.VicePurveyor
 }
 // #endregion
 
@@ -4390,14 +4406,14 @@ export const Randomizers = {
 
 // #region SVG DATA~
 
-export type ClockKeySVGData = {
+export interface ClockKeySVGData {
   width: number,
   height: number,
   path: string,
   clocks: Partial<Record<ClockIndex, gsap.Point2D>> & {size: number}
 }
 
-export const ClockKey_SVGDATA: Record<
+export const ClockKeySvgData: Record<
 Exclude<ClockKeySize, 0>,
 {
   height: number,
@@ -4484,11 +4500,11 @@ Exclude<ClockKeySize, 0>,
   }
 };
 
-export type HbsSvgData = {
+export interface HbsSvgData {
   viewBox: string,
   paths: Record<string, string>,
   classes?: Record<string, string>
-};
+}
 
 export const SVGDATA = {
   teeth: {

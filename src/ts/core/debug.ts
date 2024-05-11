@@ -3,7 +3,7 @@
 import C, {BladesActorType, BladesItemType, RollPermissions, ActionTrait, DowntimeAction, RollSubType, RollPhase, Effect, ClockColor, ClockKeyDisplayMode, AttributeTrait, RollType, ConsequenceType, Position, RollResult} from "../core/constants";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initDOMStyles} from "../core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates} from "../core/helpers";
-import BladesChat from "../classes/BladesChat";
+import BladesChatMessage from "../classes/BladesChatMessage";
 import U from "../core/utilities";
 import logger from "../core/logger";
 import G, {Initialize as GsapInitialize} from "../core/gsap";

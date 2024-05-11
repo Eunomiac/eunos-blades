@@ -2,7 +2,7 @@
 import U from "./utilities";
 import {getColor} from "./helpers";
 
-import {gsap, Flip, TextPlugin, Draggable as Dragger, MotionPathPlugin, Observer, CustomEase} from "../libraries";
+import {gsap, Flip, TextPlugin, Draggable as Dragger, MotionPathPlugin, Observer, CustomEase, CustomWiggle} from "../libraries";
 
 const gsapPlugins: gsap.RegisterablePlugins[] = [
   TextPlugin,
@@ -11,11 +11,11 @@ const gsapPlugins: gsap.RegisterablePlugins[] = [
   Dragger,
   // SplitText,
   Observer,
-  CustomEase
-//   CustomWiggle,
-//   CustomBounce,
-//   EasePack
-];
+  CustomEase as gsap.RegisterablePlugins,
+  CustomWiggle as gsap.RegisterablePlugins
+  // CustomBounce,
+  // EasePack
+] as const;
 
 /**
  * Need an onReverse()?
@@ -26,32 +26,21 @@ const gsapPlugins: gsap.RegisterablePlugins[] = [
  *    https://gsap.com/docs/v3/HelperFunctions/helpers/anchorsToProgress
  */
 
-export type gsapConfig = gsap.TweenVars & {
-  duration: number,
-  targets: Record<string, JQuery | JQuery[]>
+
+
+// Factory function to create a GSAPEffect with inferred Defaults type
+function createGSAPEffect<D extends gsap.TweenVars>({effect, defaults, extendTimeline}: GSAPEffect<D>): GSAPEffect<D> {
+  return {effect, defaults, extendTimeline};
 }
 
-export type gsapEffect = {
-  effect: (
-    targets: gsap.TweenTarget,
-    config: gsap.TweenVars & {duration: number}
-  ) => gsap.core.Timeline | gsap.core.Tween,
-  defaults: gsap.TweenVars,
-  extendTimeline?: boolean
-}
-
-
-
-
-
-export const gsapEffects: Record<string, gsapEffect> = {
+export const gsapEffects = {
   // #region CLOCK KEYS
-  keyDrop: {
+  keyDrop: createGSAPEffect({
     effect: (clockKey, config) => {
       const [keyContainer] = $(clockKey as HTMLElement).closest(".clock-key-container");
       return U.gsap.timeline({
         onComplete() {
-          if (config.callback) {
+          if (typeof config.callback === "function") {
             config.callback();
           }
         }
@@ -67,16 +56,17 @@ export const gsapEffects: Record<string, gsapEffect> = {
     },
     defaults: {
       duration: 1,
-      yShift:   -800
+      yShift:   -800,
+      callback: undefined as unknown
     },
     extendTimeline: true
-  },
-  keyPull: {
+  }),
+  keyPull: createGSAPEffect({
     effect: (clockKey, config) => {
       const [keyContainer] = $(clockKey as HTMLElement).closest(".clock-key-container");
       return U.gsap.timeline({
         onComplete() {
-          if (config.callback) {
+          if (typeof config.callback === "function") {
             config.callback();
           }
         }
@@ -95,14 +85,15 @@ export const gsapEffects: Record<string, gsapEffect> = {
     defaults: {
       yDelta:   -800,
       duration: 1,
-      ease:     "back.in(1)"
+      ease:     "back.in(1)",
+      callback: undefined as unknown
     },
     extendTimeline: true
-  },
-  keyControlPanelFlip: {
+  }),
+  keyControlPanelFlip: createGSAPEffect({
     effect: (target, config) => {
       return U.gsap.timeline({
-        delay: config.delay as number,
+        delay: config.delay,
         onStart() {
           if (target) {
             const target$ = $(target as HTMLElement);
@@ -110,7 +101,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
             const nextSibling$ = target$.next(".clock-control-flipper");
             // Check if the nextSibling element exists
             if (nextSibling$.length) {
-              U.gsap.effects.keyControlPanelFlip(nextSibling$[0], {
+              gsap.effects.keyControlPanelFlip(nextSibling$[0], {
                 ...config,
                 delay: 0.15
               });
@@ -129,11 +120,11 @@ export const gsapEffects: Record<string, gsapEffect> = {
       delay: 0
     },
     extendTimeline: true
-  },
+  }),
   // #endregion
 
   // #region CHAT CONSEQUENCE EFFECTS
-  csqEnter: {
+  csqEnter: createGSAPEffect({
     effect: (csqContainer, config) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
       const csqIconCircle = csqRoot(".consequence-icon-circle.base-consequence");
@@ -228,8 +219,8 @@ export const gsapEffects: Record<string, gsapEffect> = {
       ease:         "sine",
       easeStrength: 1.5
     }
-  },
-  csqClickIcon: {
+  }),
+  csqClickIcon: createGSAPEffect({
     effect: (csqIconContainer, config) => {
       const csqContainer = $(csqIconContainer as HTMLElement).closest(".comp.consequence-display-container");
       const csqRoot = U.gsap.utils.selector(csqContainer[0]);
@@ -321,8 +312,8 @@ export const gsapEffects: Record<string, gsapEffect> = {
       ease:         "sine",
       easeStrength: 1.5
     }
-  },
-  csqEnterRight: {
+  }),
+  csqEnterRight: createGSAPEffect({
     effect: (csqContainer) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
       const typeLine = csqRoot(".consequence-type-container .consequence-type.accept-consequence");
@@ -415,9 +406,10 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       return tl;
     },
-    defaults: {}
-  },
-  csqEnterLeft: {
+    defaults:       {},
+    extendTimeline: true
+  }),
+  csqEnterLeft: createGSAPEffect({
     effect: (csqContainer) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
       const typeLine = csqRoot(".consequence-type-container .consequence-type.accept-consequence");
@@ -471,9 +463,10 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       return tl;
     },
-    defaults: {}
-  },
-  csqEnterSubLeft: {
+    defaults:       {},
+    extendTimeline: true
+  }),
+  csqEnterSubLeft: createGSAPEffect({
     effect: (csqContainer, config) => {
       const csqRoot = U.gsap.utils.selector(csqContainer);
 
@@ -603,12 +596,15 @@ export const gsapEffects: Record<string, gsapEffect> = {
 
       return tl;
     },
-    defaults: {}
-  },
+    defaults: {
+      type: "accept" as BladesConsequence.ResistanceType|BladesConsequence.DisplayType
+    },
+    extendTimeline: true
+  }),
   // #endregion
 
   // #region CHARACTER SHEET EFFECTS
-  fillCoins: {
+  fillCoins: createGSAPEffect({
     effect: (targets, config) => {
       // Targets will be all coins from zero to where fill currently is
       // Some will already be full, others not.
@@ -637,11 +633,11 @@ export const gsapEffects: Record<string, gsapEffect> = {
       ease:     "power2.in"
     },
     extendTimeline: true
-  },
+  }),
   // #endregion
 
   // #region GENERAL: 'blurRemove', 'hoverTooltip', 'textJitter'
-  blurRemove: {
+  blurRemove: createGSAPEffect({
     effect: (targets, config) => U.gsap.timeline({stagger: config.stagger})
       .to(
         targets,
@@ -657,12 +653,12 @@ export const gsapEffects: Record<string, gsapEffect> = {
           x:            config.x,
           marginBottom: config.ignoreMargin
             ? undefined
-            : function(_i, target) {
+            : function(_i, target: gsap.TweenTarget) {
               return U.get(target, "height") as number * -1;
             },
           marginRight: config.ignoreMargin
             ? undefined
-            : function(_i, target) {
+            : function(_i, target: gsap.TweenTarget) {
               return U.get(target, "width") as number * -1;
             },
           scale:    config.scale,
@@ -690,8 +686,8 @@ export const gsapEffects: Record<string, gsapEffect> = {
       stagger:      0
     },
     extendTimeline: true
-  },
-  blurReveal: {
+  }),
+  blurReveal: createGSAPEffect({
     effect: (targets, config) => U.gsap.timeline()
       .fromTo(
         targets,
@@ -699,12 +695,12 @@ export const gsapEffects: Record<string, gsapEffect> = {
           x:            config.x,
           marginBottom: config.ignoreMargin
             ? undefined
-            : function(_i, target) {
+            : function(_i, target: gsap.TweenTarget) {
               return U.get(target, "height") as number * -1;
             },
           marginRight: config.ignoreMargin
             ? undefined
-            : function(_i, target) {
+            : function(_i, target: gsap.TweenTarget) {
               return U.get(target, "width") as number * -1;
             },
           scale:  config.scale,
@@ -751,12 +747,12 @@ export const gsapEffects: Record<string, gsapEffect> = {
       blur:         10
     },
     extendTimeline: true
-  },
-  scaleUpReveal: {
+  }),
+  scaleUpReveal: createGSAPEffect({
     effect: (target, config) => U.gsap.timeline()
       .fromTo(target, {
         autoAlpha: 0,
-        scale:     0.5 * (config.scale as number)
+        scale:     0.5 * (config.scale)
       }, {
         autoAlpha: 1,
         scale:     config.scale,
@@ -769,12 +765,12 @@ export const gsapEffects: Record<string, gsapEffect> = {
       ease:     "power2"
     },
     extendTimeline: true
-  },
-  scaleDownRemove: {
+  }),
+  scaleDownRemove: createGSAPEffect({
     effect: (target, config) => U.gsap.timeline()
       .to(target, {
         autoAlpha: 0,
-        scale:     0.5 * (config.scale as number),
+        scale:     0.5 * (config.scale),
         duration:  config.duration,
         ease:      config.ease
       }),
@@ -784,8 +780,8 @@ export const gsapEffects: Record<string, gsapEffect> = {
       ease:     "power2"
     },
     extendTimeline: true
-  },
-  blurRevealTooltip: {
+  }),
+  blurRevealTooltip: createGSAPEffect({
     effect: (target, config) => {
       if (!target) { throw new Error(`blurRevealTooltip effect: tooltip element is ${target === null ? "null" : typeof target}`); }
       const tooltip$: JQuery = $(target as HTMLElement);
@@ -832,8 +828,8 @@ export const gsapEffects: Record<string, gsapEffect> = {
       tooltipDirection:  "top"
     },
     extendTimeline: true
-  },
-  textJitter: {
+  }),
+  textJitter: createGSAPEffect({
     effect: (target, config) => {
       const [targetElem] = $(target as HTMLElement);
       if (!targetElem) { throw new Error("textJitter effect: target not found"); }
@@ -864,6 +860,7 @@ export const gsapEffects: Record<string, gsapEffect> = {
         }, {
           rotateZ:  config.rotateAmp,
           duration: config.duration,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
           ease:     CustomWiggle.create("myWiggle", {wiggles: 10, type: "random"}),
           stagger:  {
             repeat: -1,
@@ -880,9 +877,9 @@ export const gsapEffects: Record<string, gsapEffect> = {
       stagger:   0.05
     },
     extendTimeline: true
-  }
+  })
   // #endregion
-};
+} as const;
 
 /**
  * Registers relevant GSAP plugins and effects.
@@ -902,11 +899,11 @@ export function Initialize() {
         Dragger,
         // SplitText,
         Observer,
-        CustomEase
-        // CustomWiggle,
+        CustomEase:   CustomEase as gsap.RegisterablePlugins,
+        CustomWiggle: CustomWiggle as gsap.RegisterablePlugins
         // CustomBounce,
         // EasePack
-      }
+      } as Record<string, Parameters<typeof U.gsap.registerPlugin>[0]>
     );
   }
   Object.entries(gsapEffects).forEach(([name, effect]) => {
@@ -953,10 +950,10 @@ export function ApplyTooltipAnimations(html: JQuery) {
 
     $(el).on({
       mouseenter() {
-        game.eunoblades.Director.displayTooltip(tooltipElem);
+        void game.eunoblades.Director.displayTooltip(tooltipElem);
       },
       mouseleave() {
-        game.eunoblades.Director.clearTooltip(tooltipID, true);
+        void game.eunoblades.Director.clearTooltip(tooltipID, true);
       }
     });
   });

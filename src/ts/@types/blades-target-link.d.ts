@@ -5,7 +5,7 @@ import BladesNPC from "../documents/actors/BladesNPC";
 import BladesFaction from "../documents/actors/BladesFaction";
 import BladesCrew from "../documents/actors/BladesCrew";
 import BladesTargetLink from "../classes/BladesTargetLink";
-import BladesChat from "../classes/BladesChat";
+import BladesChatMessage from "../classes/BladesChatMessage";
 
 
 declare global {
@@ -31,7 +31,7 @@ declare global {
     };
 
     export type Config = ({
-      target: IDString|UUIDString|BladesDoc|BladesChat|User
+      target: IDString|UUIDString|EntityDoc|BladesChatMessage|User
     } | {
       targetID: IDString|UUIDString
     }) & ({
@@ -44,7 +44,7 @@ declare global {
     };
 
     export type Instance = Data & {
-      target: BladesDoc|BladesChat|User
+      target: EntityDoc|BladesChatMessage|User
     }
 
     export interface Subclass<Schema> extends Instance {

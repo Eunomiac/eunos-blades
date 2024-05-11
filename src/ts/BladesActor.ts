@@ -1,7 +1,7 @@
 // #region Imports ~
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "./core/utilities";
-import C, {BladesActorType, Tag, Playbook, BladesNoticeType, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";
+import C, {BladesActorType, BladesActorUniqueTags, BladesItemUniqueTypes, Tag, Playbook, BladesNoticeType, BladesItemType, AttributeTrait, ActionTrait, PrereqType, AdvancementPoint, Randomizers, Factor, Vice} from "./core/constants";
 
 import {BladesPC, BladesCrew, BladesFaction, BladesNPC} from "./documents/BladesActorProxy";
 import {BladesItem} from "./documents/BladesItemProxy";
@@ -23,20 +23,7 @@ import type {MergeObjectOptions} from "@league-of-foundry-developers/foundry-vtt
 // Also check out Discord thread: https://discord.com/channels/325094888133885952/1152316839163068527
 
 
-enum BladesActorUniqueTags {
-  CharacterCrew = Tag.PC.CharacterCrew,
-  VicePurveyor = Tag.NPC.VicePurveyor
-}
 
-enum BladesItemUniqueTypes {
-  background = BladesItemType.background,
-  vice = BladesItemType.vice,
-  crew_playbook = BladesItemType.crew_playbook,
-  crew_reputation = BladesItemType.crew_reputation,
-  heritage = BladesItemType.heritage,
-  playbook = BladesItemType.playbook,
-  preferred_op = BladesItemType.preferred_op,
-}
 class BladesActor extends Actor implements BladesDocument<Actor> {
 
   // #region Static Overrides: Create ~

@@ -8,7 +8,7 @@ import {ApplyTooltipAnimations, Dragger} from "../core/gsap";
 import BladesConsequence from "./BladesConsequence";
 import BladesClockKey from "./BladesClockKey";
 import BladesDialog from "./BladesDialog";
-import BladesChat from "./BladesChat";
+import BladesChatMessage from "./BladesChatMessage";
 import BladesTargetLink from "./BladesTargetLink";
 
 import type {PropertiesToSource} from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
@@ -186,10 +186,10 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     }
   }
 
-  static ParseDocModsToSchemaSet(doc: BladesDoc): BladesRollMod.Schema[] {
+  static ParseDocModsToSchemaSet(doc: EntityDoc): BladesRollMod.Schema[] {
 
-    if (doc instanceof BladesChat) {
-      throw new Error("BladesRollMod.ParseDocRollMods cannot be called on a BladesChat document.");
+    if (doc instanceof BladesChatMessage) {
+      throw new Error("BladesRollMod.ParseDocRollMods cannot be called on a BladesChatMessage document.");
     }
 
     const {roll_mods} = doc.system;
@@ -197,7 +197,7 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
 
     return roll_mods
       .filter((elem) => Boolean(elem && typeof elem === "string"))
-      .map((modString) => this.getSchemaFromStrings((modString as string).split(/@/)));
+      .map((modString) => this.getSchemaFromStrings((modString ?? "").split(/@/)));
   }
 
   // public isRerendering = false;
@@ -371,9 +371,9 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
     if (holdKeys.length === 0) {return false;}
 
     for (const key of holdKeys) {
-      const [thisKey, thisParam] = key.split(/-/) ?? [];
+      const [thisKey, thisParam] = key.split(/-/) as Maybe<[string, Position]> ?? [];
 
-      if (U.lCase(thisParam) in Position && this.rollInstance.rollPositionFinal === U.lCase(thisParam)) {
+      if (thisParam && thisParam in Position && this.rollInstance.rollPositionFinal === thisParam) {
         if (thisKey === "AutoRevealOn") {
           this.heldStatus = RollModStatus.ToggledOff;
           return false;
@@ -597,6 +597,8 @@ class BladesRollMod extends BladesTargetLink<BladesRollMod.Schema> {
         from: oldStatus.comps,
         to:   this.statusReport.comps
       });
+    }).catch((error) => {
+      console.error("Failed to update user status:", error);
     });
   }
 
@@ -1077,7 +1079,7 @@ class BladesRollOpposition implements BladesRoll.OppositionData {
     if (!this.rollInstance) {return;}
     await this.rollInstance.updateTarget("rollOppData", this.data);
     if (this.rollInstance.isRendered) {
-      socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
+      await socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
     }
   }
 
@@ -1225,7 +1227,7 @@ class BladesRollParticipant implements BladesRoll.ParticipantData {
   async updateRollFlags() {
     await this.rollInstance.updateTarget(`rollParticipantData.${this.rollParticipantSection}.${this.rollParticipantSubSection}`, this.data);
     if (this.rollInstance.isRendered) {
-      socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
+      await socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.rollInstance.id);
     }
   }
 
@@ -1308,7 +1310,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
         Object.keys(data.rollParticipantData[RollModSection.roll]).forEach((key) => {
           const thisParticipant = data.rollParticipantData?.[RollModSection.roll]?.[key as Exclude<BladesRoll.ParticipantSubSection, "Setup">];
           if (thisParticipant instanceof BladesRollParticipant) {
-            ((data.rollParticipantData as NonNullable<BladesRoll.Config["rollParticipantData"]>)[RollModSection.roll] as Record<string, BladesRoll.ParticipantData>)[key as Exclude<BladesRoll.ParticipantSubSection, "Setup">] = thisParticipant.data;
+            ((data.rollParticipantData!)[RollModSection.roll] as Record<string, BladesRoll.ParticipantData>)[key as Exclude<BladesRoll.ParticipantSubSection, "Setup">] = thisParticipant.data;
           }
         });
       }
@@ -1446,9 +1448,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     return imgPath;
   }
 
-  static get Active(): BladesRoll | undefined {
-    return U.getLast(game.eunoblades.Rolls.filter((roll) => roll.isActive));
-  }
+  // static get Active(): BladesRoll | undefined {
+  //   return U.getLast<BladesRoll>(game.eunoblades.Rolls.filter((r: BladesRoll) => r.isActive));
+  // }
 
   // #endregion
 
@@ -1477,7 +1479,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     // === ONE === GET USER IDS
 
     // Get user ID of GM
-    const GMUserID = game.users.find((user) => user.isGM)?.id as IDString;
+    const GMUserID = game.users.find((user) => user.isGM)?.id;
     if (!GMUserID) {
       throw new Error("[BladesRoll.GetUserPermissions()] No GM found!");
     }
@@ -1498,13 +1500,15 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     // === TWO === DETERMINE PRIMARY USER(S)
 
     // Check RollPrimaryDoc to determine how to assign primary users
-    const {rollPrimaryDoc} = (new BladesRollPrimary(rollPrimaryData));
+    const {rollPrimaryDoc} = new BladesRollPrimary(rollPrimaryData);
     if (
       BladesPC.IsType(rollPrimaryDoc)
       && U.pullElement(playerUserIDs, rollPrimaryDoc.primaryUser?.id)
     ) {
-      userIDs[RollPermissions.Primary].push(rollPrimaryDoc.primaryUser?.id as IDString);
-
+      const {primaryUser} = rollPrimaryDoc ?? {};
+      if (primaryUser) {
+        userIDs[RollPermissions.Primary].push(primaryUser.id);
+      }
     } else if (
       BladesCrew.IsType(rollPrimaryDoc)
     ) {
@@ -1551,7 +1555,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
      * @param {BladesRoll.RollParticipantDataSet} participantData
      */
     function getParticipantDocs(participantData: BladesRoll.RollParticipantDataSet) {
-      return Object.values(flattenObject(participantData))
+      return Object.values(flattenObject(participantData) as Record<string, unknown>)
         .map((pData) => {
           if (BladesRollParticipant.IsDoc(pData)) {
             return pData;
@@ -1598,7 +1602,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   static override BuildLinkConfig(config: BladesRoll.Config): BladesTargetLink.Config {
     // Prepare partial target link config
-    const partialLinkConfig: Record<string, string|BladesActor|BladesItem|User|BladesChat> = {};
+    const partialLinkConfig: Record<string, string|BladesActor|BladesItem|User|BladesChatMessage> = {};
 
 
     if ("targetKey" in config && config.targetKey) {
@@ -1715,7 +1719,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   override async initTargetLink() {
     this.initialSchema.rollModsData = this.rollModsDataSet;
-    super.initTargetLink();
+    await super.initTargetLink();
   }
 
   get rollModsSchemaSets(): BladesRollMod.Schema[] {
@@ -1847,7 +1851,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   constructRollCollab_SocketCall(linkData: BladesTargetLink.Data) {
-    socketlib.system.executeForEveryone("constructRollCollab_SocketCall", linkData);
+    void socketlib.system.executeForEveryone("constructRollCollab_SocketCall", linkData);
   }
 
   static constructRollCollab_SocketResponse(linkData: BladesTargetLink.Data) {
@@ -1857,7 +1861,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   renderRollCollab_SocketCall(isForcing = false) {
-    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id, isForcing);
+    void socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id, isForcing);
   }
 
   static renderRollCollab_SocketResponse(id: IDString, isForcing = false) {
@@ -1866,7 +1870,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       throw new Error(`[BladesRoll.renderRollCollab_SocketResponse] No roll found with id ${id}.`);
     }
     if (isForcing || rollInst.isRendered) {
-      rollInst.renderRollCollab();
+      void rollInst.renderRollCollab();
     }
   }
 
@@ -1876,12 +1880,13 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   async closeRollCollab_SocketCall(): Promise<void> {
     if (!game.user.isGM) {return;}
-    socketlib.system.executeForOthers("closeRollCollab_SocketCall", this.id);
+    void socketlib.system.executeForOthers("closeRollCollab_SocketCall", this.id);
     await U.waitFor(this.closeRollCollab_Animation());
   }
 
   static closeRollCollab_SocketResponse(id: IDString) {
-    game.eunoblades.Rolls.get(id)?.closeRollCollab_Animation();
+    const roll = game.eunoblades.Rolls.get(id) as Maybe<BladesRoll>;
+    roll?.closeRollCollab_Animation();
   }
   // #endregion
 
@@ -1968,7 +1973,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
     await rollParticipant.updateRollFlags();
     if (this.isRendered) {
-      socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+      await socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
     }
   }
 
@@ -2015,7 +2020,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       this._rollOpposition = undefined;
     } else {
       this._rollOpposition = val;
-      val.updateRollFlags();
+      val.updateRollFlags().catch((error) => {
+        console.error("Failed to update roll flags:", error);
+      });
     }
   }
 
@@ -2026,7 +2033,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   set rollClockKey(val: BladesClockKey | undefined) {
-    this.updateTarget("rollClockKeyID", val ?? null);
+    this.updateTarget("rollClockKeyID", val ?? null).catch((error) => {
+      console.error("Failed to update rollClockKey:", error);
+    });
   }
 
   /**
@@ -2105,7 +2114,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   get rollSubType(): RollSubType | undefined {return this.data.rollSubType;}
 
   set rollSubType(val: RollSubType | undefined) {
-    this.updateTarget("rollSubType", val ?? null);
+    this.updateTarget("rollSubType", val ?? null).catch((error) => {
+      console.error("Failed to update rollSubType:", error);
+    });
   }
 
   get rollPhase(): RollPhase {
@@ -2234,7 +2245,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   set initialPosition(val: Position) {
-    this.updateTarget("rollPositionInitial", val ?? Position.risky);
+    this.updateTarget("rollPositionInitial", val ?? Position.risky).catch((error) => {
+      console.error("Failed to update rollPositionInitial:", error);
+    });
   }
 
   get initialEffect(): Effect {
@@ -2242,7 +2255,9 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   set initialEffect(val: Effect) {
-    this.updateTarget("rollEffectInitial", val ?? Effect.standard);
+    this.updateTarget("rollEffectInitial", val ?? Effect.standard).catch((error) => {
+      console.error("Failed to update rollEffectInitial:", error);
+    });
   }
 
   get isApplyingConsequences(): boolean {
@@ -2645,12 +2660,12 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     const effectPush = this.getRollModByKey("Push-positive-effect");
     const negatePushCostMods = this.getActiveRollMods(RollModSection.after, "positive")
       .filter((mod) => mod.effectKeys.includes("Negate-PushCost"));
-    return ((harmPush?.isActive && harmPush?.stressCost) || 0)
-      + ((rollPush?.isActive && rollPush?.stressCost) || 0)
-      + ((effectPush?.isActive && effectPush?.stressCost) || 0)
-      - (negatePushCostMods.length * 2);
+    // Calculate the total stress cost considering the active status and subtract the negations
+    return (harmPush?.isActive ? harmPush.stressCost : 0)
+    + (rollPush?.isActive ? rollPush.stressCost : 0)
+    + (effectPush?.isActive ? effectPush.stressCost : 0)
+    - (negatePushCostMods.length * 2);
   }
-
   get rollCostData(): BladesRoll.CostData[] {
     return this.getActiveRollMods()
       .map((rollMod) => rollMod.costs ?? [])
@@ -3244,7 +3259,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       return this.data;
     }
 
-    this.closeRollCollab_SocketCall();
+    void this.closeRollCollab_SocketCall();
 
     eLog.checkLog3("rollCollab", "[resolveRoll()] Before Evaluation", {roll: this, rollData: {...this.data} });
 
@@ -3270,12 +3285,12 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   }
 
   async outputRollToChat() {
-    await BladesChat.create({bladesRoll: this});
+    await BladesChatMessage.create({bladesRoll: this});
   }
 
   async resolveRoll() {
     await this.evaluateRoll();
-    this.resolveRollResult();
+    await this.resolveRollResult();
     await this.outputRollToChat();
   }
 
@@ -3418,24 +3433,30 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     event.preventDefault();
     if (!game.user.isGM) {return;}
     const elem$ = $(event.currentTarget);
-    const target = elem$.data("target").replace(/flags\.eunos-blades\./, "");
-    const value = elem$.data("value");
+    const target = elem$.data("target") as Maybe<TargetKey>;
+    const value = elem$.data("value") as Maybe<number>;
+    // const target = elem$.data("target") as string;
+    // const value = elem$.data("value");
 
-    await this.updateTarget(target, value);
-    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+    await this.updateTarget(target?.replace(/flags\.eunos-blades\./, "") ?? "", value);
+    await socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
   async _gmControlCycleTarget(event: ClickEvent) {
     event.preventDefault();
     if (!game.user.isGM) {return;}
     const elem$ = $(event.currentTarget);
-    const flagTarget = elem$.data("flagTarget");
-    const curVal = elem$.data("curVal");
-    const cycleVals = elem$.data("vals")?.split(/\|/);
+    const flagTarget = elem$.data("flagTarget") as Maybe<TargetFlagKey>;
+    const curVal = elem$.data("curVal") as Maybe<string>;
+    const vals = elem$.data("vals") as Maybe<string>;
+    const cycleVals = vals?.split(/\|/);
+    if (!flagTarget) {
+      throw new Error(`Unable to parse flag target from data-flag-target = ${elem$.data("flagTarget")}`);
+    }
     if (!cycleVals) {
       throw new Error(`Unable to parse cycle values from data-vals = ${elem$.data("vals")}`);
     }
-    const curValIndex = cycleVals.indexOf(curVal);
+    const curValIndex = cycleVals.indexOf(curVal ?? "");
     if (curValIndex === -1) {
       throw new Error(`Unable to find current value '${curVal}' in cycle values '${elem$.data("vals")}'`);
     }
@@ -3455,8 +3476,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   async _gmControlResetTarget(event: ClickEvent) {
     event.preventDefault();
     if (!game.user.isGM) {return;}
-    await this.updateTarget($(event.currentTarget).data("target"), null);
-    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+    const target = $(event.currentTarget).data("target") as Maybe<TargetKey|TargetFlagKey>;
+    if (target) {
+      await this.updateTarget(target, null);
+      await socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+    }
   }
 
   /**
@@ -3491,8 +3515,8 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     event.preventDefault();
     if (!game.user.isGM) {return;}
     const elem$ = $(event.currentTarget);
-    const target = elem$.data("target");
-    const value = !elem$.data("value");
+    const target = elem$.data("target") as TargetKey|TargetFlagKey;
+    const value = !elem$.data("value") as unknown;
 
     eLog.checkLog3("toggleFactor", "_gmControlToggleFactor", {event, target, value});
 
@@ -3503,7 +3527,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     // If thisToggle is unrecognized, just toggle whatever value target points at
     if (!["isActive", "isPrimary", "isDominant", "highFavorsPC"].includes(thisToggle)) {
       await this.updateTarget(target, value);
-      socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+      await socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
     }
 
     // Otherwise, first toggle targeted factor to new value
@@ -3547,7 +3571,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     }
 
     await this.updateTarget("rollFactorToggles", factorToggleData);
-    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+    await socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
   async _onTextInputBlur(event: InputChangeEvent) {
@@ -3560,7 +3584,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       throw new Error("Input text elements require a 'data-target-key' attribute.");
     }
     await this.updateTarget(targetKey, elem.value);
-    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+    await socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
   async _onGMPopupClick(event: ClickEvent) {
@@ -3574,11 +3598,11 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
      *
      * */
     const elem$ = $(event.currentTarget);
-    const prompt = elem$.data("prompt");
-    const flagTarget = elem$.data("flagTarget");
+    const prompt = elem$.data("prompt") as Maybe<string>;
+    const flagTarget = elem$.data("flagTarget") as Maybe<TargetFlagKey>;
 
     if (prompt && flagTarget) {
-      BladesDialog.DisplaySimpleInputDialog(this, prompt, undefined, flagTarget);
+      await BladesDialog.DisplaySimpleInputDialog(this, prompt, undefined, flagTarget);
     }
   }
   // #endregion
@@ -3679,7 +3703,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
   _onClickToRoll(event: ClickEvent) {
     event.preventDefault();
     if (this.rollPhase === RollPhase.AwaitingRoll) {
-      this.resolveRoll();
+      void this.resolveRoll();
     }
   }
 
@@ -3718,7 +3742,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
       }
     }
     await this.updateTarget(targetKey, value);
-    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+    await socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
 
   activateListeners() {
@@ -3748,7 +3772,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
     this.elem$.find("[data-action='player-trade']").on({
       click: async (event) => {
         await this.updateTarget("rollPosEffectTrade", U.lCase(`${$(event.currentTarget).data("value")}`) === "false");
-        socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+        await socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
       }
     });
 
@@ -3847,7 +3871,7 @@ class BladesRoll extends BladesTargetLink<BladesRoll.Schema> {
 
   async submitChange(prop: string, val: unknown) {
     await this.updateTarget(prop, val);
-    socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
+    await socketlib.system.executeForEveryone("renderRollCollab_SocketCall", this.id);
   }
   // #endregion
 
@@ -4220,22 +4244,22 @@ class BladesActionRoll extends BladesRoll {
         .filter((costData) => costData.costType === "Stress")
         .reduce((acc, costData) => acc + costData.costAmount, 0);
       if (stressCost !== 0) {
-        this.rollPrimaryDoc.adjustStress(stressCost);
+        await this.rollPrimaryDoc.adjustStress(stressCost);
       }
       const specArmorCost = this.getRollCosts()
         .filter((costData) => costData.costType === "SpecialArmor")
         .length;
       if (specArmorCost !== 0) {
-        this.rollPrimaryDoc.spendSpecialArmor();
+        await this.rollPrimaryDoc.spendSpecialArmor();
       }
     }
 
     if (armorCost !== 0) {
-      this.rollPrimary.spendArmor(armorCost);
+      await this.rollPrimary.spendArmor(armorCost);
     }
 
     if (this.getRollModByKey("WorsePosition-negative-position")?.isActive) {
-      this.rollPrimaryDoc?.unsetFlag("eunos-blades", "isWorsePosition");
+      await this.rollPrimaryDoc?.unsetFlag("eunos-blades", "isWorsePosition");
     }
   }
 
@@ -4292,12 +4316,15 @@ class BladesResistanceRoll extends BladesRoll {
     return await super.New(parsedConfig) as InstanceType<C>;
   }
 
+  protected static readonly _collabTemplateUser: string = "systems/eunos-blades/templates/roll/roll-collab-resistance.hbs";
+  protected static readonly _collabTemplateGM: string = "systems/eunos-blades/templates/roll/roll-collab-resistance-gm.hbs";
   override get collabTemplate(): string {
-    return `systems/eunos-blades/templates/roll/roll-collab-resistance${game.user.isGM ? "-gm" : ""}.hbs`;
+    return game.user.isGM ? BladesResistanceRoll._collabTemplateGM : BladesResistanceRoll._collabTemplateUser;
   }
 
+  protected static readonly _chatTemplate: string = "systems/eunos-blades/templates/chat/roll-result/resistance.hbs";
   override get chatTemplate(): string {
-    return "systems/eunos-blades/templates/chat/roll-result/resistance.hbs";
+    return BladesResistanceRoll._chatTemplate;
   }
 
   get stressCost(): number {
@@ -4314,17 +4341,15 @@ class BladesResistanceRoll extends BladesRoll {
 
   override async resolveRollResult() {
     if (this.rollPrimaryDoc instanceof BladesPC && this.stressCost !== 0) {
-      this.rollPrimaryDoc.adjustStress(this.stressCost);
+      await this.rollPrimaryDoc.adjustStress(this.stressCost);
     }
   }
 }
 
 class BladesInlineResistanceRoll extends BladesResistanceRoll {
+  protected static override readonly _chatTemplate: string = "systems/eunos-blades/templates/chat/components/inline-resistance.hbs";
 
-  override get chatTemplate(): string {
-    return "systems/eunos-blades/templates/chat/components/inline-resistance.hbs";
-  }
-
+  override get chatTemplate() { return BladesInlineResistanceRoll._chatTemplate; }
 }
 
 class BladesFortuneRoll extends BladesRoll {
@@ -4427,12 +4452,15 @@ class BladesIndulgeViceRoll extends BladesRoll {
     return await super.New(parsedConfig) as InstanceType<C>;
   }
 
+  protected static _collabTemplateUser = "systems/eunos-blades/templates/roll/roll-collab-indulgevice.hbs";
+  protected static _collabTemplateGM = "systems/eunos-blades/templates/roll/roll-collab-indulgevice-gm.hbs";
   override get collabTemplate(): string {
-    return `systems/eunos-blades/templates/roll/roll-collab-indulgevice${game.user.isGM ? "-gm" : ""}.hbs`;
+    return game.user.isGM ? BladesIndulgeViceRoll._collabTemplateGM : BladesIndulgeViceRoll._collabTemplateUser;
   }
 
+  protected static _chatTemplate = "systems/eunos-blades/templates/chat/roll-result/indulgevice.hbs";
   override get chatTemplate(): string {
-    return "systems/eunos-blades/templates/chat/roll-result/indulgevice.hbs";
+    return BladesIndulgeViceRoll._chatTemplate;
   }
 
   override get rollResult(): number|false {
@@ -4441,7 +4469,7 @@ class BladesIndulgeViceRoll extends BladesRoll {
   }
   override async resolveRollResult() {
     if (BladesPC.IsType(this.rollPrimaryDoc)) {
-      this.rollPrimaryDoc.indulgeStress(this.highestDieVal);
+      await this.rollPrimaryDoc.indulgeStress(this.highestDieVal);
     }
   }
 
@@ -4521,15 +4549,17 @@ class BladesEngagementRoll extends BladesFortuneRoll {
     ];
   }
 
+  protected static _chatTemplate = "systems/eunos-blades/templates/chat/roll-result/fortune-engagement.hbs";
   override get chatTemplate(): string {
-    return "systems/eunos-blades/templates/chat/roll-result/fortune-engagement.hbs";
+    return BladesEngagementRoll._chatTemplate;
   }
 }
 
 class BladesIncarcerationRoll extends BladesFortuneRoll {
 
+  protected static _chatTemplate = "systems/eunos-blades/templates/chat/roll-result/fortune-incarceration.hbs";
   override get chatTemplate(): string {
-    return "systems/eunos-blades/templates/chat/roll-result/fortune-incarceration.hbs";
+    return BladesIncarcerationRoll._chatTemplate;
   }
 
 }

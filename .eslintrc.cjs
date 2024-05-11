@@ -17,18 +17,20 @@
  *  - IS_FIX_TASK = false;       // Set to true when running fix tasks from VSCode's tasks.json.
  */
 
+console.clear();
 
 // Use environment variables to toggle linting behavior.
 //  Note: Default values define in-IDE linting.
 
-const ISDEPLOYING = process.env.DEPLOYING === "true"; // Default to false, true if explicitly set to "true"
-const ALLRULESACTIVE = process.env.ALL_RULES_ACTIVE === "true"; // Default to false, true if explicitly set to "true"
-const ISFASTLINTING = process.env.FAST_LINTING !== "false"; // Default to true unless explicitly set to "false"
-const ISTYPESCRIPT = process.env.TYPE_SCRIPT !== "false"; // Default to true unless explicitly set to "false"
-const ISFOUNDRY = process.env.FOUNDRY !== "false"; // Default to true unless explicitly set to "false"
-const ISJSDOC = process.env.JSDOC === "true"; // Default to false, true if explicitly set to "true"
-const ISFIXINGCOMMENTS = process.env.FIXING_COMMENTS === "true"; // Default to false, true if explicitly set to "true"
-const ISRUNNINGFIXTASK = process.env.IS_FIX_TASK === "true"; // Default to false, true if explicitly set to "true"
+const DEPLOYING = process.env.DEPLOYING === "true";                // Default to false, true if explicitly set to "true"
+const ALL_RULES_ACTIVE = process.env.ALL_RULES_ACTIVE === "true";  // Default to false, true if explicitly set to "true"
+const FAST_LINTING = process.env.FAST_LINTING !== "false";         // Default to true unless explicitly set to "false"
+const TYPE_SCRIPT = process.env.TYPE_SCRIPT !== "false";           // Default to true unless explicitly set to "false"
+const TYPE_INFO = process.env.TYPE_INFO !== "false";               // Default to true unless explicitly set to "false"
+const FOUNDRY = process.env.FOUNDRY !== "false";                   // Default to true unless explicitly set to "false"
+const JSDOC = process.env.JSDOC === "true";                        // Default to false, true if explicitly set to "true"
+const FIXING_COMMENTS = process.env.FIXING_COMMENTS === "true";    // Default to false, true if explicitly set to "true"
+const IS_FIX_TASK = process.env.IS_FIX_TASK === "true";            // Default to false, true if explicitly set to "true"
 
 const GLOBALCONSTANTS = [
   ["CONFIG", "CONST", "foundry", "game", "canvas", "ui"],
@@ -38,7 +40,6 @@ const GLOBALCONSTANTS = [
     "ActorSheet",
     "Actors",
     "Application",
-    "BladesHelpers",
     "ChatMessage",
     "Dialog",
     "Draggable",
@@ -81,13 +82,31 @@ const GLOBALCONSTANTS = [
 
   */
 
+const TYPE_INFO_RULES = {
+  base: {
+    "await-thenable":      "error",
+    "no-misused-promises": [
+      "error",
+      {
+        checksVoidReturn: {
+          arguments: false
+        }
+      }
+    ],
+    "no-unnecessary-type-assertion": "warn",
+    "prefer-readonly":               "error"
+  },
+  extensions: {
+    "require-await": ["warn"]
+  }
+};
+
 const TYPESCRIPTRULES = {
   // "@typescript-eslint"
 
   /* BASE: Rules that do not require changes to base ESLint rules. */
   base: {
     "array-type":         ["warn", {default: "array-simple"}],
-    // "await-thenable": "error", // @@ REQUIRES CONFIGURED TYPE INFORMATION @@
     "ban-ts-comment":     0,
     "no-empty-interface": 0,
     // "no-explicit-any": "warn",
@@ -103,10 +122,9 @@ const TYPESCRIPTRULES = {
         allowedNames:       ["self"]
       }
     ],
-    // "no-unnecessary-type-assertion": "warn", // @@ REQUIRES CONFIGURED TYPE INFORMATION @@
     "no-unnecessary-type-constraint": "warn",
-    "no-unsafe-declaration-merging":  "off"
-    // "prefer-readonly": "error", // @@ REQUIRES CONFIGURED TYPE INFORMATION @@
+    "no-unsafe-declaration-merging":  "off",
+    ...TYPE_INFO ? TYPE_INFO_RULES.base : {}
   },
 
   /* EXTENSIONS: Rules that extend base ESLint rules.
@@ -115,10 +133,10 @@ const TYPESCRIPTRULES = {
   extensions: {
     "default-param-last": ["error"],
     // "no-unused-vars": "off"
-    "no-unused-vars":     ISFASTLINTING ? ["off"] : [
+    "no-unused-vars":     FAST_LINTING ? ["off"] : [
       ["warn", {argsIgnorePattern: "^_", varsIgnorePattern: "^_$"}]
-    ]
-    // "require-await": ["warn"], // @@ REQUIRES CONFIGURED TYPE INFORMATION @@
+    ],
+    ...TYPE_INFO ? TYPE_INFO_RULES.extensions : {}
   },
 
   plugins: {
@@ -332,7 +350,7 @@ const DEPLOYMENTFIXRULES = {
 
   "array-bracket-spacing": ["warn", "never"],
   "func-call-spacing":     ["warn", "never"],
-  "indent":                ISFASTLINTING ? "off" : [
+  "indent":                FAST_LINTING ? "off" : [
     "warn",
     2,
     {
@@ -508,7 +526,7 @@ const FOUNDRYRULES = {
   "valid-typeof":                  ["warn", {requireStringLiterals: true}],
   "wrap-iife":                     ["warn", "inside"],
   "arrow-parens":                  ["warn", "always"],
-  "capitalized-comments":          ISFIXINGCOMMENTS
+  "capitalized-comments":          FIXING_COMMENTS
     ? ["warn", "always", {
       ignoreConsecutiveComments: true,
       ignorePattern:             "noinspection"
@@ -516,9 +534,9 @@ const FOUNDRYRULES = {
     : "off",
   "comma-spacing": "warn",
   "dot-notation":  "warn",
-  "max-len":       ISFASTLINTING ? "off" : ["warn", {
+  "max-len":       FAST_LINTING ? "off" : ["warn", {
     code:                   120,
-    ignoreComments:         !ISFIXINGCOMMENTS,
+    ignoreComments:         !FIXING_COMMENTS,
     ignoreTrailingComments: true,
     ignoreUrls:             true,
     ignoreStrings:          true,
@@ -584,9 +602,9 @@ const JSDOCRULES = {
   "jsdoc/valid-types":                             "off"
 };
 
-const RulesAssembly = ISFOUNDRY ? {...FOUNDRYRULES} : {...GENERALRULES, ...PLUGINRULES};
+const RulesAssembly = FOUNDRY ? {...FOUNDRYRULES} : {...GENERALRULES, ...PLUGINRULES};
 
-if (ISTYPESCRIPT) {
+if (TYPE_SCRIPT) {
   RulesAssembly["no-extra-parens"] = "off"; // Have to turn off to allow TypeScript '(foo as <Type>)'-style notation.
   Object.assign(
     RulesAssembly,
@@ -598,7 +616,7 @@ if (ISTYPESCRIPT) {
       RulesAssembly[ruleName] = esLintOffVal ?? "off";
     });
 }
-if (ISJSDOC) {
+if (JSDOC) {
   Object.assign(
     RulesAssembly,
     JSDOCRULES
@@ -611,7 +629,7 @@ Object.keys(RulesAssembly).forEach((rule) => {
   }
 });
 const RULES = {
-  ...(ISRUNNINGFIXTASK
+  ...(IS_FIX_TASK
     ? {
       "array-bracket-spacing": ["warn", "never"],
       "func-call-spacing":     ["warn", "never"],
@@ -690,9 +708,9 @@ const RULES = {
     }
     : {
       ...RulesAssembly,
-      ...(ALLRULESACTIVE ? allRules : {}),
+      ...(ALL_RULES_ACTIVE ? allRules : {}),
       ...DEPLOYMENTFIXRULES,
-      ...(ISDEPLOYING ? DEPLOYMENTRULES : {})
+      ...(DEPLOYING ? DEPLOYMENTRULES : {})
     }
   ),
   "etc/no-assign-mutated-array": "off",
@@ -724,17 +742,23 @@ const EXPORTS = {
     node:    true,
     jquery:  true
   },
-  plugins: ["import", "@typescript-eslint", "jsdoc", "etc"],
-  extends: [
-    ALLRULESACTIVE ? "eslint:all" : "eslint:recommended",
-    ...(ISFASTLINTING ? [] : ["plugin:import/recommended"]),
+  ignorePatterns: ["./.eslintrc.cjs"],
+  plugins:        ["import", "@typescript-eslint", "jsdoc", "etc"],
+  extends:        [
+    ALL_RULES_ACTIVE ? "eslint:all" : "eslint:recommended",
+    ...(FAST_LINTING ? [] : ["plugin:import/recommended"]),
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-type-checked",
+    "plugin:@typescript-eslint/stylistic",
+    "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:etc/recommended"
   ],
   parser:        "@typescript-eslint/parser",
   parserOptions: {
+    project:                     true,
     requireConfigFile:           false,
+    tsconfigRootDir:             __dirname,
     ecmaVersion:                 2022,
     sourceType:                  "module",
     allowImportExportEverywhere: false,
@@ -746,7 +770,7 @@ const EXPORTS = {
       impliedStrict: true
     }
   },
-  reportUnusedDisableDirectives: ISDEPLOYING,
+  reportUnusedDisableDirectives: DEPLOYING,
   rules:                         RULES,
   globals:                       /* ISTYPESCRIPT ? {} : */ Object.fromEntries(
     GLOBALCONSTANTS.map((constant) => [constant, "readonly"])
@@ -763,7 +787,7 @@ const EXPORTS = {
     //   ]
     // },
     {
-      files:         [".eslintrc.js", "*.js"],
+      files:         [".eslintrc.cjs", "*.js"],
       plugins:       ["import"],
       extends:       [],
       parser:        "espree", // use the default parser for JavaScript files
@@ -794,7 +818,841 @@ const EXPORTS = {
   }
 };
 
-// console.clear();
-// console.log(JSON.stringify(EXPORTS, null, 2));
+console.log(JSON.stringify(EXPORTS, null, 2));
 
 module.exports = EXPORTS;
+// module.exports = {
+//   root: true,
+//   env:  {
+//     browser: true,
+//     es2022:  true,
+//     node:    true,
+//     jquery:  true
+//   },
+//   ignorePatterns: [
+//     "./.eslintrc.cjs"
+//   ],
+//   plugins: [
+//     "import",
+//     "@typescript-eslint",
+//     "jsdoc",
+//     "etc"
+//   ],
+//   extends: [
+//     "eslint:recommended",
+//     "plugin:@typescript-eslint/eslint-recommended",
+//     "plugin:@typescript-eslint/recommended",
+//     "plugin:@typescript-eslint/recommended-type-checked",
+//     "plugin:@typescript-eslint/stylistic",
+//     "plugin:@typescript-eslint/stylistic-type-checked",
+//     "plugin:etc/recommended"
+//   ],
+//   parser:        "@typescript-eslint/parser",
+//   parserOptions: {
+//     project:                     true,
+//     requireConfigFile:           false,
+//     tsconfigRootDir:             "D:\\Projects\\.CODING\\FoundryVTT\\Foundryv11DevData\\Data\\systems\\eunos-blades",
+//     ecmaVersion:                 2022,
+//     sourceType:                  "module",
+//     allowImportExportEverywhere: false,
+//     codeFrame:                   false,
+//     createDefaultProgram:        true,
+//     ecmaFeatures:                {
+//       ts:            true,
+//       jsx:           false,
+//       impliedStrict: true
+//     }
+//   },
+//   reportUnusedDisableDirectives: false,
+//   rules:                         {
+//     "array-callback-return": "warn",
+//     "arrow-spacing":         "warn",
+//     "comma-dangle":          [
+//       "warn",
+//       "never"
+//     ],
+//     "comma-style":               "warn",
+//     "computed-property-spacing": "warn",
+//     "constructor-super":         "error",
+//     "default-param-last":        "off",
+//     "dot-location":              [
+//       "warn",
+//       "property"
+//     ],
+//     "eol-last": "off",
+//     "eqeqeq":   [
+//       "warn",
+//       "smart"
+//     ],
+//     "func-names": [
+//       "warn",
+//       "never"
+//     ],
+//     "getter-return":               "warn",
+//     "lines-between-class-members": 0,
+//     "new-parens":                  [
+//       "warn",
+//       "always"
+//     ],
+//     "no-alert":              "warn",
+//     "no-array-constructor":  "warn",
+//     "no-class-assign":       "warn",
+//     "no-compare-neg-zero":   "warn",
+//     "no-cond-assign":        "warn",
+//     "no-const-assign":       "error",
+//     "no-constant-condition": "warn",
+//     "no-constructor-return": "warn",
+//     "no-delete-var":         "warn",
+//     "no-dupe-args":          "warn",
+//     "no-dupe-class-members": 0,
+//     "no-dupe-keys":          "warn",
+//     "no-duplicate-case":     "warn",
+//     "no-duplicate-imports":  [
+//       "warn",
+//       {
+//         includeExports: true
+//       }
+//     ],
+//     "no-empty": [
+//       "warn",
+//       {
+//         allowEmptyCatch: true
+//       }
+//     ],
+//     "no-empty-character-class": "warn",
+//     "no-empty-pattern":         "warn",
+//     "no-func-assign":           "warn",
+//     "no-global-assign":         "warn",
+//     "no-implicit-coercion":     [
+//       "warn",
+//       {
+//         allow: [
+//           "!!"
+//         ]
+//       }
+//     ],
+//     "no-implied-eval":               "warn",
+//     "no-import-assign":              "warn",
+//     "no-invalid-regexp":             "warn",
+//     "no-irregular-whitespace":       "warn",
+//     "no-iterator":                   "warn",
+//     "no-lone-blocks":                "warn",
+//     "no-lonely-if":                  "warn",
+//     "no-loop-func":                  "warn",
+//     "no-misleading-character-class": "warn",
+//     "no-mixed-operators":            "warn",
+//     "no-multi-str":                  "warn",
+//     "no-new-func":                   "warn",
+//     "no-new-object":                 "warn",
+//     "no-new-symbol":                 "warn",
+//     "no-new-wrappers":               "warn",
+//     "no-nonoctal-decimal-escape":    "warn",
+//     "no-obj-calls":                  "warn",
+//     "no-octal":                      "warn",
+//     "no-octal-escape":               "warn",
+//     "no-promise-executor-return":    "warn",
+//     "no-proto":                      "warn",
+//     "no-regex-spaces":               "warn",
+//     "no-script-url":                 "warn",
+//     "no-self-assign":                "warn",
+//     "no-self-compare":               "warn",
+//     "no-setter-return":              "warn",
+//     "no-sequences":                  "warn",
+//     "no-shadow":                     0,
+//     "no-template-curly-in-string":   "warn",
+//     "no-this-before-super":          "error",
+//     "no-unexpected-multiline":       "warn",
+//     "no-unmodified-loop-condition":  "warn",
+//     "no-unneeded-ternary":           "warn",
+//     "no-unreachable":                "warn",
+//     "no-unreachable-loop":           "warn",
+//     "no-unsafe-negation":            [
+//       "warn",
+//       {
+//         enforceForOrderingRelations: true
+//       }
+//     ],
+//     "no-unsafe-optional-chaining": [
+//       "warn",
+//       {
+//         disallowArithmeticOperators: true
+//       }
+//     ],
+//     "no-unused-expressions":    "warn",
+//     "no-useless-backreference": "warn",
+//     "no-useless-call":          "warn",
+//     "no-useless-catch":         "warn",
+//     "no-useless-computed-key":  [
+//       "warn",
+//       {
+//         enforceForClassMembers: true
+//       }
+//     ],
+//     "no-useless-concat":      "warn",
+//     "no-useless-constructor": "warn",
+//     "no-useless-rename":      "warn",
+//     "no-useless-return":      "warn",
+//     "no-var":                 "warn",
+//     "no-void":                [
+//       "warn",
+//       {
+//         allowAsStatement: true
+//       }
+//     ],
+//     "no-whitespace-before-property": "warn",
+//     "prefer-numeric-literals":       "warn",
+//     "prefer-object-spread":          "warn",
+//     "prefer-regex-literals":         "warn",
+//     "prefer-spread":                 "warn",
+//     "rest-spread-spacing":           [
+//       "warn",
+//       "never"
+//     ],
+//     "semi-style": [
+//       "warn",
+//       "last"
+//     ],
+//     "switch-colon-spacing":   "warn",
+//     "symbol-description":     "warn",
+//     "template-curly-spacing": [
+//       "warn",
+//       "never"
+//     ],
+//     "unicode-bom": [
+//       "warn",
+//       "never"
+//     ],
+//     "use-isnan": [
+//       "warn",
+//       {
+//         enforceForSwitchCase: true,
+//         enforceForIndexOf:    true
+//       }
+//     ],
+//     "valid-typeof": [
+//       "warn",
+//       {
+//         requireStringLiterals: true
+//       }
+//     ],
+//     "wrap-iife": [
+//       "warn",
+//       "inside"
+//     ],
+//     "arrow-parens": [
+//       "warn",
+//       "always"
+//     ],
+//     "capitalized-comments":  "off",
+//     "comma-spacing":         "warn",
+//     "dot-notation":          "warn",
+//     "max-len":               "off",
+//     "no-extra-boolean-cast": [
+//       "warn",
+//       {
+//         enforceForLogicalOperands: true
+//       }
+//     ],
+//     "no-extra-semi":   "warn",
+//     "no-multi-spaces": [
+//       "warn",
+//       {
+//         ignoreEOLComments: true
+//       }
+//     ],
+//     "no-tabs":                          "warn",
+//     "no-throw-literal":                 "error",
+//     "no-useless-escape":                "warn",
+//     "nonblock-statement-body-position": [
+//       "warn",
+//       "beside"
+//     ],
+//     "one-var": [
+//       "warn",
+//       "never"
+//     ],
+//     "operator-linebreak": [
+//       "warn",
+//       "before",
+//       {
+//         overrides: {
+//           "=":  "after",
+//           "+=": "after",
+//           "-=": "after"
+//         }
+//       }
+//     ],
+//     "prefer-template": "warn",
+//     "quotes":          [
+//       "warn",
+//       "double",
+//       {
+//         avoidEscape:           true,
+//         allowTemplateLiterals: false
+//       }
+//     ],
+//     "semi":                "warn",
+//     "space-before-blocks": [
+//       "warn",
+//       "always"
+//     ],
+//     "no-extra-parens":       "off",
+//     "no-unused-vars":        "off",
+//     "require-await":         "off",
+//     "array-bracket-spacing": [
+//       "warn",
+//       "never"
+//     ],
+//     "func-call-spacing": [
+//       "warn",
+//       "never"
+//     ],
+//     "indent":      "off",
+//     "key-spacing": [
+//       "warn",
+//       {
+//         multiLine: {
+//           beforeColon: false,
+//           afterColon:  true
+//         },
+//         singleLine: {
+//           beforeColon: false,
+//           afterColon:  true
+//         },
+//         align: {
+//           beforeColon: false,
+//           afterColon:  true,
+//           on:          "value",
+//           mode:        "minimum"
+//         }
+//       }
+//     ],
+//     "keyword-spacing": [
+//       "warn",
+//       {
+//         overrides: {
+//           catch: {
+//             before: true,
+//             after:  false
+//           }
+//         }
+//       }
+//     ],
+//     "object-curly-spacing": [
+//       "warn",
+//       "never",
+//       {
+//         arraysInObjects:  true,
+//         objectsInObjects: true
+//       }
+//     ],
+//     "quote-props": [
+//       "warn",
+//       "consistent-as-needed"
+//     ],
+//     "semi-spacing":   "warn",
+//     "spaced-comment": [
+//       "warn",
+//       "always",
+//       {
+//         line: {
+//           exceptions: [
+//             "*",
+//             "~",
+//             "DEVCODE",
+//             "!DEVCODE",
+//             "/ <reference"
+//           ],
+//           markers: [
+//             "~"
+//           ]
+//         },
+//         block: {
+//           exceptions: [
+//             "*",
+//             "~",
+//             "*~",
+//             "DEVCODE",
+//             "!DEVCODE"
+//           ],
+//           markers: [
+//             "~",
+//             "*~"
+//           ],
+//           balanced: true
+//         }
+//       }
+//     ],
+//     "space-before-function-paren": [
+//       "warn",
+//       {
+//         anonymous:  "never",
+//         named:      "never",
+//         asyncArrow: "always"
+//       }
+//     ],
+//     "space-unary-ops": [
+//       "warn",
+//       {
+//         words:    true,
+//         nonwords: false
+//       }
+//     ],
+//     "etc/no-assign-mutated-array":   "off",
+//     "etc/no-deprecated":             "off",
+//     "etc/no-implicit-any-catch":     "off",
+//     "etc/no-internal":               "off",
+//     "@typescript-eslint/array-type": [
+//       "warn",
+//       {
+//         default: "array-simple"
+//       }
+//     ],
+//     "@typescript-eslint/ban-ts-comment":        0,
+//     "@typescript-eslint/no-empty-interface":    0,
+//     "@typescript-eslint/no-namespace":          "off",
+//     "@typescript-eslint/no-non-null-assertion": "warn",
+//     "@typescript-eslint/no-shadow":             "warn",
+//     "@typescript-eslint/no-dupe-class-members": "error",
+//     "@typescript-eslint/no-this-alias":         [
+//       "warn",
+//       {
+//         allowDestructuring: true,
+//         allowedNames:       [
+//           "self"
+//         ]
+//       }
+//     ],
+//     "@typescript-eslint/no-unnecessary-type-constraint": "warn",
+//     "@typescript-eslint/no-unsafe-declaration-merging":  "off",
+//     "@typescript-eslint/await-thenable":                 "error",
+//     "@typescript-eslint/no-misused-promises":            [
+//       "error",
+//       {
+//         checksVoidReturn: {
+//           arguments: false
+//         }
+//       }
+//     ],
+//     "@typescript-eslint/no-unnecessary-type-assertion": "warn",
+//     "@typescript-eslint/prefer-readonly":               "error",
+//     "@typescript-eslint/default-param-last":            "error",
+//     "@typescript-eslint/no-unused-vars":                "off",
+//     "@typescript-eslint/require-await":                 "warn"
+//   },
+//   globals: {
+//     CONFIG:           "readonly",
+//     CONST:            "readonly",
+//     foundry:          "readonly",
+//     game:             "readonly",
+//     canvas:           "readonly",
+//     ui:               "readonly",
+//     ActiveEffect:     "readonly",
+//     Actor:            "readonly",
+//     ActorSheet:       "readonly",
+//     Actors:           "readonly",
+//     Application:      "readonly",
+//     BladesHelpers:    "readonly",
+//     ChatMessage:      "readonly",
+//     Dialog:           "readonly",
+//     Draggable:        "readonly",
+//     Folder:           "readonly",
+//     FormDataExtended: "readonly",
+//     Handlebars:       "readonly",
+//     Hooks:            "readonly",
+//     Item:             "readonly",
+//     ItemSheet:        "readonly",
+//     Items:            "readonly",
+//     Macro:            "readonly",
+//     Roll:             "readonly",
+//     TextureLoader:    "readonly",
+//     TokenDocument:    "readonly",
+//     User:             "readonly",
+//     duplicate:        "readonly",
+//     fetchWithTimeout: "readonly",
+//     loadTemplates:    "readonly",
+//     getTemplate:      "readonly",
+//     mergeObject:      "readonly",
+//     randomID:         "readonly",
+//     renderTemplate:   "readonly",
+//     setProperty:      "readonly",
+//     srcExists:        "readonly",
+//     isObjectEmpty:    "readonly",
+//     expandObject:     "readonly",
+//     flattenObject:    "readonly",
+//     DEFAULT_TOKEN:    "readonly"
+//   },
+//   // "overrides": [
+//   //   {
+//   //     "files": [
+//   //       ".eslintrc.cjs",
+//   //       "*.js"
+//   //     ],
+//   //     "plugins": [
+//   //       "import"
+//   //     ],
+//   //     "extends": [],
+//   //     "parser": "@typescript-eslint/parser",
+//   //     "parserOptions": {},
+//   //     "project": true,
+//   //     "rules": {
+//   //       "array-callback-return": "warn",
+//   //       "arrow-spacing": "warn",
+//   //       "comma-dangle": [
+//   //         "warn",
+//   //         "never"
+//   //       ],
+//   //       "comma-style": "warn",
+//   //       "computed-property-spacing": "warn",
+//   //       "constructor-super": "error",
+//   //       "default-param-last": "off",
+//   //       "dot-location": [
+//   //         "warn",
+//   //         "property"
+//   //       ],
+//   //       "eol-last": "off",
+//   //       "eqeqeq": [
+//   //         "warn",
+//   //         "smart"
+//   //       ],
+//   //       "func-names": [
+//   //         "warn",
+//   //         "never"
+//   //       ],
+//   //       "getter-return": "warn",
+//   //       "lines-between-class-members": 0,
+//   //       "new-parens": [
+//   //         "warn",
+//   //         "always"
+//   //       ],
+//   //       "no-alert": "warn",
+//   //       "no-array-constructor": "warn",
+//   //       "no-class-assign": "warn",
+//   //       "no-compare-neg-zero": "warn",
+//   //       "no-cond-assign": "warn",
+//   //       "no-const-assign": "error",
+//   //       "no-constant-condition": "warn",
+//   //       "no-constructor-return": "warn",
+//   //       "no-delete-var": "warn",
+//   //       "no-dupe-args": "warn",
+//   //       "no-dupe-class-members": 0,
+//   //       "no-dupe-keys": "warn",
+//   //       "no-duplicate-case": "warn",
+//   //       "no-duplicate-imports": [
+//   //         "warn",
+//   //         {
+//   //           "includeExports": true
+//   //         }
+//   //       ],
+//   //       "no-empty": [
+//   //         "warn",
+//   //         {
+//   //           "allowEmptyCatch": true
+//   //         }
+//   //       ],
+//   //       "no-empty-character-class": "warn",
+//   //       "no-empty-pattern": "warn",
+//   //       "no-func-assign": "warn",
+//   //       "no-global-assign": "warn",
+//   //       "no-implicit-coercion": [
+//   //         "warn",
+//   //         {
+//   //           "allow": [
+//   //             "!!"
+//   //           ]
+//   //         }
+//   //       ],
+//   //       "no-implied-eval": "warn",
+//   //       "no-import-assign": "warn",
+//   //       "no-invalid-regexp": "warn",
+//   //       "no-irregular-whitespace": "warn",
+//   //       "no-iterator": "warn",
+//   //       "no-lone-blocks": "warn",
+//   //       "no-lonely-if": "warn",
+//   //       "no-loop-func": "warn",
+//   //       "no-misleading-character-class": "warn",
+//   //       "no-mixed-operators": "warn",
+//   //       "no-multi-str": "warn",
+//   //       "no-new-func": "warn",
+//   //       "no-new-object": "warn",
+//   //       "no-new-symbol": "warn",
+//   //       "no-new-wrappers": "warn",
+//   //       "no-nonoctal-decimal-escape": "warn",
+//   //       "no-obj-calls": "warn",
+//   //       "no-octal": "warn",
+//   //       "no-octal-escape": "warn",
+//   //       "no-promise-executor-return": "warn",
+//   //       "no-proto": "warn",
+//   //       "no-regex-spaces": "warn",
+//   //       "no-script-url": "warn",
+//   //       "no-self-assign": "warn",
+//   //       "no-self-compare": "warn",
+//   //       "no-setter-return": "warn",
+//   //       "no-sequences": "warn",
+//   //       "no-shadow": 0,
+//   //       "no-template-curly-in-string": "warn",
+//   //       "no-this-before-super": "error",
+//   //       "no-unexpected-multiline": "warn",
+//   //       "no-unmodified-loop-condition": "warn",
+//   //       "no-unneeded-ternary": "warn",
+//   //       "no-unreachable": "warn",
+//   //       "no-unreachable-loop": "warn",
+//   //       "no-unsafe-negation": [
+//   //         "warn",
+//   //         {
+//   //           "enforceForOrderingRelations": true
+//   //         }
+//   //       ],
+//   //       "no-unsafe-optional-chaining": [
+//   //         "warn",
+//   //         {
+//   //           "disallowArithmeticOperators": true
+//   //         }
+//   //       ],
+//   //       "no-unused-expressions": "warn",
+//   //       "no-useless-backreference": "warn",
+//   //       "no-useless-call": "warn",
+//   //       "no-useless-catch": "warn",
+//   //       "no-useless-computed-key": [
+//   //         "warn",
+//   //         {
+//   //           "enforceForClassMembers": true
+//   //         }
+//   //       ],
+//   //       "no-useless-concat": "warn",
+//   //       "no-useless-constructor": "warn",
+//   //       "no-useless-rename": "warn",
+//   //       "no-useless-return": "warn",
+//   //       "no-var": "warn",
+//   //       "no-void": [
+//   //         "warn",
+//   //         {
+//   //           "allowAsStatement": true
+//   //         }
+//   //       ],
+//   //       "no-whitespace-before-property": "warn",
+//   //       "prefer-numeric-literals": "warn",
+//   //       "prefer-object-spread": "warn",
+//   //       "prefer-regex-literals": "warn",
+//   //       "prefer-spread": "warn",
+//   //       "rest-spread-spacing": [
+//   //         "warn",
+//   //         "never"
+//   //       ],
+//   //       "semi-style": [
+//   //         "warn",
+//   //         "last"
+//   //       ],
+//   //       "switch-colon-spacing": "warn",
+//   //       "symbol-description": "warn",
+//   //       "template-curly-spacing": [
+//   //         "warn",
+//   //         "never"
+//   //       ],
+//   //       "unicode-bom": [
+//   //         "warn",
+//   //         "never"
+//   //       ],
+//   //       "use-isnan": [
+//   //         "warn",
+//   //         {
+//   //           "enforceForSwitchCase": true,
+//   //           "enforceForIndexOf": true
+//   //         }
+//   //       ],
+//   //       "valid-typeof": [
+//   //         "warn",
+//   //         {
+//   //           "requireStringLiterals": true
+//   //         }
+//   //       ],
+//   //       "wrap-iife": [
+//   //         "warn",
+//   //         "inside"
+//   //       ],
+//   //       "arrow-parens": [
+//   //         "warn",
+//   //         "always"
+//   //       ],
+//   //       "capitalized-comments": "off",
+//   //       "comma-spacing": "warn",
+//   //       "dot-notation": "warn",
+//   //       "max-len": "off",
+//   //       "no-extra-boolean-cast": [
+//   //         "warn",
+//   //         {
+//   //           "enforceForLogicalOperands": true
+//   //         }
+//   //       ],
+//   //       "no-extra-semi": "warn",
+//   //       "no-multi-spaces": [
+//   //         "warn",
+//   //         {
+//   //           "ignoreEOLComments": true
+//   //         }
+//   //       ],
+//   //       "no-tabs": "warn",
+//   //       "no-throw-literal": "error",
+//   //       "no-useless-escape": "warn",
+//   //       "nonblock-statement-body-position": [
+//   //         "warn",
+//   //         "beside"
+//   //       ],
+//   //       "one-var": [
+//   //         "warn",
+//   //         "never"
+//   //       ],
+//   //       "operator-linebreak": [
+//   //         "warn",
+//   //         "before",
+//   //         {
+//   //           "overrides": {
+//   //             "=": "after",
+//   //             "+=": "after",
+//   //             "-=": "after"
+//   //           }
+//   //         }
+//   //       ],
+//   //       "prefer-template": "warn",
+//   //       "quotes": [
+//   //         "warn",
+//   //         "double",
+//   //         {
+//   //           "avoidEscape": true,
+//   //           "allowTemplateLiterals": false
+//   //         }
+//   //       ],
+//   //       "semi": "warn",
+//   //       "space-before-blocks": [
+//   //         "warn",
+//   //         "always"
+//   //       ],
+//   //       "no-extra-parens": "off",
+//   //       "no-unused-vars": "off",
+//   //       "require-await": "off",
+//   //       "array-bracket-spacing": [
+//   //         "warn",
+//   //         "never"
+//   //       ],
+//   //       "func-call-spacing": [
+//   //         "warn",
+//   //         "never"
+//   //       ],
+//   //       "indent": "off",
+//   //       "key-spacing": [
+//   //         "warn",
+//   //         {
+//   //           "multiLine": {
+//   //             "beforeColon": false,
+//   //             "afterColon": true
+//   //           },
+//   //           "singleLine": {
+//   //             "beforeColon": false,
+//   //             "afterColon": true
+//   //           },
+//   //           "align": {
+//   //             "beforeColon": false,
+//   //             "afterColon": true,
+//   //             "on": "value",
+//   //             "mode": "minimum"
+//   //           }
+//   //         }
+//   //       ],
+//   //       "keyword-spacing": [
+//   //         "warn",
+//   //         {
+//   //           "overrides": {
+//   //             "catch": {
+//   //               "before": true,
+//   //               "after": false
+//   //             }
+//   //           }
+//   //         }
+//   //       ],
+//   //       "object-curly-spacing": [
+//   //         "warn",
+//   //         "never",
+//   //         {
+//   //           "arraysInObjects": true,
+//   //           "objectsInObjects": true
+//   //         }
+//   //       ],
+//   //       "quote-props": [
+//   //         "warn",
+//   //         "consistent-as-needed"
+//   //       ],
+//   //       "semi-spacing": "warn",
+//   //       "spaced-comment": [
+//   //         "warn",
+//   //         "always",
+//   //         {
+//   //           "line": {
+//   //             "exceptions": [
+//   //               "*",
+//   //               "~",
+//   //               "DEVCODE",
+//   //               "!DEVCODE",
+//   //               "/ <reference"
+//   //             ],
+//   //             "markers": [
+//   //               "~"
+//   //             ]
+//   //           },
+//   //           "block": {
+//   //             "exceptions": [
+//   //               "*",
+//   //               "~",
+//   //               "*~",
+//   //               "DEVCODE",
+//   //               "!DEVCODE"
+//   //             ],
+//   //             "markers": [
+//   //               "~",
+//   //               "*~"
+//   //             ],
+//   //             "balanced": true
+//   //           }
+//   //         }
+//   //       ],
+//   //       "space-before-function-paren": [
+//   //         "warn",
+//   //         {
+//   //           "anonymous": "never",
+//   //           "named": "never",
+//   //           "asyncArrow": "always"
+//   //         }
+//   //       ],
+//   //       "space-unary-ops": [
+//   //         "warn",
+//   //         {
+//   //           "words": true,
+//   //           "nonwords": false
+//   //         }
+//   //       ],
+//   //       "etc/no-assign-mutated-array": "off",
+//   //       "etc/no-deprecated": "off",
+//   //       "etc/no-implicit-any-catch": "off",
+//   //       "etc/no-internal": "off",
+//   //       "@typescript-eslint/*": "off"
+//   //     }
+//   //   }
+//   // ],
+//   settings: {
+//     "import/resolver": {
+//       node: {
+//         paths: [
+//           "./ts"
+//         ],
+//         extensions: [
+//           ".ts",
+//           ".tsx",
+//           ".d.ts"
+//         ]
+//       },
+//       typescript: {
+//         alwaysTryTypes: true,
+//         project:        "./tsconfig.json"
+//       }
+//     }
+//   }
+// };

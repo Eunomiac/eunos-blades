@@ -158,6 +158,11 @@ const GMID = (): string | false => game?.user?.find((user) => user.isGM)?.id ?? 
 
 // #region ████████ TYPES: Type Checking, Validation, Conversion, Casting ████████ ~
 
+type int = number;
+type float = number;
+type posInt = number;
+type _HexColor = HexColor;
+
 const isNumber = (ref: unknown): ref is number => typeof ref === "number" && !isNaN(ref);
 const isNumString = (ref: unknown): ref is string => typeof ref === "string"
   && !isNaN(parseFloat(ref))
@@ -174,7 +179,7 @@ const isPosInt = (ref: unknown): ref is posInt => isInt(ref) && ref >= 0;
 const isIndex = <T>(ref: T): ref is T & Index<ValOf<T>> => isList(ref) || isArray(ref);
 const isIterable = (ref: unknown): ref is Iterable<unknown> => typeof ref === "object" && ref !== null && Symbol.iterator in ref;
 const isHTMLCode = (ref: unknown): ref is HTMLCode => typeof ref === "string" && /^<.*>$/u.test(ref);
-const isHexColor = (ref: unknown): ref is HEXColor => typeof ref === "string" && /^#(([0-9a-fA-F]{2}){3,4}|[0-9a-fA-F]{3,4})$/.test(ref);
+const isHexColor = (ref: unknown): ref is _HexColor => typeof ref === "string" && /^#(([0-9a-fA-F]{2}){3,4}|[0-9a-fA-F]{3,4})$/.test(ref);
 const isRGBColor = (ref: unknown): ref is RGBColor => typeof ref === "string" && /^rgba?\((\d{1,3},\s*){1,2}?\d{1,3},\s*\d{1,3}(\.\d+)?\)$/.test(ref);
 const isUndefined = (ref: unknown): ref is undefined => ref === undefined;
 const isNullOrUndefined = (ref: unknown): ref is null | undefined => ref === null || ref === undefined;
@@ -1717,7 +1722,7 @@ const getRGBString = (red: string | number, green?: number, blue?: number, alpha
   }
   return null;
 };
-const getHEXString = (red: string | number, green?: number, blue?: number): HEXColor | null => {
+const getHEXString = (red: string | number, green?: number, blue?: number): _HexColor | null => {
 
   function componentToHex(c: string | number): string {
     const hex = c.toString(16);
@@ -1980,7 +1985,7 @@ function waitFor(waitForTarget: unknown): Promise<void> {
 // #endregion ▄▄▄▄▄ ASYNC ▄▄▄▄▄
 
 const EventHandlers = {
-  onSelectChange: async (inst: BladesSheet, event: SelectChangeEvent) => {
+  onSelectChange: async (inst: EntitySheet, event: SelectChangeEvent) => {
     const elem = event.currentTarget;
     const {action, dtype, target, flagTarget} = elem.dataset;
 

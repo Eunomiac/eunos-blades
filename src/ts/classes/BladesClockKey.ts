@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import C, {ClockKey_SVGDATA, ClockKeySVGData, ClockDisplayContext, BladesActorType, BladesItemType, ClockColor, ClockKeyDisplayMode} from "../core/constants";
+import C, {ClockKeySvgData, ClockKeySVGData, ClockDisplayContext, BladesActorType, BladesItemType, ClockColor, ClockKeyDisplayMode} from "../core/constants";
 import {Dragger} from "../core/gsap";
 import BladesTargetLink from "./BladesTargetLink";
 import U from "../core/utilities";
 import {BladesActor, BladesFaction} from "../documents/BladesActorProxy";
 import {BladesItem, BladesClockKeeper, BladesProject, BladesScore} from "../documents/BladesItemProxy";
 
-export type ClockElems$ = {
+export interface ClockElems$ {
   clockElem$: JQuery,
   clockContainer$: JQuery,
   clockLabel$: JQuery,
@@ -18,7 +18,7 @@ export type ClockElems$ = {
   oneSegments$: JQuery
 }
 
-export type ClockKeyElems$ = {
+export interface ClockKeyElems$ {
   elem$: JQuery,
   container$: JQuery,
   imgContainer$: JQuery,
@@ -28,7 +28,7 @@ export type ClockKeyElems$ = {
   factionLabel$?: JQuery,
   projectLabel$?: JQuery,
   scoreLabel$?: JQuery,
-};
+}
 
 function isElemPosData(obj: unknown): obj is ElemPosData {
   return U.isList(obj)
@@ -43,7 +43,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   // #region STATIC METHODS ~
   static Initialize() {
 
-    function registerClockKeys(doc: BladesDoc) {
+    function registerClockKeys(doc: EntityDoc) {
       if ("clocksData" in doc.system) {
         (Object.values(doc.system.clocksData ?? {}) as BladesClockKey.Data[])
           .forEach((keyData) => {
@@ -285,18 +285,18 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
     // If there are visible, active clocks that are not complete, return the earliest (by index property)
     //    active clock that is not complete.
     if (this.activeClocks.length > 0) {
-      return this.getEarliestClock(this.activeClocks) as BladesClock;
+      return this.getEarliestClock(this.activeClocks)!;
     }
     // Otherwise, if there are any visible, completed clocks, return the latest visible, completed clock
     if (this.completedClocks.length > 0) {
-      return this.getLatestClock(this.completedClocks) as BladesClock;
+      return this.getLatestClock(this.completedClocks)!;
     }
     // Otherwise, if there are any visible clocks, return the earliest visible clock.
     if (this.visibleClocks.length > 0) {
-      return this.getEarliestClock(this.visibleClocks) as BladesClock;
+      return this.getEarliestClock(this.visibleClocks)!;
     }
     // Finally, if all clocks are hidden, return the clock at index 0
-    return this.getEarliestClock(Array.from(this.clocks)) as BladesClock;
+    return this.getEarliestClock(Array.from(this.clocks))!;
   }
 
   get fullDisplayPosData(): ElemPosData {
@@ -661,7 +661,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
         }
 
         // Set focusPosData to the center of the clock, with width and height equal to size
-        const focusClockData = this.svgData.clocks[displayMode as ClockIndex] as gsap.Point2D;
+        const focusClockData = this.svgData.clocks[displayMode as ClockIndex]!;
 
         focusPosData = {
           x:      focusClockData.x,
@@ -837,7 +837,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
 
   get svgData(): ClockKeySVGData {
     if (this.size === 0) {throw new Error("[BladesClockKey.svgData] Error size is 0.");}
-    const keyData = ClockKey_SVGDATA[this.size];
+    const keyData = ClockKeySvgData[this.size];
     let path: string;
     if (this.size === 1 && keyData.paths) {
       path = keyData.paths[this.oneKeyIndex];
@@ -867,7 +867,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   getClockPosition(clockIndex: ClockIndex = 0) {
     if (clockIndex > this.size) {throw new Error(`[BladesClockKey.getClockPosition] Error clockIndex '${clockIndex}' is greater than key size '${this.size}'.`);}
     if (clockIndex < 0) {throw new Error(`[BladesClockKey.getClockPosition] Error clockIndex '${clockIndex}' is less than 0.`);}
-    return this.svgData.clocks[clockIndex] as gsap.Point2D;
+    return this.svgData.clocks[clockIndex]!;
   }
 
   positionDragger?: Dragger;
@@ -961,7 +961,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   }
   async fadeInName_SocketCall(displayContext: ClockDisplayContext) {
     if (!game.user.isGM) {return;}
-    socketlib.system.executeForEveryone("fadeInName_SocketCall", displayContext, this.id);
+    await socketlib.system.executeForEveryone("fadeInName_SocketCall", displayContext, this.id);
   }
   static fadeInName_SocketResponse(displayContext: ClockDisplayContext, keyID: IDString) {
     const key = game.eunoblades.ClockKeys.get(keyID);
@@ -979,7 +979,7 @@ class BladesClockKey extends BladesTargetLink<BladesClockKey.Schema> implements 
   async fadeOutName_SocketCall(displayContext: ClockDisplayContext) {
     if (!game.user.isGM) {return;}
     this.fadeOutName_Animation(this.getElements$(displayContext));
-    socketlib.system.executeForOthers("fadeOutName_SocketCall", displayContext, this.id);
+    await socketlib.system.executeForOthers("fadeOutName_SocketCall", displayContext, this.id);
   }
   static fadeOutName_SocketResponse(displayContext: ClockDisplayContext, keyID: IDString) {
     const key = game.eunoblades.ClockKeys.get(keyID);
@@ -1558,7 +1558,7 @@ class BladesClock extends BladesTargetLink<BladesClock.Schema> implements Blades
     const oneSegs = [...clockElems$.oneSegments$];
     const oneSegsToAnimate = Array.from(clockElems$.oneSegments$).slice(0, segmentNums.length);
     for (const segmentNum of segmentNums) {
-      const oneSegment = oneSegs.shift() as HTMLElement;
+      const oneSegment = oneSegs.shift()!;
       U.gsap.set(oneSegment, {
         rotation:  this.getRotationOfSegment(segmentNum),
         autoAlpha: isReversing ? 1 : 0

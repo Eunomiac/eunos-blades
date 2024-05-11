@@ -43,6 +43,7 @@
     ],
   },
   "include": [
-    "./src/ts/**/*.ts"
+    "./src/ts/**/*.ts",
+    ".eslintrc.cjs"
   ]
 }

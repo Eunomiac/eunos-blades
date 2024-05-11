@@ -14,13 +14,29 @@ import {exec} from "child_process";
  * ... in your tsconfig.json's compilerOptions to use .ts and .tsx extensions directly in your code.
  * */
 
+/* ==== CONFIGURATION ==== */
+
+const FOUNDRY_VERSION = 11;
+const PACKAGE_TYPE: "module"|"system" = "system";
+const PACKAGE_ID = "eunos-blades";
+const ENTRY_FILE_NAME = "blades";
+
+/* --- SCSS Color Extraction --- */
+// Path to the SCSS file containing color definitions
+const COLOR_STYLESHEET_PATH = "src/scss/core/_colors.scss";
+
+// Must match the SCSS variable name format, capturing 'hue', 'brightness', 'red', 'green', and 'blue' values
+const COLOR_MATCH_REGEXP = /--blades-(?<hue>[a-z]+)-(?<brightness>[a-z]+)-nums:\s*(?<red>\d+),\s*(?<green>\d+),\s*(?<blue>\d+)\s*;/g;
+/* --- SCSS Color Extraction --- */
+
+/* ==== END CONFIGURATION ==== */
+
 /**
  * Custom plugin to open Chrome with specific flags when the Vite server starts.
  */
-
 function openChromePlugin(): Plugin {
   return {
-    name: "open-chrome",
+    name:  "open-chrome",
     apply: "serve", // Only apply this plugin during development
     configResolved(chromeConfig) {
       if (chromeConfig.command === "serve") {
@@ -57,30 +73,26 @@ function scssVariablesToJsPlugin(): Plugin {
     // This function will load the content for our virtual module
     load(id) {
       if (id === "virtual:colors") {
-        const filePath = "src/scss/core/_colors.scss"; // Path to your SCSS variables file
-        // console.log(`Processing SCSS file: ${filePath}`);
-        const scssVariables: string = fs.readFileSync(filePath, "utf-8");
-        const regex = /--blades-([a-z]+-)+nums:\s*(\d+),\s*(\d+),\s*(\d+)\s*;/g;
+        if (typeof COLOR_STYLESHEET_PATH !== "string") {
+          console.error("Invalid SCSS file path.");
+          return null;
+        }
+        const scssVariables: string = fs.readFileSync(COLOR_STYLESHEET_PATH, "utf-8");
         let match: RegExpExecArray | null;
 
-        type brightness = "brightest"|"bright"|"normal"|"dark"|"darkest"|"black";
-        const colorDefs: Record<string, Partial<Record<brightness, number[]>>> = {};
+        type Brightness = "brightest"|"bright"|"normal"|"dark"|"darkest"|"black";
+        const colorDefs: Record<string, Partial<Record<Brightness, number[]>>> = {};
 
-        while ((match = regex.exec(scssVariables)) !== null) {
-          const varName: string = match[0]
-            .split(":")[0].trim()
-            .replace(/^--blades-/, "")
-            .replace(/-nums$/, "")
-            .replace(/-/g, "_");
-          const [hue, brightness] = varName.split(/_/);
-          const brightnessValue = brightness || "normal";
+        while ((match = COLOR_MATCH_REGEXP.exec(scssVariables)) !== null) {
+          const {hue, brightness, red, green, blue} = match.groups!;
+          const brightnessValue = (brightness || "normal") as Brightness;
           colorDefs[hue] ??= {};
-          colorDefs[hue][brightnessValue] = [parseInt(match[2], 10), parseInt(match[3], 10), parseInt(match[4], 10)];
+          colorDefs[hue][brightnessValue] = [parseInt(red, 10), parseInt(green, 10), parseInt(blue, 10)];
         }
 
         return {
           code: `export const ColorNums = ${JSON.stringify(colorDefs, null, 2)};\n`,
-          map: null
+          map:  null
         };
       }
       return null; // Other modules are loaded normally
@@ -94,7 +106,7 @@ function foundryPlugin(): Plugin {
   return {
     name: "foundry-plugin",
 
-    async resolveId(source) {
+    resolveId(source) {
       if (source === "gsap/all") {
         return {
           id: "scripts/greensock/esm/all.js",
@@ -110,7 +122,7 @@ function foundryPlugin(): Plugin {
 
       return null;
     },
-    async load(id) {
+    load(id) {
       const moduleInfo = this.getModuleInfo(id);
 
       if (moduleInfo == null) {
@@ -130,74 +142,75 @@ function foundryPlugin(): Plugin {
   };
 }
 
-
+const foundryPort = 30000 + (FOUNDRY_VERSION * 100);
+const vitePort = foundryPort + 1;
 
 // Defining the Vite configuration object with specific settings for this project
 const config: UserConfig = defineConfig({
   // Setting the root directory for the project to the "src" folder
-  root: "src",
+  root:      "src",
   // Setting the base URL for the project when deployed
-  base: "/systems/eunos-blades/",
+  base:      `/${PACKAGE_TYPE}s/${PACKAGE_ID}/`,
   // Specifying the directory where static assets are located
   publicDir: path.resolve(__dirname, "public"),
   // Configuration for the development server
-  server: {
+  server:    {
     // Setting the port number for the development server
-    port: 31101,
+    port:  vitePort,
     // Automatically open the project in the browser when the server starts
-    open: false,
+    open:  false,
     // Configuring proxy rules for certain URLs
     proxy: {
       // Redirecting requests that do not start with "/systems/eunos-blades" to localhost:31100
-      "^(?!/systems/eunos-blades)": "http://localhost:31100/",
+      [`^(?!/${PACKAGE_TYPE}s/${PACKAGE_ID})`]: `http://localhost:${foundryPort}/`,
       // Special proxy configuration for WebSocket connections used by socket.io
-      "/socket.io": {
-        target: "ws://localhost:31100", // Target server for the proxy
-        ws: true // Enable WebSocket support
+      "/socket.io":                             {
+        target: `ws://localhost:${foundryPort}`, // Target server for the proxy
+        ws:     true // Enable WebSocket support
       }
     }
   },
   // Configuration for the build process
   build: {
     // Directory where the build output will be placed
-    outDir: path.resolve(__dirname, "dist"),
+    outDir:        path.resolve(__dirname, "dist"),
     // Clear the output directory before building
-    emptyOutDir: true,
+    emptyOutDir:   true,
     // Generate source maps for the build
-    sourcemap: true,
+    sourcemap:     true,
     // Configuration for the Terser minifier
-    minify: "terser",
+    minify:        "terser",
     terserOptions: {
-      mangle: false, // Disable mangling of variable and function names
+      mangle:          false, // Disable mangling of variable and function names
       keep_classnames: true, // Preserve class names
-      keep_fnames: true // Preserve function names
+      keep_fnames:     true // Preserve function names
     },
     // Temporarily disable minification for output checking
     // minify: false,
     // Configuration for building a library
     lib: {
-      name: "blades", // Name of the library
-      entry: path.resolve(__dirname, "src/ts/blades.ts"), // Entry point for the library
-      formats: ["es"], // Output format(s) for the library
-      fileName: "blades" // Name for the output file(s)
+      name:     ENTRY_FILE_NAME, // Name of the library
+      entry:    path.resolve(__dirname, `src/ts/${ENTRY_FILE_NAME}.ts`), // Entry point for the library
+      formats:  ["es"], // Output format(s) for the library
+      fileName: "index" // Name for the output file(s)
     }
   },
   resolve: {
     preserveSymlinks: true,
-    alias: {
+    alias:            {
       "gsap/all": "scripts/greensock/esm/all.js"
     }
   },
   plugins: [
     foundryPlugin(),
     checker({typescript: true}),
-    scssVariablesToJsPlugin(),
+    COLOR_STYLESHEET_PATH ? scssVariablesToJsPlugin() : undefined,
     visualizer({
       gzipSize: true,
       template: "treemap"
     }),
     openChromePlugin() // Add the custom plugin here
-  ]
+  ].filter(Boolean)
 });
 
 // Exporting the configuration object to be used by Vite

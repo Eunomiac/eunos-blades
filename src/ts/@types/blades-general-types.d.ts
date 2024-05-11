@@ -1,14 +1,37 @@
-import {AttributeTrait, ActionTrait, District} from "../core/constants";
-import BladesItem from "../BladesItem";
+// #region IMPORTS ~
 import BladesActor from "../BladesActor";
-import BladesChat from "../classes/BladesChat";
+import BladesItem from "../BladesItem";
 import BladesActorSheet from "../sheets/actor/BladesActorSheet";
 import BladesItemSheet from "../sheets/item/BladesItemSheet";
-// import BladesClockKey, {BladesClock} from "../classes/BladesClockKey";
-// import BladesConsequence from "../classes/BladesConsequence";
-// import BladesRoll, {BladesRollMod} from "../classes/BladesRoll";
-import {gsap} from "gsap/all";
 
+import BladesActiveEffect from "../documents/BladesActiveEffect";
+import BladesChatMessage from "../classes/BladesChatMessage";
+import BladesDialog from "../classes/BladesDialog";
+import BladesRoll from "../classes/BladesRoll";
+import BladesScene from "../classes/BladesScene";
+
+import {gsap} from "gsap/all";
+// #endregion
+
+// #region CONFIGURATION OF SYSTEM CLASSES
+type ActorDoc = BladesActor; // Actor;
+type ItemDoc = BladesItem; // Item;
+type ActorSheetDoc = BladesActorSheet; // ActorSheet;
+type ItemSheetDoc = BladesItemSheet; // ItemSheet;
+
+type ActiveEffectDoc = BladesActiveEffect; // ActiveEffect;
+type ChatMessageDoc = BladesChatMessage; // Chat;
+type DialogDoc = BladesDialog; // Dialog;
+type RollDoc = BladesRoll; // Roll;
+type SceneDoc = BladesScene; // Scene;
+type UserDoc = User; // User;
+// #endregion
+
+// #region UTILITY TYPES
+type HexDigit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "A" | "B" | "C" | "D" | "E" | "F";
+type MaybeSpace = " " | "";
+type FlexComma = `${MaybeSpace},${MaybeSpace}`;
+// #endregion
 
 declare global {
   // #region MISCELLANEOUS TYPE ALIASES (nonfunctional; for clarity) ~
@@ -31,18 +54,6 @@ declare global {
   // Represents any class constructor with an unknown number of parameters
   type AnyClass<T = unknown> = new (...args: unknown[]) => T;
 
-  // Represents an integer
-  type int = number;
-
-  // Represents a floating point number
-  type float = number;
-
-  // Represents a positive integer
-  type posInt = number;
-
-  // Represents a positive floating point number
-  type posFloat = number;
-
   // Represents a key which can be a string, number, or symbol
   type key = string | number | symbol;
 
@@ -53,13 +64,13 @@ declare global {
   type StringLike = string | number | boolean | null | undefined;
 
   // Represents a number represented as a string
-  type NumString = string;
+  type NumString = `${number}`;
 
   // Represents an object with number-strings as keys
   type StringArray<T> = Record<NumString, T>;
 
   // Represents "true" or "false" as a string
-  type BoolString = string;
+  type BoolString = `${boolean}`;
 
   // Represents falsy values and empty objects to be pruned when cleaning list of values
   type UncleanValues = false | null | undefined | "" | 0 | Record<string, never> | never[];
@@ -79,13 +90,14 @@ declare global {
   type StringCase = "upper" | "lower" | "sentence" | "title";
 
   // Represents HTML code as a string
-  type HTMLCode = string;
+  type HTMLCode = string & {__htmlStringBrand: never};
 
-  // Represents a HEX color as a string
-  type HEXColor = string;
+  // Represents a HEX color as a string, allowing for six (RGB) or eight (RGBA) uppercase hexadecimal digits
+  type HexColor = `#${HexDigit}${HexDigit}${HexDigit}` | `#${HexDigit}${HexDigit}${HexDigit}${HexDigit}`;
 
   // Represents an RGB color as a string
-  type RGBColor = string;
+  type RGBColor = `rgb(${number}${FlexComma}${number}${FlexComma}${number})` |
+    `rgba(${number}${FlexComma}${number}${FlexComma}${number}${FlexComma}${number})`;
 
   // Represents a key of a certain type
   type KeyOf<T> = keyof T;
@@ -107,24 +119,22 @@ declare global {
 
   // Represents a check test
   type checkTest = ((...args: unknown[]) => unknown) | testFunc<keyFunc> | testFunc<valFunc> | RegExp | number | string;
-
   // #endregion
 
-
   // Represents a document id as a string
-  type IDString = string & { __idStringBrand: never };
+  type IDString = string & {__idStringBrand: never};
 
   // Represents a UUID string, of the form /^[A-Za-z]+\.[A-Za-z0-9]{16}$/
-  type UUIDString = string & { __uuidStringBrand: never }; // This type is compatible with string, but requires explicit casting, enforcing the UUID pattern.
+  type UUIDString = string & {__uuidStringBrand: never}; // This type is compatible with string, but requires explicit casting, enforcing the UUID pattern.
 
   // Represents a dotkey
-  type DotKey = string & { __dotKeyBrand: never };
+  type DotKey = string & {__dotKeyBrand: never};
 
   // Represents a dotkey appropriate for an update() data object
-  type TargetKey = string & DotKey & { __targetKeyBrand: never };
+  type TargetKey = string & DotKey & {__targetKeyBrand: never};
 
   // Represents a dotkey point to a a flag instead of the document schema
-  type TargetFlagKey = string & DotKey & { __targetFlagKeyBrand: never };
+  type TargetFlagKey = string & DotKey & {__targetFlagKeyBrand: never};
 
   // Represents a jQuery text term
   type jQueryTextTerm = string | number | boolean | (
@@ -132,7 +142,7 @@ declare global {
   );
 
   // Represents an object describing dimensions of an HTML element, of form {x: number, y: number, width: number, height: number}
-  type ElemPosData = {x: number, y: number, width: number, height: number};
+  interface ElemPosData {x: number, y: number, width: number, height: number}
 
   // Represents an object describing dimensions of an HTML element, in the form of a DOMRect object with mutable properties.
   type MutableRect = Omit<Mutable<DOMRect>, "toJSON">;
@@ -164,99 +174,44 @@ declare global {
     -readonly [P in keyof T]: T[P];
   };
 
+export type gsapConfig = gsap.TweenVars & {
+  duration: number,
+  targets: Record<string, JQuery | JQuery[]>
+}
+
+export interface GSAPEffect<Defaults extends gsap.TweenVars> {
+  effect: (
+    targets: gsap.TweenTarget,
+    config: Defaults
+  ) => gsap.core.Timeline | gsap.core.Tween,
+  defaults: Defaults,
+  extendTimeline?: boolean
+}
+
   // Represents a gsap animation
   type gsapAnim = gsap.core.Tween | gsap.core.Timeline;
 
   // Represents a generic Blades document
-  type BladesDoc = BladesActor | BladesItem;
+  type EntityDoc = ActorDoc | ItemDoc;
 
   // Represents any Blades document sheet
-  type BladesSheet = BladesActorSheet | BladesItemSheet;
+  type EntitySheet = ActorSheetDoc | ItemSheetDoc;
 
   // Represents any document that can be the target of a BladesTargetLink subclass.
-  type BladesLinkDoc = BladesDoc | BladesChat | User;
+  type TargetLinkDoc = EntityDoc | ChatMessageDoc | UserDoc;
 
   // Represents a reference to a Blades document
-  type DocRef = string | BladesDoc;
+  type DocRef = string | EntityDoc;
 
   // Represents a reference to a Blades actor
-  type ActorRef = string | BladesActor;
+  type ActorRef = string | ActorDoc;
 
   // Represents a reference to a Blades item
-  type ItemRef = string | BladesItem;
+  type ItemRef = string | ItemDoc;
 
   // Utility Types for Variable Template Values
-  type ValueMax = {max: number, value: number};
+  interface ValueMax {max: number, value: number}
   type NamedValueMax = ValueMax & {name: string};
-  type RollableStat = AttributeTrait | ActionTrait;
 
-  // Component Types for Sheets
-  type BladesSelectOption<displayType, valueType = string> = {
-    value: valueType,
-    display: displayType
-  };
-
-  type BladesCompData = {
-    class?: string,
-    label?: string,
-    labelClass?: string,
-    tooltip?: string,
-    tooltipClass?: string,
-
-    checkLabel?: string,
-    checkClasses?: {
-      active: string,
-      inactive: string
-    },
-    checkTarget?: string,
-    checkValue?: boolean,
-
-    dotline?: BladesDotlineData,
-    dotlines?: BladesDotlineData[],
-
-    compContainer?: {
-      class?: string,
-      blocks: Array<Array<Omit<BladesCompData, "compContainer">>>
-    }
-  }
-  type BladesDotlineData = {
-    data: ValueMax,
-    dotlineClass?: string,
-    dotlineLabel?: string,
-
-    target?: string,
-    isLocked?: boolean,
-
-    svgKey?: string,
-    svgFull?: string,
-    svgEmpty?: string,
-
-    iconEmpty?: string,
-    iconEmptyHover?: string,
-    iconFull?: string,
-    iconFullHover?: string,
-    altIconFull?: string,
-    altIconFullHover?: string,
-    altIconStep?: number,
-
-    advanceButton?: string
-  }
-  type BladesRandomizer<T extends string = string> = {isLocked: boolean, value: T}
-
-  // Claims Data for Turf Representation
-  type BladesClaimData = {
-    name: string,
-    flavor?: string,
-    description: string,
-    district?: District,
-    value: boolean,
-    isTurf: boolean,
-    connects: {
-      left: boolean,
-      right: boolean,
-      top: boolean,
-      bottom: boolean
-    }
-  }
   export declare function randomID(length?: number): IDString;
 }

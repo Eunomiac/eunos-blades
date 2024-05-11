@@ -11,7 +11,7 @@ type TagifyPlus<T extends Tagify.BaseTagData> = Tagify<T> & {
   }
 }
 
-const _onTagifyChange = (event: Event, doc: BladesDoc, targetKey: keyof BladesDoc) => {
+const _onTagifyChange = (event: Event, doc: EntityDoc, targetKey: keyof EntityDoc) => {
   const tagString = (event.target as HTMLInputElement).value;
   if (tagString) {
     const tags: BladesTag[] = JSON.parse(tagString).map(({value}: { value: BladesTag }) => value);
@@ -22,7 +22,7 @@ const _onTagifyChange = (event: Event, doc: BladesDoc, targetKey: keyof BladesDo
 };
 
 const Tags = {
-  InitListeners: (html: JQuery, doc: BladesDoc) => {
+  InitListeners: (html: JQuery, doc: EntityDoc) => {
 
     /**
      * Applies tags and Tagify functionality to a specified HTML element.

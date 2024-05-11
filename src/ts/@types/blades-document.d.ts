@@ -12,7 +12,7 @@ declare global {
     static get All(): T extends Actor ? BladesActor[] : BladesItem[];
     static Get(docRef: DocRef): (T extends Actor ? BladesActor[] : BladesItem[]) | undefined;
     static GetTypeWithTags(type: BladesActorType | BladesItemType, ...tags: BladesTag[]): T extends Actor ? BladesActor[] : BladesItem[];
-    static IsType<T extends BladesActorType|BladesItemType>(doc: BladesDoc, ...types: T[]): boolean;
+    static IsType<T extends BladesActorType|BladesItemType>(doc: EntityDoc, ...types: T[]): boolean;
 
     tags: BladesTag[];
     hasTag(...tags: BladesTag[]): boolean

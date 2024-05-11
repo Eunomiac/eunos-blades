@@ -2,7 +2,7 @@
 import C, {BladesActorType, BladesItemType, AttributeTrait, ConsequenceType, RollResult, RollType, Position, Effect, RollPhase} from "../core/constants";
 import U from "../core/utilities";
 import BladesRoll, {BladesRollPrimary, BladesResistanceRoll, BladesInlineResistanceRoll} from "./BladesRoll";
-import BladesChat from "./BladesChat";
+import BladesChatMessage from "./BladesChatMessage";
 import BladesTargetLink from "./BladesTargetLink";
 import {BladesPC} from "../documents/BladesActorProxy";
 import {BladesItem} from "../documents/BladesItemProxy";
@@ -394,9 +394,9 @@ class BladesConsequence extends BladesTargetLink<BladesConsequence.Schema> {
 
   // #endregion
 
-  // #region *** BladesChat *** ~
+  // #region *** BladesChatMessage *** ~
 
-  static ApplyChatListeners(message: BladesChat) {
+  static ApplyChatListeners(message: BladesChatMessage) {
     /**
      * TIMELINES
      * .comp.consequence-display-container:mouseenter

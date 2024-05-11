@@ -273,7 +273,7 @@ class BladesActiveEffect extends ActiveEffect {
     });
   }
 
-  static async AddActiveEffect(doc: BladesDoc, name: string, eChanges: EffectChangeData|EffectChangeData[], icon = "systems/eunos-blades/assets/icons/effect-icons/default.png") {
+  static async AddActiveEffect(doc: EntityDoc, name: string, eChanges: EffectChangeData|EffectChangeData[], icon = "systems/eunos-blades/assets/icons/effect-icons/default.png") {
     const changes = [eChanges].flat();
     await doc.createEmbeddedDocuments("ActiveEffect", [{name, icon, changes}]);
   }

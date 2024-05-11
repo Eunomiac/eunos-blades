@@ -5,9 +5,9 @@ import C, {RollType, Position, RollResult} from "../core/constants";
 import U from "../core/utilities";
 
 import {BladesActor} from "../documents/BladesActorProxy";
-import BladesRoll from "./BladesRoll";
-import BladesConsequence from "./BladesConsequence";
-import {ChatMessageDataConstructorData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import BladesRoll from "../classes/BladesRoll";
+import BladesConsequence from "../classes/BladesConsequence";
+import {ChatMessageDataConstructorData} from ".dev-refs/@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 /* eslint-enable @typescript-eslint/no-unused-vars */
 // #endregion
 
@@ -17,7 +17,7 @@ enum BladesChatType {
   Whisper = "Whisper"
 }
 
-namespace BladesChat {
+namespace BladesChatMessage {
   export interface Data extends ChatMessageDataConstructorData {
     bladesRoll?: BladesRoll
   }
@@ -35,11 +35,11 @@ namespace BladesChat {
   }
 }
 
-class BladesChat extends ChatMessage {
+class BladesChatMessage extends ChatMessage {
 
   static Initialize() {
 
-    Hooks.on("renderChatMessage", (msg: BladesChat, html: JQuery) => {
+    Hooks.on("renderChatMessage", (msg: BladesChatMessage, html: JQuery) => {
       ApplyTooltipAnimations(html);
       if (msg.isBladesRoll) {
         html.addClass("blades-chat-message");
@@ -72,25 +72,25 @@ class BladesChat extends ChatMessage {
 
   static get template() {return "systems/eunos-blades/templates/chat/blades-message.hbs";}
 
-  static override async create(data: BladesChat.Data, options: DocumentModificationContext = {}) {
+  static override async create(data: BladesChatMessage.Data, options: DocumentModificationContext = {}) {
     if (data.bladesRoll) {
-      ({data, options} = await BladesChat.ConstructBladesRollData(
-        data as BladesChat.Data & {bladesRoll: BladesRoll},
+      ({data, options} = await BladesChatMessage.ConstructBladesRollData(
+        data as BladesChatMessage.Data & {bladesRoll: BladesRoll},
         options
       ));
     } else {
-      ({data, options} = await BladesChat.ConstructBladesChatMessageData(
+      ({data, options} = await BladesChatMessage.ConstructBladesChatMessageData(
         data,
         options
       ));
     }
-    return super.create<typeof BladesChat>(data, options) as Promise<BladesChat | undefined>;
+    return super.create<typeof BladesChatMessage>(data, options) as Promise<BladesChatMessage | undefined>;
   }
 
-  static async ConstructBladesRollData(data: BladesChat.Data & {bladesRoll: BladesRoll}, options: DocumentModificationContext = {}) {
+  static async ConstructBladesRollData(data: BladesChatMessage.Data & {bladesRoll: BladesRoll}, options: DocumentModificationContext = {}) {
     const {bladesRoll, ...baseChatData} = data;
     const msgData = {
-      speaker: bladesRoll.getSpeaker(BladesChat.getSpeaker()),
+      speaker: bladesRoll.getSpeaker(BladesChatMessage.getSpeaker()),
       content: await renderTemplate(bladesRoll.chatTemplate, bladesRoll.data),
       type:    CONST.CHAT_MESSAGE_TYPES.ROLL,
       flags:   {
@@ -109,11 +109,11 @@ class BladesChat extends ChatMessage {
   }
 
   static async ConstructBladesChatMessageData(
-    data: BladesChat.Data,
+    data: BladesChatMessage.Data,
     options: DocumentModificationContext = {}
   ) {
 
-    function getUser(cData: BladesChat.Data): User | undefined {
+    function getUser(cData: BladesChatMessage.Data): User | undefined {
       if (typeof cData.user === "string") {
         return game.users.get(cData.user);
       } else if (cData.user instanceof User) {
@@ -122,7 +122,7 @@ class BladesChat extends ChatMessage {
       return undefined;
     }
 
-    const context: BladesChat.Context = {
+    const context: BladesChatMessage.Context = {
       ...data
     };
     const blockClasses: string[] = [];
@@ -166,7 +166,7 @@ class BladesChat extends ChatMessage {
 
     context.blockClasses = blockClasses.join(" ");
 
-    data.content = await renderTemplate(BladesChat.template, context);
+    data.content = await renderTemplate(BladesChatMessage.template, context);
 
     return {data, options};
   }
@@ -210,7 +210,7 @@ class BladesChat extends ChatMessage {
     });
   }
 
-  async setFlagVal(scope: KeyOf<BladesChat.Flags>, key: string, val: unknown) {
+  async setFlagVal(scope: KeyOf<BladesChatMessage.Flags>, key: string, val: unknown) {
     return this.setFlag(C.SYSTEM_ID, `${scope}.${key}`, val);
   }
 
@@ -300,12 +300,12 @@ class BladesChat extends ChatMessage {
   }
 
   async activateListeners() {
-    if (!this.elem$) {eLog.error("BladesChat", `No BladesChat.elem found for id ${this.id}.`); return;}
+    if (!this.elem$) {eLog.error("BladesChatMessage", `No BladesChatMessage.elem found for id ${this.id}.`); return;}
     ApplyTooltipAnimations(this.elem$);
     BladesConsequence.ApplyChatListeners(this);
     if (this.isBladesRoll) {
       const {parentRoll} = this;
-      if (!parentRoll) {throw new Error(`BladesChat.activateListeners: No parentRoll found for id ${this.id}.`);}
+      if (!parentRoll) {throw new Error(`BladesChatMessage.activateListeners: No parentRoll found for id ${this.id}.`);}
       this.elem$.addClass(`${parentRoll.rollType.toLowerCase()}-roll`);
 
       if (parentRoll.rollType === RollType.Action && this.rollConsequences.some((csq) => !csq.isAccepted)) {
@@ -314,7 +314,7 @@ class BladesChat extends ChatMessage {
         this.elem$.removeClass("unresolved-action-roll");
       }
 
-      if (BladesChat.IsNewestRollResult(parentRoll)) {
+      if (BladesChatMessage.IsNewestRollResult(parentRoll)) {
         $("#chat-log .chat-message").removeClass("active-chat-roll");
         this.elem$.addClass("active-chat-roll");
       } else {
@@ -349,13 +349,13 @@ class BladesChat extends ChatMessage {
 }
 
 
-interface BladesChat {
+interface BladesChatMessage {
   get id(): IDString;
   content?: string;
   whisper: IDString[];
   flags: {
-    "eunos-blades": BladesChat.Flags
+    "eunos-blades": BladesChatMessage.Flags
   };
 }
 
-export default BladesChat;
+export default BladesChatMessage;

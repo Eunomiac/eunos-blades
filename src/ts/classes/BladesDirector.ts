@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import U from "../core/utilities";
-import C, {ClockKey_SVGDATA, BladesPhase, BladesNoticeType, ClockKeyDisplayMode} from "../core/constants";
+import C, {ClockKeySvgData, BladesPhase, BladesNoticeType, ClockKeyDisplayMode} from "../core/constants";
 import BladesClockKey, {BladesClock, ClockKeyElems$} from "./BladesClockKey";
 
 namespace BladesDirector {
@@ -55,7 +55,7 @@ class BladesDirector {
       if (rumors !== pauseSettings.allText) {
         console.log("Refreshing Pause Text");
         pauseSettings.allText = rumors;
-        game.settings.set("pause-text", "allSettings", pauseSettings);
+        await game.settings.set("pause-text", "allSettings", pauseSettings);
       }
     }
 
@@ -155,14 +155,14 @@ class BladesDirector {
     return this.overlayContainer$.find(".overlay-section-tooltips");
   }
 
-  private get svgData() {return ClockKey_SVGDATA;}
+  private get svgData() {return ClockKeySvgData;}
   // #endregion
 
   // #region  >> Rendering ~
   renderOverlay_SocketCall() {
     if (!game.user.isGM) {return;}
     if (!this.overlayContainer) {return;}
-    socketlib.system.executeForEveryone("renderOverlay_SocketCall");
+    void socketlib.system.executeForEveryone("renderOverlay_SocketCall");
   }
 
   async renderOverlay_SocketResponse() {
@@ -292,7 +292,7 @@ class BladesDirector {
       U.gsap.timeline({
         paused: true,
         data:   {key, imgContainer$, label$, isNameRevealed: false},
-        onStart() {
+        onStart(this: {data: {key: BladesClockKey, imgContainer$: JQuery, label$: JQuery, isNameRevealed: boolean}}) {
           (this.data.imgContainer$.data("keySwingTimeline") as gsap.core.Timeline)
             .tweenTo("NEUTRAL", {
               duration: 0.25,
@@ -306,7 +306,7 @@ class BladesDirector {
             });
           }
         },
-        onReverseComplete() {
+        onReverseComplete(this: {data: {key: BladesClockKey, imgContainer$: JQuery, label$: JQuery, isNameRevealed: boolean}}) {
           (this.data.imgContainer$.data("keySwingTimeline") as gsap.core.Timeline)
             .seek("NEUTRAL")
             .play();
@@ -334,7 +334,7 @@ class BladesDirector {
         U.gsap.timeline({
           paused: true,
           data:   {clock, clockLabel$, isNameRevealed: false},
-          onStart() {
+          onStart(this: {data: {clock: BladesClock, clockLabel$: JQuery, isNameRevealed: boolean}}) {
             if (this.data.clock.name && !this.data.clock.isNameVisible) {
               this.data.isNameRevealed = true;
               U.gsap.effects.blurReveal(this.data.clockLabel$, {
@@ -343,7 +343,7 @@ class BladesDirector {
               });
             }
           },
-          onReverseComplete() {
+          onReverseComplete(this: {data: {clock: BladesClock, clockLabel$: JQuery, isNameRevealed: boolean}}) {
             if (this.data.isNameRevealed) {
               this.data.isNameRevealed = false;
               U.gsap.effects.blurRemove(this.data.clockLabel$, {
@@ -357,45 +357,47 @@ class BladesDirector {
       );
     });
   }
-  private async activateClockKeyListeners(key: BladesClockKey, keyElems$: ClockKeyElems$) {
+  private activateClockKeyListeners(key: BladesClockKey, keyElems$: ClockKeyElems$) {
     const {container$, clocks} = keyElems$;
 
     if (game.user.isGM) {
       // === GM-ONLY LISTENERS ===
 
       // Double-Click a Clock Key = Open ClockKeeper sheet
-      container$.on("dblclick", async () => {
+      container$.on("dblclick", () => {
         game.eunoblades.ClockKeeper.sheet?.render(true);
       });
 
       // Right-Click a Clock Key = Pull it
       container$.on("contextmenu", async () => {
-        this.pullKey_SocketCall(key.id);
-        key.updateTarget("isVisible", false);
+        void this.pullKey_SocketCall(key.id);
+        await key.updateTarget("isVisible", false);
       });
 
     } else {
       // === PLAYER-ONLY LISTENERS ===
 
       // Add listeners to container for mouseenter and mouseleave, that play and reverse timeline attached to element
+      const containerHoverTimeline = container$.data("hoverOverTimeline") as gsap.core.Timeline;
       container$.on("mouseenter", () => {
-        container$.data("hoverOverTimeline").play();
+        containerHoverTimeline.play();
       }).on("mouseleave", () => {
-        container$.data("hoverOverTimeline").reverse();
+        containerHoverTimeline.reverse();
       });
 
       // Now repeat this for each clock in the clock key
       key.clocks.forEach((clock) => {
         const {clockContainer$} = clocks[clock.id];
+        const clockHoverTimeline = clockContainer$.data("hoverOverTimeline") as gsap.core.Timeline;
 
         // Add listeners to clock for mouseenter and mouseleave, that play and reverse timeline attached to element
         clockContainer$.on("mouseenter", () => {
           if (clock.isVisible) {
-            clockContainer$.data("hoverOverTimeline").play();
+            clockHoverTimeline.play();
           }
         }).on("mouseleave", () => {
           if (clock.isVisible) {
-            clockContainer$.data("hoverOverTimeline").reverse();
+            clockHoverTimeline.reverse();
           }
         });
       });
@@ -432,12 +434,12 @@ class BladesDirector {
   }
   async renderClockKey_SocketCall(keyID: IDString) {
     if (!game.user.isGM) {return;}
-    socketlib.system.executeForEveryone("renderClockKey_SocketCall", keyID);
+    await socketlib.system.executeForEveryone("renderClockKey_SocketCall", keyID);
   }
   static async renderClockKey_SocketResponse(keyID: IDString) {
     const key = game.eunoblades.ClockKeys.get(keyID);
     if (!key) {return;}
-    game.eunoblades.Director.renderClockKey(key);
+    await game.eunoblades.Director.renderClockKey(key);
   }
   // #endregion
 
@@ -459,7 +461,7 @@ class BladesDirector {
   }
   async pullKey_SocketCall(keyID: IDString) {
     if (!game.user.isGM) {return;}
-    socketlib.system.executeForEveryone("pullKey_SocketCall", keyID);
+    await socketlib.system.executeForEveryone("pullKey_SocketCall", keyID);
   }
   static pullKey_SocketResponse(keyID: IDString) {
     const key = game.eunoblades.ClockKeys.get(keyID);
@@ -600,8 +602,8 @@ class BladesDirector {
       ...config
     }))
       .appendTo(director.notificationSection$)
-      .on("click", (event: ClickEvent) => {director.removePush(event.currentTarget);})
-      .on("contextmenu", (event: ContextMenuEvent) => {director.removeAndClear(event.currentTarget);});
+      .on("click", (event: ClickEvent) => {void director.removePush(event.currentTarget);})
+      .on("contextmenu", (event: ContextMenuEvent) => {void director.removeAndClear(event.currentTarget);});
 
     U.gsap.fromTo(
       pushElem$,
@@ -621,25 +623,30 @@ class BladesDirector {
   }
 
   private async removePush(target: HTMLElement) {
-    U.gsap.to(
-      target,
-      {
-        x:          "+=200",
-        autoAlpha:  0,
-        ease:       "power2",
-        duration:   0.5,
-        onComplete() {
-          $(target).remove();
-        }
-      });
+    await new Promise<void>((resolve) => {
+      U.gsap.to(
+        target,
+        {
+          x:          "+=200",
+          autoAlpha:  0,
+          ease:       "power2",
+          duration:   0.5,
+          onComplete() {
+            $(target).remove();
+            resolve();
+          }
+        });
+    });
+
   }
 
   private async removeAndClear(target: HTMLElement) {
     const targets = $(target).prevAll().get().reverse();
     targets.unshift(target);
-    U.gsap.to(
-      targets,
-      {
+    await new Promise<void>((resolve) => {
+      U.gsap.to(
+        targets,
+        {
         x:         "+=200",
         autoAlpha: 0,
         ease:      "power2",
@@ -651,8 +658,10 @@ class BladesDirector {
         },
         onComplete() {
           targets.forEach((targ) => $(targ).remove());
-        }
-      });
+          resolve();
+          }
+        });
+    });
   }
   // #endregion
 
@@ -889,16 +898,16 @@ class BladesDirector {
         trigger$,
         tTipSource$:      $(tooltip)
       }
-    );
+    ) as gsap.core.Timeline;
 
     // Attach the timeline to the element for later reversal
     ttClone$.data("revealTimeline", revealTimeline);
 
     // Play the timeline.
-    ttClone$.data("revealTimeline")?.play();
+    revealTimeline.play();
   }
 
-  async clearTooltip(tooltipID: string, isClearingIfTweening = true): Promise<void> {
+  async clearTooltip(tooltipID: string, isClearingIfTweening = false): Promise<void> {
     if (tooltipID === this._displayedTooltipID) {
       delete this._displayedTooltipID;
     }
@@ -932,7 +941,7 @@ class BladesDirector {
 
   private initTooltipSection() {
     const self = this;
-    this.clearTooltips();
+    this.clearTooltips().catch((err) => eLog.error("initTooltipSection", err));
 
     // Reset tooltip observer
     this._tooltipObserver?.kill();
@@ -959,8 +968,8 @@ class BladesDirector {
 
     this._tooltipObserver = Observer.create({
       type:    "touch, pointer",
-      onMove:  throttle(() => { self.clearTooltips(); }, 200, 100),
-      onClick: () => { self.clearTooltips(); }
+      onMove:  throttle(() => { void self.clearTooltips(); }, 200, 100),
+      onClick: () => { void self.clearTooltips(); }
     });
   }
   // #endregion

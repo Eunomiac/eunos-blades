@@ -12,7 +12,6 @@ declare global {
   // }
 
   // Basic & Utility Types for BladesActors
-  type BladesRandomizer<T extends string = string> = { isLocked: boolean, value: T }
   type SubActorData = Partial<BladesActor["system"]>
   type AdvancementTrait = ActionTrait|"Ability"|"Upgrade"|"Cohort"|"CohortType"
   type Loadout = "heavy"|"normal"|"light"|"encumbered"

@@ -8,7 +8,7 @@ import C, {
 } from "./core/constants";
 import registerSettings, {initTinyMCEStyles, initCanvasStyles, initDOMStyles} from "./core/settings";
 import {registerHandlebarHelpers, preloadHandlebarsTemplates, getColor} from "./core/helpers";
-import BladesChat from "./classes/BladesChat";
+import BladesChatMessage from "./classes/BladesChatMessage";
 import U from "./core/utilities";
 import logger from "./core/logger";
 import G, {Initialize as GsapInitialize} from "./core/gsap";
@@ -188,7 +188,7 @@ class GlobalGetter {
     BladesIndulgeViceRoll,
     BladesInlineResistanceRoll,
     BladesResistanceRoll,
-    BladesChat,
+    BladesChatMessage,
     BladesConsequence,
     G,
     U,
@@ -235,7 +235,7 @@ Hooks.once("init", async () => {
   CONFIG.Item.documentClass = BladesItemProxy as unknown as typeof Item;
   CONFIG.Actor.documentClass = BladesActorProxy as unknown as typeof Actor;
   CONFIG.Scene.documentClass = BladesScene;
-  CONFIG.ChatMessage.documentClass = BladesChat;
+  CONFIG.ChatMessage.documentClass = BladesChatMessage;
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
@@ -260,7 +260,7 @@ Hooks.once("init", async () => {
     BladesDialog.Initialize(),
     BladesRoll.Initialize(),
     BladesProject.Initialize(),
-    BladesChat.Initialize()
+    BladesChatMessage.Initialize()
   ]);
 });
 

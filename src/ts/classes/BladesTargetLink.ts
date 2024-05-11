@@ -3,7 +3,7 @@ import U from "../core/utilities";
 import C from "../core/constants";
 import {BladesActor} from "../documents/BladesActorProxy";
 import {BladesItem} from "../documents/BladesItemProxy";
-import BladesChat from "./BladesChat";
+import BladesChatMessage from "./BladesChatMessage";
 
 class BladesTargetLink<Schema> {
 
@@ -13,7 +13,7 @@ class BladesTargetLink<Schema> {
     return [
       BladesActor,
       BladesItem,
-      BladesChat,
+      BladesChatMessage,
       User
     ] as const;
   }
@@ -207,7 +207,7 @@ class BladesTargetLink<Schema> {
       ...schemaData
     } = dataOrConfig as T & Partial<Schema> & {
       id?: IDString,
-      target?: BladesLinkDoc,
+      target?: TargetLinkDoc,
       targetID?: IDString,
       targetKey?: TargetKey,
       targetFlagKey?: TargetFlagKey
@@ -367,8 +367,8 @@ class BladesTargetLink<Schema> {
   }
 
 
-  private readonly _target: BladesLinkDoc;
-  get target(): BladesLinkDoc { return this._target; }
+  private readonly _target: TargetLinkDoc;
+  get target(): TargetLinkDoc { return this._target; }
 
   protected get localData(): BladesTargetLink.Data & Schema {
     return {
@@ -499,7 +499,7 @@ class BladesTargetLink<Schema> {
       await this.target.setFlag(...this.getFlagParamsToProp(prop), val);
     } else if (this.target instanceof User) {
       await this.target.setFlag(...this.getFlagParamsToProp(prop), val);
-    } else if (this.target instanceof BladesChat) {
+    } else if (this.target instanceof BladesChatMessage) {
       await this.target.setFlag(...this.getFlagParamsToProp(prop), val);
     }
   }
@@ -594,7 +594,7 @@ class BladesTargetLink<Schema> {
   async updateTarget(updateData: Record<string, unknown>, waitFor?: Promise<unknown>|gsapAnim): Promise<unknown>
   async updateTarget(prop: string, val: unknown, waitFor?: Promise<unknown>|gsapAnim): Promise<unknown>
   async updateTarget(
-    propOrData: string | Record<string, unknown>,
+    propOrData: unknown,
     valOrWaitFor?: unknown,
     waitFor?: Promise<unknown>|gsapAnim
   ): Promise<unknown> {
@@ -604,10 +604,10 @@ class BladesTargetLink<Schema> {
       if (getProperty(this.data, propOrData) === valOrWaitFor) { return Promise.resolve(); }
       return this.#updateTargetPropVal(propOrData, valOrWaitFor, waitFor);
     }
-    if (typeof propOrData === "object") {
+    if (U.isList(propOrData)) {
       return this.#updateTargetViaMerge(propOrData, valOrWaitFor as Promise<unknown>|gsapAnim|undefined);
     }
-    throw new Error(`[BladesTargetLink.updateTarget()] Bad updateData for id '${this.id}': ${propOrData}`);
+    throw new Error(`[BladesTargetLink.updateTarget()] Bad updateData for id '${this.id}': ${String(propOrData)}`);
   }
 
   async updateTargetData(val: Partial<Schema> | null, waitFor?: Promise<unknown>|gsapAnim) {

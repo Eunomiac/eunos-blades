@@ -33,7 +33,7 @@ declare global {
 
     export type DisplayType = "base"|"accept"|ResistanceType;
 
-    export type ResistSubSchema = {
+    export interface ResistSubSchema {
       name: string,
       type: ConsequenceType,
       resistSchema?: {
@@ -42,7 +42,7 @@ declare global {
       }
     }
 
-    export type Schema = {
+    export interface Schema {
       name: string,
       type: ConsequenceType,
       actionRollData?: BladesRoll.Data,
